@@ -1,0 +1,121 @@
+{
+    "setting": {},
+    "condition": {
+        "plugin": {
+            "list": []
+        },
+        "game": {
+            "list": []
+        },
+        "gamePlugin": {
+            "list": []
+        },
+        "miniprogram": {
+            "list": [
+                {
+                    "name": "",
+                    "pathName": "pages/creatchallenge/creatchallenge",
+                    "query": "",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/addrules/addrules",
+                    "query": "id=96",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/challenge/challenge",
+                    "query": "",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/editchallenge/editchallenge",
+                    "query": "id=99",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/userinfor/userinfor",
+                    "query": "",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/userlist/userlist",
+                    "query": "",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/manage/manage",
+                    "query": "",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/mydata/mydata",
+                    "query": "",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/othersdata/othersdata",
+                    "query": "id=2",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/userlist/userlist",
+                    "query": "",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/clockdaily/clockdaily",
+                    "query": "",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/challengedetail/challengedetail",
+                    "query": "id=93",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/userinfor/userinfor",
+                    "query": "",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/index/index",
+                    "query": "",
+                    "scene": 1001
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/energy/energy",
+                    "query": "id=1",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/record/record",
+                    "query": "",
+                    "scene": null
+                },
+                {
+                    "name": "",
+                    "pathName": "pages/recordlist/recordlist",
+                    "query": "",
+                    "scene": null,
+                    "launchMode": "default"
+                }
+            ]
+        }
+    }
+}

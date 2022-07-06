@@ -1,0 +1,10 @@
+{
+  "navigationStyle": "default",
+  "backgroundTextStyle":"light",
+  "navigationBarBackgroundColor": "#333",
+  "navigationBarTitleText": "编辑活动",
+  "navigationBarTextStyle":"white",
+  "usingComponents": {
+    "uploadImages": "/components/uploadImages/index"
+  }
+}

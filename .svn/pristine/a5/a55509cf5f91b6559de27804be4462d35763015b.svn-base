@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "default",
+  "backgroundTextStyle":"light",
+  "navigationBarBackgroundColor": "#333",
+  "navigationBarTitleText": "奖品列表",
+  "navigationBarTextStyle":"white"
+}

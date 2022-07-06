@@ -1,0 +1,105 @@
+<!--pages/prizedetails/prizedetails.wxml-->
+<view class="pg-wrap">
+  <!-- <view class="main-pic"><image src="{{imgSrc}}" mode="widthFix" style="height:auto;"></image></view> -->
+  <view class="swiper">
+      <swiper indicator-dots="{{indicatorDots}}"
+        autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" style="height:{{height}}" circular="true">
+        <block wx:for="{{imgSrc}}" wx:key="index" wx:if="{{index<9}}">
+          <swiper-item>
+            <image src="{{item.goods_pic}}" mode="widthFix" style="width:100%;" bindload='goheight'/>
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+  <view class="bg-white prize-infor">
+    <view class="need-points" wx:if="{{goods_type==0}}"><image src="../../images/point.png" class="ico"></image><text class="points">{{points}}</text><text>积分</text></view>
+    <view class="need-points" wx:if="{{goods_type==1}}"><image src="../../images/en-ico.svg" class="ico"></image><text class="points">{{energy}}</text><text>能量</text></view>
+    <view class="prize-tit">{{goodName}}</view>
+    <!-- <view class="use-code" bindtap="useCode">使用兑换码</view> -->
+  </view>
+  <view class="bg-white prize-type">
+    <view class="top-con" wx:if="{{allType}}">
+      <view class="mycon-tit">奖品规格<view class="total-wrap" wx:if="{{otherTit}}"><text class="total-num" wx:if="{{totalNum>0}}">库存：{{totalNum}}</text>
+      <text class="total-num" wx:if="{{totalNum==0}}">库存：0</text></view></view>     
+      <view wx:for="{{allType}}" wx:key="index">
+        <view wx:if="{{myLength>1}}">{{index}}</view> 
+        <view class="tpye-con">
+          <view wx:for="{{item}}" wx:for-item="items" wx:for-index="childindex" wx:key="index">
+            <view class="tag-desc {{id == items.id ? 'active' : ''}} {{totalNum==0 ? 'dis' : ''}}" wx:if="{{items.tag_desc}}" data-id="{{items.id}}" data-index="{{items.goods_tag}}" data-tag="{{items.tag_desc}}" data-stock="{{items.stock}}" bindtap="chooseOne">{{items.tag_desc}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="vw-wrap" wx:else>
+      <view style="padding:30rpx 0;">暂无规格</view>  
+    </view>
+  </view>
+  <view class="page-tit">
+    <view class="line"></view>
+    <view>礼品详情</view>
+    <view class="line"></view>
+  </view>
+  <view class="bg-white prize-details">
+    <view wx:for="{{detailSrc}}" wx:key="index" wx:if="{{detailSrc!==''}}">
+      <view>
+        <image src="{{item.goods_pic}}" mode="widthFix" style="width:100%;height:auto;"/>
+      </view>
+    </view>
+    <view class="">{{goodsRemark}}</view>
+  </view>
+  <view class="exchange-list" wx:if="{{imgList}}">
+    <view class="tit">TA们最近兑换了本奖品</view>
+    <view class="user-list">
+      <block wx:for="{{imgList}}" wx:key="index">
+        <image src="{{item.header_url}}" class="avastar"></image>
+      </block>
+    </view>
+  </view>
+</view>
+<view class="bg-white full-btn">
+  <button class="btn btnOne" bindtap="exchange">立即兑换</button>
+</view>
+  <!-- 遮罩层 -->
+  <view class="modal-mask" wx:if="{{typePop}}" bindtap="close"></view>
+  <!-- 弹出框 -->
+  <view class="modal-choose" wx:if="{{typePop}}">
+    <view class="modal-content">
+      
+    <view class="top-con" wx:if="{{allType}}">
+      <view class="mycon-tit">奖品规格<view class="total-wrap" wx:if="{{otherTit}}"><text class="total-num" wx:if="{{totalNum>0}}">库存：{{totalNum}}</text>
+      <text class="total-num" wx:if="{{totalNum==0}}">库存：0</text></view></view>
+      <view wx:for="{{allType}}" wx:key="index">
+        <view>{{index}}</view>
+        <view class="tpye-con">
+          <view wx:for="{{item}}" wx:for-item="items" wx:for-index="childindex" wx:key="index">
+            <view class="tag-desc {{id==items.id ? 'active' : ''}} {{totalNum==0 ? 'dis' : ''}}" wx:if="{{items.tag_desc}}" data-id="{{items.id}}" data-index="{{items.goods_tag}}" data-tag="{{items.tag_desc}}" data-stock="{{items.stock}}" bindtap="chooseOne">{{items.tag_desc}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="vw-wrap" wx:else>
+      <view style="padding:30rpx 0;">暂无规格</view>  
+    </view>
+      
+      <button class="btn btnOne" bindtap="sure">确定</button>
+    </view>
+  </view>
+  <view class="modal-mask" wx:if="{{codeModal}}" bindtap="closeIt"></view>
+  <!-- 弹出框 -->
+  <view class="modal-dialog" style="width:90%;" wx:if="{{codeModal}}">
+  <form bindsubmit="onConfirm">
+    <view class="modal-content">
+    <!-- <view class="con-t">兑换奖品</view> -->
+    <view>
+      <view class="con-t">兑换码</view>
+      <input type="number" value="{{code}}" name="code" placeholder="请输入兑换码" class="id-ipt"></input>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="modal-footer">
+    <button class="btn btn-cancel" bindtap="onCancel" data-status="cancel">取消</button>
+    <button class="btn btn-confirm"  form-type="submit">确定</button>
+  </view>
+  </form>
+</view>

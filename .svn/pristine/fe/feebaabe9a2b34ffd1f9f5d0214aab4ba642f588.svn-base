@@ -1,0 +1,6 @@
+<!--pages/manage/manage.wxml-->
+<view class="vw-wrap">
+<view class="meun-item" bindtap="creatNew">创建活动<image src="/images/arrow-r-gray.png" class="add-arrow"></image></view>
+<view class="meun-item" bindtap="toLottery">发起抽奖<image src="/images/arrow-r-gray.png" class="add-arrow"></image></view>
+</view>
+<home />

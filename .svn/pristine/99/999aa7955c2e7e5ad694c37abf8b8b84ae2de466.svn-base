@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "default",
+  "backgroundTextStyle":"light",
+  "navigationBarBackgroundColor": "#333",
+  "navigationBarTitleText": "活动成员",
+  "navigationBarTextStyle":"white"
+}

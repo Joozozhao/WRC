@@ -1,0 +1,29 @@
+<!--pages/addtype/addtype.wxml-->
+<view class="nav-mb">
+  <!-- <view class="vw-wrap">
+    <button class="add-type" data-index="{{index}}" bindtap='addNew'>添加规格</button>
+  </view> -->
+  <form bindsubmit="submit">
+    <view class="good-name">奖品名称：{{goods_name}}</view>
+    <view class="default-tit">编辑规格</view>
+    <block wx:for="{{typeInfor}}" wx:key="index">    
+      <view class="type-con old">
+        <view class="new-type"><input type="text" value="{{item.tagName}}" name="Type_Name" data-index="{{index}}" name="Type_Name{{index}}" placeholder="规格"></input>
+          <view class="new-btn" data-index="{{index}}" data-childindex="{{childindex}}" bindtap='addItem'>+</view>
+        </view>
+        <view class="contact-type" wx:for="{{item.goodsStorageList}}" wx:for-item="items" wx:for-index="childindex" wx:key="childindex">
+          <input type="text" class="desc" name="Name{{index}}{{childindex}}" placeholder="名称" value="{{items.tag_desc}}" data-index="{{index}}" data-childindex="{{childindex}}" bindblur="saveIpt"></input>
+          <input type="number" class="stock" name="Total{{index}}{{childindex}}" placeholder="库存" value="{{items.stock}}" data-index="{{index}}" data-childindex="{{childindex}}" bindblur="saveIpt"></input>
+          <view class="del-btn new-btn" bindtap="del" data-id="{{items.id}}" data-index="{{index}}" data-childindex="{{childindex}}">删除</view>
+        </view>
+      </view>
+    </block>
+    <view class="vw-wrap">
+      <view class="act-btn add-con" bindtap="addTag" wx:if="{{addShow}}">新增规格</view>
+    </view>
+    <!-- <view class="act-btn del-con" bindtap="delType" wx:if="{{delShow}}">删除规格</view> -->
+    <view class="full-btn">
+      <button class="btn btnTwo" form-type="submit" disabled="{{disable}}">完成</button>
+    </view>
+  </form>
+</view>

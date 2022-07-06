@@ -1,0 +1,225 @@
+// pages/addtype/addtype.js
+var util = require('../../utils/util.js')
+// 获取应用实例
+const app = getApp()
+Page({
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    goodId: 0,
+    page: 1,
+    typeInfor: [],
+    newItem: [
+      {
+        Name: null,
+        Total: null,
+      }
+    ]
+  },
+  initType: function(){
+    var that = this
+    var data = {
+      id: that.data.goodId,
+      gn : '',
+      page: that.data.page++
+    }
+    console.log(data)
+    wx.showLoading({
+      title: '加载中',
+      icon: 'loading',
+      mask: true
+    })
+    util.request('goods/get', 'POST', data, '数据加载中 ...', (res)=>{
+      if(res.data.success){
+        console.log(res)
+        this.setData({
+          typeInfor: res.data.data.goodsStorageMap
+        })
+        wx.hideLoading({
+          success: (res) => {},
+        })
+      }else{
+        wx.hideLoading({
+          success: (res) => {},
+        })
+        wx.showToast({
+          title: res.data.error,
+          icon: 'none',
+          duration: 1500
+        })
+      }
+    })
+  },
+  /* 加数 */
+  addCount: function (e) {
+    var parent = e.currentTarget.dataset.parent;
+    var childindex = e.currentTarget.dataset.childindex;
+    var id = e.currentTarget.dataset.id
+    var typeInfor = this.data.typeInfor
+    let num = typeInfor[parent][childindex].stock;//数量
+    num = num + 1;
+    typeInfor[parent][childindex].stock = num;
+    var data = {
+      id: id,
+      stock: num
+    }
+    console.log(data)
+    util.request('goods/optstock', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        this.setData({
+          typeInfor: typeInfor
+        })
+      }
+    })
+  },
+    /* 减数 */
+    delCount: function (e) {
+      var parent = e.currentTarget.dataset.parent;
+      var childindex = e.currentTarget.dataset.childindex;
+      var id = e.currentTarget.dataset.id
+      var typeInfor =this.data.typeInfor
+      let num = typeInfor[parent][childindex].stock;//数量
+      num = num - 1;
+      typeInfor[parent][childindex].stock = num;
+      var data = {
+        id: id,
+        stock: num
+      }
+      console.log(data)
+      if(num>0){
+        util.request('goods/optstock', 'POST', data, '数据加载中 ...', (res)=>{
+          console.log(res)
+          if(res.data.success){
+            this.setData({
+              typeInfor: typeInfor
+            })
+          }
+        })
+      } else {
+        wx.showToast({
+          title: '库存不能为0',
+          icon: 'none'
+        })
+      }
+    
+    },  
+  addItem: function() {
+    var  lists = this.data.newItem;
+    var newData = {};
+    lists.push(newData);//实质是添加lists数组内容，使for循环多一次
+    this.setData({
+      newItem: lists,
+    })
+  },
+  del: function(e){
+    var that = this
+    wx.showModal({ 
+      title: '是否确定删除内容？',
+      success: function (res) {
+        if (res.confirm) {             //点击确定后
+          var id = e.currentTarget.dataset.id
+          var data = {
+            id: id
+          }
+          util.request('goods/delgoodstags', 'POST', data, '数据加载中 ...', (res)=>{
+            if(res.data.success){
+              console.log(res)
+              that.setData({
+                page: 1
+              })
+              that.initType()
+              wx.showToast({
+                title: '已删除',
+                icon: 'none',
+                duration: 1500
+              })
+            }else{
+              that.setData({
+                typeInfor: []
+              })
+              wx.showToast({
+                title: res.data.error,
+                icon: 'none',
+                duration: 1500
+              })  
+            }
+          })
+         } else {
+           console.log('用户取消')
+         }
+       }
+    })
+  },
+  submit:function(e){
+    var that = this
+    var newItem = that.data.newItem
+    var formData = e.detail.value
+    for(var i=0; i<newItem.length;i++){
+      var n = "Name"+i;
+      var s = "Total"+i;
+      console.log(formData[n]);
+      console.log(formData[s]);
+      newItem[i].Name = formData[n];
+      newItem[i].Total = formData[s];
+      that.setData({
+        newItem: newItem
+      })
+      var data = {
+        gId: that.data.goodId,
+        tag: formData.Type_Name,
+        desc: formData[n],
+        stock: formData[s],
+        type: 0,
+        remark: ''
+      }
+      if(e.detail.value.Type_Name == ''){
+        wx.showToast({
+          title: '规格不能为空!',
+          icon: 'none',
+          duration: 1500
+        })
+        return false
+      }
+      if(e.detail.value[n] == ''){
+        wx.showToast({
+          title: '名称不能为空!',
+          icon: 'none',
+          duration: 1500
+        })
+        return false
+      }
+      if(e.detail.value[s] == ''){
+        wx.showToast({
+          title: '库存不能为空!',
+          icon: 'none',
+          duration: 1500
+        })
+        return false
+      }
+      console.log(data)
+      util.request('goods/creategoodstags', 'POST', data, '数据加载中 ...', (res)=>{
+        console.log(res)
+        if(res.data.success){
+          wx.showToast({
+            title: '添加成功',
+            icon: 'none',
+            duration: 1500
+          })
+          that.initType()
+        }
+      })
+    }
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    var id = options.id
+    this.setData({
+      goodId: id
+    })
+    this.initType()
+  }
+})

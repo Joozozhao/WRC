@@ -1,0 +1,36 @@
+<!--pages/newsadd/newsadd.wxml-->
+<form bindsubmit="submit">
+  <view class="form-con clockin">
+  <view class="form-item upload-cover">
+    <!-- <label for="" class="title">上传记录</label> -->
+    <view class="add-pic {{addView?'show':'hide'}}" bindtap="uploadAction">
+      <view class="bg-wrap"></view>
+      <image src="../../images/loadimg.svg"></image>
+      <view class="t-tips">上传图片</view>
+    </view>
+    <view class="show-pic {{showView?'show':'hide'}}">
+      <image src="{{tempFilePaths}}" mode="widthFix" style="height:auto;" bindtap="uploadAction"></image>
+      <view class="del" bindtap="delete"><image src="../../images/delete.png"></image></view>
+    </view>
+  </view>
+  <view class="form-item vw-wrap">
+    <label for="" class="title">标题</label>
+    <input type="text" value="{{title}}" name="title" class="ipt ellipsis" placeholder="请输入"></input>
+  </view>
+  <view class="form-item vw-wrap">
+    <label for="" class="title">作者</label>
+    <input type="text" value="{{author}}" name="author" class="ipt ellipsis" placeholder="请输入"></input>
+  </view>
+  <view class="form-item vw-wrap">
+    <label for="" class="title">链接</label>
+    <input type="text" value="{{link}}" name="link" class="ipt ellipsis" placeholder="请输入"></input>
+  </view>
+  <view class="form-item vw-wrap">
+    <label for="" class="title">内容</label>
+    <textarea value="{{content}}" name="textarea" maxlength="-1" rows="10" class="textarea"></textarea>
+  </view>
+</view>
+<view class="full-btn">
+  <button class="btn btnTwo" form-type="submit" disabled="{{disable}}">提交</button>
+</view>
+</form>

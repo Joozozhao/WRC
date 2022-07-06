@@ -1,0 +1,21 @@
+<!--pages/signin/signin.wxml-->
+<form bindsubmit="submit">
+  <view class="form-con">
+    <view class="form-item vw-wrap" wx:if="{{hasName == 1}}">
+      <label for="" class="title">姓名</label>
+      <input type="text" value="{{userName}}" placeholder="请输入姓名" name="userName" class="ipt"></input>
+    </view>
+    <view class="form-item vw-wrap" wx:if="{{hasMobile == 1}}">
+      <label for="" class="title">电话号码</label>
+      <input type="number" maxlength="11" value="{{mobile}}" placeholder="请输入电话号码" name="mobile" class="ipt"></input>
+    </view>
+    <view class="form-item vw-wrap my-point" wx:if="{{target > 0}}">
+      <label for="" class="title">挑战公里数</label>
+      <input type="number" maxlength="11" value="{{target}}" placeholder="请输入挑战公里数" name="target" class="ipt"></input>
+    </view>
+  </view>
+  <view class="full-btn">
+    <button class="btn btnTwo" form-type="submit">完成</button>
+  </view>
+</form>
+<view class="modal-login" bindtap="openLogin" wx:if="{{userId <= 0||userId == undefined}}"></view>

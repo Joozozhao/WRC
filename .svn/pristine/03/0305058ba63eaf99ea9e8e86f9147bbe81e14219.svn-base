@@ -1,0 +1,45 @@
+<!--pages/record/record.wxml-->
+<!-- <calendar  calendar-style="calendar"  header-style="calendar-header"  board-style="calendar-board" days-color="{{dayStyle}}" weeks-type="cn" /> -->
+<calendar spot='{{spot}}' spot2='{{spot2}}' />
+<!-- 颜色说明 -->
+<view class="bg-white color-tip">
+  <view class="tips" wx:if="{{spot}}"><view class="spot"></view>蓝色为日常打卡</view>
+  <view class="tips" wx:if="{{spot2}}"><view class="spot spot2"></view>粉色为团跑打卡</view>
+</view>
+<wxs src="../../utils/toDecimal2.wxs" module="module1" />
+<block wx:for="{{recordList}}" wx:key="index" wx:for-item="item">
+  <view class="activity">
+    <view class="cover-img" data-id="{{item.id}}" data-url="{{item.sport_img}}" bindtap="preview">
+      <image src="{{item.sport_img}}" mode="aspectFill"></image>
+    </view>
+    <view class="activity-infor">
+      <view class="time">{{item.create_time_str}}</view>
+      
+      <!-- <view class="title" wx:if="{{item.acty_id == 0}}">每日打卡</view>
+      <view class="title" wx:else>团活动打卡</view> -->
+      <view><text class="distance">{{module1.toDecimal2(item.distance)}}</text> 公里</view>
+      <view>配速：{{item.speed}}</view>
+    </view>
+    <view class="state-bg" wx:if="{{item.state == 1}}">
+      <view class="pass" wx:for="{{randomTxt}}" wx:for-item="items" wx:for-index="childindex" wx:if="{{childindex<1}}" wx:key="index">{{randomTxt[index]}}<image src="/images/zan.svg"></image></view>
+    </view>
+    <view class="state-bg bg2" wx:if="{{item.state == 2}}">
+      <view class="fail">{{item.remark}} <text wx:if="{{item.score>0}}">-{{item.score}}</text></view>
+    </view>
+    <!-- <view class="acty-tag" wx:if="{{item.acty_id == 0}}">
+      <view class="title">团活动</view>
+    </view> -->
+    <view class="acty-type" style="background:#ffa631;" wx:if="{{item.acty_id==0}}">
+        <view>日常跑</view>
+      </view>
+      <view class="acty-type" style="background:#a3d900;" wx:if="{{item.acty_id>0}}">
+        <view>团跑</view>
+      </view>
+    <view class="act-btn" wx:if="{{item.state == 2}}"><text class="btn edit" data-id="{{item.id}}" bindtap="delCon">删除</text></view>
+  </view>
+  
+</block>
+<view class="noHistory {{noHistory?'show':'hide'}}">
+  <view class="main">暂无任何打卡记录</view>
+</view>
+<home />

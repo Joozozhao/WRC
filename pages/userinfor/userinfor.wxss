@@ -1,0 +1,132 @@
+/* pages/userinfor/userinfor.wxss */
+@import "../clockdaily/clockdaily.wxss";
+.page-tips{
+  line-height: 3;
+  font-size: 28rpx;
+  color: #666;
+}
+.user-infor{
+  padding-top: 40rpx;
+  padding-bottom: 20rpx;
+}
+.user-wrap{
+  display: flex;
+  justify-content: center;
+}
+.user-pic{
+  position: relative;
+  margin-bottom: 40rpx;
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+}
+.user-pic.add-bd .pic{
+  margin-right: 0;
+  margin-bottom: 10rpx;
+}
+ 
+.user-pic .vip{
+  width: 40rpx;
+  height: 40rpx;
+  position: absolute;
+  right: 0;
+  bottom: 50rpx;
+}
+.vw-form{
+  display: flex;
+  line-height: 3;
+}
+.vw-form .fm-tit{
+  width: 28%;
+  font-size: 32rpx;
+}
+
+.vw-form .fm-con{
+  width: 72%;
+  border-bottom: 1px solid #f1f1f170;
+  font-size:28rpx;
+  position: relative;
+}
+.vw-form .fm-con input{
+  padding-top: 24rpx;
+  font-size: 28rpx;
+  color: #999;
+}
+.vw-form .fm-con radio{
+  color: #333;
+}
+.sex label{
+  font-size: 32rpx;
+  margin-right: 15rpx;
+  float: left;
+}
+checkbox-group label{
+  display: inline-block;
+  width: 25%;
+  font-size: 32rpx;
+}
+checkbox-group checkbox .wx-checkbox-input{
+  width: 40rpx;
+  height: 40rpx;
+}
+.other-data{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.other-data .fm-con{
+  display: flex;
+  width: 49%;
+  font-size: 28rpx;
+  border-bottom: 1px solid #f1f1f1;
+  line-height: 3;
+}
+.vw-form .other-data .fm-con input{
+  width: 50%;
+  padding-top: 20rpx;
+}
+.fm-icon{
+  width: 40rpx;
+  margin :26rpx 10rpx 0 0;
+  float: left;
+}
+.change-only{
+  color: #999;
+  position: absolute;
+  right: 0;
+  top: 5rpx;
+}
+.sub-tit{
+  width: 120rpx;
+}
+.btn-group{
+  width: 90%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  height: 200rpx;
+}
+.btn-group .btn{
+  width: 46%;
+  float: left;
+  margin: 0 2%;
+  line-height: 60rpx;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: normal;
+  color: #555454;
+  border-radius: 10rpx;
+  background-color: #f1f1f1;
+}
+
+.lgo-btn{
+  width: 100%;
+  line-height: 80rpx;
+  box-sizing: border-box;
+  border: 1px solid #e1e1e1;
+  border-radius: 5rpx;
+  margin: 30rpx 0;
+  text-align: center;
+  font-size: 32rpx;
+  color: #666;
+}

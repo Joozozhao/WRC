@@ -1,0 +1,52 @@
+<!--pages/actyin/actyin.wxml-->
+<view class="vw-wrap" style="padding: 0 30rpx 150rpx">
+  <block wx:for="{{memberList}}" wx:key="id" >
+    <view class="member" data-userid="{{item.id}}" bindtap="myData">
+      <view class="user-infor">
+        <view class="user-pic {{item.level == 'VIP'?'add-bd':''}}" wx:if="{{item.level == 'VIP'}}">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+          <image src="../../images/vip_1.svg" mode="cover" class="vip"></image>
+        </view>
+        <view class="user-pic {{item.level == '普通'?'add-bd1':''}}" wx:if="{{item.level == '普通'}}">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+          <image src="../../images/normal.svg" mode="cover" class="vip"></image>
+        </view>
+        <view class="user-pic {{item.level == '非会员'?'add-bd2':''}}" wx:if="{{item.level == '非会员'}}">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+          <image src="../../images/none.svg" mode="cover" class="vip"></image>
+        </view>
+        <view class="more-infor">
+          <view class="nick-name">{{item.user_name}}</view>
+          <view class="user-con">
+            <view class="sex" wx:if="{{item.sex == 1}}"><image src="../../images/man.svg"></image></view>
+            <view class="sex" wx:if="{{item.sex == 2}}"><image src="../../images/woman.svg"></image></view>
+            <view class="state over">已参加</view>
+          </view>
+        </view>
+      </view>
+      <wxs module="fn1">
+        module.exports = {
+          GetPercent: function (num, total) {
+            num = parseFloat(num);
+            total = parseFloat(total);
+            if (isNaN(num) || isNaN(total)) {
+                return 0;
+            }
+            return total <= 0 ? "0%" : (Math.round(num / total * 10000) / 100.00);
+          },
+          // toSplit: function(value) { //字符串拆分
+          //   return value.split('_');
+          // }
+          //等等
+        }
+      </wxs>
+      <view class="progress-con">
+        <view>{{item.finish_distance}}/{{item.distance}}</view>
+        <progress percent="100" stroke-width="3" color="#566dd0" wx:if="{{item.finish_distance>item.distance}}"  />
+        <progress percent="{{fn1.GetPercent(item.finish_distance,item.distance)}}" stroke-width="3" color="#566dd0" wx:else  />
+        <!-- #43b0d4 #f2c863 #ec6262 --> 
+      </view>
+    </view>
+  </block>
+</view>
+<home />

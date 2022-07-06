@@ -1,0 +1,544 @@
+// pages/activity/activity.js
+const util = require('../../utils/util.js')
+const option = require('../../utils/options.js')
+// let chartBar;
+// 获取应用实例
+const app = getApp()
+Page({
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    tabbar: {},
+    actyId: '',
+    rule_id1: '',
+    rule_id2: '',
+    sex:1,
+    score: 0,
+    energy: 0,
+    starTime: '',
+    endTime: '',
+    activityList: [],
+    totalChallenge: 0,
+    activityList2: [],
+    totalActy: 0,
+    page: 1,
+    page2: 1,
+    haveSuperActy: false,
+    echartShow: false,
+    echartShow2: false,
+    monthWeekCount: '',
+    ecBar: {
+      layzLoad: true,
+      disableTouch: true
+    }, 
+    ecPie0:{
+      layzLoad: true,
+      disableTouch: true
+    },
+    ecPie00:{
+      layzLoad: true,
+      disableTouch: true
+    },
+    //周数据
+    ecPie1:{
+      layzLoad: true,
+      disableTouch: true
+    },
+    ecPie2:{
+      layzLoad: true,
+      disableTouch: true
+    },
+    passDistance: '',
+    passMonth: '',
+    pasStartDate: '',
+    passEndDate: '',
+    passWeek: '',
+    passDistance2: '',
+    passMonth2: '',
+    pasStartDate2: '',
+    passEndDate2: '',
+    passWeek2: '',
+    monthTotal: '',
+    monthTotal2: '',
+    swiper: {
+      autoplay: false,
+      interval: 2000,
+      duration: 500,
+      current: 0,
+      circular: false,
+      qualifications: []
+    },
+    swiper2: {
+      autoplay: false,
+      interval: 2000,
+      duration: 500,
+      current: 0,
+      circular: false,
+      qualifications: []
+    }
+  },
+  //初始化用户信息
+  initInfor: function(id){
+    var that = this
+    var data = { 
+      userId : id
+    }
+    util.request('user/getsportinfo', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        var myData = res.data.data
+        that.setData({
+          headerImg: myData.headerImg,
+          userName: myData.userName,
+          nickName: myData.nickName,
+          sex: myData.sex,
+          level: myData.level,
+          score: myData.score,
+          energy: myData.energy,
+          duty: res.data.data.duty,
+          monthDistance: myData.monthDistance,
+          totalDistance: myData.totalDistance          
+        })
+        if(res.data.data.duty=='团长,管理员'||res.data.data.duty=='管理员,团长'){
+          that.setData({
+            duty : '管理员/团长',
+          })
+        }
+      }
+    })
+  },
+  checkPoint: function(){
+    wx.navigateTo({
+      url: '../checkpoint/checkpoint'
+    })
+  },
+  checkEnergy: function (){
+    wx.navigateTo({
+      url: '../energy/energy?id=' + this.data.userId,
+    })
+  },
+  editInfor: function(){
+    wx.navigateTo({
+      url: '../userinfor/userinfor',
+    })
+  },
+  //获取超级V挑战活动ID
+  getChallengeId:function(id){
+    var that = this
+    var data = {
+      user_id: id
+    }
+    console.log(data)
+    util.request('user/getUserJoinActy', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        that.setData({
+          actyId: res.data.data[`V挑战`],
+        })
+        if(that.data.actyId!=undefined){
+          that.initData()
+          that.initData2()
+          that.setData({
+            haveSuperActy: true
+          })
+        }else{
+          that.setData({
+            haveSuperActy: false
+          })
+        }
+      }
+    })
+  },
+  initData: function(){
+    var that = this
+    var data = {
+      acty_id: that.data.actyId,
+      acty_type: 1,
+      sex: that.data.sex
+    }
+    console.log(data)
+    util.request('acty/getActyRuleByType', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        that.setData({
+          rule_id1: res.data.data.id,
+          passWeek: res.data.data.week,
+        })
+        that.getRule1()
+      } else {
+        
+      }
+    })
+  },
+  initData2: function(){
+    var that = this
+    var data = {
+      acty_id: that.data.actyId,
+      acty_type: 2,
+      sex: that.data.sex
+    }
+    console.log(data)
+    util.request('acty/getActyRuleByType', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        that.setData({
+          rule_id2: res.data.data.id,
+          passWeek2: res.data.data.week
+        })
+        that.getRule2()
+      } else {
+        
+      }
+    })
+  },
+  getRule1: function(){
+    var that = this
+    var data={
+      acty_id: that.data.actyId,
+      rule_id: that.data.rule_id1,
+      user_id: parseInt(that.data.userId)
+    }
+    console.log(data)
+    util.request('user/getRuleResult', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res.data)      
+      if(res.data.success){
+        var list = 'swiper.qualifications'
+        that.setData({
+          passDistance: res.data.data.distance,
+          passMonth: res.data.data.month,
+          passEndDate: res.data.data.end_time.substring(0,7),
+          pasStartDate: res.data.data.start_time.substring(0,7),
+          monthTotal: res.data.data.month,
+          [list]: res.data.data.finish_month,
+          echartShow: true
+        })
+        // 计算month.week_temps 对象数字
+
+        // if(that.data.swiper!=null&&that.data.swiper.qualifications!=null){
+        //   var lengthArr = []
+        //   var  weekMap = {}
+        //   for(var key in that.data.swiper.qualifications){
+        //     if(that.data.swiper.qualifications[key].week_temps!=null){
+        //       let monthWeekCount=Object.values(that.data.swiper.qualifications[key].week_temps);
+        //       console.log(monthWeekCount)
+        //       weekMap[key]=[];
+        //       for(var i=0;i<monthWeekCount.length;i++){
+        //         var index = monthWeekCount[i].sport_times
+        //         // index.indx = i
+        //         lengthArr.push(index)
+        //         weekMap[key].push(index)
+        //       }
+        //       that.setData({
+        //         monthWeekCount: lengthArr
+        //       })
+        //       console.log(lengthArr)
+        //     }
+        //  }
+        //  console.log(weekMap)
+        //  var data = 'swiper.qualifications'
+        //  that.setData({
+
+        //  })
+        // }
+        console.log(that.data.swiper.qualifications)
+      } else {
+        
+      }
+    })
+  },
+  getRule2: function(){
+    var that = this
+    var data={
+      acty_id: that.data.actyId,
+      rule_id: that.data.rule_id2,
+      user_id: parseInt(that.data.userId)
+    }
+    console.log(data)
+    util.request('user/getRuleResult', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res.data)      
+      if(res.data.success){
+        var list = 'swiper2.qualifications'
+        that.setData({
+          passDistance2: res.data.data.distance,
+          passMonth2: res.data.data.month,
+          passEndDate2: res.data.data.end_time.substring(0,7),
+          pasStartDate2: res.data.data.start_time.substring(0,7),
+          monthTotal2: res.data.data.month,
+          [list]: res.data.data.finish_month,
+          echartShow2: true
+        })
+        console.log(that.data.swiper2)
+      } else {
+       
+      }
+    })
+  },
+  prev: function(){
+    var swiper = this.data.swiper;
+    var current = swiper.current;
+    var arr = Object.keys(swiper.qualifications)
+    console.log(arr)
+    swiper.current = current > 0 ? current - 1 : arr.length - 1;
+    this.setData({
+      swiper: swiper
+    })
+  },
+  next: function(){
+    var swiper = this.data.swiper;
+    var current = swiper.current;
+    var arr = Object.keys(swiper.qualifications)
+    console.log(arr)
+    swiper.current = current < (arr.length - 1) ? current + 1 : 0;
+    this.setData({
+      swiper: swiper
+    })
+  },
+  prev2: function(){
+    var swiper = this.data.swiper2;
+    var current = swiper.current;
+    var arr = Object.keys(swiper.qualifications)
+    console.log(arr)
+    swiper.current = current > 0 ? current - 1 : arr.length - 1;
+    this.setData({
+      swiper2: swiper
+    })
+  },
+  next2: function(){
+    var swiper = this.data.swiper2;
+    var current = swiper.current;
+    var arr = Object.keys(swiper.qualifications)
+    console.log(arr)
+    swiper.current = current < (arr.length - 1) ? current + 1 : 0;
+    this.setData({
+      swiper2: swiper
+    })
+  },
+  //挑战
+  initActy: function(id){
+    var that = this
+    var data = {
+      userId: id,
+      type: '挑战',
+      page: that.data.page++
+    }
+    console.log(data)
+    util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res.data)      
+      if(res.data.success){
+        var allData = res.data.data
+        for(var i=0; i<allData.length;i++){
+          var createTime = allData[i].start_timestr.substring(0, 16)
+          var endTime = allData[i].end_timestr.substring(11, 16)
+          allData[i].start_timestr = createTime 
+          allData[i].end_timestr = endTime 
+        }
+        that.setData({
+          activityList: allData,
+          start_timestr: createTime,
+          end_timestr: endTime,
+          totalChallenge: res.data.total
+        })
+      }else{
+        that.setData({
+          activityList: []
+        })
+        // wx.showToast({
+        //   title: res.data.error,
+        //   icon: 'none',
+        //   duration: 1500
+        // })  
+      }
+    })
+  },
+  //团跑
+  initActy2: function(id){
+    var that = this
+    var data = {
+      userId: id,
+      type: '团跑',
+      page: that.data.page2++
+    }
+    console.log(data)
+    util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res.data)      
+      if(res.data.success){
+        var allData = res.data.data
+        for(var i=0; i<allData.length;i++){
+          var createTime = allData[i].start_timestr.substring(0, 16)
+          var endTime = allData[i].end_timestr.substring(11, 16)
+          allData[i].start_timestr = createTime 
+          allData[i].end_timestr = endTime 
+        } 
+        that.setData({
+          activityList2: allData,
+          start_timestr: createTime,
+          end_timestr: endTime,
+          totalActy: res.data.total
+        })
+      }else{
+        that.setData({
+          activityList2: []
+        })
+        // wx.showToast({
+        //   title: res.data.error,
+        //   icon: 'none',
+        //   duration: 1500
+        // })  
+      }
+    })
+  },
+   //初始化周跑数据
+  initBarData: function(e){
+    var that = this
+    var weekArr = []
+    var data = {
+      user_id: that.data.userId
+    }
+    console.log(data)
+    util.request('user/getWeekRuleList', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res.data)
+      if(res.data.success){
+        that.setData({
+          starTime: res.data.data[0].sport_day.substring(5,10),
+          endTime: res.data.data[6].sport_day.substring(5,10),
+        })
+        var allData = res.data.data
+        var max =0;
+        for(var i=0; i<allData.length;i++){
+          var distance = allData[i].sport_total
+          console.log(distance)
+          weekArr.push(distance)
+        }
+        max = Math.max.apply(null, weekArr)
+        if(Math.floor(max/5)!=max/5){
+          max= Math.ceil(max/5)*5
+        }
+        var weekObj = { ...weekArr }
+        //load bar 
+        option.initBar(e.detail.canvas, e.detail.width, e.detail.height,e.detail.dpr,weekObj,max)
+      }
+    })
+  },
+  //初始化*资格/*挑战数据
+  initPie0: function(e){
+    var list = e.target.dataset.list
+    var s = 0;
+    for (var i=list.length-1; i>=0; i--) {
+      s += list[i];
+    }
+    option.initCirle0(e.detail.canvas, e.detail.width, e.detail.height,e.detail.dpr,list,this.data.monthTotal,s)
+  },
+  initPie00: function(e){
+    var list = e.target.dataset.list
+    var s = 0;
+    for (var i=list.length-1; i>=0; i--) {
+      s += list[i];
+    }
+    option.initCirle0(e.detail.canvas, e.detail.width, e.detail.height,e.detail.dpr,list,this.data.monthTotal2,s)
+  },
+  initPie1: function(e){
+    var times = e.target.dataset.times
+    option.initCirle(e.detail.canvas, e.detail.width, e.detail.height,e.detail.dpr,times,this.data.passWeek)
+  },
+  initPie2: function(e){
+    var times = e.target.dataset.times
+    option.initCirle(e.detail.canvas, e.detail.width, e.detail.height,e.detail.dpr,times,this.data.passWeek2)
+  },
+  toDet: function(e){
+    var id = e.currentTarget.dataset.id
+    var type = e.currentTarget.dataset.type
+    if(type == '挑战'){
+      wx.navigateTo({
+        url: '../challengedetail/challengedetail?id='+id + '&userid=' + this.data.userId
+      })
+    } else {
+      wx.navigateTo({
+        url: '../activitydetail/activitydetail?id='+id + '&userid=' + this.data.userId
+      })
+    }
+  },
+  loadMore: function(){
+    var that = this
+    var data = {
+      userId: that.data.userId,
+      type: '挑战',
+      page: that.data.page++
+    }
+    console.log(data)
+    // wx.showLoading({
+    //   title: '加载中',
+    //   icon: 'loading'
+    // })
+    util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res.data)      
+      if(res.data.success){
+        var allData = res.data.data
+        var content = that.data.activityList.concat(allData)
+        for(var i=0; i<allData.length;i++){
+          var createTime = allData[i].start_timestr.substring(0, 16)
+          var endTime = allData[i].end_timestr.substring(11, 16)
+          allData[i].start_timestr = createTime 
+          allData[i].end_timestr = endTime 
+        }
+        that.setData({
+          activityList: content,
+          start_timestr: createTime,
+          end_timestr: endTime
+        })
+        // wx.hideLoading({
+        //   success: (res) => {},
+        // })
+    }else{
+      
+    }
+    })
+  },
+  loadMore2: function(){
+    var that = this
+    var data = {
+      userId: that.data.userId,
+      type: '团跑',
+      page: that.data.page2++
+    }
+    console.log(data)
+    // wx.showLoading({
+    //   title: '加载中',
+    //   icon: 'loading'
+    // })
+    util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res.data)      
+      if(res.data.success){
+        var allData = res.data.data
+        var content = that.data.activityList2.concat(allData)
+        for(var i=0; i<allData.length;i++){
+          var createTime = allData[i].start_timestr.substring(0, 16)
+          var endTime = allData[i].end_timestr.substring(11, 16)
+          allData[i].start_timestr = createTime 
+          allData[i].end_timestr = endTime 
+        }
+        that.setData({
+          activityList2: content,
+          start_timestr: createTime,
+          end_timestr: endTime
+        })
+      }else{
+      
+      }
+    })
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function () {
+    app.editTabbar();
+    var userId = app.globalData.userId
+    this.initInfor(userId)
+    this.initActy(userId)
+    this.initActy2(userId)
+    this.getChallengeId(userId)
+    this.setData({
+      userId: userId //自己的id
+    })
+  }
+})

@@ -1,0 +1,300 @@
+const util = require('../../utils/util.js')
+// index.js
+// 获取应用实例
+const app = getApp()
+Page({
+  data: {
+    imgUrls: [],
+    indicatorDots: true,
+    vertical: false,
+    autoplay: true,
+    interval: 2000,
+    duration: 500,
+    userId: 0,
+    avatarUrl: "../../images/default.png",//用户头像
+    nickName: "点击头像登录",//用户昵称
+    score: 0,
+    duty: "",
+    level: "",
+    number: 0,
+    serialDay: 0,
+    energy: 0,
+    hasClockOn: '',
+    pageId: 0,
+    actyId: 0,
+    imgheight: '',
+    setHeight:'',
+    title: ''
+  },
+  checkEnergy: function (){
+    wx.navigateTo({
+      url: '../energy/energy?id=' + this.data.userId,
+    })
+  },
+  toActy: function (){
+    wx.navigateTo({
+      url: '../activitydetail/activitydetail?id=' + this.data.actyId,
+    })
+  },
+  toChallenge: function (){
+    wx.navigateTo({
+      url: '../challenge/challenge'
+    })
+  },
+  toHistory: function (){
+    wx.navigateTo({
+      url: '../history/history'
+    })
+  },
+  toNews: function (){
+    wx.navigateTo({
+      url: '../newsdetail/newsdetail?id=' + this.data.pageId,
+    })
+    wx.setNavigationBarTitle({
+      title: this.data.title
+    })
+  },
+  toManage: function (){
+    wx.navigateTo({
+      url: '../manage/manage',
+    })
+  },
+  clockIn: function (){
+    wx.navigateTo({
+      url: '../clockdaily/clockdaily',
+    })
+  },
+  toRecord: function (){
+    wx.navigateTo({
+      url: '../record/record',
+    })
+  },
+  noPage: function (){
+    wx.showToast({
+      title: '「暂未开放」',
+      icon: 'none',
+      duration: 1500
+    })
+  },
+  goheight:function (e) {
+    var width = wx.getSystemInfoSync().windowWidth
+    //获取可使用窗口宽度
+    var imgheight = e.detail.height
+    //获取图片实际高度
+    var imgwidth = e.detail.width
+    //获取图片实际宽度
+    var height = width * imgheight / imgwidth +"px"
+    //计算等比swiper高度
+    this.setData({
+      height: height
+    })
+  },
+  onLoad() {
+    // 开启转发功能
+    wx.showShareMenu({
+      withShareTicket: true
+    })
+    this.initUser()
+    
+    var that = this
+    var userId = app.globalData.userId
+    var data = {
+      userId : userId
+    }
+    util.request('user/getserialday', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      that.setData({
+        serialDay: res.data.data.serialDay,
+        // totalDay: res.data.data.actyDay,
+        hasClockOn: res.data.data.hasClockOn
+      })
+    })
+    wx.getSystemInfo({
+      success: function(res) {
+        that.setData({
+          screenHeight: res.windowHeight,
+          screenWidth: res.windowWidth,
+          setHeight: res.windowHeight*.36
+        })
+        console.log(that.data.screenHeight)
+      }
+    });
+  },
+  imageLoad: function (e) {
+    var $width=e.detail.width,  //获取图片真实宽度
+      $height=e.detail.height,
+      ratio=$width/$height;  //图片的真实宽高比例
+      console.log(ratio)
+    var viewWidth=this.data.screenHeight*.48,      //设置图片显示宽度，
+      viewHeight=viewWidth*.75;  //计算的高度值
+    this.setData({
+      imgwidth:viewWidth,
+      imgheight:viewHeight
+    })
+
+  },
+  onShow: function () {
+    this.getPoint()
+    this.getNews()
+    this.getChallenge()
+  },
+  initUser : function(){
+    var that = this;
+    var userId = app.globalData.userId
+    var openId = app.globalData.openId
+    if(userId > 0){
+      //已登录
+      that.setData({
+        userId:userId
+      })
+      var data = { id : userId, openId : openId }
+      console.log(data)
+      util.request('/user/getuserinfo', 'POST', data, '数据加载中 ...', (res)=>{
+        console.log(res)
+        if(res.data.success){
+          that.setData({
+            avatarUrl : res.data.data.header_url,
+            nickName : res.data.data.nick_name,
+            score : res.data.data.score,
+            duty : res.data.data.duty,
+            level : res.data.data.level,
+            userId:res.data.data.id
+          })
+        }else{
+          app.globalData.userId = 0;
+          that.setData({
+            userId : 0
+          })
+          wx.clearStorageSync();
+        }
+      })
+    } else {
+      app.globalData.userId = 0;
+      that.setData({
+        userId : 0
+      })
+      wx.clearStorageSync();
+    }
+  },
+  getPoint: function (){
+    var userId = app.globalData.userId
+    var data = { 
+      id : userId
+    }
+    util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
+      var that = this
+      console.log(res)
+      if(res.data.success){
+        if(res.data.data == ''){
+          that.setData({
+            score: 0
+          })
+        } else {
+          that.setData({
+            score: res.data.data.score,
+            energy: res.data.data.energy
+          })
+        }
+      }
+    })
+  },
+  getNews: function() {
+    var that = this
+    var data = { }
+    util.request('news/getlastnews', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        that.setData({
+          title:res.data.data.title,
+          img_url:res.data.data.img_url,
+          pageId: res.data.data.id
+        })
+        
+      }
+    })
+    var data = { 
+      type: '团跑'
+    }
+    util.request('acty/getlastacty', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        that.setData({
+          acty_name:res.data.data.acty_name,
+          acty_img:res.data.data.acty_img,
+          actyId: res.data.data.id
+        })
+      }
+    })
+  },
+  getChallenge:function() {
+    var that = this
+    // var data = { 
+    //   page: 1,
+    //   type: '挑战'
+    // }
+    var data = {
+
+    }
+    util.request('acty/rankListActy', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        that.setData({
+          challenge: res.data.data
+        })
+      }
+    })
+  },
+  openLogin : function(){
+    var userId = app.globalData.userId
+    if(userId < 1 || userId == undefined){
+    util.showLogin((res)=>{
+      console.log(res)
+      var data = {
+        code: res.code,
+        encryptedData: "",
+        iv: ""
+      }
+      //取用户的openid
+      util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes)=>{
+        console.log(loginRes)
+        var regData = {
+          openId: loginRes.data.data.openid,
+          imgUrl: res.userInfo.avatarUrl,
+          nickName: res.userInfo.nickName,
+          sex: res.userInfo.gender,
+          unionid: loginRes.data.data.unionid
+        }
+        util.request('user/wxregister', 'POST', regData, '', (regRes)=>{
+          app.globalData.userId = regRes.data.UserId
+          app.globalData.openId = regData.openId
+          wx.setStorageSync('userId', regRes.data.UserId)
+          wx.setStorageSync('openId', regData.openId)
+          wx.reLaunch({
+            url: '../index/index',
+          })
+        })
+      })
+    })
+    // wx.showToast({
+    //   title: 'error',
+    //   icon: 'none',
+    //   duration: 1500
+    // })  
+  }
+},
+checkPoint() {
+  wx.navigateTo({
+    url: '../checkpoint/checkpoint'
+  })
+},
+onShareAppMessage: function (res) {
+  if (res.from === 'button') {
+    // 来自页面内转发按钮
+    console.log(res.target)
+  }
+  return {
+      title: '你的好友' + this.data.nickName + '邀请你加入微网跑团～',
+      // path: '/pages/index/index'
+  }
+}
+})

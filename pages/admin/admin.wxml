@@ -1,0 +1,55 @@
+<!--pages/admin/admin.wxml-->
+<form bindsubmit="submit">
+    <view class="form-con clockin">
+        <view class="content-wrap">
+            <view class="con-tit">所有配置项</view>
+            <view class="con-all bg-white">
+                <view class="vw-wrap">
+                    <image src="../../images/default.svg" class="icons"></image>
+                    <view class="form-item">
+                        <label for="" class="title">LOGO</label>
+                        <view class="upload-logo" bindtap="uploadAction" wx:if="{{logoSrc==''}}">上传</view>
+                        <view class="logo" bindtap="uploadAction" wx:else>
+                            <image src="{{logoSrc}}" mode="widthFix"></image>
+                        </view>
+                    </view>
+                </view>
+                <view class="vw-wrap">
+                    <image src="../../images/default.svg" class="icons"></image>
+                    <view class="form-item">
+                        <label for="" class="title">团跑积分</label>
+                        <input type="digit" focus="{{focus}}" value="{{group_run}}" name="group_run" class="ipt ellipsis" placeholder="请输入团跑积分"></input>
+                    </view>
+                </view>
+                <view class="vw-wrap">
+                    <image src="../../images/default.svg" class="icons"></image>
+                    <view class="form-item">
+                        <label for="" class="title">日常打卡积分</label>
+                        <input type="digit" focus="{{focus}}" value="{{daily_run}}" name="daily_run" class="ipt ellipsis" placeholder="请输入日常打卡积分"></input>
+                    </view>
+                </view>
+                <view class="vw-wrap">
+                    <image src="../../images/default.svg" class="icons"></image>
+                    <view class="form-item">
+                        <label for="" class="title">抽奖规则</label>
+                        <radio-group class="sex" name="rules" style="width: 60%;">
+                            <label for="" style="float: right;">
+                                <view style="display:inline-block;">
+                                    <radio value="{{luck_rule}}" checked="{{luck_rule == 2 ? 'true' : ''}}" bindtap='radiocon2' />随量
+                                </view>
+                            </label>
+                            <label for="" style="float: right;">
+                                <view style="display:inline-block;">
+                                    <radio value="{{luck_rule}}" checked="{{luck_rule == 1 ? 'true' : ''}}" bindtap='radiocon1' />随机
+                                </view>
+                            </label>
+                        </radio-group>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class="full-btn">
+        <button class="btn btnTwo" form-type="submit" disabled="{{disable}}">保存</button>
+    </view>
+</form>

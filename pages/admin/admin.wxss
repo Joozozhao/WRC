@@ -1,0 +1,22 @@
+/* pages/admin/admin.wxss */
+@import "../userinfor/userinfor.wxss";
+.upload-logo{
+    width: 150rpx;
+    line-height: 60rpx;
+    height: 60rpx;
+    background: #f1f1f1;
+    font-size: 26rpx;
+    color: #555454;
+    text-align: center;
+    float: right;
+    margin-left: auto;
+    border-radius: 10rpx;
+}
+.logo{
+    margin-left: auto;
+    border: 1px solid #e1e1e1;
+}
+.logo image{
+    width: 80rpx;
+    height: 80rpx;
+}

@@ -1,0 +1,112 @@
+<!--index.wxml-->
+<view class="top-part">
+  <image src="../../images/wrc-logo-green.png" class="logo"></image>
+</view>
+<scroll-view scroll-y style="height:60%;margin-top:198rpx;">
+  <view class="scroll-view-item" style="margin-bottom:150rpx;">
+    <view class="vw-wrap bg-green">
+      <view class="user-infor" bindtap="openLogin">
+        <view class="user-pic {{level == 'VIP'?'add-bd':''}}" wx:if="{{level == 'VIP'}}"><image src="{{avatarUrl}}" mode="widthFix" class="pic"></image><image src="../../images/vip_1.svg" mode="cover" class="vip"></image></view>
+        <view class="user-pic {{level == '普通'?'add-bd1':''}}" wx:if="{{level == '普通'}}"><image src="{{avatarUrl}}" mode="widthFix" class="pic"></image><image src="../../images/normal.svg" mode="cover" class="vip"></image></view>
+        <view class="user-pic {{level == '非会员'?'add-bd2':''}}" wx:if="{{level == '非会员'}}"><image src="{{avatarUrl}}" mode="widthFix" class="pic"></image><image src="../../images/none.svg" mode="cover" class="vip"></image></view>
+        <view class="user-pic" wx:if="{{level == ''}}"><image src="{{avatarUrl}}" mode="widthFix" class="pic"></image></view>
+        <view style="width:50%">
+          <view class="user-name">{{nickName}}<text class="tag" wx:if="{{duty&&duty!=='团友'}}">{{duty}}</text><text class="tag" wx:if="{{level}}">{{level}}</text></view>
+          <navigator url="../userinfor/userinfor" hover-class="none"><view class="infor"><image src="../../images/edit.png"></image> 完善个人信息</view></navigator>
+        </view>
+      </view>
+      <view class="box-part-wrap index-part">
+        <view class="box-part">
+          <view class="my-point" bindtap="checkPoint">
+            <view>积分</view>
+            <view class="my-points tal">
+              <view class="ico"><image src="../../images/score.svg"></image></view>
+              <view>{{score}}</view>
+            </view>
+          </view>
+          <view class="my-point" bindtap="checkEnergy">
+            <view>能量</view>
+            <view class="my-points tal">
+              <view class="ico"><image src="../../images/flower.svg"></image></view>
+              <view class="num">*{{energy}}</view>
+            </view>
+          </view>
+          <!-- <view class="check-points" bindtap="checkPoint">积分查询</view> -->
+        </view>
+      </view>
+    </view>
+    <view class="swiper">
+      <swiper indicator-dots="{{indicatorDots}}"
+        autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" circular="true">
+        <block wx:for="{{challenge}}" wx:key="index">
+          <swiper-item>
+          <navigator hover-class="none" url="../challengedetail/challengedetail?id={{item.id}}">
+            <image src="{{item.acty_img}}" mode="widthFix" style="width:100%"/>
+          </navigator>
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+    <view class="vw-wrap">
+      <view class="daily-record">
+        <view class="record">
+          <view>运动打卡 <text class="days">已连续打卡{{serialDay}}天</text></view>
+          <view class="more">每日运动获取更多积分</view>
+        </view>
+        <view class="record-btn" bindtap="clockIn" wx:if="{{hasClockOn == 0}}">去打卡</view>
+        <view class="record-btn" bindtap="clockIn" wx:else>今日已打卡 {{clockTimes}} 次</view>
+      </view>
+    </view>
+    <view class="vw-wrap">
+      <view class="news-con">
+        <view class="con-item" bindtap="toActy" wx:if="{{acty_name !== ''}}">
+          <image src="{{acty_img}}" mode="aspectFill"></image>
+          <view class="bg-wrap ellipsis">{{acty_name}}</view>
+        </view>
+        <view class="con-item" bindtap="toNews">
+          <image src="{{img_url}}" mode="aspectFill"></image>
+          <view class="bg-wrap ellipsis">{{title}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="grid-menu">
+      <view class="flex-wrap">
+        <view class="flex-item demo-text-1">
+          <navigator url="/pages/activity/activity" hover-class="none">
+          <view class="icon-circle"><image src="../../images/index-icon1.svg" mode="widthFix"></image></view>
+          <text>团活动</text>
+          </navigator>
+        </view>
+        <view class="flex-item demo-text-3" bindtap="toRecord">
+          <view class="icon-circle"><image src="../../images/index-icon3.svg" mode="widthFix"></image></view>
+          <text>打卡记录</text>
+        </view>
+        <view class="flex-item demo-text-6">
+          <navigator url="/pages/news/news" hover-class="none">
+            <view class="icon-circle"><image src="../../images/index-icon6.svg" mode="widthFix"></image></view>
+            <text>关于跑团</text>
+          </navigator>
+        </view>
+        <view class="flex-item demo-text-4" bindtap="toChallenge">
+          <view class="icon-circle"><image src="../../images/index-icon4.svg" mode="widthFix"></image></view>
+          <text>挑战活动</text>
+        </view>
+        <view class="flex-item demo-text-5">
+          <navigator url="/pages/prize/prize" hover-class="none">
+            <view class="icon-circle"><image src="../../images/index-icon5.svg" mode="widthFix"></image></view>
+            <text>兑换好礼</text>
+          </navigator>
+        </view>
+        <view class="flex-item demo-text-2" bindtap="toHistory">
+          <view class="icon-circle"><image src="../../images/index-icon2.svg" mode="widthFix"></image></view>
+          <text>我的奖品</text>
+        </view>
+        <view class="flex-item demo-text-2" bindtap="toManage" wx:if="{{duty == '团长'}}">
+          <view class="icon-circle"><image src="../../images/index-icon7.svg" mode="widthFix"></image></view>
+          <text>管理菜单</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</scroll-view>
+<view class="modal-login" bindtap="openLogin" wx:if="{{userId <= 0||userId == undefined}}"></view>

@@ -1,0 +1,41 @@
+<!--pages/challenge/challenge.wxml-->
+<block wx:for="{{challengeList}}" wx:key='index'>
+  <view class="challenge" bindtap="toDetail" data-id="{{item.acty_id}}" data-name="{{item.acty_name}}">
+    <view class="challenge-img">
+      <image src="{{item.acty_img}}" mode="widthFix" class="challenge-cover"></image>
+      <view wx:if="{{item.days < 0}}">
+        <view class="challenge-wrap"></view>
+        <image src="/images/2-1.png" mode="widthFix" class="challenge-state" wx:if="{{item.rate == '100%'&&item.join_time !== '未参加该挑战!'}}"></image>
+        <image src="../../images/3-1.png" mode="widthFix" class="challenge-state" wx:if="{{item.join_time == '未参加该挑战!'}}"></image>
+        <image src="/images/1-1.png" mode="widthFix" class="challenge-state" wx:if="{{item.rate !== '100%'&&item.join_time !== '未参加该挑战!'}}"></image>
+      </view>
+    </view>
+    <view class="acty-infors" wx:if="{{item.days >= 0}}">
+      <view><text class="acty-state">火热进行中</text> 剩余{{item.days+1}}天</view>
+      <view class="flex-con"><text class="acty-name">{{item.acty_name}}</text><text class="num">{{item.joins}}人参与</text></view>
+    </view>
+    <view class="acty-infors" wx:else>
+      <view><text class="acty-state">挑战结束</text></view>
+      <view class="flex-con"><text class="acty-name">{{item.acty_name}}</text><text class="num">开始日期：{{item.start_time}}</text></view>
+    </view>
+  </view>
+</block>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<home />

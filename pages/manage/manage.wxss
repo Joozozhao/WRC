@@ -1,0 +1,16 @@
+/* pages/manage/manage.wxss */
+.meun-item{
+  display: flex;
+  border-bottom: 1px solid #e1e1e1;
+  font-size: 32rpx;
+  line-height: 100rpx;
+  position: relative;
+}
+.meun-item .add-arrow{
+  width: 30rpx;
+  height: 30rpx;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -15rpx;
+}

@@ -1,0 +1,2 @@
+/* pages/editprize/editprize.wxss */
+@import "../uploadprize/uploadprize.wxss"

@@ -1,0 +1,148 @@
+<!--pages/activitydetail/activitydetail.wxml-->
+<!-- <block wx:for="{{activityList}}" wx:key="index" wx:for-item="item"> -->
+  <view class="activity bg-blcak">
+    <view class="cover-img">
+      <image src="{{acty_img}}" mode="aspectFill"></image>
+      <view class="vw-cover" wx:if="{{state == '已结束'}}">
+        <view class="state">{{state}}</view>
+      </view>
+    </view>
+    <view class="activity-infor">
+      <view class="title">{{acty_name}}</view>
+      <view><text class="tag">{{acty_type}}</text><text class="tag org">{{region}}</text></view>
+      <view class="time"><image src="/images/time-white.png"></image>{{start_time}}-{{end_time}}</view>
+      <view class="address"><image src="/images/place-white.png"></image>{{address}}</view>
+    </view>
+  </view>
+<!-- </block> -->
+<view class="index-part">
+  <view class="data-wrap" style="">
+    <view class="all-data">
+      <view class="con-wrap">
+        <view class="data-con">
+          <view class="data">
+            <view><text class="num">5</text>公里</view>
+            <view>配速7′30″</view>
+            <view>入门组</view>
+          </view>
+          <view class="data add-color">
+            <view><text class="num big">{{distance}}</text>公里</view>
+            <view>配速6′30″</view>
+            <view>标准组</view>
+          </view>
+          <view class="data">
+            <view><text class="num">10</text>公里</view>
+            <view>配速6′30″</view>
+            <view>进阶组</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- <view class="nor-title">已报名团员</view> -->
+    <view class="infor-con">
+      <view class="list">
+        <block wx:for="{{avastars}}" wx:key="index" wx:for-item="item" wx:if="{{index<8}}">
+          <view class="item"><image src="{{item.header_url}}"></image></view>
+        </block>
+      </view>
+      <view class="total" bindtap="toList">
+        <view>{{actyIn}}人 <text class="green">已报名</text></view>
+        <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+      </view>
+    </view>
+    <view class="swiper" wx:if="{{actyImg.length>0}}">
+      <swiper indicator-dots="{{indicatorDots}}"
+        autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" style="height:{{height}}" circular="true">
+        <block wx:for="{{actyImg}}" wx:key="index">
+          <swiper-item data-id="{{item.id}}" data-url="{{item.img_url}}" bindtap="preview">
+            <image src="{{item.img_url}}" mode="widthFix" style="width:100%;height:auto;" bindload='goheight'/>
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+    <view class="infor-con" wx:if="{{acty_level==1&&actyMember.length>0}}" style="padding-top:0;">
+        <view class="list">
+          <block wx:for="{{actyMember}}" wx:key="index" wx:for-item="item" wx:if="{{index<8}}">
+            <view class="item"><image src="{{item.header_url}}"></image></view>
+          </block>
+        </view>
+        <view class="total" bindtap="toList2">
+          <view>{{actyMember.length}}人<text class="green"> 已聚跑</text></view>
+          <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+        </view>
+      </view>
+      <view class="lottery-con" wx:if="{{ltyList}}">
+    <view class="nor-title">本期抽奖</view>
+    <view class="lottery-list">
+      <block wx:for="{{ltyList}}" wx:key="index">
+        <view class="con-item" data-id="{{item.id}}" bindtap="toLty">
+          <image src="{{item.goods_pic}}" mode="widthFix"></image>
+          <view class="tag tag1">{{item.address}}</view>
+          <view class="tag tag2">*{{item.goods_num}}</view>
+        </view>
+      </block>
+    </view>
+  </view>
+  <wxs src="../../utils/toDecimal2.wxs" module="module1" />
+    <view class="all-data" bindtap="toactyData">
+      <view class="nor-title" style="position: relative;">活动数据<view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view></view>
+      <view class="con-wrap2">
+      <view class="data-con">
+        <view class="data">
+          <view class="num">{{allNum}}</view>
+          <view>总运动人数</view>
+        </view>
+        <view class="data">
+          <view class="num">{{module1.toDecimal2(allDistance)}}</view>
+          <view>总运动(公里)</view>
+        </view>
+      </view>
+      </view>
+    </view>
+    
+    <!-- <view class="nor-title">活动详情</view>
+    <view class="act-detail">
+      <view>报名截止时间：{{start_time}}</view>
+      <view>总公里数：{{distance}}公里</view>
+    </view> -->
+  </view>
+</view>
+<view class="data-wrap" style="margin-bottom: 150rpx;">
+  <view wx:if="{{dataList.length>0}}">
+    <!-- <view class="nor-title">{{dataList.length}}人完成跑步打卡</view> -->
+    <block wx:for="{{dataList}}" wx:key="index">
+      <view class="member">
+        <view class="user-infor">
+          <view class="user-pic {{item.level == 'VIP'?'add-bd':''}}" wx:if="{{item.level == 'VIP'}}">
+            <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+            <image src="../../images/vip_1.svg" mode="cover" class="vip"></image>
+          </view>
+          <view class="user-pic {{item.level == '普通'?'add-bd1':''}}" wx:if="{{item.level == '普通'}}">
+            <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+            <image src="../../images/normal.svg" mode="cover" class="vip"></image>
+          </view>
+          <view class="user-pic {{item.level == '非会员'?'add-bd2':''}}" wx:if="{{item.level == '非会员'}}">
+            <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+            <image src="../../images/none.svg" mode="cover" class="vip"></image>
+          </view>
+          <view class="other-infor">
+            <view class="infor">
+              <view class="nick-name" wx:if="{{item.name==''}}">{{item.user_name}}</view>
+              <view class="nick-name" wx:else>{{item.name}}</view>
+              <view class="sex" wx:if="{{item.sex == 1}}"><image src="../../images/man.svg"></image></view>
+              <view class="sex" wx:if="{{item.sex == 2}}"><image src="../../images/woman.svg"></image></view>
+            </view>
+            <view class="speed">平均配速 {{item.speed}}</view>
+          </view>
+        </view>
+        <view class="distance">{{module1.toDecimal2(item.distance)}} 公里</view>
+      </view>
+    </block>
+  </view>
+</view>
+<view class="btn-group" wx:if="{{state!=='已结束'}}">
+  <button class="btn red" style="opacity:{{clockOpacity}}" bindtap="clockIn" wx:if="{{acty_level==0}}">{{clocked}}</button>
+  <button class="btn red" style="opacity:{{clockOpacity}}" bindtap="clockIn" wx:if="{{showBtn}}">{{clocked}}</button>
+  <button class="btn green {{opacity}}" style="opacity:{{signOpacity}}" bindtap="signIn">{{signed}}</button>
+</view>
+<view class="modal-login" bindtap="openLogin" wx:if="{{userId <= 0||userId == undefined}}"></view>

@@ -1,0 +1,38 @@
+<!--pages/record/record.wxml-->
+<!-- <calendar  calendar-style="calendar"  header-style="calendar-header"  board-style="calendar-board" days-color="{{dayStyle}}" weeks-type="cn" /> -->
+<calendar spot='{{spot}}' spot2='{{spot2}}' />
+<!-- 颜色说明 -->
+<view class="bg-white color-tip">
+  <view class="tips" wx:if="{{spot}}"><view class="spot"></view>蓝色为日常打卡</view>
+  <view class="tips" wx:if="{{spot2}}"><view class="spot spot2"></view>粉色为团跑打卡</view>
+</view>
+<block wx:for="{{recordList}}" wx:key="index" wx:for-item="item">
+  <view class="activity">
+    <view class="cover-img">
+      <image src="{{item.sport_img}}" mode="aspectFill"></image>
+    </view>
+    <view class="activity-infor">
+      <view class="title" wx:if="{{item.acty_id == 0}}">每日打卡</view>
+      <view class="title" wx:else>团活动打卡</view>
+      <view>距离：<text class="distance">{{item.distance}}</text>公里</view>
+      <view>配速：{{item.speed}}</view>
+      <view>时间：{{item.create_time_str}}</view>
+    </view>
+    <view class="state-bg" wx:if="{{item.state == 1}}">
+      <view class="pass">你收到点赞了<image src="/images/pass.svg"></image></view>
+    </view>
+    <view class="state-bg bg2" wx:if="{{item.state == 2}}">
+      <view class="fail">已驳回 {{item.remark}}</view>
+    </view>
+    <view class="acty-tag" wx:if="{{item.acty_id > 0}}">
+      <image src="../../images/green-tag.svg"></image>
+      <view class="title">团活动</view>
+    </view>
+    <view class="act-btn" wx:if="{{item.state == 2}}"><text class="btn edit" data-id="{{item.id}}" bindtap="delCon">删除</text></view>
+  </view>
+  
+</block>
+<view class="noHistory {{noHistory?'show':'hide'}}">
+  <view class="main">暂无任何打卡记录</view>
+</view>
+<home />

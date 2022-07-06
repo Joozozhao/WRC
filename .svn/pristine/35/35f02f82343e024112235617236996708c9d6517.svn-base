@@ -1,0 +1,60 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/newscon/newscon",
+    "pages/newsadd/newsadd",
+    "pages/editnews/editnews",
+    "pages/orderlist/orderlist",
+    "pages/manage/manage",
+    "pages/userlist/userlist",
+    "pages/recordlist/recordlist",
+    "pages/lotterydetail/lotterydetail",
+    "pages/creat/creat",
+    "pages/creatchallenge/creatchallenge",
+    "pages/prizelist/prizelist",
+    "pages/lottery/lottery",
+    "pages/activitylist/activitylist",
+    "pages/mydata/mydata",
+    "pages/record/record",
+    
+    "pages/challenge/challenge",
+    "pages/challengedetail/challengedetail",
+    "pages/actyin/actyin",
+    "pages/prize/prize",
+    "pages/energy/energy",
+    "pages/activity/activity",
+    "pages/clockdaily/clockdaily",
+    "pages/userinfor/userinfor",
+    "pages/checkpoint/checkpoint",
+    "pages/activitydetail/activitydetail",
+    "pages/editactivity/editactivity",
+    "pages/activitydata/activitydata",
+    "pages/member/member",
+    "pages/clockin/clockin",
+    "pages/signin/signin",
+    "pages/news/news",
+    "pages/newsdetail/newsdetail",
+    "pages/history/history",
+    "pages/orderdetail/orderdetail",
+    "pages/prizedetails/prizedetails",
+    "pages/confirmorder/confirmorder",
+    "pages/address/address",
+    "pages/newaddress/newaddress",
+    "pages/editaddress/editaddress"
+  ],
+  "window":{
+    "navigationStyle": "custom"
+  },
+  "usingComponents": {
+    "home": "/components/home/index",
+    "time-picker": "/components/timePicker/timePicker"
+  },
+  "plugins": {
+    "calendar": {
+        "version": "1.1.3",
+        "provider": "wx92c68dae5a8bb046"
+    }
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

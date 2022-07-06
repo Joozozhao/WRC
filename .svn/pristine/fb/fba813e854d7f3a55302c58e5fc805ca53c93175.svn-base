@@ -1,0 +1,96 @@
+<!--pages/recordlist/recordlist.wxml-->
+<!-- <view style="height:{{getH}};overflow-y:hidden;"> -->
+  <view class="vw-wrap">
+    <view class="selected-con">
+      <view class="sel-item">
+        <view bindtap="clickArea"><view class="sel-tit">地区<image src="{{iconState?'/images/arrow-r.svg':'/images/arrow-d.svg'}}"></image></view></view>
+      </view>
+      <view class="sel-item">
+        <view bindtap="clickType"><view class="sel-tit">跑步类型<image src="{{iconState2?'/images/arrow-r.svg':'/images/arrow-d.svg'}}"></image></view></view>
+      </view>
+      <view class="sel-item">
+        <view bindtap="hasNo"><view class="sel-tit">{{toggleTit}}</view></view>
+      </view>
+      <view class="sel-tit sel-btn" bindtap="selBtn">筛选</view>
+    </view>
+  </view>
+  <view class="item-pop {{selAll?'show':'hide'}}">
+    <view class="all-item">
+      <text class="{{id==index ? 'active' : ''}}" wx:for="{{btnTab}}" wx:key="index" data-id="{{index}}" data-txt="{{item}}" bindtap="choose">{{item}}</text>
+    </view>
+  </view>
+  <view class="item-pop {{sortAll?'show':'hide'}}">
+    <view class="all-item">
+      <text class="{{id2==index ? 'active' : ''}}" wx:for="{{btnTab2}}" wx:key="index" data-id="{{index}}" data-txt="{{item}}" bindtap="choose2">{{item}}</text>
+    </view>
+  </view>
+  <wxs src="../../utils/toDecimal2.wxs" module="module1" />
+  <view class="vw-wrap">
+    <block wx:for="{{recordList}}" wx:key="index" wx:for-item="item">
+      <view class="activity">
+        <view class="cover-img" data-id="{{item.id}}" data-url="{{item.sport_img}}" bindtap="preview">
+          <image src="{{item.sport_img}}" mode="aspectFill"></image>
+        </view>
+        <view class="activity-infor">
+          <!-- <view class="title" wx:if="{{item.acty_id == 0}}">每日打卡</view> -->
+          <!-- <view class="title" wx:else>团活动打卡</view> -->
+          <view class="avastar">
+            <image src="{{item.header_url}}" mode="widthFix" style="height:auto;"></image>
+            <view>
+              <text wx:if="{{item.name!==''}}">{{item.name}}</text>
+              <text wx:else>{{item.nick_name}}</text>
+              <text class="area" style="background:#f36838;" wx:if="{{item.address=='北京'}}">{{item.address}}</text>
+              <text class="area" style="background:#7bcfa6;" wx:if="{{item.address=='日照'}}">{{item.address}}</text>
+              <text class="area" style="background:#bacac6;" wx:if="{{item.address=='其他地区'}}">{{item.address}}</text>
+            </view>
+          </view>
+          <view class="acty-type" style="background:#ffa631;" wx:if="{{item.acty_id==0}}">
+            <view>日常跑</view>
+          </view>
+          <view class="acty-type" style="background:#a3d900;" wx:if="{{item.acty_id>0}}">
+            <view>团跑</view>
+          </view>
+          <view>距离：<text>{{module1.toDecimal2(item.distance)}}</text>公里</view>
+          <view>配速：{{item.speed}}</view>
+          <view>时间：{{item.create_time}}</view>
+        </view>
+        <view class="acty-tag">
+          <image src="/images/pass-o.svg" wx:if="{{item.state == 0}}" data-index="{{index}}" data-id="{{item.id}}" bindtap="pass"></image>
+          <image src="/images/pass.svg" wx:if="{{item.state == 1}}"></image>
+        </view>
+        <view class="act-btn">
+          <text class="btn edit" bindtap="refuseCon" data-id="{{item.id}}" wx:if="{{item.state == 0}}">驳回</text>
+          <text class="btn gray" wx:if="{{item.state == 2}}">已驳回</text>
+          <!-- <text class="btn del" bindtap="delCon" data-id="{{item.id}}" wx:if="{{item.state !== 0}}">删除</text> -->
+        </view>
+      </view>
+    </block>
+  </view>
+    
+<!-- </view> -->
+<!-- 遮罩层 -->
+<view class="modal-mask" wx:if="{{changeModal}}"></view>
+<!-- 弹出框 -->
+<view class="modal-dialog" wx:if="{{changeModal}}" style="top: 30%;">
+  <form bindsubmit="onConfirm">
+    <view class="modal-content">
+      <view class="form-item">
+        <label for="">原因</label>
+        <input type="text" placeholder="请输入驳回原因" name="reason" value="{{reason}}" class="ipt">{{reason}}</input>
+      </view>
+      <view class="form-item">
+        <label for="">扣分</label>
+        <input type="number" placeholder="分数" name="score" value="{{score}}" class="ipt"></input>
+      </view>
+    </view>
+    <!-- 操作按钮 -->
+    <view class="modal-footer nopd">
+      <button class="btn btn-cancel" bindtap="onCancel" data-status="cancel">取消</button>
+      <button class="btn btn-confirm" form-type="submit" data-status="confirm">确定</button>
+    </view>
+  </form>
+</view>
+<view class="noHistory {{noHistory?'show':'hide'}}">
+  <view class="main">暂无记录</view>
+</view>
+<view class="pass-all" bindtap="allPass">一键审核</view>

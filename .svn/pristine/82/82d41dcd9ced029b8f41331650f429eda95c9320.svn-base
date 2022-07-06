@@ -1,0 +1,25 @@
+/* pages/orderlist/orderlist.wxss */
+@import "../recordlist/recordlist.wxss";
+.activity-infor{
+  width: auto;
+}
+.form-con{
+  font-size: 24rpx;
+  padding: 20rpx 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.form-con .fm-tit{
+  margin-bottom: 20rpx;
+}
+.form-con .radio-group{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.form-con .radio-group label{
+  width: 33.33%;
+}
+.activity{
+margin-bottom: 20rpx;
+padding: 20rpx 0;
+}

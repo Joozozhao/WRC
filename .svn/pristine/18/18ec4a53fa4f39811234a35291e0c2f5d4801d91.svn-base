@@ -1,0 +1,96 @@
+<!--pages/activitydetail/activitydetail.wxml-->
+<!-- <block wx:for="{{activityList}}" wx:key="index" wx:for-item="item"> -->
+  <view class="activity bg-blcak">
+    <view class="cover-img">
+      <image src="{{acty_img}}" mode="aspectFill"></image>
+      <view class="vw-cover" wx:if="{{state == '已结束'}}">
+        <view class="state">{{state}}</view>
+      </view>
+    </view>
+    <view class="activity-infor">
+      <view class="title">{{acty_name}}</view>
+      <view><text class="tag">{{acty_type}}</text><text class="tag org">{{region}}</text></view>
+      <view class="time"><image src="/images/time-white.png"></image>{{start_time}}-{{end_time}}</view>
+      <view class="address"><image src="/images/place-white.png"></image>{{address}}</view>
+    </view>
+  </view>
+<!-- </block> -->
+<view class="box-part-wrap index-part">
+  <view class="data-wrap" style="">
+    <view class="all-data">
+      <view class="nor-title">活动数据</view>
+      <view class="data-con" bindtap="toactyData">
+        <view>
+          <view class="num">{{allDistance}}</view>
+          <view>总运动(公里)</view>
+        </view>
+        <view>
+          <view class="num">{{allNum}}</view>
+          <view>总运动人数</view>
+        </view>
+      </view>
+    </view>
+    <view class="nor-title">已报名团员</view>
+    <view class="infor-con">
+      <view class="list">
+        <block wx:for="{{avastars}}" wx:key="index" wx:for-item="item" wx:if="{{index<5}}">
+          <view class="item"><image src="{{item.header_url}}"></image></view>
+        </block>
+      </view>
+      <view class="total" bindtap="toList">
+        <view>{{actyIn}}人 <text class="gray">已报名</text></view>
+        <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+      </view>
+    </view>
+    <view class="nor-title">活动详情</view>
+    <view class="act-detail">
+      <view>报名截止时间：{{start_time}}</view>
+      <view>总公里数：{{distance}}公里</view>
+    </view>
+  </view>
+</view>
+<view class="data-wrap" style="margin-bottom: 150rpx;">
+  <view class="lottery-con" wx:if="{{ltyList}}">
+    <view class="nor-title">本期抽奖</view>
+    <view class="lottery-list">
+      <block wx:for="{{ltyList}}" wx:key="index">
+        <view class="con-item" data-id="{{item.id}}" bindtap="toLty">
+          <image src="{{item.goods_pic}}" mode="widthFix"></image>
+          <view class="tag tag1">{{item.address}}</view>
+          <view class="tag tag2">*{{item.goods_num}}</view>
+        </view>
+      </block>
+    </view>
+  </view>
+  <block wx:for="{{memberList}}" wx:key="index">
+    <view class="member">
+      <view class="user-infor">
+        <view class="user-pic {{item.level == 'VIP'?'add-bd':''}}" wx:if="{{item.level == 'VIP'}}">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+          <image src="../../images/vip_1.svg" mode="cover" class="vip"></image>
+        </view>
+        <view class="user-pic {{item.level == '普通'?'add-bd1':''}}" wx:if="{{item.level == '普通'}}">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+          <image src="../../images/normal.svg" mode="cover" class="vip"></image>
+        </view>
+        <view class="user-pic {{item.level == '非会员'?'add-bd2':''}}" wx:if="{{item.level == '非会员'}}">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+          <image src="../../images/none.svg" mode="cover" class="vip"></image>
+        </view>
+        <view class="more-infor">
+          <view class="nick-name">{{item.user_name}}</view>
+          <view class="user-con">
+            <view class="sex" wx:if="{{item.sex == 1}}"><image src="../../images/man.svg"></image></view>
+            <view class="sex" wx:if="{{item.sex == 2}}"><image src="../../images/woman.svg"></image></view>
+            <view class="state over">已打卡</view>
+          </view>
+        </view>
+        
+      </view>
+    </view>
+  </block>
+</view>
+<view class="btn-group" wx:if="{{state !== '已结束'}}">
+  <button class="btn red" style="opacity:{{clockOpacity}}" bindtap="clockIn">{{clocked}}</button>
+  <button class="btn green {{opacity}}" style="opacity:{{signOpacity}}" bindtap="signIn">{{signed}}</button>
+</view>

@@ -1,0 +1,10 @@
+/* pages/signin/signin.wxss */
+@import '../creat/creat.wxss';
+.my-point .title{
+  width: 200rpx;
+}
+.my-point .ipt{
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #f00;
+}

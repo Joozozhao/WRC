@@ -1,0 +1,15 @@
+/* pages/creatchallenge/creatchallenge.wxss */
+@import "../creat/creat.wxss";
+.fm-con{
+  margin-left: auto;
+}
+.type-con label{
+  display: flex;
+}
+.type-con input{
+  width: 100rpx;
+  border: 1px solid #e1e1e1;
+  margin-top: 26rpx;
+  color: #666;
+  text-align: center;
+}

@@ -1,0 +1,19 @@
+/* pages/mydata/mydata.wxss */
+@import '../index/index.wxss';
+@import '../activity/activity.wxss';
+.acty-tit{
+  padding: 20rpx 40rpx 0;
+  /* line-height: 100rpx; */
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 700;
+}
+.user-infor .infor{
+  display: flex;
+  align-items: center;
+}
+.user-infor .infor image{
+  width: 25rpx;
+  height: 25rpx;
+  margin-left: 10rpx;
+}

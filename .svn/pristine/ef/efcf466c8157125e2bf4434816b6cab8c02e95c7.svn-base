@@ -1,0 +1,10 @@
+{
+  "usingComponents": {
+    "ec-canvas": "../../components/ec-canvas/ec-canvas"
+  },
+  "navigationStyle": "default",
+  "backgroundTextStyle":"light",
+  "navigationBarBackgroundColor": "#333",
+  "navigationBarTitleText": "个人中心",
+  "navigationBarTextStyle":"white"
+}

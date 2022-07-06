@@ -1,0 +1,247 @@
+// pages/challenge/challenge.js
+const util = require('../../utils/util.js')
+// 获取应用实例
+const app = getApp()
+Page({
+
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    tabbar: {},
+    challengeList: [],
+    actyName: '',
+    page: 1,
+    actyState: 0,
+    showTop: true,
+    hideTop: false
+  },
+  toDetail:function (e){
+    var id = e.currentTarget.dataset.id
+    var name = e.currentTarget.dataset.name
+    wx.navigateTo({
+      url: '../challengedetail/challengedetail?id=' + id
+    })
+    wx.setNavigationBarTitle({
+      title: name
+    })
+  },
+  addRules: function(e){
+    var id = e.currentTarget.dataset.id
+    wx.navigateTo({
+      url: '../addrules/addrules?id='+id
+    })
+  },
+  delRules: function(e){
+    var id = e.currentTarget.dataset.id
+    var data = {
+      id: id
+    }
+    console.log(data)
+    util.request('acty/delRule', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        wx.showToast({
+          title: '删除成功',
+          icon: 'none',
+          duration: 1500
+        })
+      }
+    })
+  },
+  editCon: function(e){
+    var id = e.currentTarget.dataset.id
+    wx.navigateTo({
+      url: '../editchallenge/editchallenge?id='+id
+    })
+  },
+  toTop: function(e){
+    var id = e.currentTarget.dataset.id
+    var data = { 
+      actyId : id
+    }
+    util.request('acty/updateRankListActy', 'POST', data, '数据加载中 ...', (res)=>{
+      var that = this
+      console.log(res)
+      if(res.data.success){
+        that.setData({
+          showTop:false,
+          hideTop: true
+        })
+        wx.showToast({
+          title: '上榜成功',
+          icon: 'none',
+          duration: 1500
+        })
+      }
+    })
+  },
+  upTop: function(e){
+    var id = e.currentTarget.dataset.id
+    var data = { 
+      actyId : id
+    }
+    console.log(data)
+    util.request('acty/updateLastRankListActy', 'POST', data, '数据加载中 ...', (res)=>{
+      var that = this
+      console.log(res)
+      if(res.data.success){
+        that.setData({
+          showTop:false,
+          hideTop: true
+        })
+        wx.showToast({
+          title: '已下榜',
+          icon: 'none',
+          duration: 1500
+        })
+      }
+    })
+  },
+  delCon: function(e){
+    var acty_id = e.currentTarget.dataset.id
+    var idx = e.currentTarget.dataset.index
+    var that = this
+    wx.showModal({   
+      title: '是否确定删除挑战？',
+      success: function (res) {
+        if (res.confirm) {             //点击确定后
+          var data ={
+            id : acty_id
+          }
+          util.request('acty/del', 'POST', data, '数据加载中 ...', (res)=>{
+            console.log(res)
+            if(res.data.success){
+              var challengeList = that.data.challengeList
+              challengeList.splice(idx,1);
+              that.setData({
+                challengeList: challengeList
+              })
+              console.log(res)
+              wx.showToast({
+                title: '已删除',
+                icon: 'none',
+                duration: 1500
+              }) 
+            }else{
+              wx.showToast({
+                title: res.data.error,
+                icon: 'none',
+                duration: 1500
+              })  
+            }
+          })
+         } else {
+           console.log('用户取消')
+         }
+        }
+    })
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    app.editTabbar();
+    this.initLimit()
+  },
+  onShow: function(){
+    this.initChallenge()
+  },
+  initLimit: function(){
+    var userId = app.globalData.userId
+    var data = { 
+      id : userId
+    }
+    util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
+      var that = this
+      console.log(res)
+      if(res.data.success){
+        that.setData({
+          duty: res.data.data.duty
+        })
+        if(res.data.data.duty=='团长,管理员'||res.data.data.duty=='管理员,团长'){
+          that.setData({
+            duty : '管理员/团长',
+          })
+        }
+      }
+    })
+  },
+  initChallenge:function(){
+    var that = this
+    var userId = app.globalData.userId
+    var data = {
+      userId: userId,
+      type: '挑战',
+      page: that.data.page ++
+    }
+    console.log(data)
+    wx.showLoading({
+      title: '加载中',
+      mask: true
+    })
+    util.request('acty/getchallengeacty', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        var challengeData = res.data.data
+        that.setData({
+          challengeList: challengeData
+        })
+        wx.hideLoading({
+          success: (res) => {},
+        })
+      }else{
+        wx.hideLoading({
+          success: (res) => {},
+        })
+        // wx.showToast({
+        //   title: res.data.error,
+        //   icon: 'none',
+        //   duration: 1500
+        // })
+      }
+    })
+  },
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom: function () {
+    this.loadMore()
+  },
+  loadMore: function(){
+    var that = this
+    var userId = app.globalData.userId
+    var data = {
+      userId: userId,
+      type: '挑战',
+      page: that.data.page ++
+    }
+    console.log(data)
+    wx.showLoading({
+      title: '加载中',
+      icon: 'none'
+    })
+    util.request('acty/getchallengeacty', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        var challengeData = res.data.data
+        var content = this.data.challengeList.concat(challengeData)
+        that.setData({
+          challengeList: content
+        })
+        wx.hideLoading({
+          success: (res) => {},
+        })
+      }else{
+        wx.hideLoading({
+          success: (res) => {},
+        })
+        // wx.showToast({
+        //   title: res.data.error,
+        //   icon: 'none',
+        //   duration: 1500
+        // })
+      }
+    })
+  }
+})

@@ -1,0 +1,12 @@
+/* pages/newaddress/newaddress.wxss */
+@import "../userinfor/userinfor.wxss";
+ .new-address .vw-form{
+  border-bottom: 1px solid #f1f1f1;
+}
+.new-address .vw-form .fm-tit{
+  width: 20%;
+  margin-right: 20rpx;
+}
+.new-address .vw-form .fm-con{
+  border: none;
+} 

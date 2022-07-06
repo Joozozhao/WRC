@@ -1,0 +1,28 @@
+/* pages/newsDetails/newsDetails.wxss */
+.newsDetails{
+  font-size: 28rpx;
+}
+.news-tit{
+  font-size: 36rpx;
+  line-height: 3;
+}
+.news-infor .author{
+  color: #4ec17e;
+}
+.news-infor .date{
+  color: #999;
+  margin-left: 20rpx;
+}
+.news-content{
+  padding: 30rpx 0;
+}
+.news-content image{
+  width: 100%;
+  margin: 10rpx 0;
+}
+.news-content{
+  overflow: hidden;
+}
+.news-content image{
+  width: 100% !important;
+}

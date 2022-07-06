@@ -1,0 +1,97 @@
+<!--pages/news/news.wxml-->
+<view class="vw-wrap new-con">
+  <!-- <block wx:for="{{newsList}}" wx:key="index">
+    <view class="news-list" bindtap="newsDetails" data-nid="{{item.id}}">
+      <view class="text">{{item.title}}</view>
+      <view class="img"><image src="{{item.img_url}}" mode="aspectFill"></image></view>
+    </view>
+  </block> -->
+  <view class="logo"><image src="/images/wrc-logo-green.png" mode="widthFix" style="height:auto;"></image></view>
+  <view>
+    微网通联跑团俱乐部成立于2018年7月10日，以下简称“微网跑团”，跑团的口号是 “美好，从跑步开始～”
+  </view>
+  <view class="tit-one">#微网跑团 会员说明</view>
+  <view class="tit-wrap">
+    <view class="tit-main">
+      <view>VIP会员</view>
+    </view>
+  </view>
+  <view>
+    <view>1、最近 90 天，参加团跑次数超过 9 次（男生）、7次（女生）；</view>
+    <view>2、缴纳一次性团费 99.99元；</view>
+    <view class="logo"><image src="/images/99.jpeg" mode="widthFix" style="width:50%;height:auto;margin-top:20rpx;"></image></view>
+    <view>
+      注：以上2点满足任意一条，即可正式成为「微网跑团 VIP 会员」，VIP 会员可通过参加活动、挑战，获得积分、能量，以兑换积分奖品、能量奖品；近 90 天未运动，会被降级为普通会员；
+    </view>
+    <view class="user-wrap">
+      <view class="user-pic add-bd" wx:for="{{vipList}}" wx:key="index"><image src="{{item.header_url}}" mode="widthFix" style="height:auto;" class="pic"></image><image src="../../images/vip_1.svg" mode="cover" class="vip"></image></view>
+    </view>
+  </view>
+  <view class="tit-wrap">
+    <view class="tit-main">
+      <view>普通会员</view>
+    </view>
+  </view>
+  <view>1、最近 45 天有运动记录，且是「微网跑团」微信群群成员；</view>
+  <view>2、缴纳一次性团费  17.77 元；</view>
+  <view class="tips">
+    注：以上2点满足任意一条，即可正式成为「微网跑团  普通会员」，普通会员可通过参加活动、挑战，获得积分，以竞换积分奖品；近 90 天未运动、未打卡的普通会员，会被降级为非会员；
+  </view>
+  <view class="tit-wrap">
+    <view class="tit-main">
+      <view>非会员</view>
+    </view>
+  </view>
+  <view>
+    无运动打卡要求、根据实际表现，可自动升级成普通会员或 VIP 会员；
+  </view>
+  <view class="tit-one">#微网跑团 积分及能量说明</view>
+  <view class="tit-wrap"><view class="tit-two"># 积分 # </view></view>
+  <view class="all-con">
+    <view>1、每日打卡，每天第一个5公里及以上，可获得2积分，可多次打卡，积累跑量，每天最多加2分；</view>
+    <view>2、连续打卡，连续打卡第 7 天额外获得 7 积分；连续打卡第 21 天，额外获得 21 积分；连续打卡第 100 天，额外获得 100 积分；中断后，从 1 开始计；</view>
+    <view>3、团跑活动，一次可获得 7 积分；</view>
+    <view>4、挑战活动，不额外增加积分；</view>
+  </view>
+  <view class="tit-wrap"><view class="tit-two"># 能量 # </view></view>
+  <view class="all-con">
+    <view>1、仅 VIP 会员通过参加团跑及挑战活动可获得能量积累；</view>
+    <view>2、团跑一次，可获得 1 个能量；</view>
+    <view>3、参加并完成挑战活动，每 100 公里，增加 1 个能量；</view>
+  </view>
+  <!-- <view class="tit-one">#鸣谢</view>
+  <view>
+    特别感谢以下同事利用闲暇时间帮忙实现跑团小程序的功能开发。也欢迎更多的伙伴可以提出更多的想法、建议，希望我们一起变更好～
+  </view>
+  <view class="team-show">
+    <view class="team-item">
+      <image src="/images/member1.svg" mode="widthFix"></image>
+      <view>
+        <view class="title">后台开发</view>
+        <view>陈德平</view>
+      </view>
+    </view>
+    <view class="team-item">
+      <image src="/images/member3.svg" mode="widthFix"></image>
+      <view>
+        <view class="title">后台开发</view>
+        <view>鲁梦瑶</view>
+      </view>
+    </view>
+    <view class="team-item">
+      <image src="/images/member4.svg" mode="widthFix"></image>
+      <view>
+        <view class="title">前端开发</view>
+        <view>王雪</view>
+      </view>
+    </view>
+    <view class="team-item">
+      <image src="/images/member2.svg" mode="widthFix"></image>
+      <view>
+        <view class="title">产品设计</view>
+        <view>赵彦兵</view>
+      </view>
+    </view>
+  </view> -->
+</view>
+<home/>

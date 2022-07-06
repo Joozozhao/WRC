@@ -1,0 +1,56 @@
+<!--pages/actyin/actyin.wxml-->
+<view class="vw-wrap" style="padding: 0 30rpx 150rpx;height:{{getH}};overflow-y:hidden;">
+  <view class="selected-con">
+    <view class="sel-item">
+      <view bindtap="clickLevel"><view class="sel-tit">类型<image src="{{iconState?'/images/arrow-r.svg':'/images/arrow-d.svg'}}"></image></view></view>
+    </view>
+    <view class="sel-item">
+      <view bindtap="clickSort" wx:if="{{state1}}"><view class="sel-tit sort">排序<image src="/images/up-icon.svg"></image></view></view>
+      <view bindtap="clickSort2" wx:if="{{state2}}"><view class="sel-tit sort">排序<image src="/images/down-icon.svg"></image></view></view>
+    </view>
+    <view class="sel-tit sel-btn" bindtap="selBtn">筛选</view>
+  </view>
+  <view class="item-pop {{selAll?'show':'hide'}}">
+    <view class="all-item">
+      <text class="{{id==index ? 'active' : ''}}" wx:for="{{selList}}" wx:key="index" data-id="{{index}}" data-txt="{{item}}" bindtap="choose">{{item}}</text>
+    </view>
+  </view>
+  <block wx:for="{{memberList}}" wx:key="id" >
+    <view class="member" data-userid="{{item.id}}" bindtap="myData">
+      <view class="user-infor">
+        <view class="user-pic">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+        </view>
+        <view class="more-infor">
+          <view style="display: flex;align-items: center;">
+            <view class="nick-name">{{item.user_name}}</view>
+            <view class="infor" wx:if="{{item.level == 'VIP'}}"><image src="../../images/superVIP.svg" mode="widthFix" class="level"></image></view>
+          <view class="infor" wx:if="{{item.level == '普通'}}"><image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image></view>
+          </view>
+          <view class="user-con">
+            <view class="sex" wx:if="{{item.sex == 1}}"><image src="../../images/man.svg"></image></view>
+            <view class="sex" wx:if="{{item.sex == 2}}"><image src="../../images/woman.svg"></image></view>
+            <view class="state over">已报名</view>
+          </view>
+        </view>
+      </view>
+      <wxs src="../../utils/toDecimal2.wxs" module="module1" />
+      <view class="progress-con">
+        <view>{{module1.toDecimal2(item.finish_distance)}}/{{module1.toDecimal2(item.distance)}}</view>
+        <view wx:if="{{module1.GetPercent(item.finish_distance,item.distance) >= 100}}">
+          <progress percent="100" stroke-width="3" color="#4ec17e" wx:if="{{item.finish_distance>item.distance}}"  />
+          <progress percent="{{module1.GetPercent(item.finish_distance,item.distance)}}" stroke-width="3" color="#4ec17e" wx:else  />
+        </view>
+        <view wx:if="{{module1.GetPercent(item.finish_distance,item.distance)>=50&&module1.GetPercent(item.finish_distance,item.distance)<100}}">
+          <progress percent="100" stroke-width="3" color="#566dd0" wx:if="{{item.finish_distance>item.distance}}"  />
+          <progress percent="{{module1.GetPercent(item.finish_distance,item.distance)}}" stroke-width="3" color="#566dd0" wx:else  />
+        </view>
+        <view wx:if="{{module1.GetPercent(item.finish_distance,item.distance) < 50}}">
+          <progress percent="100" stroke-width="3" color="#ec6262" wx:if="{{item.finish_distance>item.distance}}"  />
+          <progress percent="{{module1.GetPercent(item.finish_distance,item.distance)}}" stroke-width="3" color="#ec6262" wx:else  />
+        </view>
+      </view>
+    </view>
+  </block>
+  <view wx:if="{{noList}}" style="padding: 30rpx 0;text-align:center;">暂无数据</view>
+</view>

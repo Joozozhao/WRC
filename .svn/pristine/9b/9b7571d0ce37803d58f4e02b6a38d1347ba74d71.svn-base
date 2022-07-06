@@ -1,0 +1,77 @@
+<!--pages/history/history.wxml-->
+<view class="bg-gray">
+  <view class="vw-wrap">
+    <view class="box-part-wrap">
+      <view class="box-part">
+        <view class="my-point">
+          <view>获得奖品数量</view>
+          <view class="my-points">{{total}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="tab-tit">
+    <view wx:for="{{navTab}}" wx:key="index" data-idx="{{index}}" bindtap="currentTab" class="sub {{currentTab==index ? 'active' : ''}}"><text>{{item}}</text></view>
+  </view>
+  <view class="vw-wrap bg-white {{tab1}}">
+    <view wx:if="{{orderInfo.length>0}}">
+      <block wx:for="{{orderInfo}}" wx:key="index">
+        <view class="exchange-history" data-id="{{item.id}}" data-type="{{item.energy}}" bindtap="toDetail">
+          <view class="bg-white order-infor">
+            <view>{{item.last_time}}</view>
+            <view class="status" wx:if="{{item.state == 0}}">未发货</view>
+            <view class="status" wx:if="{{item.state == 1}}">已发货</view>
+            <view class="status" wx:if="{{item.state == 2}}">已签收</view>
+          </view>
+          <view class="bg-white confirm-product">
+            <view class="product-img"><image src="{{item.goods_pic}}"></image></view>
+            <view class="product-infor">
+              <view class="name ellipsis">{{item.goods_name}}</view>
+              <view class="add-num"><view>颜色：<text>{{item.goods_color}}</text></view><view class="num">x{{item.goods_num}}</view></view>
+              <view>尺寸：<text>{{item.goods_size}}</text></view>
+              <view>{{item.score}}<text wx:if="{{item.score>0}}">积分</text><text wx:if="{{item.energy>0}}">能量</text></view>
+            </view>
+            <image class="arrow" src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class="vw-wrap bg-white" wx:else>
+      <view class="bg-white deduct-points">
+        <view class="lg-txt">你还未获得过此类奖品，继续加油！</view>
+        <!-- <view>敬请关注更多跑团活动</view> -->
+      </view>
+    </view>
+  </view>
+  <view class="vw-wrap bg-white {{tab2}}">
+    <view wx:if="{{orderInfo.length>0}}">
+      <block wx:for="{{orderInfo}}" wx:key="index">
+        <view class="exchange-history" data-id="{{item.id}}" data-type="{{item.energy}}" bindtap="toDetail">
+          <view class="bg-white order-infor">
+            <view>{{item.last_time}}</view>
+            <view class="status" wx:if="{{item.state == 0}}">未发货</view>
+            <view class="status" wx:if="{{item.state == 1}}">已发货</view>
+            <view class="status" wx:if="{{item.state == 2}}">已签收</view>
+          </view>
+          <view class="bg-white confirm-product">
+            <view class="product-img"><image src="{{item.goods_pic}}"></image></view>
+            <view class="product-infor">
+              <view class="name ellipsis">{{item.goods_name}}</view>
+              <view class="add-num"><view>颜色：<text>{{item.goods_color}}</text></view><view class="num">x{{item.goods_num}}</view></view>
+              <view>尺寸：<text>{{item.goods_size}}</text></view>
+              <view>{{item.energy}}<text wx:if="{{item.score>0}}">积分</text><text wx:if="{{item.energy>0}}">能量</text></view>
+            </view>
+            <image class="arrow" src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class="vw-wrap bg-white" wx:else>
+      <view class="bg-white deduct-points">
+        <view class="lg-txt">你还未获得过此类奖品，继续加油！</view>
+        <!-- <view>敬请关注更多跑团活动</view> -->
+      </view>
+    </view>
+  </view>
+</view>
+<home />

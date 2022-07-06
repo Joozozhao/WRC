@@ -1,0 +1,326 @@
+// pages/challengedetail/challengedetail.js
+const util = require('../../utils/util.js')
+// 获取应用实例
+const app = getApp()
+Page({
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    actyImg: '',
+    per: 0,
+    has_name: 0,
+    has_mobile: 0,
+    actyInfor: true,
+    btnTxt: '参与挑战',
+    btnOpacity: 1,
+    hasDistance: 0,
+    distance: 0,
+    target: 0,
+    finalDis: 0,
+    changeModal: false,
+    newDistance: '',
+    acty_type: '',
+    nickName: '',
+    header_url: '',
+    userId: 0,
+    animation: ''
+  },
+  openLogin : function(){
+    var userId = app.globalData.userId
+    if(userId < 1 || userId == undefined){
+    util.showLogin((res)=>{
+      console.log(res)
+      var data = {
+        code: res.code,
+        encryptedData: "",
+        iv: ""
+      }
+      //取用户的openid
+      util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes)=>{
+        console.log(loginRes)
+        var regData = {
+          openId: loginRes.data.data.openid,
+          imgUrl: res.userInfo.avatarUrl,
+          nickName: res.userInfo.nickName,
+          sex: res.userInfo.gender,
+          unionid: loginRes.data.data.unionid
+        }
+        util.request('user/wxregister', 'POST', regData, '', (regRes)=>{
+          app.globalData.userId = regRes.data.UserId
+          app.globalData.openId = regData.openId
+          wx.setStorageSync('userId', regRes.data.UserId)
+          wx.setStorageSync('openId', regData.openId)
+          wx.reLaunch({
+            url: '../index/index',
+          })
+        })
+      })
+    })
+    // wx.showToast({
+    //   title: 'error',
+    //   icon: 'none',
+    //   duration: 1500
+    // })  
+    }
+  },
+  toList:function(){
+    wx.navigateTo({
+      url: '../actyin/actyin?id='+this.data.actyId
+    })
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    var id = options.id
+    var userid = options.userid
+    var has_name = options.has_name
+    var has_mobile = options.has_mobile
+    var target = options.target
+    var acty_type = options.acty_type
+    var userId = app.globalData.userId
+    this.setData({
+      actyId: id,
+      has_name: has_name,
+      has_mobile: has_mobile,
+      acty_type: acty_type,
+      target: target,
+      userId: userId,
+      userid: userid
+    })
+    var data = { id : userId }
+    util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
+      if(res.data.success){
+        console.log(res)
+        this.setData({
+          nickName : res.data.data.nick_name
+        })
+      }
+    })
+    if(userid!=undefined){
+      var data = { id : userid }
+      util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
+        if(res.data.success){
+          console.log(res)
+          this.setData({
+            header_url: res.data.data.header_url,
+          })
+        }
+      })
+    }
+  },
+  initChallenge:function(id){
+    var that = this
+    var userId = app.globalData.userId
+    if(that.data.userid==undefined){
+      var data = {
+        actyId: id,
+        userId: userId
+      }
+    }else{
+      var data = {
+        actyId: id,
+        userId: that.data.userid
+      }
+    }
+    console.log(data)
+    util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        var challengeData = res.data.data
+        that.setData({
+          actyImg: challengeData.acty_img,
+          days: challengeData.days,
+          actyName: challengeData.acty_name,
+          joins: challengeData.joins,
+          startTime: challengeData.start_timestr.substring(0, 16),
+          endTime: challengeData.end_timestr.substring(0, 16),
+          distance: challengeData.distance,
+          hasDistance: challengeData.hasDistance,
+          target: challengeData.target,
+          remark: challengeData.remark,
+          actyState: challengeData.acty_state,
+          hasClickon: challengeData.has_clickon,
+          has_name: challengeData.has_name,
+          has_mobile: challengeData.has_mobile,
+          acty_type: challengeData.acty_type,
+          score: challengeData.snum,
+          stype: challengeData.stype
+        })
+        if(that.data.target >= that.data.hasDistance){
+          var per = this.GetPercent(challengeData.hasDistance,that.data.target)
+          // var num = new Number(per)
+          that.setData({
+            finalDis: challengeData.resDistance,
+            // per: num.toFixed() //四舍五入取整
+            per: parseInt(per)
+          })
+        } else {
+          that.setData({
+            finalDis: 0,
+            per: 100
+          })
+        }
+        wx.setNavigationBarTitle({
+          title: that.data.actyName
+        })
+        if(that.data.hasClickon==1){
+          that.setData({
+            actyInfor: false,
+            btnTxt: '已参加挑战',
+            btnOpacity: 0
+          })
+          return
+        }
+      }else{
+        
+        wx.showToast({
+          title: res.data.error,
+          icon: 'none',
+          duration: 1500
+        })
+      }
+    })
+    if(that.data.userid==undefined){
+      var data = {
+        actyId: id,
+        userId: userId,
+        userName: '',
+        mobile: '',
+        level: '',
+        distance: 1
+      }
+    }else{
+      var data = {
+        actyId: id,
+        userId: that.data.userid,
+        userName: '',
+        mobile: '',
+        level: '',
+        distance: 1
+      }
+    }
+    console.log(data)
+    util.request('acty/getactyuser', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        var dataAll = res.data.data
+        this.setData({
+          actyInList: dataAll
+        })
+      }else{
+        // wx.showToast({
+        //   title: res.data.error,
+        //   icon: 'none',
+        //   duration: 1500
+        // })
+      }
+    })
+    //获取关联抽奖
+    // var data = {
+    //   actyId : id
+    // }
+    // util.request('acty/getluckdrawlist', 'POST', data, '数据加载中 ...', (res)=>{
+    //   console.log(res.data)
+    //   if(res.data.success){
+    //     this.setData({
+    //       ltyList: res.data.data
+    //     })
+    //   }else{
+    //     // wx.showToast({
+    //     //   title: res.data.error,
+    //     //   icon: 'none',
+    //     //   duration: 1500
+    //     // })
+    //   }
+    // })
+  },
+  toLty: function(e){
+    var id = e.currentTarget.dataset.id
+    wx.navigateTo({
+      url: '../lotterydetail/lotterydetail?id='+id
+    }) 
+  },
+  //百分比计算
+  GetPercent: function (num, total) {
+    num = parseFloat(num);
+    total = parseFloat(total);
+    if (isNaN(num) || isNaN(total)) {
+        return 0;
+    }
+    return total <= 0 ? "0%" : (Math.round(num / total * 10000) / 100.00);
+  },
+  changeIpt:function(){
+    var that = this
+    that.setData({
+      changeModal: true
+    })
+  },
+  onConfirm: function(e){
+    var that = this
+    var formData = e.detail.value
+    console.log(formData)
+    var newDistance = formData.newDistance
+    if(newDistance < that.data.distance){
+      wx.showToast({
+        title: '请输入正确挑战公里数',
+        icon: 'none',
+        duration: 1500
+      })
+    } else {
+      that.setData({
+        distance: newDistance,
+        changeModal: false
+      })
+      console.log(that.data.distance)
+    }
+  },
+  onCancel: function(){
+    var that = this
+    that.setData({
+      changeModal: false
+    })
+  },
+  // 参与挑战
+  actyIn: function(){
+    var that = this
+    var userId = app.globalData.userId
+    if(that.data.hasClickon == 0&&userId>0){
+      wx.navigateTo({
+        url: '../signin/signin?id='+that.data.actyId + '&has_name='+that.data.has_name+'&has_mobile='+that.data.has_mobile+'&target='+that.data.distance+'&acty_type='+that.data.acty_type
+      })
+    }else{
+      wx.showToast({
+        title: '请先登录小程序',
+        icon: 'none',
+        duration: 1000
+      })
+      setTimeout(function(){
+        wx.switchTab({
+          url: '../index/index',
+        })
+      },1000)
+    }
+  },
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function () {
+    // wx.hideHomeButton()
+    var id = this.data.actyId;
+    this.initChallenge(id)
+  },
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function (res) {
+    if (res.from === 'button') {
+      // 来自页面内转发按钮
+      console.log(res.target)
+    }
+    return {
+        title: this.data.nickName + '发起了一个挑战活动#' + this.data.actyName + '#，一起来挑战吧～'
+    }
+  }
+})

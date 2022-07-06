@@ -1,0 +1,111 @@
+<!--pages/userinfor/userinfor.wxml-->
+<view class="vw-wrap page-tips">*完善的个人资料将帮助我们为您定制会员礼遇</view>
+<form bindsubmit="onSubmit">
+  <view class="vw-wrap bg-white user-infor">   
+    <view class="user-wrap">
+      <view class="user-pic {{level == 'VIP'?'add-bd':''}}" wx:if="{{level == 'VIP'}}">
+        <image src="{{avatarUrl}}" mode="widthFix" class="pic"></image>
+        <view>{{nickName}}</view>
+        <image src="../../images/vip_1.svg" mode="cover" class="vip"></image>
+      </view>
+      <view class="user-pic {{level == '普通'?'add-bd1':''}}" wx:if="{{level == '普通'}}">
+        <image src="{{avatarUrl}}" mode="widthFix" class="pic"></image>
+        <view>{{nickName}}</view>
+        <image src="../../images/normal.svg" mode="cover" class="vip"></image>
+      </view>
+      <view class="user-pic {{level == '非会员'?'add-bd2':''}}" wx:if="{{level == '非会员'}}">
+        <image src="{{avatarUrl}}" mode="widthFix" class="pic"></image>
+        <view>{{nickName}}</view>
+        <image src="../../images/none.svg" mode="cover" class="vip"></image>
+      </view>
+      <view class="user-pic" wx:if="{{level == ''}}"><image src="{{avatarUrl}}" mode="widthFix" style="height:auto;" class="pic"></image></view>
+    </view>
+    <view class="vw-form">
+      <view class="fm-tit"><image src="../../images/name.png" mode="widthFix" style="height:auto;" class="fm-icon"></image>姓名<text class="must">*</text></view>
+      <view class="fm-con"><input type="text" placeholder="请输入" name="name" value="{{name}}"></input></view>
+    </view>
+    <view class="vw-form">
+      <view class="fm-tit"><image src="../../images/phone.png" mode="widthFix" style="height:auto;" class="fm-icon"></image>手机<text class="must">*</text></view>
+      <view class="fm-con"><input type="number" maxlength="11" placeholder="请输入" name="mobile" value="{{mobile}}"></input></view>
+    </view>
+    <view class="vw-form">
+      <view class="fm-tit"><image src="../../images/sex.png" mode="widthFix" style="height:auto;" class="fm-icon"></image>性别<text class="must">*</text></view>
+      <view class="fm-con">
+        <radio-group class="sex" name="sex">
+          <label for=""><view style="display:inline-block;"><radio value="{{sex}}"  checked="{{sex == 1 ? 'true' : ''}}" bindtap='radiocon1'/>男</view></label>
+          <label for=""><view style="display:inline-block;"><radio value="{{sex}}"  checked="{{sex == 2 ? 'true' : ''}}"bindtap='radiocon2' />女</view></label>
+        </radio-group>
+      </view>
+    </view>
+    <view class="vw-form">
+      <view class="fm-tit"><image src="../../images/birthday.png" mode="widthFix" style="height:auto;" class="fm-icon"></image>生日<text class="must">*</text></view>
+      <view class="fm-con">
+        <picker mode="date" value="{{birthday}}" end="{{endDate}}" style='font-size:32rpx;color:#999;' bindchange="dateChange">
+          <view class="picker {{clas}}" wx:if="{{birthday == ''}}">请选择</view>
+          <input type="text" class="picker {{clas}}" wx:else class="picker {{clas}}" name="birthday" value="{{birthday}}" disabled="disabled">{{birthday}}</input>
+        </picker>
+        <!-- <text class="change-only">只可更改一次c</text> -->
+      </view>
+    </view>
+    <view class="vw-form">
+      <view class="fm-tit"><image src="../../images/address.png" mode="widthFix" style="height:auto;" class="fm-icon"></image>地区<text class="must">*</text></view>
+      <view class="fm-con">
+        <picker mode="selector" range="{{addressArray}}" bindchange="pickerSelected" value="{{address}}" custom-item="{{customItem}}"
+      name="address" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' >
+          <view class="picker {{clas}}" wx:if="{{address == ''}}">请选择</view>
+          <input type="text" class="picker {{clas}}" wx:else class="picker {{clas}}" name="address" value="{{address}}" disabled="disabled">{{address}}</input>
+        </picker>
+      </view>
+    </view>
+    <view class="vw-form" style="display:block;">
+      <view class="fm-tit" style="width:100%;"><image src="../../images/clothes.png" mode="widthFix" style="height:auto;" class="fm-icon"></image>我的装备数据</view>
+      <view class="other-data">
+        <view class="fm-con">
+          <view class="sub-tit">上衣：</view>  
+          <picker mode="selector" range="{{jacketArray}}" bindchange="pickerJacket" value="{{jacket}}" custom-item="{{customItem}}"
+      name="jacket" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' >
+            <view class="picker {{clas}}" wx:if="{{jacket == ''}}">请选择</view>
+            <input type="text" class="picker {{clas}}" wx:else class="picker {{clas}}" name="jacket" value="{{jacket}}" disabled="disabled">{{jacket}}</input>
+          </picker>
+        </view>
+        <view class="fm-con">
+          <view class="sub-tit">裤子：</view>  
+          <picker mode="selector" range="{{trousersArray}}" bindchange="pickerTrousers" value="{{trousers}}" custom-item="{{customItem}}"
+      name="trousers" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' >
+            <view class="picker {{clas}}" wx:if="{{trousers == ''}}">请选择</view>
+            <input type="text" class="picker {{clas}}" wx:else class="picker {{clas}}" name="trousers" value="{{trousers}}" disabled="disabled">{{trousers}}</input>
+          </picker>
+        </view>
+        <view class="fm-con">
+          <view class="sub-tit">头围：</view>  
+          <picker mode="selector" range="{{headArray}}" bindchange="pickerHead" value="{{headSize}}" custom-item="{{customItem}}"
+      name="headSize" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' >
+            <view class="picker {{clas}}" wx:if="{{headSize == ''}}">请选择</view>
+            <input type="text" class="picker {{clas}}" wx:else class="picker {{clas}}" name="headSize" value="{{headSize}}" disabled="disabled">{{headSize}}</input>
+          </picker>
+        </view>
+        <view class="fm-con">
+          <view class="sub-tit">手长：</view>  
+          <picker mode="selector" range="{{handArray}}" bindchange="pickerHand" value="{{handSize}}" custom-item="{{customItem}}"
+      name="handSize" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' >
+            <view class="picker {{clas}}" wx:if="{{handSize == ''}}">请选择</view>
+            <input type="text" class="picker {{clas}}" wx:else class="picker {{clas}}" name="handSize" value="{{handSize}}" disabled="disabled">{{handSize}}</input>
+          </picker>
+        </view>
+        <view class="fm-con">
+          <view class="sub-tit">鞋号：</view>  
+          <picker mode="selector" range="{{shoesArray}}" bindchange="pickerShoes" value="{{shoes}}" custom-item="{{customItem}}"
+      name="shoes" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' >
+            <view class="picker {{clas}}" wx:if="{{shoes == ''}}">请选择</view>
+            <input type="text" class="picker {{clas}}" wx:else class="picker {{clas}}" name="shoes" value="{{shoes}}" disabled="disabled">{{shoes}}</input>
+          </picker>
+        </view>
+      </view>
+    </view>
+    <view class='lgo-btn' bindtap="loginout">退出登录</view>
+  </view>
+  <view class="btn-group">
+    <button class="btn red" bindtap="cancle">取消</button>
+    <button class="btn green" formType="submit">确定</button>
+  </view>
+</form>

@@ -1,0 +1,159 @@
+/* pages/userlist/userlist.wxss */
+@import "../mydata/mydata.wxss";
+page{
+  background: #fff;
+}
+.fixed-head{
+  width: 100%;
+  background: #fff;
+  box-sizing: border-box;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 7;
+}
+.user-pic .vip{
+  bottom: -130rpx;
+}
+.selected-con{
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #f0f0f0;
+}
+.sel-tit{
+  display: flex;
+  align-items: center;
+  line-height: 100rpx;
+}
+.sel-tit image{
+  display: inline-block;
+  width: 50rpx;
+  height: 50rpx;
+}
+.item-pop{
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.3);
+  position: fixed;
+  left: 0;
+  top: 102rpx;
+  z-index: 7;
+}
+.item-pop.show{
+  display: block;
+}
+.item-pop.hide{
+  display: none;
+}
+.all-item{
+  padding: 30rpx;
+  background: #fff;
+}
+.all-item text{
+  display: inline-block;
+  line-height: 50rpx;
+  padding: 0 20rpx;
+  font-size: 24rpx;
+  background: #f0f0f0;
+  border-radius: 5rpx;
+  margin-right: 20rpx;
+}
+.all-item text.active{
+  background: #4ec17e;
+  color: #fff;
+}
+/* .sel-btn{
+  margin-left: auto;
+} */
+.user-infor{
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+}
+.user-num{
+  margin-right: 30rpx;
+  font-size: 30rpx;
+  color: #333;
+}
+.user-name{
+  color: #666;
+}
+.user-id{
+  color: #666;
+  font-size: 24rpx;
+  margin-left: 10rpx;
+}
+.user-name .tag{
+  background: #333;
+  color: #fff;
+  line-height: 1.5;
+  margin-left: 10rpx;
+}
+.order-con{
+  color: #999;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+}
+.form-con{
+  font-size: 24rpx;
+  padding: 20rpx 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.form-con .fm-tit{
+  margin-bottom: 20rpx;
+}
+.form-con .radio-group{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.form-con .radio-group label{
+  width: 33.33%;
+}
+.act-btn{
+  bottom: 60rpx;
+  right: 0;
+}
+.act-btn .btn{
+  color: #333;
+  font-size: 28rpx;
+}
+.member-infor{
+  font-size: 24rpx;
+  color: #666;
+  line-height: 2;
+  background: linear-gradient(to left, #38ef7d, #11998e); 
+  border-radius: 10rpx;
+}
+.member-infor.hidden{
+  display: none;
+}
+.bg-white{
+  background: rgba(255,255,255,.7);
+  padding: 20rpx;
+}
+.base-con{
+  display: flex;
+}
+.base-con view{
+  width: 50%;
+}
+.con-t{
+  padding: 10rpx 0;
+  font-weight: bold;
+}
+.dress-data{
+  display: flex;
+  flex-wrap: wrap;
+}
+.dress-data text{
+  width: 50%;
+}
+.close-btn{
+  width: 30%;
+  line-height: 60rpx;
+  background: linear-gradient(to right, #ff5e62, #ff9966);
+  margin: 20rpx auto 0;
+  font-size: 32rpx;
+  color: #fff;
+  text-align: center;
+}

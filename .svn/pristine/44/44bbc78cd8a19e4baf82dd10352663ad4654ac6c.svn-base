@@ -1,0 +1,350 @@
+// pages/userinfor/userinfor.js
+var util = require('../../utils/util.js');
+var now_date = util.formatDate(new Date());
+// 获取应用实例
+const app = getApp()
+Page({
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    avatarUrl: "../../images/default.png",//用户头像
+    formatDate:'',
+    birthday: '',
+    address: '',
+    jacket: '',
+    trousers: '',
+    shoes: '',
+    // addressArray: ['北京','山东','深圳','上海','成都','长沙'],
+    addressArray: ['北京','日照','其他地区'],
+    jacketArray: ['S','M','L','XL','2XL'],
+    trousersArray: ['S','M','L','XL','2XL'],
+    shoesArray: ['35','36','37','38','39','40','41','42','43','44','45'],
+    headArray: ['50cm','51cm','52cm','53cm','54cm','55cm','56cm','57cm','58cm'],
+    handArray: ['15cm','16cm','17cm','18cm','19cm','20cm','21cm'],
+    index: 0,
+    endDate: now_date
+  },
+  radiocon1: function(){
+    this.setData({
+      sex: 1
+    })
+  },
+  radiocon2: function(){
+    this.setData({
+      sex: 2
+    })
+  },
+  //日期
+  dateChange: function(e){
+    var that= this
+    that.setData({
+      clas: '',
+      birthday: e.detail.value
+    })
+    console.log(this.data.birthday)
+  },
+  //地区选择
+  pickerSelected: function (e) {
+    var that = this
+    //为了让选择框有个默认值，    
+    that.setData({
+      clas: '',
+      //拼的字符串传后台
+      address: that.data.addressArray[e.detail.value]
+    })
+  },
+  pickerJacket: function (e) {
+    var that = this
+    //为了让选择框有个默认值，    
+    that.setData({
+      clas: '',
+      //拼的字符串传后台
+      jacket: that.data.jacketArray[e.detail.value]
+    })
+  },
+  pickerTrousers: function (e) {
+    var that = this
+    //为了让选择框有个默认值，    
+    that.setData({
+      clas: '',
+      //拼的字符串传后台
+      trousers: that.data.trousersArray[e.detail.value]
+    })
+  },
+  pickerHead: function (e) {
+    var that = this
+    //为了让选择框有个默认值，    
+    that.setData({
+      clas: '',
+      //拼的字符串传后台
+      headSize: that.data.headArray[e.detail.value]
+    })
+  },
+  pickerHand: function (e) {
+    var that = this
+    //为了让选择框有个默认值，    
+    that.setData({
+      clas: '',
+      //拼的字符串传后台
+      handSize: that.data.handArray[e.detail.value]
+    })
+  },
+  pickerShoes: function (e) {
+    var that = this
+    //为了让选择框有个默认值  
+    that.setData({
+      clas: '',
+      //拼的字符串传后台
+      shoes: that.data.shoesArray[e.detail.value]
+    })
+  },
+  openLogin : function(){
+    var userId = app.globalData.userId
+    if(userId < 1 || userId == undefined){
+    util.showLogin((res)=>{
+      console.log(res)
+      var data = {
+        code: res.code,
+        encryptedData: "",
+        iv: ""
+      }
+      //取用户的openid
+      util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes)=>{
+        console.log(loginRes)
+        var regData = {
+          openId: loginRes.data.data.openid,
+          imgUrl: res.userInfo.avatarUrl,
+          nickName: res.userInfo.nickName,
+          sex: res.userInfo.gender,
+          unionid: loginRes.data.data.unionid
+        }
+        util.request('user/wxregister', 'POST', regData, '', (regRes)=>{
+          app.globalData.userId = regRes.data.UserId
+          app.globalData.openId = regData.openId
+          wx.setStorageSync('userId', regRes.data.UserId)
+          wx.setStorageSync('openId', regData.openId)
+          wx.reLaunch({
+            url: '../index/index',
+          })
+        })
+      })
+    })
+    // wx.showToast({
+    //   title: 'error',
+    //   icon: 'none',
+    //   duration: 1500
+    // })  
+    }
+  },
+  loginout(){
+    wx.showModal({
+      title: '提示',
+      content: '您确定要退出登录吗',
+      success: function (res) {
+        if (res.confirm) {//这里是点击了确定以后
+          console.log('用户点击确定')
+          wx.clearStorageSync()
+          wx.setStorageSync('userId', '');//userId
+          wx.setStorageSync('openId', '');//openId          
+          var pages = getCurrentPages();//获取页面栈
+          if (pages.length > 1) {
+          //上一个页面实例对象
+          var prePage = pages[pages.length - 2];
+          //调用上一个页面的onShow方法
+          prePage.onLoad()
+          }
+          wx.reLaunch({
+            url: '/pages/index/index',//跳去登录页
+          })
+        } else {//这里是点击了取消以后
+          console.log('用户点击取消')
+        }
+      }
+    })
+  },
+  onSubmit:function(e){
+    var formatDate = e.detail.value
+    var userId = app.globalData.userId
+    var data = {
+      userId : userId,
+      mobile : formatDate.mobile,
+      name : formatDate.name,
+      sex : formatDate.sex,
+      birth : this.data.birthday,
+      address : this.data.address,
+      shoes : this.data.shoes,
+      trousers :  formatDate.trousers,
+      jacket : formatDate.jacket,
+      head_size : formatDate.headSize,
+      hand_size : formatDate.handSize
+    }
+    console.log(data)
+    util.request('user/updateuser', 'POST', data, '数据加载中...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        if (formatDate.name == '') {
+          wx.showToast({
+            title: '姓名不能为空!',
+            icon: 'none',
+            duration: 1500
+          })  
+          return false
+        }
+        if(!util.isPhone(formatDate.mobile)){
+          wx.showToast({
+            title: '请输入正确手机号!',
+            icon: 'none',
+            duration: 1500
+          })
+          return false
+        }
+        if (this.data.sex == '') {
+          wx.showToast({
+            title: '请选择性别!',
+            icon: 'none',
+            duration: 1500
+          }) 
+          return false
+        }
+        if(this.data.address == ''){
+          wx.showToast({
+            title: '地区不能为空!',
+            icon: 'none',
+            duration: 1500
+          })  
+          return false
+        }
+        if(this.data.birthday == ''){
+          wx.showToast({
+            title: '生日不能为空!',
+            icon: 'none',
+            duration: 1500
+          })  
+          return false
+        }
+        wx.navigateTo({
+          url: '../index/index'
+        })
+      }else{
+        wx.showToast({
+          title: res.data.error,
+          icon: 'none',
+          duration: 1500
+        })  
+      }
+    })      
+  },
+  cancle: function(){
+    wx.navigateTo({
+      url: '../index/index',
+    })
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    this.initUser()
+    this.initInfor()
+  },
+  initUser : function(){
+    var that = this;
+    var userId = app.globalData.userId
+    if(userId > 0){
+      //已登录
+      that.setData({
+        userId:userId
+      })
+      var data = { id : userId }
+      util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
+        console.log(res);
+        if(res.data.success){
+          that.setData({
+            avatarUrl : res.data.data.header_url,
+            nickName : res.data.data.nick_name,
+            score : res.data.data.score,
+            duty : res.data.data.duty,
+            level : res.data.data.level,
+            userId:res.data.data.id
+          })
+        }
+      })
+    } else {
+      that.setData({
+        userId : 0
+      })
+    }
+  },
+  initInfor:function(e){
+    var that = this
+    var userId = app.globalData.userId
+    var data = {
+      id: userId
+    }
+    util.request('user/get', 'POST', data, '数据加载中...', (res)=>{
+      if(res.data.success){
+        that.setData({
+          nickName: res.data.data.nick_name,
+          mobile: res.data.data.mobile,
+          name: res.data.data.name,
+          sex: res.data.data.sex,
+          birthday: res.data.data.birthday,
+          address: res.data.data.address,
+          trousers: res.data.data.trousers,
+          jacket: res.data.data.jacket,
+          headSize: res.data.data.head_size,
+          handSize: res.data.data.hand_size,
+          shoes: res.data.data.shoe_size
+        })
+        console.log(res.data.data)
+      }
+    })
+  },
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide: function () {
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload: function () {
+
+  },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh: function () {
+
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom: function () {
+
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
+
+  }
+})

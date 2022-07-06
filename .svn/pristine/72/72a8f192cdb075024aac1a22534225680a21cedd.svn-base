@@ -1,0 +1,64 @@
+<!--pages/activitydata/activitydata.wxml-->
+<view class="vw-wrap">
+  <block wx:for="{{dataList}}" wx:key="index">
+    <view class="member my-data" data-id="{{item.user_id}}" bindtap="myData" wx:if="{{item.user_id == myId}}"> 
+      <view class="user-infor">
+        <view class="rank" wx:if="{{index>2}}"><text class="rank-num" style="color:#fff;">{{index+1}}</text></view>
+        <view class="rank" wx:else><image src="{{imgIcon[index]}}"></image></view>
+        <view class="user-pic {{item.level == 'VIP'?'add-bd':''}}" wx:if="{{item.level == 'VIP'}}">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+          <image src="../../images/vip_1.svg" mode="cover" class="vip"></image>
+        </view>
+        <view class="user-pic {{item.level == '普通'?'add-bd1':''}}" wx:if="{{item.level == '普通'}}">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+          <image src="../../images/normal.svg" mode="cover" class="vip"></image>
+        </view>
+        <view class="user-pic {{item.level == '非会员'?'add-bd2':''}}" wx:if="{{item.level == '非会员'}}">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+          <image src="../../images/none.svg" mode="cover" class="vip"></image>
+        </view> 
+        <view class="other-infor">
+          <view class="infor">
+            <view class="nick-name">{{item.nick_name}}</view>
+            <view class="sex" wx:if="{{item.sex == 1}}"><image src="../../images/man.svg"></image></view>
+            <view class="sex" wx:if="{{item.sex == 2}}"><image src="../../images/woman.svg"></image></view>
+          </view>
+          <view class="speed">平均配速 {{item.speed}}</view>
+        </view>
+      </view>
+      <view class="distance">{{item.distance}} 公里</view>
+    </view>
+  </block>
+
+  <block wx:for="{{dataList}}" wx:key="index">
+    <view class="member" data-id="{{item.user_id}}" bindtap="myData">
+      <view class="user-infor">
+        <view class="rank" wx:if="{{index>2}}"><text class="rank-num">{{index+1}}</text></view>
+        <view class="rank" wx:else><image src="{{imgIcon[index]}}"></image></view>
+        <view class="user-pic {{item.level == 'VIP'?'add-bd':''}}" wx:if="{{item.level == 'VIP'}}">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+          <image src="../../images/vip_1.svg" mode="cover" class="vip"></image>
+        </view>
+        <view class="user-pic {{item.level == '普通'?'add-bd1':''}}" wx:if="{{item.level == '普通'}}">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+          <image src="../../images/normal.svg" mode="cover" class="vip"></image>
+        </view>
+        <view class="user-pic {{item.level == '非会员'?'add-bd2':''}}" wx:if="{{item.level == '非会员'}}">
+          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+          <image src="../../images/none.svg" mode="cover" class="vip"></image>
+        </view>
+        <!-- <image src="{{item.header_url}}"></image> -->
+        <view class="other-infor">
+          <view class="infor">
+            <view class="nick-name">{{item.nick_name}}</view>
+            <view class="sex" wx:if="{{item.sex == 1}}"><image src="../../images/man.svg"></image></view>
+            <view class="sex" wx:if="{{item.sex == 2}}"><image src="../../images/woman.svg"></image></view>
+          </view>
+          <view class="speed">平均配速 {{item.speed}}</view>
+        </view>
+      </view>
+      <view class="distance">{{item.distance}} 公里</view>
+    </view>
+  </block>
+</view>
+<home/>

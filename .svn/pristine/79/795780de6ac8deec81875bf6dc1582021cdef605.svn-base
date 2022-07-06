@@ -1,0 +1,84 @@
+/* pages/prize/prize.wxss */
+@import "../checkpoint/checkpoint.wxss";
+.box-part{
+  display: flex;
+  justify-content: space-around;
+}
+.flex-content{
+  display: flex;
+  justify-content: center;
+  padding: 20rpx 0;
+  font-size: 32rpx;
+}
+.flex-content>view{
+  width: 50%;
+}
+.tab-tit .single{
+  width: 100%;
+  text-align: left;
+  padding-left: 40rpx;
+  box-sizing: border-box;
+}
+.tab-tit .single text{
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.list-wrap{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 80rpx;
+}
+.all-list{
+  width: 47%;
+  background: #fff;
+  margin-top: 30rpx;
+}
+.all-list .img{
+  background: #ededed;
+}
+.all-list .img image{
+  width: 100%;
+}
+.mode-infor{
+  padding: 10rpx;
+}
+.mode-infor .name{
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+.cost-point{
+  display: flex;
+}
+.cost-point .points{
+  font-size: 28rpx;
+  color: #666;
+  line-height: 40rpx;
+}
+.mode-infor .point-ico{
+  width: 40rpx;
+  height: 40rpx;
+}
+.mode-infor .btn{
+  width: 100rpx;
+  font-size: 28rpx;
+  color: #fff;
+  text-align: center;
+  line-height: 2;
+  border-radius: 5rpx;
+  background: linear-gradient(to right, #ff5e62, #ff9966);
+  margin-left: auto;
+}
+
+
+
+
+
+
+
+
+
+
+

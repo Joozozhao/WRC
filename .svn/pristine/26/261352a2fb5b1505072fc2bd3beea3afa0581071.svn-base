@@ -1,0 +1,119 @@
+/* pages/recordlist/recordlist.wxss */
+@import "../record/record.wxss";
+@import "../userlist/userlist.wxss";
+page{
+  background: #fafafa;
+  padding: 0;
+}
+.fixed-head{
+  width: 100%;
+  background: #fff;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 7;
+}
+.pass-all{
+  position: fixed;
+  right: 10%;
+  bottom: 20rpx;
+  font-size: 26rpx;
+  width: 80%;
+  line-height: 80rpx;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: normal;
+  color: #555454;
+  border-radius: 10rpx;
+  background-color: #f1f1f1;
+}
+.btn-group{
+  display: flex;
+  justify-items: center;
+  margin-top: 20rpx;
+}
+.btn-group .btn{
+  width: auto;
+  padding: 6rpx 10rpx;
+  font-size: 26rpx;
+  text-align: center;
+  font-weight: normal;
+  border: 1px solid #e1e1e1;
+  border-radius: 5rpx;
+}
+.btn-group .btn.active{
+  background: #4ec17e;
+  color: #fff;
+}
+.cover-img{
+  width: 210rpx;
+  height: 210rpx;
+  overflow: hidden;
+}
+.activity-infor .avastar{
+  display: flex;
+  align-items: center;
+}
+.activity-infor .avastar image{
+  border-radius: 100rpx; 
+  width: 80rpx;
+  margin-right: 10rpx;
+}
+.avastar .area{
+  padding: 0 10rpx;
+  background: #4ec17e;
+  border-radius: 5rpx;
+  color: #fff;
+  margin-left: 10rpx;
+  font-size: 20rpx;
+}
+
+.form-item{
+  display: flex;
+  line-height: 100rpx;
+  margin-bottom: 10rpx;
+}
+.form-item .ipt{
+  height: 100rpx;
+  line-height: 100rpx;
+  margin-left: auto;
+  text-align: right;
+}
+.act-btn{
+  position: absolute;
+  right: 20rpx;
+  bottom: 24rpx;
+}
+.act-btn .btn{
+  display: inline-block;
+  padding: 0 10rpx;
+  line-height: 1.5;
+  border: 1px solid #e1e1e1;
+  border-radius: 5rpx;
+  margin: 10rpx 20rpx 0 0;
+  background: #fff;
+}
+.act-btn .btn.gray{
+  background: #e1e1e1;
+  color: #fff;
+}    
+.act-btn .btn:nth-last-child(1){
+  margin-right: 0;
+}
+.activity{
+  width: 100%;
+  display: flex;
+  margin: 30rpx 0;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 0;
+  box-shadow: 0 0 0 0;
+  padding: 0;
+}
+.activity .cover-img {
+  width: 210rpx;
+}
+.activity .activity-infor{
+  display: block;
+  width: auto;
+}

@@ -1,0 +1,111 @@
+/* pages/editactivity/editactivity.wxss */
+@import '../creat/creat.wxss';
+.infor-con{
+  display: flex;
+  align-items: center;
+  padding: 30rpx 0;
+}
+.list .item{
+  width: 50rpx;
+  height: 50rpx;
+  background: #fff;
+  border: 5rpx solid #fff;
+  border-radius: 100rpx;
+  float: left;
+  margin-left: -20rpx;
+}
+.list .item image{
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.list .item:nth-child(1){
+  margin-left: 0;
+}
+.total{
+  position: relative;
+  margin-left: auto;
+  padding-right: 40rpx;
+}
+.total .green{
+  color: #4ec17e;
+}
+.add-arrow image{
+  width: 30rpx;
+  height: 30rpx;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -15rpx;
+}
+.member{
+  align-items: center;
+  display: flex;
+  padding: 30rpx 0rpx;
+  font-size: 32rpx;
+  color: #999;
+  border-bottom: 1px solid #f0f0f0;
+}
+.member .check-radio{
+  margin-right: 10rpx;
+}
+.member .user-infor{
+  width: auto;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+.other-infor{
+  /* margin-left: 40rpx; */
+  color: #999;
+}
+.member .user-infor image{
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+}
+.member .user-infor .rank image{
+  width: 50rpx;
+  height: 50rpx;
+}
+.member .user-infor .infor{
+  display: flex;
+  align-items: center;
+}
+.member .user-infor .infor image{
+  width: 25rpx;
+  height: 25rpx;
+  margin-left: 10rpx;
+}
+.user-pic{
+  position: relative;
+}
+.user-pic.add-bd .pic{
+  border: 3px solid #fcb81d;
+}
+.user-pic.add-bd1 .pic{
+  border: 3px solid #e97376;
+}
+.user-pic.add-bd2 .pic{
+  border: 3px solid #aaaaaa;
+}
+.member .user-infor .user-pic .vip{
+  width: 30rpx;
+  height: 30rpx;
+  position: absolute;
+  right: 20rpx;
+  bottom: 0;
+}
+.user-infor .my-area{
+  background:#4ec17e;
+  border-radius: 6rpx;
+  padding: 0 10rpx;
+  /* line-height: 50rpx; */
+  text-align: center;
+  color: #fff;
+  font-size: 24rpx;
+  margin-left: 20rpx;
+}
+.run-title{
+  line-height: 100rpx;
+}

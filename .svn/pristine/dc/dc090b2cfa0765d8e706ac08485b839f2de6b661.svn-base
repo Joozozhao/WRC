@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "default",
+  "backgroundTextStyle":"light",
+  "navigationBarBackgroundColor": "#4e505f",
+  "navigationBarTitleText": "创建挑战",
+  "navigationBarTextStyle":"white"
+}

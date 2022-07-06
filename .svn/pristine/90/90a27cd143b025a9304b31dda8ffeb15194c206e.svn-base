@@ -1,0 +1,12 @@
+<!--pages/manage/manage.wxml-->
+<view class="vw-wrap">
+<view class="meun-item" bindtap="creatNew">创建团跑<image src="/images/arrow-r-gray.png" class="add-arrow"></image></view>
+<view class="meun-item" bindtap="creatChallenge">创建挑战<image src="/images/arrow-r-gray.png" class="add-arrow"></image></view>
+<view class="meun-item" bindtap="toLottery">抽奖管理<image src="/images/arrow-r-gray.png" class="add-arrow"></image></view>
+<view class="meun-item" bindtap="toPrize">奖品管理<image src="/images/arrow-r-gray.png" class="add-arrow"></image></view>
+<view class="meun-item" bindtap="toRecord">打卡管理<image src="/images/arrow-r-gray.png" class="add-arrow"></image></view>
+<view class="meun-item" bindtap="toUser">会员管理<image src="/images/arrow-r-gray.png" class="add-arrow"></image></view>
+<view class="meun-item" bindtap="toOrder">订单管理<image src="/images/arrow-r-gray.png" class="add-arrow"></image></view>
+<view class="meun-item" bindtap="toNews">资讯管理<image src="/images/arrow-r-gray.png" class="add-arrow"></image></view>
+</view>
+<home />

@@ -1,0 +1,1 @@
+<view class="home" bindtap="backHome"><image src="../../images/Home.png"></image></view>

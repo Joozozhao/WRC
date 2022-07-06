@@ -1,0 +1,37 @@
+/* pages/address/address.wxss */
+.address-list{
+  font-size: 32rpx;
+  padding: 30rpx 30rpx 150rpx;
+}
+.list-item{
+  margin-bottom: 30rpx;
+  border-radius: 10rpx;
+}
+.address-infor{
+  padding: 20rpx 0;
+}
+.receiver{
+  display: flex;
+  font-size: 36rpx;
+  line-height: 2;
+}
+.receiver .number{
+  margin-left: auto;
+}
+.address-details{
+  color: #666;
+}
+.edit-address{
+  display: flex;
+  padding: 20rpx 0;
+  border-top: 1px solid #f1f1f1;
+}
+.edit-address .icons{
+  display: flex;
+  margin-left: auto;
+}
+.edit-address .icon image{
+  width: 50rpx;
+  height: 50rpx;
+  margin: 0 40rpx;
+}

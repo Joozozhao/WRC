@@ -1,0 +1,6 @@
+/* pages/othersdata/othersdata.wxss */
+@import '../mydata/mydata.wxss';
+
+.gradient-bg {
+  background: linear-gradient(to bottom, #2980b9, #6dd5fa, #ffffff) !important;
+}

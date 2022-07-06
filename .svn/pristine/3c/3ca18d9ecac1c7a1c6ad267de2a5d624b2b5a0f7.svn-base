@@ -1,0 +1,336 @@
+// pages/creat/creat.js
+const util = require('../../utils/util.js')
+// var now_time = util.formatTime(new Date())
+// let endDate = util.formatTime(new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
+//明天的时间
+var day1 = new Date()
+day1.setTime(day1.getTime()+24*60*60*1000)
+var s1 = day1.getFullYear()+"-"+(day1.getMonth()+1) + "-" +day1.getDate()
+var s2 = (day1.getFullYear()+10)+"-"+(day1.getMonth()+1) + "-" +day1.getDate()
+// 获取应用实例
+const app = getApp()
+Page({
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    showView: false,
+    addView: true,
+    startTime: s1 +' '+ '00:00:00',
+    endTime: s1 +' '+ '23:59:59',
+    isPickerRender: false,
+    isPickerShow: false,
+    pickerConfig: {
+      endDate: true,
+      column: "second",
+      dateLimit: true,
+      initStartTime: s1 +' '+ '00:00:00',
+      initEndTime: s1 +' '+ '23:59:59',
+      limitStartTime: s1 +' '+ '00:00:00',
+      limitEndTime: s2 +' '+ '23:59:59'
+    },
+    actyType: '团跑',
+    formatDate: '',
+    tempFilePaths: '',
+    checkOr: '',
+    hasMobile: 0,
+    sealType: '',
+    showModal: false,
+    sealTypeList: [
+      {
+        gzkind: '北京',
+        id: 1,
+        checked: ''
+      },
+      {
+        gzkind: '日照',
+        id: 2,
+        checked: ''
+      },
+      {
+        gzkind: '其他地区',
+        id: 3,
+        checked: ''
+      }
+    ],
+    stype: 0,
+    score: 0,
+    disable: ''
+  },
+  //地区选择
+  pickArea: function(){
+    this.setData({
+      showModal: true
+    })
+  },
+  checkboxChange: function (e) {
+    let that = this;
+    let sealTypeList = this.data.sealTypeList;
+    // 若之前已选择公章，将其回显打勾
+    
+    for (let i = 0; i < sealTypeList.length; i++) {
+      sealTypeList[i].checked = false;
+    }
+    let indexes = e.detail.value;
+    for (let i = 0; i < indexes.length; i++) {
+      indexes[i] = parseInt(indexes[i]);
+      // 多选框从1开始，数组下标从0开始，所以需要减1
+      sealTypeList[indexes[i] - 1].checked = true;
+    }
+    // 直接将整个list赋值回去
+    this.setData({
+      sealTypeList: sealTypeList
+    })
+  },
+  // 用户点击确定
+  onConfirm: function () {
+    let that = this;
+    let seals = [];
+    let sealTypeList = this.data.sealTypeList;
+    sealTypeList.forEach(function (e) {
+      if (e.checked) {
+        // gzkind是对象的一个属性，表示具体公章类型名的字符串
+        seals.push(e.gzkind);
+      }
+    });
+    // 显示到wxml上
+    this.setData({
+      sealType: seals.join(","),
+      showModal: false
+    })
+  },
+  // 用户点击取消
+  onCancel: function () {
+    let that = this;
+    let sealTypeList = this.data.sealTypeList;
+    // 获取上一次选择的用印类型字符串（规定用，隔开）
+    let gzkind = this.data.sealType || "";
+    // 放弃当前的勾选，原来谁checked，谁就checked
+    sealTypeList.forEach(function (e) {
+      e.checked = false;
+    });
+    if (gzkind !== "") {
+      gzkind = gzkind.split(",");
+      for (let i = 0; i < gzkind.length; i++) {
+        for (let j = 0; j < sealTypeList.length; j++) {
+          let e = sealTypeList[j];
+          if (e.gzkind == gzkind[i]) {
+            e.checked = true;
+          }
+        }
+      }
+    }
+    this.setData({
+      sealTypeList: sealTypeList,
+      showModal: false
+    })
+  },
+  pickerShow: function(){
+    this.setData({
+      isPickerShow: true,
+      isPickerRender: true,
+      chartHide: true
+    })
+  },
+  pickerHide: function() {
+    this.setData({
+      isPickerShow: false,
+      chartHide: false
+    });
+  },
+
+  bindPickerChange: function(e) {
+    console.log("picker发送选择改变，携带值为", e.detail.value);
+    console.log(this.data.sensorList);
+
+    this.getData(this.data.sensorList[e.detail.value].id);
+    // let endDate = util.formatTime(new Date());
+    this.setData({
+      index: e.detail.value,
+      sensorId: this.data.sensorList[e.detail.value].id
+      // endDate
+    })
+  },
+  setPickerTime: function(val) {
+    console.log(val);
+    let data = val.detail;
+    var startTime = this.dislodgeZero(data.startTime)
+    var endTime = this.dislodgeZero(data.endTime)
+    this.setData({
+      startTime: startTime,
+      endTime: endTime
+    })
+  },
+  dislodgeZero(str) {
+    let strArray = str.split("-");
+    strArray = strArray.map(function(val) {
+      if (val[0] == "0") {
+        return (val = val.slice(1));
+      } else {
+        return val;
+      }
+    });
+    return strArray.join("-");
+  },
+  uploadAction: function(){
+    var that =this;
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['original','compressed'],
+      sourceType: ['album','camera'],
+      success:function(res) {
+        var tempFilePaths = res.tempFilePaths
+        var userId = app.globalData.userId
+        console.log(tempFilePaths)
+        wx.showToast({
+         icon: "loading",
+         title: "正在上传"
+         }),
+         wx.uploadFile({
+           filePath: res.tempFilePaths[0],
+          name: 'file',
+          url: 'https://www.mlhb.com.cn/sport/acty/uploadimg',
+          formData: { userId:  userId, fileId:'file' },
+          success: function(ret){
+            console.log(ret);
+            var obj = JSON.parse(ret.data)
+            that.setData({
+              tempFilePaths: obj.data.img,
+              addView: false,
+              showView: true
+            })
+          },
+          fail: function(ret){
+            console.log(ret)
+          }
+        })
+      }
+    })
+  },
+  delete: function(){
+    this.setData({
+      showView: false,
+      addView: true,
+      tempFilePaths: ''
+    })
+  },
+  checkOr: function(){
+    if(this.data.hasMobile == 0){
+      this.setData({
+        checkOr: true,
+        hasMobile: 1
+      })
+    } else {
+      this.setData({
+        checkOr: '',
+        hasMobile: 0
+      })
+    }
+  },
+  submit: function(e){
+    var that = this
+    var formatDate = e.detail.value
+    var userId = app.globalData.userId    
+    var data = {
+      userId: userId,
+      actyName: formatDate.actyName,
+      actyType: that.data.actyType,
+      startTime: that.data.startTime,
+      endTime: that.data.endTime,
+      address: formatDate.address,
+      region: that.data.sealType,
+      remark: '',
+      distance: formatDate.distance,
+      actyImg: that.data.tempFilePaths,
+      hasMobile: that.data.hasMobile,
+      hasName: 1,
+      stype: that.data.stype,
+      score: that.data.score,
+      level: 0
+    }
+    console.log(data)
+    if(that.data.sealType == ''){
+      wx.showToast({
+        title: '请选择活动地区!',
+        icon: 'none',
+        duration: 1500
+      })
+      return false
+    }
+    if(formatDate.actyName == ''){
+      wx.showToast({
+        title: '名称不能为空!',
+        icon: 'none',
+        duration: 1500
+      })
+      return false
+    }
+    if(that.data.startTime == ''){
+      wx.showToast({
+        title: '请选择开始时间!',
+        icon: 'none',
+        duration: 1500
+      })
+      return false
+    }
+    if(that.data.startTime == ''){
+      wx.showToast({
+        title: '请选择结束时间!',
+        icon: 'none',
+        duration: 1500
+      })
+      return false
+    }
+    if(formatDate.address == ''){
+      wx.showToast({
+        title: '地点不能为空!',
+        icon: 'none',
+        duration: 1500
+      })
+      return false
+    }
+    if (formatDate.distance == ''){
+      wx.showToast({
+        title: '距离不能为空!',
+        icon: 'none',
+        duration: 1500
+      })
+      return false
+    }
+    if(that.data.tempFilePaths == ''){
+      wx.showToast({
+        title: '请上传封面!',
+        icon: 'none',
+        duration: 1500
+      })
+      return false
+    }
+    util.request('acty/save', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        that.setData({
+          disable: true
+        })
+        wx.showToast({
+          title: '创建成功',
+          duration: 1000
+        })
+        wx.reLaunch({
+          url: '../activity/activity',
+        })
+      }else{
+        wx.showToast({
+          title: res.data.error,
+          icon: 'none',
+          duration: 1500
+        })  
+      }
+    })
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    wx.hideShareMenu({})
+  }
+})

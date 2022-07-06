@@ -1,0 +1,9 @@
+/* pages/prizelist/prizelist.wxss */
+@import "../activitylist/activitylist.wxss";
+.cover-img{
+  width: 120rpx;
+  height: 120rpx;
+}
+.cover-img image{
+  min-height: auto;
+}

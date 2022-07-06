@@ -1,0 +1,25 @@
+<!--pages/activitylist/activitylist.wxml-->
+<radio-group class="radio-group">
+  <label wx:for="{{activityList}}" wx:key="index" wx:for-item="item">
+    <view class="activity" id="{{key}}" data-id="{{item.id}}" data-name="{{item.acty_name}}" data-addr="{{item.region}}" data-type="{{item.acty_type}}" data-region="{{item.region}}" wx:if="{{item.acty_state !== 0}}" bindtap="radioChange"><!--  -->
+      <view class="check-radio">
+        <radio value='{{item.id}}' checked="{{item.id == id}}"/>
+      </view>
+      <view class="cover-img" data-id="{{item.id}}">
+        <image src="{{item.acty_img}}" mode="aspectFill"></image>
+      </view>
+      <wxs src="../../utils/toPlace.wxs" module="module1" />
+      <view class="activity-infor" data-id="{{item.id}}">
+        <view class="title">{{item.acty_name}}</view>
+        <view wx:if="{{item.acty_type == '挑战'}}"><text class="tag">{{item.acty_type}}</text><text class="tag org">{{module1.change(item.region)}}</text></view>
+        <view wx:else><text class="tag">{{item.acty_type}}</text><text class="tag org">{{item.region}}</text></view>
+        <view class="time"><image src="/images/time.png"></image>{{item.start_timestr}}-{{item.end_timestr}}</view>
+        <view class="address"><image src="/images/place.png"></image>{{item.address}}</view>
+        <view>已参加：{{item.joins}}人</view>
+      </view>
+    </view>
+  </label>
+</radio-group>
+<view class="full-btn">
+  <button class="btn btnTwo" bindtap="submit">选择活动</button>
+</view>

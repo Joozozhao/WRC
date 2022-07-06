@@ -1,0 +1,10 @@
+{
+  "navigationStyle": "default",
+  "backgroundTextStyle":"light",
+  "navigationBarBackgroundColor": "#333",
+  "navigationBarTitleText": "挑战活动详情",
+  "navigationBarTextStyle":"white",
+  "usingComponents": {
+    "circle": "../../components/circle/circle"
+  }
+}

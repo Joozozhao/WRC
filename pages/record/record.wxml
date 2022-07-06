@@ -1,0 +1,46 @@
+<!--pages/record/record.wxml-->
+<wxs src="../../utils/toDecimal2.wxs" module="module1" />
+<block wx:for="{{recordList}}" wx:key="index" wx:for-item="item">
+  <view class="activity">
+    <movable-area>
+      <movable-view 
+        out-of-bounds="true" 
+        direction="horizontal" 
+        x="{{item.xmove}}" 
+        inertia="true" 
+        data-productIndex="{{index}}" 
+        bindtouchstart="handleTouchStart" 
+        bindtouchend="handleTouchEnd" 
+        bindtouchmove='handleTouchMove'
+        bindchange="handleMovableChange">
+        <view class="product-item-wrap">
+          <view class="cover-img" data-id="{{item.id}}" data-url="{{item.sport_img}}" bindtap="preview">
+            <image src="{{item.sport_img}}" mode="aspectFill"></image>
+          </view>
+          <view class="activity-infor">
+            <view class="time">{{item.create_time_str}}</view>
+            <view><text class="distance letter-spacing letter-indent">{{module1.toDecimal2(item.distance)}}</text> km</view>
+            <view>平均配速：{{item.speed}}</view>
+          </view>
+          <view class="state-bg" wx:if="{{item.state == 1}}">
+            <view class="pass" wx:for="{{randomTxt}}" wx:for-item="items" wx:for-index="childindex" wx:if="{{childindex<1}}" wx:key="index">{{randomTxt[index]}}<image src="/images/zan.svg"></image>
+            </view>
+          </view>
+          <view class="state-bg bg2" wx:if="{{item.state == 2}}">
+            <view class="fail">{{item.remark}} <text wx:if="{{item.score>0}}">-{{item.score}}</text></view>
+          </view>
+          <view class="acty-type" style="background:#ffa631;" wx:if="{{item.acty_id==0}}">
+            <view>日常跑</view>
+          </view>
+          <view class="acty-type" style="background:#a3d900;" wx:if="{{item.acty_id>0}}">
+            <view>团跑</view>
+          </view>
+        </view>
+      </movable-view>
+    </movable-area>
+    <view class="delete-btn" data-id="{{item.id}}" data-index="{{index}}" bindtap="delCon">删除</view>
+  </view>
+</block>
+<!--<view class="noHistory {{noHistory?'show':'hide'}}">
+  <view class="main">暂无任何打卡记录</view>
+</view>-->

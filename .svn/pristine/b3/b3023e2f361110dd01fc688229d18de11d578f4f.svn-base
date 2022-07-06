@@ -1,0 +1,158 @@
+<!--pages/editchallenge/editchallenge.wxml-->
+<!--pages/creat/creat.wxml-->
+<form bindsubmit="submit">
+  <view class="form-con">
+    <view class="form-item upload-cover">
+      <!-- <label for="" class="title">活动封面</label> -->
+      <view class="add-pic {{addView?'show':'hide'}}" bindtap="uploadAction">
+        <view class="bg-wrap"></view>
+        <image src="../../images/loadimg.svg"></image>
+      </view>
+      <view class="show-pic {{showView?'show':'hide'}}" bindtap="uploadAction">
+        <image src="{{tempFilePaths}}" mode="widthFix" style="height:auto;"></image>
+        <view class="del" bindtap="delete"><image src="../../images/delete.png"></image></view>
+      </view>
+    </view>
+    <!-- <view class="form-item vw-wrap">
+      <label for="" class="title">活动类型</label>
+      <input type="text" value="{{actyType}}" class="ipt" disabled="disabled"></input>
+    </view> -->
+    <view class="form-item vw-wrap">
+      <label for="" class="title">活动名称</label>
+      <input type="text" focus="{{focus}}" value="{{actyName}}" name="actyName" placeholder="请输入活动名称" class="ipt ellipsis"></input>
+      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
+    </view>
+    <view class="form-item vw-wrap">
+      <label for="" class="title">开始时间</label>
+      <view class="ipt">
+        <input type="text" value="{{startTime}}" class="ipt" style="margin-right:0;" disabled="disabled" bindtap="pickerShow" wx:if="{{startTime}}"></input>
+      </view>
+      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
+    </view>
+    <view class="form-item vw-wrap">
+      <label for="" class="title">结束时间</label>
+      <view class="ipt">
+        <input type="text" value="{{endTime}}" class="ipt" style="margin-right:0;" disabled="disabled" bindtap="pickerShow" wx:if="{{endTime}}"></input>
+      </view>
+      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
+    </view>
+    <!-- <view class="form-item vw-wrap">
+      <label for="" class="title">活动地点</label>
+      <input type="text" value="{{address}}" name="address" placeholder="请输入活动地点" class="ipt ellipsis"></input>
+      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+    </view> -->
+    <view class="form-item vw-wrap">
+      <label for="" class="title">挑战距离</label>
+      <input type="digit" focus="{{focus}}" value="{{distance}}" name="distance" class="ipt" placeholder="请输入挑战距离"></input>
+      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
+    </view>
+    <view class="form-item vw-wrap">
+      <label for="" class="title">挑战奖励</label>
+      <view class="fm-con">
+        <radio-group name="stype" class="type-con" style="display:flex;">
+          <label for="">
+            <view style="display:inline-block;margin-right:20rpx;" bindtap="choose">
+              <radio value="0"  checked="{{stype === 0 ? 'true' : ''}}" disabled="disabled" />积分
+            </view>
+          </label>
+          <label for="">
+            <view style="display:inline-block;margin-right:20rpx;" bindtap="choose2">
+              <radio value="1"  checked="{{stype === 1 ? 'true' : ''}}" disabled="disabled" />能量
+            </view>
+            
+          </label><input type="digit" name="score" value="{{score}}" disabled="disabled" />
+        </radio-group>
+      </view>
+      <!-- <input type="digit" value="{{distance}}" name="distance" class="ipt" placeholder="请输入挑战距离"></input>
+      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view> -->
+    </view>
+    <view class="form-item vw-wrap" style="display:block;">
+      <label for="" class="title">挑战说明</label>
+      <textarea name="remark" focus="{{focus}}" maxlength="-1" class="ipt" placeholder="请输入挑战说明" style="display:block;width:100%;height:100rpx;line-height:1;overflow-y:scroll;padding:0;margin:0;text-align:left;" value="{{remark}}"></textarea>
+    </view>
+    <view wx:if="{{actyType!=='V挑战'}}">
+      <view class="sub-tit vw-wrap">报名填写项</view>
+      <view class="form-item vw-wrap">
+        <label for="" class="title">姓名</label>
+        <view class="ipt no-mr"><switch name="switch" checked="true" disabled style="zoom: 0.8;"/></view>
+      </view>
+      <view class="form-item vw-wrap">
+        <label for="" class="title">电话号码</label>
+        <view class="ipt no-mr" bindtap="checkOr"><switch name="switch" checked="{{checkOr}}" style="zoom: 0.8;"/></view>
+      </view>
+    </view>
+    <view class="vw-wrap" wx:if="{{actyType=='V挑战'}}">
+      <view wx:if="{{runCon}}">
+        <view class="infor-con" wx:if="{{actyMember.length==0}}">
+          <view class="total" bindtap="toList">
+            <view><text class="green">选择成员</text></view>
+            <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+          </view>
+        </view>
+        <view class="infor-con" wx:if="{{actyMember.length>0}}">
+          <view class="list" style="max-width: 260rpx;height: 60rpx;overflow: hidden;">
+            <block wx:for="{{actyMember}}" wx:key="index" wx:for-item="item" wx:if="{{item.state==1}}">
+              <view class="item"><image src="{{item.header_url}}"></image></view>
+            </block>
+          </view>
+          <view class="total" bindtap="toList">
+            <view><text class="green">{{totalIn}}人</text></view>
+            <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- 遮罩层 -->
+  <view class="modal-mask" wx:if="{{runModal}}"></view>
+      <!-- 弹出框 -->
+      <view class="modal-dialog" style="width:90%;" wx:if="{{runModal}}">
+        <view class="modal-content">
+          <scroll-view scroll-y="true" style="height:70vh">
+            <checkbox-group class="radio-group" data-index="index" bindchange="checkboxChange2" name="actyType">
+              <label wx:for="{{avastars}}" wx:key="index" wx:for-item="item">
+                <view class="member"> 
+                  <view class="check-radio" wx:if="{{item.state==1}}">
+                    <checkbox value="{{item.id}}" checked="true"/>
+                  </view>
+                  <view class="check-radio" wx:if="{{item.state!==1}}">
+                    <checkbox value="{{item.id}}" checked=""/>
+                  </view>
+                  <view class="user-infor">
+                    <view class="user-pic">
+                      <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
+                    </view>
+                    <view class="other-infor">
+                      <view class="infor">
+                        <view class="nick-name" wx:if="{{item.name!==''}}">{{item.name}}</view>
+                        <view class="nick-name" wx:else>{{item.nick_name}}</view>
+                        <view class="sex" wx:if="{{item.sex == 1}}"><image src="../../images/man.svg"></image></view>
+                        <view class="sex" wx:if="{{item.sex == 2}}"><image src="../../images/woman.svg"></image></view>
+                        <view wx:if="{{item.level == 'VIP'}}"><image src="../../images/superVIP.svg" mode="widthFix" class="level"></image></view>
+                        <view wx:if="{{item.level == '普通'}}"><image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image></view>
+                        <view class="my-area" style="background:#f36838;" wx:if="{{item.address=='北京'}}">{{item.address}}</view>
+                        <view class="my-area" style="background:#7bcfa6;" wx:if="{{item.address=='日照'}}">{{item.address}}</view>
+                        <view class="my-area" style="background:#bacac6;" wx:if="{{item.address=='其他地区'}}">{{item.address}}</view>
+                      </view>
+                      <view class="total">
+                        <text class="tag">ID{{item.id}}</text>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+              </label>
+            </checkbox-group>
+          </scroll-view>
+        </view>
+        <!-- 操作按钮 -->
+        <view class="modal-footer nopd">
+          <button class="btn btn-cancel" bindtap="onCancel2" data-status="cancel">取消</button>
+          <button class="btn btn-confirm" bindtap="onConfirm2">确定<text wx:if="{{totalMan>0}}">({{totalMan}})</text></button>
+        </view>
+      </view>
+  <view class="full-btn">
+    <button class="btn btnTwo" form-type="submit">完成</button>
+  </view>
+</form>
+<time-picker pickerShow="{{isPickerShow}}" id="picker" wx:if="{{isPickerRender}}" bind:hidePicker="pickerHide" bind:setPickerTime="setPickerTime"
+  config="{{pickerConfig}}"></time-picker>

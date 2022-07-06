@@ -1,0 +1,96 @@
+/* pages/news/news.wxss */
+page{
+  color: rgb(255, 255, 255);
+  text-shadow: 1px 1px 1px #000;
+}
+.gradient-bg {
+  background: linear-gradient(to bottom,#1d976c, #93f9b9);
+  overflow-y: scroll;
+}
+.news-list{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10rpx 0;
+}
+.news-list .text{
+  display: flex;
+  align-items: center;
+  width: 70%;
+  height: 166rpx;
+  border-bottom: 1px solid #f1f1f1;
+  padding-bottom: 40rpx;
+}
+.news-list .img{
+  margin-left: auto;
+}
+.news-list .img image{
+  width: 160rpx;
+  height: 120rpx;
+}
+.logo{
+  text-align: center;
+}
+.logo image{
+  display: inline-block;
+  width: 97%;
+}
+.new-con{
+  font-size: 28rpx;
+  line-height: 2;
+  text-align: justify;
+  padding: 30rpx 30rpx 50rpx;
+}
+.tit-main{
+  display: inline-block;
+  text-align: center;
+  padding: 4rpx;
+  border-top: 2px solid rgb(71, 193, 168);
+  border-bottom: 2px solid rgb(71, 193, 168);
+  
+}
+.tit-one{
+  font-size: 32rpx;
+  font-weight: bold;
+  margin: 30rpx 0 0;
+}
+.tit-wrap{
+  margin:  0 auto;
+}
+.tit-two{
+  display: inline-block;
+  margin: 20rpx 0;
+}
+.tips{
+  margin: 20rpx 0;
+}
+.all-con{
+  padding: 20rpx;
+  border: 1px solid;
+  border-color: rgb(245, 243, 243) rgb(122, 175, 231) rgb(255, 220, 161) rgb(109, 203, 155);
+}
+
+.sub-tit{
+  margin: 20rpx 0 ;
+}
+.user-wrap{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 40rpx;
+}
+.user-pic{
+  width: 20%;
+  position: relative;
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 2% 40rpx 2%;
+}
+.user-pic.add-bd .pic{
+  width: 40rpx;
+  min-height: 40rpx;
+  margin-right: 0;
+  margin-bottom: 10rpx;
+}

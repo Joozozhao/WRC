@@ -1,0 +1,10 @@
+{
+  "navigationStyle": "default",
+  "backgroundTextStyle":"light",
+  "navigationBarBackgroundColor": "#537780",
+  "navigationBarTitleText": "打卡记录",
+  "navigationBarTextStyle":"white",
+  "usingComponents": {
+    "calendar": "/components/calendar/calendar"
+  }
+}

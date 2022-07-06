@@ -1,0 +1,44 @@
+<!--pages/clockin/clockin.wxml-->
+<form bindsubmit="submit">
+  <view class="form-con clockin">
+  <view class="form-item upload-cover">
+    <!-- <label for="" class="title">上传记录</label> -->
+    <view class="add-pic {{addView?'show':'hide'}}" bindtap="uploadAction">
+      <view class="bg-wrap"></view>
+      <image src="../../images/loadimg.svg"></image>
+      <view class="t-tips">上传咕咚跑步截图</view>
+    </view>
+    <view class="show-pic {{showView?'show':'hide'}}">
+      <image src="{{tempFilePaths}}" mode="widthFix" bindtap="uploadAction"></image>
+      <view class="del" bindtap="delete"><image src="../../images/delete.png"></image></view>
+    </view>
+  </view>
+  <view class="vw-wrap ruler-txt">
+    <view>规则：</view>
+    <view class="content">请务必上传咕咚软件有轨迹的跑步记录截图，截图需包含步频、配速总距离信息。不满足要求不积分，恶意打卡单次扣减 5 分；</view>
+  </view>
+  <view class="form-item vw-wrap">
+    <label for="" class="title">距离(公里)</label>
+    <input type="digit" value="{{distance}}" name="distance" class="ipt ellipsis" placeholder="请输入距离"></input>
+  </view>
+  <view class="form-item vw-wrap">
+    <label for="" class="title">配速(分钟/公里)</label>
+    <input type="number" class="ipt {{clas}}" wx:if="{{speed == ''}}" value="请选择配速" bindtap="pickerSpeed" disabled="disabled"></input>
+    <input type="number" value="{{speed}}" bindtap="pickerSpeed" name="speed" class="ipt" disabled="disabled" wx:else></input>
+    
+    <picker
+    style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}'
+    bindchange="pickerSpeed"
+    isShowPicker="{{isShow_03}}"
+    bindsure="sureCallBack_03"
+    bindcancle="cancleCallBack_03"
+    scrollType="normal"
+    listData="{{timeArray}}"
+    >
+    </picker>
+  </view>
+</view>
+<view class="full-btn">
+  <button class="btn btnTwo" form-type="submit">提交</button>
+</view>
+</form>

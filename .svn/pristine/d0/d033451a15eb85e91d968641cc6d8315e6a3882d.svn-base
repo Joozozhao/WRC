@@ -1,0 +1,12 @@
+{
+  "usingComponents": {
+    "ec-canvas": "../../components/ec-canvas/ec-canvas",
+    "tabbar": "../../components/tabbarComponent/tabbar",
+    "all-activity": "../../components/all-activity/all-activity"
+  },
+  "navigationStyle": "default",
+  "backgroundTextStyle":"light",
+  "navigationBarBackgroundColor": "#1d976c",
+  "navigationBarTitleText": "我的",
+  "navigationBarTextStyle":"white"
+}

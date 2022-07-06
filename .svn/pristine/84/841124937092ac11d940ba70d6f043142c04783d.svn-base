@@ -1,0 +1,101 @@
+<!--pages/prizemanage/prizemanage.wxml-->
+<view style="padding-bottom:150rpx;">
+<block wx:for="{{prizeList}}" wx:key="index" wx:for-item="item">
+  <view class="activity">
+    <view class="cover-img" data-id="{{item.id}}" bindtap="toDetail">
+      <image src="{{item.goods_pic}}" mode="widthFix" style="height:auto;"></image>
+    </view>
+    <view class="activity-infor">
+      <view data-id="{{item.id}}" bindtap="toDetail">
+        <view class="prize-tit">{{item.goods_name}}</view>
+        <text class="need-score" wx:if="{{item.energy>0}}">{{item.energy}}能量</text>
+        <text class="need-score" wx:if="{{item.score>0}}">{{item.score}}积分</text>
+        <view wx:for="{{item.goodsStorageMap}}" wx:for-item="items" wx:for-index="childindex" wx:key="index">
+          <view>{{childindex}}</view>
+          <view class="type-detail">
+            <view wx:for="{{items}}" wx:for-index="childindex2" wx:key="index">
+              <view>{{item.tag_desc}} 库存{{item.stock}}</view>
+            </view>
+          </view>
+          
+        </view>
+      </view>
+      <view class="act-btn">
+        <text class="btn edit" data-id="{{item.id}}" data-type="{{item.goods_type}}" data-total="{{item.total}}" data-score="{{item.score}}" data-energy="{{item.energy}}" bindtap="payGood">分配</text>
+        <text class="btn edit" data-id="{{item.id}}" bindtap="editGood">编辑</text>
+        <text class="btn edit up" wx:if="{{item.state==1}}" data-index="{{index}}" data-id="{{item.id}}" data-state="{{item.state}}" data-num="{{item.goodsStorageMap}}" bindtap="setState">上架</text>
+        <text class="btn edit" wx:if="{{item.state==0}}" data-index="{{index}}" data-id="{{item.id}}" data-state="{{item.state}}" data-num="{{item.goodsStorageMap}}" bindtap="setState">下架</text>
+        <text class="btn edit" data-id="{{item.id}}" bindtap="setType">规格</text>
+        <text class="btn edit" data-index="{{index}}" data-id="{{item.id}}" bindtap="delPrize">删除</text>
+      </view>
+    </view>
+    
+  </view>
+</block>
+</view>
+<view class="noHistory {{noHistory?'show':'hide'}}">
+  <view class="main">暂无奖品</view>
+</view>
+<!-- 遮罩层 -->
+<view class="modal-mask" wx:if="{{memberModal}}" bindtap="closeIt"></view>
+<!-- 弹出框 -->
+<view class="modal-dialog" style="width:90%;" wx:if="{{memberModal}}">
+<form bindsubmit="onConfirm">
+  <view class="modal-content">
+    <view class="con-t">分配奖品</view>
+    <view class="top-con" wx:if="{{allType}}">
+      <view wx:for="{{allType}}" wx:key="index">
+        <view>{{index}}</view> 
+        <view class="tpye-con">
+          <view wx:for="{{item}}" wx:for-item="items" wx:for-index="childindex" wx:key="index">
+            <view class="tag-desc {{typeId==items.id ? 'active' : ''}}" wx:if="{{items.tag_desc}}" data-id="{{items.id}}" bindtap="chooseOne">{{items.tag_desc}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="vw-wrap" wx:else>
+      <view style="padding:30rpx 0;">暂无规格</view>  
+    </view>
+    <view class="search-con">
+      <view class="con-t">用户姓名</view>
+      <view class="search-bar"> 
+        <input type="text" value="{{username}}" name="username" placeholder="请输入用户姓名" bindinput="search" class="id-ipt"></input>
+        <view class="cancle" bindtap="hideInput">取消</view>
+      </view>
+      <view class="scroll-con {{add?'add-mb':''}}">
+        <scroll-view class='scroll-view' wx:if='{{viewShowed}}' scroll-y>
+          <view wx:for="{{nameList}}" wx:key="index" class="msg-item" >
+            <view class='user-name' bindtap='name' data-name="{{item.name}}">{{item.name}}</view>
+            <!-- <view class='user-name' bindtap='name' data-index="{{index}}" wx:else>{{item.nick_name}}</view>  wx:if="item.name"-->
+          </view>
+        </scroll-view>
+      </view>
+      
+    </view>
+    <view class="fm-con">
+        <radio-group name="stype" class="type-con" style="display:flex;">
+          <label for="">
+            <view style="display:inline-block;margin-right:20rpx;" bindtap="choose">
+              <radio value="0"  checked="{{stype === 0 ? 'true' : ''}}" />积分
+            </view>
+          </label>
+          <label for="">
+            <view style="display:inline-block;margin-right:20rpx;" bindtap="choose2">
+              <radio value="1"  checked="{{stype === 1 ? 'true' : ''}}" />能量
+            </view>
+            
+          </label><input type="digit" name="score" wx:if="{{score>0}}" value="{{score}}" /><input type="digit" name="score" wx:if="{{energy>0}}" value="{{energy}}" />
+        </radio-group>
+      </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="modal-footer">
+    <button class="btn btn-confirm" bindtap="onCancel" data-status="cancel">取消</button>
+    <button class="btn btn-cancel"  form-type="submit">确定</button>
+  </view>
+  </form>
+</view>
+<view class="full-btn">
+  <button class="btn btnOne" bindtap="uploadPri">上传奖品</button>
+</view>

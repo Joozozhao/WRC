@@ -1,0 +1,10 @@
+{
+  "navigationStyle": "default",
+  "backgroundTextStyle":"light",
+  "navigationBarBackgroundColor": "#4e505f",
+  "navigationBarTitleText": "团跑",
+  "navigationBarTextStyle":"white",
+  "usingComponents": {
+    "tabbar": "../../components/tabbarComponent/tabbar"
+  }
+}

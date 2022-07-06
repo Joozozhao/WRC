@@ -1,0 +1,9 @@
+/* pages/newsadd/newsadd.wxss */
+@import '../creat/creat.wxss';
+@import "../clockdaily/clockdaily.wxss";
+.form-item .textarea{
+  overflow-y: scroll;
+  margin-left: auto;
+  padding: 20rpx 0;
+  line-height: 2;
+}

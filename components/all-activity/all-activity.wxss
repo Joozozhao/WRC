@@ -1,0 +1,129 @@
+.vw-wrap {
+  padding: 0 30rpx;
+}
+
+.bg-white {
+  background: #fff;
+}
+
+.data-con {
+  padding: 30rpx;
+  overflow: hidden;
+  position: relative;
+  color: #333;
+  border-radius: 10rpx;
+}
+
+.acty-tit {
+  padding: 0;
+  /* line-height: 100rpx; */
+  font-size: 32rpx;
+  line-height: 32rpx;
+  color: #333;
+  font-weight: 700;
+  margin-bottom: 20rpx;
+}
+
+.week-data {
+  margin-top: 30rpx;
+}
+
+.week-data .acty-tit.no-pl {
+  padding: 0;
+}
+
+.week-con {
+  background: #fff;
+  height: 24vh;
+  padding: 30rpx;
+  border-radius: 10rpx;
+  position: relative;
+}
+
+.time-region {
+  font-size: 24rpx;
+  font-weight: normal;
+  float: right;
+}
+
+.challenge .activity {
+  width: 320rpx;
+  height: 180rpx;
+}
+
+.activity {
+  display: inline-block;
+  background: none;
+  padding: 0;
+  margin: 0 30rpx 0 0;
+}
+
+.activity.normal-acty {
+  width: 40%;
+}
+
+.activity.normal-acty .cover-img {
+  position: relative;
+  height: 180rpx;
+}
+
+.activity.normal-acty .cover-img image {
+  max-height: 180rpx !important;
+}
+
+.activity:nth-last-child(1) {
+  margin-right: 0;
+}
+
+.activity .cover-img {
+  width: 100%;
+  height: auto;
+}
+
+.activity .activity-infor {
+  display: none;
+}
+
+.challenge .activity {
+  width: 320rpx;
+  height: 180rpx;
+}
+
+.challenge .cover-img image {
+  height: 180rpx;
+}
+
+.activitys .activity {
+  width: 280rpx;
+  height: 210rpx;
+}
+
+.activitys .cover-img image {
+  height: 210rpx;
+}
+
+.cover-img image {
+  width: 100%;
+  max-height: 210rpx !important;
+  border-radius: 10rpx;
+}
+
+.cover-img .cover-fix {
+  width: 120rpx;
+  height: 120rpx;
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.activity.normal-acty .acty-name {
+  width: 100%;
+  text-align: center;
+  font-size: 24rpx;
+  color: #fff;
+  position: absolute;
+  bottom: 10rpx;
+  left: 0;
+}

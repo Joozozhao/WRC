@@ -1,0 +1,62 @@
+/* pages/checkpoint/checkpoint.wxss */
+.my-points{
+  font-size: 64rpx;
+}
+.tab-tit{
+  width: 100%;
+  padding: 20rpx 0;
+  background: #537780;
+  font-size: 32rpx;
+  color: #fff;
+  text-align: center;
+}
+.tab-tit .sub{
+  display: inline-block;
+  width: 50%;
+}
+.sub text{
+  display: inline-block;
+  padding-bottom: 5rpx;
+  border-bottom: 2px solid #537780;
+}
+.tab-tit .active text{
+  border-bottom-color:#fff;
+  
+}
+.add-points{
+  display: flex;
+  justify-content: space-between;
+  padding: 30rpx 0;
+  border-bottom: 1px solid #e1e1e1;
+}
+.add-points:nth-last-child(1){
+  border-bottom: none;
+}
+.add-detail .detail{
+  padding-bottom: 20rpx;
+} 
+.add-detail .time{
+  font-size: 28rpx;
+  color: #666;
+}
+.add-points .new-points{
+  line-height: 105rpx;
+}
+.deduct-points{
+  text-align: center;
+  font-size: 32rpx;
+  line-height: 2;
+  padding: 100rpx 0;
+}
+.deduct-points .lg-txt{
+  font-size: 42rpx;
+  font-weight: bold;
+}
+.tabshow{
+  visibility: visible;
+  display: block;
+}
+.tabhide{
+  visibility: hidden;
+  display: none;
+}

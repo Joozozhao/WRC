@@ -1,0 +1,267 @@
+// pages/confirmOrder/confirmOrder.js
+const util = require('../../utils/util.js')
+// 获取应用实例
+const app = getApp()
+Page({
+
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    goodName: '',
+    points: 0,
+    imgSrc: '',
+    type: '',
+    editTrue: false,
+    confirmTrue: false,
+    complete: true,
+    addrInfo: [],
+    itemId: 0,
+    defaultAddressView: true,
+    addressView: false,
+    // addrId: 0,
+    id: 0,
+    goods_type: ''
+  },
+  
+  // 选择收货地址
+  chooseAddress: function (){
+    wx.navigateTo({
+      url: '../address/address?id='+this.data.itemId
+    })
+  },
+  toIndex: function (){
+    wx.reLaunch({
+      url: '../index/index'
+    })
+  },
+  // 点击出现弹窗
+  popShow: function (){
+    var that = this
+    if(that.data.addrInfo == ''){
+      that.setData({
+        editTrue: false
+      })
+      wx.showToast({
+        title: '请选择收货地址',
+        icon: 'none',
+        duration: 1500
+      })
+      return false
+    }
+    that.setData({
+      editTrue: true,
+    })
+  },
+  // 选择微信自带地址
+  addAddr:function () {
+    wx.chooseAddress({
+        success: (res) =>{
+          let addrInfo = {
+            userName: res.userName,
+            telNumber: res.telNumber,            
+            address: res.provinceName+res.cityName+res.countyName+res.detailInfo
+          }
+          this.setData({
+            addrInfo,
+            addressView: true,
+            defaultAddressView: false
+          })
+          console.log(this.data.addrInfo.userName)
+        },
+        fail:()=>{
+            //  this.openConfirm()   // 如果获取地址权限失败，弹出确认弹窗，让用户选择是否要打开设置，手动去开权限
+        }
+    })
+  },
+  // 打开确认弹窗
+  openConfirm: function () {
+  wx.showModal({
+      content: '检测到您没打开地址权限，是否去设置打开？',
+      confirmText: "确认",
+      cancelText: "取消",
+      success: function (res) {
+          if (res.confirm) {
+              wx.openSetting({
+                  success: (res) => { }   //打开设置面板
+              })
+          } else {
+              console.log('用户点击取消')
+          }
+      }
+    });
+  },
+  confirmIt: function (){
+    var that = this
+    var userId = app.globalData.userId
+    var data = {
+      goodsId: that.data.itemId,
+      userId: userId,
+      remark: '',
+      name: that.data.addrInfo.userName,
+      addr: that.data.addrInfo.address,
+      mobile: that.data.addrInfo.telNumber,
+      goodsNum: 1,
+      score: that.data.points,
+      type: that.data.goods_type
+    }
+    console.log(data)
+    util.request('order/save', 'POST', data, '数据加载中...', (res)=>{
+      console.log(res)
+      that.setData({
+        editTrue: false,
+        confirmTrue: true
+      })
+    })			  
+  },
+  //返回按钮关闭弹窗
+  backBtn: function (){
+    var that = this
+    that.setData({
+      editTrue: false
+    })
+  },
+  prizeBtn: function(){
+    wx.reLaunch({
+      url: '../prize/prize'
+    })
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    var id = options.id
+    // var addrId = options.addrId
+    this.setData({
+      itemId: id,
+      // addrId: addrId
+    })
+    // console.log(addrId)
+    this.initDetail()
+    this.initdefAdd(id)
+  },
+  initDetail : function(){
+    var that = this
+    var data = {
+      id: that.data.itemId
+    }
+    util.request('goods/get', 'POST', data, '数据加载中...', (res)=>{
+      console.log(res)
+      that.setData({
+        imgSrc: res.data.data.goods_pic,
+        points: res.data.data.score,
+        goodName: res.data.data.goods_name,
+        type: res.data.data.goods_color,
+        goods_type: res.data.data.goods_type,
+        energy: res.data.data.energy
+      })
+    })
+  },
+  haveAdd: function(addrId){
+    var that = this
+    var data ={
+      id: addrId
+    }
+    console.log(data)
+    util.request('user/getaddr', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res.data)
+      if(res.data.success){
+        let addrInfo = {
+          userName: res.data.data.name,
+          telNumber: res.data.data.mobile,
+          address: res.data.data.address
+        }
+        that.setData({
+          addrInfo,
+          addressView: true,
+          defaultAddressView: false
+        })
+      } else {
+        wx.showToast({
+          title: res.data.error,
+          icon: 'none',
+          duration: 1500
+        })
+      }
+    })
+  },
+  initdefAdd: function(){
+    var that = this
+    var userId = app.globalData.userId
+    var data ={
+      userId: userId
+    }
+    console.log(data)
+    util.request('user/getdefaddr', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res.data)
+      if(res.data.success){
+        let addrInfo = {
+          userName: res.data.data.name,
+          telNumber: res.data.data.mobile,
+          address: res.data.data.address
+        }
+        if(res.data.data.default_addr > 0){
+          that.setData({
+            addrInfo,
+            addressView: true,
+            defaultAddressView: false
+          })
+        }
+      } else {
+        // wx.showToast({
+        //   title: res.data.error,
+        //   icon: 'none',
+        //   duration: 1500
+        // })
+      }
+    })
+  },
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function () {
+    // this.haveAdd()
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload: function () {
+
+  },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh: function () {
+
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom: function () {
+
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
+
+  }
+})

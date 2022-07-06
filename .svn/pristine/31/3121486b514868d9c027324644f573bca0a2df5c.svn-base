@@ -1,0 +1,177 @@
+// pages/prizedetails/prizedetails.js
+const util = require('../../utils/util.js')
+// 获取应用实例
+const app = getApp()
+Page({
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    imgSrc: '',
+    points: 0,
+    goodName: '',
+    type: '',
+    itemId: '',
+    goodsRemark: '',
+    myScore: 0,
+    goods_type: '',
+    energy: 0,
+    myEnergy: 0
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    var id = options.id
+    this.initDetail(id)
+    this.setData({
+      itemId: id
+    })
+  },
+  initDetail : function(id){
+    var that = this
+    var data = {
+      id: id
+    }
+    util.request('goods/get', 'POST', data, '数据加载中...', (res)=>{
+      console.log(res.data)
+      if(res.data.success){
+        that.setData({
+          imgSrc: res.data.data.goods_pic,
+          points: res.data.data.score,
+          energy: res.data.data.energy,
+          goodName: res.data.data.goods_name,
+          goodsRemark: res.data.data.goods_remark,
+          type: res.data.data.goods_color,
+          goods_type: res.data.data.goods_type
+        })
+        console.log(that.data.goods_type)
+      }else{
+        wx.showToast({
+          title: res.data.error,
+          icon: 'none',
+          duration: 1500
+        })  
+      }
+      
+    })
+    var data = {
+      goodsId: id,
+      page: 1
+    }
+    util.request('goods/getusers', 'POST', data, '数据加载中...', (res)=>{
+      console.log(res.data)
+      if(res.data.success){
+        that.setData({
+          imgList: res.data.data
+        })
+      }else{
+        // wx.showToast({
+        //   title: res.data.error,
+        //   icon: 'none',
+        //   duration: 1500
+        // })  
+      }
+    })
+    
+  },
+  exchange: function(){
+    var that = this
+    var userId = app.globalData.userId
+    var points = that.data.points
+    var energy = that.data.energy
+    var data = {
+      id: userId
+    }
+    util.request('user/get', 'POST', data, '数据加载中...', (res)=>{
+      console.log(res)
+      if(res.data.success){
+        that.setData({
+          myScore: res.data.data.score,
+          myEnergy: res.data.data.energy
+        })    
+        if(that.data.goods_type == 0){
+          if(points <= that.data.myScore){
+            wx.navigateTo({
+              url: '../confirmorder/confirmorder?id='+this.data.itemId
+            })
+          } else{
+            wx.showToast({
+              title: '积分不足',
+              icon: 'none',
+              duration: 1500
+            })
+          }
+        }
+        if(that.data.goods_type == 1){
+          if(energy <= that.data.myEnergy){
+            wx.navigateTo({
+              url: '../confirmorder/confirmorder?id='+this.data.itemId
+            })
+          } else{
+            wx.showToast({
+              title: '能量不足',
+              icon: 'none',
+              duration: 1500
+            })
+          }
+        }
+        
+      }else{
+        wx.showToast({
+          title: res.data.error,
+          icon: 'none',
+          duration: 1500
+        })  
+      }
+    })
+  },
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload: function () {
+
+  },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh: function () {
+
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom: function () {
+
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
+
+  }
+})

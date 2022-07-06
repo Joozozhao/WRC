@@ -1,0 +1,43 @@
+/* pages/memberdata/memberdata.wxss */
+@import "../activitydata/activitydata.wxss";
+.fix-wrap{
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+}
+.rank-num{
+  font-size: 28rpx;
+  font-weight: normal;
+}
+.other-infor .total{
+  font-size: 20rpx;
+}
+.other-infor .total .tag{
+  background: #333;
+  font-size: 16rpx;
+  color: #fff;
+  padding: 0 15rpx;
+  border-radius: 20rpx;
+  margin-right: 5rpx;
+}
+.all-item{
+  overflow: hidden;
+  display: flex;
+  padding: 30rpx 20rpx;
+}
+.all-item text{
+  display: inline-block;
+  font-size: 24rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 50rpx;
+  background: #f0f0f0;
+  margin-right: 10rpx;
+}
+.all-item text.active{
+  background: #4ec17e;
+  color: #fff;
+}

@@ -1,0 +1,92 @@
+<!--pages/creat/creat.wxml-->
+<form bindsubmit="submit">
+  <view class="form-con">
+    <view class="form-item vw-wrap">
+      <label for="" class="title">活动地区</label>
+      <view class="ipt" bindtap="pickArea">
+        <view wx:if="{{sealType == ''}}">请选择</view>
+        <input type="text" class="ipt" wx:else class="picker {{clas}}" name="sealType" value="{{sealType}}" disabled="disabled"></input>
+      </view>
+      <!-- 遮罩层 -->
+      <view class="modal-mask" wx:if="{{showModal}}"></view>
+      <!-- 弹出框 -->
+      <view class="modal-dialog" wx:if="{{showModal}}">
+        <view class="modal-content">
+          <checkbox-group data-index="{{index}}" bindchange="checkboxChange" name="sealType">
+            <label class="checkbox" wx:for="{{sealTypeList}}" wx:key="key" wx:for-item="item">
+              <checkbox value="{{item.id}}" checked="{{item.checked}}" color="#2A98BD" />
+              <view class="checked_label" style="color:#37383B">{{item.gzkind}}</view>
+            </label>
+          </checkbox-group>
+        </view>
+        <!-- 操作按钮 -->
+        <view class="modal-footer">
+          <button class="btn btn-cancel" bindtap="onCancel" data-status="cancel">取消</button>
+          <button class="btn btn-confirm" bindtap="onConfirm" data-status="confirm">确定</button>
+        </view>
+      </view>
+      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+    </view>
+    <view class="form-item vw-wrap">
+      <label for="" class="title">活动名称</label>
+      <input type="text" value="{{actyName}}" name="actyName" placeholder="请输入活动名称" class="ipt ellipsis"></input>
+      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+    </view>
+    <view class="form-item vw-wrap">
+      <label for="" class="title">活动类型</label>
+      <input type="text" value="{{actyType}}" class="ipt" disabled="disabled"></input>
+      <!-- <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view> -->
+    </view>
+    <view class="form-item vw-wrap">
+      <label for="" class="title">开始时间</label>
+      <view class="ipt">
+        <input type="text" value="{{startTime}}" class="ipt" style="margin-right:0;" disabled="disabled" bindtap="pickerShow" wx:if="{{startTime}}"></input>
+      </view>
+      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+    </view>
+    <view class="form-item vw-wrap">
+      <label for="" class="title">结束时间</label>
+      <view class="ipt">
+        <input type="text" value="{{endTime}}" class="ipt" style="margin-right:0;" disabled="disabled" bindtap="pickerShow" wx:if="{{endTime}}"></input>
+      </view>
+      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+    </view>
+    <view class="form-item vw-wrap">
+      <label for="" class="title">活动地点</label>
+      <input type="text" value="{{address}}" name="address" placeholder="请输入活动地点" class="ipt ellipsis"></input>
+      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+    </view>
+    <view class="form-item vw-wrap">
+      <label for="" class="title">活动距离</label>
+      <input type="digit" value="{{distance}}" name="distance" class="ipt" placeholder="请输入活动距离"></input>
+      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+    </view>
+    <view class="form-item vw-wrap upload-cover">
+      <label for="" class="title">活动封面</label>
+      <!-- <view class="add-pic {{addView?'show':'hide'}}" bindtap="uploadAction"><image src="../../images/upload.png"></image></view> -->
+      <view class="add-pic {{addView?'show':'hide'}}" bindtap="uploadAction">
+        <view class="bg-wrap"></view>
+        <image src="../../images/loadimg.svg"></image>
+      </view>
+      <view class="show-pic {{showView?'show':'hide'}}" bindtap="uploadAction">
+        <image src="{{tempFilePaths}}" mode="widthFix"></image>
+        <view class="del" bindtap="delete"><image src="../../images/delete.png"></image></view>
+      </view>
+      
+    </view>
+    <view class="sub-tit vw-wrap">报名填写项</view>
+    <view class="form-item vw-wrap">
+      <label for="" class="title">姓名</label>
+      <view class="ipt no-mr"><switch name="switch" checked="true" disabled style="zoom: 0.8;"/></view>
+    </view>
+    <view class="form-item vw-wrap">
+      <label for="" class="title">电话号码</label>
+      <view class="ipt no-mr" bindtap="checkOr"><switch name="switch" checked="{{checkOr}}" style="zoom: 0.8;"/></view>
+    </view>
+  </view>
+  <view class="full-btn">
+    <button class="btn btnTwo" form-type="submit">完成</button>
+  </view>
+</form>
+<time-picker pickerShow="{{isPickerShow}}" id="picker" wx:if="{{isPickerRender}}" bind:hidePicker="pickerHide" bind:setPickerTime="setPickerTime"
+  config="{{pickerConfig}}"></time-picker>

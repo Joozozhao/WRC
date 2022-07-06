@@ -1,0 +1,54 @@
+<!--pages/news/news.wxml-->
+<view class="vw-wrap new-con gradient-bg">
+  <block wx:for="{{newsList}}" wx:key="index">
+    <view class="news-list" bindtap="newsDetails" data-nid="{{item.id}}">
+      <view class="text">{{item.title}}</view>
+      <view class="img">
+        <image src="{{item.img_url}}" mode="aspectFill"></image>
+      </view>
+    </view>
+  </block>
+  <view class="logo">
+    <image src="/images/flag.png" mode="widthFix"></image>
+  </view>
+  <view style="color: yellow;">
+    微网跑团 成立于2018年7月10日，以下简称“微网跑团”。跑团口号 “跑步，只不过是一场自己与自己的较量～”
+  </view>
+  <view class="tit-one" style="color: darkkhaki;">#超级团员</view>
+  <view>
+    <view>1、最近 1 个自然月，月跑量不低于 80 公里；</view>
+    <view>2、近 7 天未运动，会被降级为普通团员；</view>
+    <view>3、超级团员可不定期获得跑团奖励；</view>
+    <view>4、超级团员可参与特殊福利挑战活动；</view>
+    <view class="user-wrap">
+      <view class="user-pic add-bd" wx:for="{{vipList}}" wx:key="index">
+        <image src="{{item.header_url}}" mode="widthFix" style="height:auto; width: 100%;" class="pic"></image>
+        <view>{{item.name}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="tit-one" style="color: darkkhaki;">#普通团员</view>
+  <view>1、最近 30 天有运动记录；</view>
+  <view>2、近 7 天有运动记录，且最近一个自然月，月跑量不低于 80 公里，可升级为超级团员；</view>
+  <view>3、可通过参加活动、挑战，获得奖励；</view>
+  
+  <view class="tit-one" style="color: darkkhaki;">#积分/能量说明</view>
+  <view class="tit-wrap">
+    <view class="tit-two"># 积分 # </view>
+  </view>
+  <view class="all-con">
+    <view>1、每日打卡，每天第一个5公里及以上，可获得2积分，可多次打卡，积累跑量，每天最多加2分；</view>
+    <view>2、连续打卡，连续打卡第 7 天额外获得 7 积分；连续打卡第 21 天，额外获得 21 积分；连续打卡第 100 天，额外获得 100 积分；中断后，从 1 开始计；</view>
+    <view>3、团跑活动，一次可获得 7 积分；</view>
+    <view>4、挑战活动，不额外增加积分；</view>
+  </view>
+  <view class="tit-wrap">
+    <view class="tit-two"># 能量 # </view>
+  </view>
+  <view class="all-con">
+    <view>1、超级团员通过参加团跑及挑战活动获得能量值；</view>
+    <view>2、每参加一次团跑活动，可获得 1 个能量值；</view>
+    <view>3、超级团员参加并完成挑战活动，每 100 公里，获得 1 个能量值；</view>
+  </view>
+</view>

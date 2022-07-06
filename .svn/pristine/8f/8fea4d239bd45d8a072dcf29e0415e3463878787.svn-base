@@ -1,0 +1,104 @@
+const log = require('../log.js')
+function formatTime(date) {  
+  var year = date.getFullYear()  
+  var month = date.getMonth() + 1  
+  var day = date.getDate()  
+  var hour = date.getHours()  
+  var minute = date.getMinutes()  
+  var second = date.getSeconds()  
+  return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute, second].map(formatNumber).join(':')  
+}  
+
+function formatDate(date) {  
+  var year = date.getFullYear()  
+  var month = date.getMonth() + 1  
+  var day = date.getDate()  
+  
+  return [year, month, day].map(formatNumber).join('-')
+}
+  
+function formatNumber(n) {  
+  n = n.toString()  
+  return n[1] ? n : '0' + n  
+}
+// 切割日期首位数中的0
+function dislodgeZero(str) {
+  let strArray = str.split("-");
+  strArray = strArray.map(function(val) {
+    if (val[0] == "0") {
+      return (val = val.slice(1));
+    } else {
+      return val;
+    }
+  });
+  return strArray.join("-");
+}
+// const fmtUrl = "http://47.93.234.22/"
+const fmtUrl = "https://www.mlhb.com.cn/"
+const baseUrl = fmtUrl + "sport/";
+const request = function(url, method, data, msg, succ, fail){
+  wx.request({
+    url: baseUrl + url,
+    data: data,
+    method: method,
+    header: {
+      'content-type': 'application/x-www-form-urlencoded'
+    },
+    success: res => {
+      log.info("success："+JSON.stringify(res));
+      if(succ) succ(res);
+    },
+    fail: err => {
+      wx.showToast({
+        title: '网络错误，请稍后再试...',
+        icon: 'none',
+        duration: 1500
+      })
+      log.error("----http request error! -----"+JSON.stringify(err));
+      if(fail) fail(err);
+    },
+    complete: com => {
+      log.info("请求地址："+url);
+      log.info("请求结果：", com.data);
+    }
+  })
+}
+const showLogin = function(succ){
+  wx.getUserProfile({
+    desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+    success: (res) => {
+      console.log("显示登录授权...获取用户信息...")
+      console.log(res)
+      wx.login({
+        success: function(wxLoginRes){
+          console.log("获取登录的code...")
+          console.log(wxLoginRes)
+          if(wxLoginRes.code){
+            var result = {
+              userInfo : res.userInfo,
+              code: wxLoginRes.code
+            }
+            if(succ) succ(result);
+          }
+        }
+      })
+    }
+  })
+}
+  
+function isPhone(value) {
+  if (!/^1(3|4|5|6|7|8)\d{9}$/.test(value)) {
+    return false
+  } else {
+     return true
+  }
+}
+
+module.exports = {  
+  formatTime: formatTime,
+  formatDate: formatDate,
+  dislodgeZero: dislodgeZero,
+  request: request,
+  showLogin: showLogin,
+  isPhone: isPhone
+}
