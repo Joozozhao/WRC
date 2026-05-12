@@ -9,7 +9,7 @@ function initBar(canvas, width, height, dpr, weekObj, max) {
   var option = {
     tooltip: {
       trigger: 'axis',
-      axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+      axisPointer: {        // 坐标轴指示器，坐标轴触发有效
         type: 'line'        // 默认为直线，可选为：'line' | 'shadow'
       }
     },
@@ -143,8 +143,6 @@ function initBar(canvas, width, height, dpr, weekObj, max) {
       }
     ]
   }
-  console.log(weekObj)
-
   //如果非5的倍数，向上取值
   if (max > 0) {
     option.yAxis.max = max
@@ -277,6 +275,131 @@ function initBar2(canvas, width, height, dpr, monthArr, max) {
     option.yAxis.splitNumber = max / 5
   }
   // option.series[0].data.value=10
+  barChart.setOption(option, true);
+  return barChart;
+}
+
+function initBar3(canvas, width, height, dpr, monthArr, max) {
+  const barChart = echarts.init(canvas, null, {
+    width: width,
+    height: height,
+    devicePixelRatio: dpr
+  });
+  canvas.setChart(barChart);
+
+  var option = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+        type: 'line'        // 默认为直线，可选为：'line' | 'shadow'
+      }
+    },
+    grid: {
+      left: 5,
+      right: 5,
+      bottom: 12,
+      top: 20,
+      containLabel: true
+    },
+    xAxis:
+    {
+      type: 'category',
+      data: months(),
+      axisLabel: {
+        textStyle: {
+          fontSize: 10,
+          color: '#666'
+        }
+      },
+      axisLine: {
+        lineStyle: {
+          color: '#666',
+          width: 1,//这里是为了突出显示加上的
+        },
+      },
+      axisTick: {
+        show: false
+      },
+    },
+    yAxis:
+    {
+      type: 'value',
+      min: 0,
+      max: '500',
+      splitNumber: 2,
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: ['#eaebed']
+        }
+      },
+      axisLabel: {
+        show: true,
+        textStyle: {
+          fontSize: 12,
+          color: '#666'
+        }
+      },
+      axisLine: {
+        lineStyle: {
+          color: '#666',
+          width: 1,//这里是为了突出显示加上的
+        },
+      }
+    },
+    series: [
+      {
+        type: 'bar',
+        label: {
+          normal: {
+            show: true,
+            lineHeight: 20,
+            distance: 0,
+            top: 5,
+            position: 'top',
+            color: '#666'
+          }
+        },
+        data: getMonthData(),
+        showBackground: true,
+        backgroundStyle: {
+          opacity: 0
+        },
+        itemStyle: {
+          color: '#4ecca3',
+          borderRadius: [10, 10, 0, 0]
+        },
+        barWidth: 5,
+        emphasis: {
+          itemStyle: {
+            color: '#1874ef'
+          }
+        }
+      }
+    ]
+  }
+  // 获取天数
+  function months() {
+    var days = []
+    for (var i = 0; i < 12; i++) {
+      days.push(i + 1)
+    }
+    return days
+  }
+  // 获取月跑量
+  function getMonthData() {
+    var jsonstr = [];
+    for (var i = 0; i < monthArr.length; i++) {
+      var data = {}
+      data.value = Math.floor(monthArr[i])
+      jsonstr.push(data)
+    }
+    return jsonstr
+  }
+  //如果非5的倍数，向上取值
+  // option.series[0].data.value=10
+  option.yAxis.max = max
+  option.yAxis.splitNumber = 6
   barChart.setOption(option, true);
   return barChart;
 }
@@ -422,5 +545,6 @@ module.exports = {
   initCirle0: initCirle0,
   initBar: initBar,
   initBar2: initBar2,
+  initBar3: initBar3,
   initCirle: initCirle
 }

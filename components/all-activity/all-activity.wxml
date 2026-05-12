@@ -1,6 +1,6 @@
 <view>
     <view class="week-data" wx:if="{{activityList.length!=0}}">
-        <view class="vw-wrap">
+        <view class="vw-wrap ">
             <view class="challenge data-con bg-white">
                 <view class="acty-tit no-pl">挑战<text class="time-region">{{totalChallenge}}次</text></view>
                 <scroll-view scroll-x style="width:100%;height:180rpx;white-space:nowrap;" bindscrolltolower="onTapChild">

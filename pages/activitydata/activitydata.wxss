@@ -7,8 +7,7 @@
   display: flex;
   padding: 30rpx 20rpx;
   font-size: 32rpx;
-  color: #999;
-  border-bottom: 1px solid #f0f0f0;
+  color: #000;
 }
 .member .user-infor{
   width: auto;
@@ -24,7 +23,7 @@
   width: 80rpx;
   height: 80rpx;
   min-height: 80rpx;
-  border-radius: 50%;
+  
 } 
 .member .user-infor .rank image{
   width: 50rpx;
@@ -62,18 +61,10 @@
 }
 .member .distance{
   margin-left: auto;
-  color: #4ec17e;
+  color: #4CB944;
 }
 .member .speed{
   font-size: 24rpx;
-}
-.member.my-data{
-  /* background: #4ec17e; */
-  border: none;
-  border-radius: 10rpx;
-}
-.member.my-data .other-infor,.member.my-data .distance{
-  /* color: #fff; */
 }
 .rank{
   margin-right: 10rpx;

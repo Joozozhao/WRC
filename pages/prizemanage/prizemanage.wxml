@@ -8,7 +8,7 @@
     <view class="activity-infor">
       <view data-id="{{item.id}}" bindtap="toDetail">
         <view class="prize-tit">{{item.goods_name}}</view>
-        <text class="need-score" wx:if="{{item.energy>0}}">{{item.energy}}能量</text>
+        <text class="need-score" wx:if="{{item.energy>0}}">{{item.energy}}小花儿</text>
         <text class="need-score" wx:if="{{item.score>0}}">{{item.score}}积分</text>
         <view wx:for="{{item.goodsStorageMap}}" wx:for-item="items" wx:for-index="childindex" wx:key="index">
           <view>{{childindex}}</view>
@@ -81,7 +81,7 @@
           </label>
           <label for="">
             <view style="display:inline-block;margin-right:20rpx;" bindtap="choose2">
-              <radio value="1"  checked="{{stype === 1 ? 'true' : ''}}" />能量
+              <radio value="1"  checked="{{stype === 1 ? 'true' : ''}}" />小花儿
             </view>
             
           </label><input type="digit" name="score" wx:if="{{score>0}}" value="{{score}}" /><input type="digit" name="score" wx:if="{{energy>0}}" value="{{energy}}" />

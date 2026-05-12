@@ -1,0 +1,143 @@
+/* pages/energy/energy.wxss */
+@import "../checkpoint/checkpoint.wxss";
+.gg {
+  font-size: 16rpx;
+  line-height: 20rpx;
+  color: #a81b1f;
+  margin-bottom: 20rpx;
+}
+.box-part {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 20rpx 0;
+}
+.ml-warp {
+  text-align: center;
+  margin: 0;
+}
+.ml-but {
+  padding: 15rpx 0;
+  width: 32%;
+  font-weight: 200;
+  font-size: 0.7rem;
+  color: #a81b1f; background-color: #dedede;
+  border-radius: 15rpx;
+}
+
+/* 基础样式 */
+.list-container {
+  padding: 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 15rpx;
+  margin-bottom: 20rpx;
+}
+/* 头部标题 */
+.header {
+  position: relative;
+  margin-bottom: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+.title {
+  font-size: 38rpx;
+  line-height: 40rpx;
+}
+.subtitle {
+  display: inline-block;
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  font-weight: 300;
+  color: #a81b1f;
+  background-color: #e7d2d3;
+  padding: 5rpx 10rpx;
+  border-radius: 5rpx;
+}
+.pb-badge {
+  position: absolute;
+  right: 0;
+  bottom: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.stars {
+  color: #e53935;
+  font-size: 24rpx;
+  letter-spacing: 5rpx;
+}
+
+.pb-text {
+  color: #e53935;
+  font-size: 26rpx;
+  font-weight: bold;
+  margin-top: 4rpx;
+}
+
+/* 基础信息表格 */
+.info-table {
+  border: 1rpx solid #f1f1f1;
+  border-radius: 8rpx;
+  margin-bottom: 20rpx;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  flex: 1;
+  text-align: center;
+  padding: 10rpx 0;
+  font-size: 24rpx;
+  border-right: 1rpx solid #f1f1f1;
+}
+
+.cell:last-child {
+  border-right: none;
+}
+
+.header-cell {
+  font-weight: 500;
+  background-color: #f9f9f9;
+}
+
+.time-cell {
+  font-weight: 400;
+  color: #000;
+}
+
+/* 分段成绩表格 */
+.split-table {
+  margin-top: 20rpx;
+  overflow: hidden;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #eee;
+}
+
+.split-row {
+  display: flex;
+}
+
+.split-row:last-child {
+  border-bottom: none;
+}
+
+.split-cell {
+  flex: 1;
+  text-align: center;
+  padding: 5rpx 0;
+  font-size: 20rpx;
+  font-weight: 400;
+}
+
+.split-cell:last-child {
+  border-right: none;
+}
+
+/* 时间字段特殊样式 */
+.time-cell {
+  font-family: monospace;
+  /* 等宽字体更整齐 */
+}
+.dabiao {color: #4CB944;
+  margin-right: 5px; font-weight: 700;}

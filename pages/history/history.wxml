@@ -1,5 +1,5 @@
 <!--pages/history/history.wxml-->
-<view class="bg-gray">
+<view class="bg-gray  b-weave">
   <view class="vw-wrap">
     <view class="box-part-wrap">
       <view class="box-part">
@@ -10,7 +10,7 @@
       </view>
     </view>
   </view>
-  <view class="tab-tit">
+  <view class="tab-tit awesome-bg top-bg">
     <view wx:for="{{navTab}}" wx:key="index" data-idx="{{index}}" bindtap="currentTab"
       class="sub {{currentTab==index ? 'active' : ''}}"><text>{{item}}</text></view>
   </view>
@@ -25,7 +25,7 @@
             <view class="status" wx:if="{{item.state == 2}}">已签收</view>
             <view class="status" wx:if="{{item.state == 3}}">已退回</view>
           </view>
-          <view class="bg-white confirm-product">
+          <view class=" awesome-bg b-weave  confirm-product">
             <view class="product-img">
               <image src="{{item.goods_pic}}"></image>
             </view>
@@ -35,7 +35,7 @@
                 <view>规格：<text>{{item.goods_tag}} {{item.tag_desc}}</text></view>
                 <view class="num">x{{item.goods_num}}</view>
               </view>
-              <view>{{item.score}}<text wx:if="{{item.score>0}}">积分</text><text wx:if="{{item.energy>0}}">能量</text>
+              <view>{{item.score}}<text wx:if="{{item.score>0}}">积分</text><text wx:if="{{item.energy>0}}">小花儿</text>
               </view>
             </view>
             <image class="arrow" src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image>
@@ -61,7 +61,7 @@
             <view class="status" wx:if="{{item.state == 2}}">已签收</view>
             <view class="status" wx:if="{{item.state == 3}}">已退回</view>
           </view>
-          <view class="bg-white confirm-product">
+          <view class="awesome-bg b-weave  confirm-product">
             <view class="product-img">
               <image src="{{item.goods_pic}}"></image>
             </view>
@@ -71,7 +71,7 @@
                 <view>规格：<text>{{item.goods_tag}} {{item.tag_desc}}</text></view>
                 <view class="num">x{{item.goods_num}}</view>
               </view>
-              <view>{{item.energy}}<text wx:if="{{item.score>0}}">积分</text><text wx:if="{{item.energy>0}}">能量</text>
+              <view>{{item.energy}}<text wx:if="{{item.score>0}}">积分</text><text wx:if="{{item.energy>0}}">小花儿</text>
               </view>
             </view>
             <image class="arrow" src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image>

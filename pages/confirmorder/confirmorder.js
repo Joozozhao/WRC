@@ -26,6 +26,7 @@ Page({
     myScore: 0,
     myEnergy: 0,
     goods_type: '',
+    clicked: false,
     mycode: ''
   },
   
@@ -70,7 +71,7 @@ Page({
           })
         } else {
           wx.showToast({
-            title: '能量不足',
+            title: '小花儿不足',
             icon: 'none',
             duration: 1500
           })
@@ -161,6 +162,13 @@ Page({
   confirmIt: function (){
     var that = this
     var userId = app.globalData.userId
+    if(that.data.clicked) {
+      return;
+    }
+    that.setData({
+      clicked: true
+    })
+    
     var data = {
       goodsId: that.data.itemId,
       userId: userId,
@@ -216,7 +224,8 @@ Page({
       storageId: storageId,
       typeOne: typeOne,
       typeTwo: typeTwo,
-      code: code
+      code: code,
+      clicked: false
     })
     // console.log(addrId)
     this.initDetail()

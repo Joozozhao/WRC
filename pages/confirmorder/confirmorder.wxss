@@ -12,15 +12,17 @@
   line-height: 2;
 }
 .wechat-btn{
-  font-size: 28rpx;
+  font-size: 24rpx;
   padding: 0 20rpx;
   background: #f1f1f1;
   margin-left: auto;
   border-radius: 8rpx;
   display: flex;
+  height: 50rpx;
 }
 .wechat-btn image{
-  width: 40rpx;
+  width: 28rpx;
+  height: 28rpx;
   margin: 10rpx 5rpx 0 0;
 }
 .delivery-address{
@@ -39,6 +41,7 @@
   display: flex;
   align-items: center;
   font-size: 28rpx;
+  color: #999;
 }
 .add-details .address-icon{
   width: 32rpx;

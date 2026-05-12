@@ -9,6 +9,6 @@
   width: 50%;
 }
 .choose-type .current{
-  background: #4ec17e;
+  background: #fff;
   color: #fff;
 }

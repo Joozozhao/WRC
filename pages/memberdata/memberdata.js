@@ -61,7 +61,7 @@ Page({
       sort: that.data.defaultSort,
       levelId: '',
       page : that.data.page++,
-      size: 10000
+      size: 30 //总取人数
     }
     var userId = app.globalData.userId
     console.log(data)

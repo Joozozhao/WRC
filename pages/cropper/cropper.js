@@ -91,7 +91,7 @@ Component({
         this.cropper.getCropperImage()
           .then((src) => {
             wx.uploadFile({
-              url: 'https://www.mlhb.com.cn/sport/acty/uploadimg', //这里是上传的服务器地址
+              url: 'https://applet.51welink.com/sport/acty/uploadimg', //这里是上传的服务器地址
               filePath: src,
               name: "file",
               formData: {userId: userId,fileId:'file'},

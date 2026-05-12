@@ -59,8 +59,9 @@ page{
   margin-right: 20rpx;
 }
 .all-item text.active{
-  background: #4ec17e;
+  background-color: #4CB944;
   color: #fff;
+  
 }
 /* .sel-btn{
   margin-left: auto;
@@ -114,14 +115,14 @@ page{
   right: 0;
 }
 .act-btn .btn{
-  color: #333;
+  color: #fff;
   font-size: 28rpx;
 }
 .member-infor{
   font-size: 24rpx;
   color: #666;
   line-height: 2;
-  background: linear-gradient(to left, #38ef7d, #11998e); 
+  background: linear-gradient(to left, #38ef7d, #4CB944); 
   border-radius: 10rpx;
 }
 .member-infor.hidden{

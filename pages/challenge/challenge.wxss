@@ -1,9 +1,9 @@
 /* pages/challenge/challenge.wxss */
 page{
-  background: #4e505f;
+  background: #4CB944;
 }
 .challenge{
-  padding: 0 30rpx 30rpx;
+  padding: 0 20rpx 20rpx;
   position: relative;
 }
 .challenge:last-child{
@@ -23,8 +23,7 @@ page{
   z-index: 1;
 }
 .challenge-img .challenge-state{
-  width: 80vw;
-  height: 80vh;
+  width: 60vw;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -40,7 +39,7 @@ page{
   color: #fff;
 }
 .acty-infors .acty-state{
-  color: rgba(255,114,96,1);
+  color: #fff;
   margin-right: 10rpx;
 }
 .acty-infors .flex-con{

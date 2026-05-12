@@ -1,5 +1,5 @@
 .vw-wrap {
-  padding: 0 30rpx;
+  padding: 0 20rpx;
 }
 
 .bg-white {
@@ -7,11 +7,11 @@
 }
 
 .data-con {
-  padding: 30rpx;
+  padding: 20rpx;
   overflow: hidden;
   position: relative;
   color: #333;
-  border-radius: 10rpx;
+  border-radius: 5rpx;
 }
 
 .acty-tit {
@@ -25,7 +25,7 @@
 }
 
 .week-data {
-  margin-top: 30rpx;
+  margin-top: 20rpx;
 }
 
 .week-data .acty-tit.no-pl {
@@ -55,7 +55,7 @@
   display: inline-block;
   background: none;
   padding: 0;
-  margin: 0 30rpx 0 0;
+  margin: 0 20rpx 0 0;
 }
 
 .activity.normal-acty {
@@ -105,7 +105,7 @@
 .cover-img image {
   width: 100%;
   max-height: 210rpx !important;
-  border-radius: 10rpx;
+  border-radius: 5rpx;
 }
 
 .cover-img .cover-fix {

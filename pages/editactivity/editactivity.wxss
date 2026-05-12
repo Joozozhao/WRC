@@ -28,7 +28,7 @@
   padding-right: 40rpx;
 }
 .total .green{
-  color: #4ec17e;
+  color: #fff;
 }
 .add-arrow image{
   width: 30rpx;
@@ -99,7 +99,7 @@
   bottom: 0;
 }
 .user-infor .my-area{
-  background:#4ec17e;
+  background:#fff;
   border-radius: 6rpx;
   padding: 0 10rpx;
   /* line-height: 50rpx; */

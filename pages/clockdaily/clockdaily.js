@@ -24,7 +24,8 @@ Page({
     ],
     clockTimes: 0,
     disable: '',
-    focus: false
+    focus: false,
+    subscribe: false
   },
   back: function(){
     wx.navigateBack({
@@ -61,7 +62,7 @@ Page({
         wx.uploadFile({
            filePath: res.tempFilePaths[0],
           name: 'file',
-          url: 'https://www.mlhb.com.cn/sport/user/uploadimg',
+          url: 'https://applet.51welink.com/sport/user/uploadimg',
           formData: { userId:  userId, fileId:'file' },
           success: function(ret){
             console.log(ret);
@@ -70,14 +71,16 @@ Page({
             var speedData = obj.data.speed
             console.log(speedData)
             if(speedData!=undefined){
-              var speed = speedData.replace(/[^0-9]/ig,"")
-              if(speed.substring(0,1)==0){
+              var speed = speedData;//.replace(/[^0-9]/ig,"")
+              if(speed.substring(0, 1)==0){
+                speed = speed.substring(1,2) + speed.substring(2).replace("'","′").replace("\"","″");
                 that.setData({
-                  speed: speed.substring(1,2)+ '′'+speed.substring(2)+ '″'
+                  speed: speed
                 })
               }else{
+                speed = speed.replace("'","′").replace("\"","″");
                 that.setData({
-                  speed: speed.substring(0,1)+ '′'+speed.substring(1)+ '″',
+                  speed: speed,
                 })
               }
               that.setData({
@@ -152,6 +155,19 @@ Page({
     })
   },
   submit: function(e){
+    //if(app.globalData.)
+    wx.requestSubscribeMessage({
+      tmplIds: ['atI2vNoA9gxEHR7iiJ8SXNC5-To5F3nz1GdAiJ9jKT8','WFf_l_J8AUitCUTw6x0dztYEz5P_zB5CN6MKUtARrVA','qxTeZfuzyqFwoPYMJ-C8wIfRJaladzRyVDA4CRr2b7c','DidkgePsPJU2N2xnJMEVEhmGu7jwQuXeHnW5T3c3J5E'],
+      success (res) { 
+        console.log(res)
+        var data={
+          userId:res.data.data.id
+        }
+        util.request('user/setSubscribe', 'POST', data, '数据加载中 ...', (res)=>{
+          console.log(res);
+        })
+      }
+    })
     var that = this
     var formatDate = e.detail.value
     var userId = app.globalData.userId
@@ -183,7 +199,7 @@ Page({
     }
     if(formatDate.distance == ''){
       wx.showToast({
-        title: '里程不能为空!',
+        title: '距离不能为空!',
         icon: 'none',
         duration: 1500
       })
@@ -237,14 +253,102 @@ Page({
       }
     })
   },
+  myLogin: function(userId) {
+    var that = this
+    console.log("----"+userId)
+    if (userId < 1 || userId == undefined) {
+      wx.showModal({
+        content: '请先登录小程序！',
+        success(res) {
+          if (res.confirm) {
+            util.showLogin((res) => {
+              var data = {
+                code: res.code,
+                encryptedData: "",
+                iv: ""
+              }
+              //取用户的openid
+              util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes) => {
+                var regData = {
+                  openId: loginRes.data.data.openid,
+                  imgUrl: res.userInfo.avatarUrl,
+                  nickName: res.userInfo.nickName,
+                  sex: res.userInfo.gender,
+                  unionid: loginRes.data.data.unionid
+                }
+                util.request('user/wxregister', 'POST', regData, '', (regRes) => {
+                  app.globalData.userId = regRes.data.UserId
+                  app.globalData.openId = regData.openId
+                  wx.setStorageSync('userId', regRes.data.UserId)
+                  wx.setStorageSync('openId', regData.openId)
+                  var data = {
+                    id: regRes.data.UserId,
+                    openId: regData.openId
+                  }
+                  wx.showLoading({
+                    title: '加载中',
+                    mask: true
+                  })
+                  util.request('/user/getuserinfo', 'POST', data, '拼命加载中 ...', (res) => {
+                    if (res.data.success) {
+                      that.setData({
+                        avatarUrl: res.data.data.header_url,
+                        nickName: res.data.data.nick_name,
+                        score: res.data.data.score,
+                        level: res.data.data.level,
+                        userId: res.data.data.id,
+                        duty: res.data.data.duty
+                      })
+                      if (res.data.data.duty == '团长,管理员' || res.data.data.duty == '管理员,团长') {
+                        that.setData({
+                          duty: '管理员/团长',
+                        })
+                      }
+                      wx.hideLoading({
+                        success: (res) => {},
+                      })
+                    } else {
+                      app.globalData.userId = 0;
+                      that.setData({
+                        userId: 0
+                      })
+                      wx.clearStorageSync();
+                      wx.hideLoading({
+                        success: (res) => {},
+                      })
+                    }
+                  })
+                })
+              })
+            })
+          } else if (res.cancel) {
+            console.log('用户点击取消')
+          }
+        }
+      })
+    }
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
     wx.hideShareMenu({}) //此页面禁止转发
     var userId = app.globalData.userId
+    this.myLogin(userId)
     this.setData({
       userId: userId
+    })
+    var data = {
+      id: userId
+    }
+    var that = this
+    util.request('user/get', 'POST', data, '数据加载中...', (res)=>{
+      if(res.data.success){
+        that.setData({
+          subscribe: res.data.data.subscribe
+        })
+        
+      }
     })
     this.initDay()
   }

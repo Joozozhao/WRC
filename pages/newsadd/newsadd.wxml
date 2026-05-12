@@ -27,7 +27,7 @@
   </view>
   <view class="form-item vw-wrap">
     <label for="" class="title">内容</label>
-    <textarea value="{{content}}" name="textarea" maxlength="-1" rows="10" class="textarea"></textarea>
+    <rich-text nodes="{{content}}"></rich-text>
   </view>
 </view>
 <view class="full-btn">

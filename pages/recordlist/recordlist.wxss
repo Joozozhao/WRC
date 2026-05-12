@@ -16,16 +16,16 @@ page{
 .pass-all{
   position: fixed;
   right: 10%;
-  bottom: 20rpx;
+  bottom: 120rpx;
   font-size: 26rpx;
   width: 80%;
-  line-height: 80rpx;
+  line-height: 120rpx;
   text-align: center;
   font-size: 32rpx;
   font-weight: normal;
-  color: #555454;
+  color: #fff;
   border-radius: 10rpx;
-  background-color: #f1f1f1;
+  background-color: rgba(67,45,0,0.4);
 }
 .btn-group{
   display: flex;
@@ -42,7 +42,7 @@ page{
   border-radius: 5rpx;
 }
 .btn-group .btn.active{
-  background: #4ec17e;
+  background: #fff;
   color: #fff;
 }
 .cover-img{
@@ -53,15 +53,17 @@ page{
 .activity-infor .avastar{
   display: flex;
   align-items: center;
+  margin-bottom: 10rpx;
 }
 .activity-infor .avastar image{
   border-radius: 100rpx; 
-  width: 80rpx;
+  width: 30rpx;
   margin-right: 10rpx;
+
 }
 .avastar .area{
-  padding: 0 10rpx;
-  background: #4ec17e;
+  padding: 0 5rpx;
+  background: #fff;
   border-radius: 5rpx;
   color: #fff;
   margin-left: 10rpx;
@@ -81,20 +83,27 @@ page{
 }
 .act-btn{
   position: absolute;
-  right: 20rpx;
-  bottom: 24rpx;
+  right: 10rpx;
+  bottom: 10rpx;
+  font-size: 20rpx;
+}
+.act-btn.top{
+  top: 10rpx;
+}
+.activity-infor {
+  font-size: 20rpx;
 }
 .act-btn .btn{
   display: inline-block;
   padding: 0 10rpx;
   line-height: 1.5;
-  border: 1px solid #e1e1e1;
+  border: 1px solid #797979;
   border-radius: 5rpx;
   margin: 10rpx 20rpx 0 0;
-  background: #fff;
+  background: #797979;
 }
 .act-btn .btn.gray{
-  background: #e1e1e1;
+  background: #000;
   color: #fff;
 }    
 .act-btn .btn:nth-last-child(1){
@@ -103,12 +112,9 @@ page{
 .activity{
   width: 100%;
   display: flex;
-  margin: 30rpx 0;
   box-sizing: border-box;
-  background: #fff;
-  border-radius: 0;
-  box-shadow: 0 0 0 0;
   padding: 0;
+  padding: 15rpx 0;
 }
 .activity .cover-img {
   width: 210rpx;
@@ -116,4 +122,8 @@ page{
 .activity .activity-infor{
   display: block;
   width: auto;
+  font-size: 32rpx;
+}
+.acty-type {
+  top: 15rpx;
 }

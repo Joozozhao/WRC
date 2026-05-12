@@ -1,5 +1,4 @@
 const util = require('../../utils/util.js')
-const time = new Date()
 // index.js
 // 获取应用实例
 const app = getApp()
@@ -18,8 +17,8 @@ Page({
     interval: 2000,
     duration: 500,
     userId: 0,
-    avatarUrl: "../../images/default.png",//用户头像
-    nickName: "点击头像登录",//用户昵称
+    avatarUrl: "../../images/default.png", //用户头像
+    nickName: "点击头像登录", //用户昵称
     score: 0,
     duty: "",
     level: "",
@@ -37,7 +36,8 @@ Page({
     page: 1,
     personalInfor: false,
     myTip: '',
-    logoSrc: ''
+    logoSrc: '',
+    systemInfo: {},
   },
   toUserCenter: function () {
     var openId = app.globalData.openId
@@ -105,7 +105,7 @@ Page({
       url: '../record/record',
     })
   },
-  toPrize:  function () {
+  toPrize: function () {
     var openId = app.globalData.openId
     if (openId == '' || openId == undefined) {
       wx.showToast({
@@ -141,7 +141,6 @@ Page({
   getLogo: function () {
     var data = {}
     util.request('news/sys/get', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
       if (res.data.success) {
         var allData = res.data.data
         this.setData({
@@ -156,126 +155,124 @@ Page({
     var data = {
       userId: userId
     }
-    console.log(data)
     util.request('user/getTips', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
       that.setData({
         myTip: res.data.tips
       })
     })
   },
-  //获取经纬度方法
-  getLocation: function () {
-    var that = this
-    wx.getLocation({
-      type: 'wgs84',
-      success: function (res) {
-        var latitude = res.latitude
-        var longitude = res.longitude
-        console.log("lat:" + latitude + " lon:" + longitude);
+  // //获取经纬度方法
+  // getLocation: function () {
+  //   var that = this
+  //   wx.getLocation({
+  //     type: 'wgs84',
+  //     success: function (res) {
+  //       var latitude = res.latitude
+  //       var longitude = res.longitude
+  //       console.log("lat:" + latitude + " lon:" + longitude);
 
-        that.getCity(latitude, longitude);
-      }
-    })
-  },
+  //       that.getCity(latitude, longitude);
+  //     }
+  //   })
+  // },
 
-  //获取城市信息
-  getCity: function (latitude, longitude) {
-    var that = this
-    var url = "https://api.map.baidu.com/reverse_geocoding/v3/";
-    var params = {
-      ak: "wTFvQT4Z8C8A7vIkblCkE4SNrENGUjiT",
-      output: "json",
-      location: latitude + "," + longitude
-    }
-    wx.request({
-      url: url,
-      data: params,
-      success: function (res) {
-        console.log(res)
+  // //获取城市信息
+  // getCity: function (latitude, longitude) {
+  //   var that = this
+  //   var url = "https://api.map.baidu.com/reverse_geocoding/v3/";
+  //   var params = {
+  //     ak: "wTFvQT4Z8C8A7vIkblCkE4SNrENGUjiT",
+  //     output: "json",
+  //     location: latitude + "," + longitude
+  //   }
+  //   wx.request({
+  //     url: url,
+  //     data: params,
+  //     success: function (res) {
+  //       console.log(res)
 
-        var city = res.data.result.addressComponent.city;
-        var district = res.data.result.addressComponent.district;
-        var street = res.data.result.addressComponent.street;
-        that.setData({
-          city: city,
-          district: district,
-          street: street,
-        })
+  //       var city = res.data.result.addressComponent.city;
+  //       var district = res.data.result.addressComponent.district;
+  //       var street = res.data.result.addressComponent.street;
+  //       that.setData({
+  //         city: city,
+  //         district: district,
+  //         street: street,
+  //       })
 
-        var descCity = city.substring(0, city.length - 1);
-        that.getWeahter(descCity);
-      },
-      fail: function (res) { },
-      complete: function (res) { },
-    })
-  },
+  //       var descCity = city.substring(0, city.length - 1);
+  //       that.getWeahter(descCity);
+  //     },
+  //     fail: function (res) {},
+  //     complete: function (res) {},
+  //   })
+  // },
 
   //获取天气信息
-  getWeahter: function (city) {
-    var that = this
-    var url = "https://free-api.heweather.net/s6/weather"
-    var params = {
-      location: city,
-      key: "97405f8168a04bd2b5c033c6d002f601"
-    }
-    wx.request({
-      url: url,
-      data: params,
-      success: function (res) {
-        console.log(res)
-        var tmp = res.data.HeWeather6[0].now.tmp;
-        var txt = res.data.HeWeather6[0].now.cond_txt;
-        var code = res.data.HeWeather6[0].now.cond_code;
-        var vis = res.data.HeWeather6[0].now.vis;
-        var dir = res.data.HeWeather6[0].now.wind_dir;
-        var sc = res.data.HeWeather6[0].now.wind_sc;
-        var hum = res.data.HeWeather6[0].now.hum;
-        var fl = res.data.HeWeather6[0].now.fl;
-        var daily_forecast = res.data.HeWeather6[0].daily_forecast;
-        var update_time = res.data.HeWeather6[0].update.loc;
-        that.setData({
-          tmp: tmp,
-          txt: txt,
-          code: code,
-          vis: vis,
-          dir: dir,
-          sc: sc,
-          hum: hum,
-          fl: fl,
-          daily_forecast: daily_forecast,
-          update_time: update_time.substring(8, 10) + '日' + ' ' + update_time.substring(10)
-        })
-        that.getWeahterAir(city);
-      },
-      fail: function (res) {
+  // getWeahter: function (city) {
+  //   var that = this
+  //   var url = "https://free-api.heweather.net/s6/weather"
+  //   var params = {
+  //     location: city,
+  //     key: "97405f8168a04bd2b5c033c6d002f601"
+  //   }
+  //   wx.request({
+  //     url: url,
+  //     data: params,
+  //     success: function (res) {
+  //       console.log(res)
+  //       var tmp = res.data.HeWeather6[0].now.tmp;
+  //       var txt = res.data.HeWeather6[0].now.cond_txt;
+  //       var code = res.data.HeWeather6[0].now.cond_code;
+  //       var vis = res.data.HeWeather6[0].now.vis;
+  //       var dir = res.data.HeWeather6[0].now.wind_dir;
+  //       var sc = res.data.HeWeather6[0].now.wind_sc;
+  //       var hum = res.data.HeWeather6[0].now.hum;
+  //       var fl = res.data.HeWeather6[0].now.fl;
+  //       var daily_forecast = res.data.HeWeather6[0].daily_forecast;
+  //       var update_time = res.data.HeWeather6[0].update.loc;
+  //       that.setData({
+  //         tmp: tmp,
+  //         txt: txt,
+  //         code: code,
+  //         vis: vis,
+  //         dir: dir,
+  //         sc: sc,
+  //         hum: hum,
+  //         fl: fl,
+  //         daily_forecast: daily_forecast,
+  //         update_time: update_time.substring(8, 10) + '日' + ' ' + update_time.substring(10)
+  //       })
+  //       that.getWeahterAir(city);
+  //     },
+  //     fail: function (res) {
 
-      },
-      complete: function (res) { },
-    })
-  },
-  //获取空气质量
-  getWeahterAir: function (city) {
-    var that = this
-    var url = "https://free-api.heweather.net/s6/air"
-    var params = {
-      location: city,
-      key: "97405f8168a04bd2b5c033c6d002f601"
-    }
-    wx.request({
-      url: url,
-      data: params,
-      success: function (res) {
-        console.log(res)
-        var qlty = res.data.HeWeather6[0].air_now_city.qlty;
-        that.setData({
-          qlty: qlty,
-        })
-      },
-      fail: function (res) { },
-      complete: function (res) { },
-    })
-  },
+  //     },
+  //     complete: function (res) {},
+  //   })
+  // },
+  // //获取空气质量
+  // getWeahterAir: function (city) {
+  //   var that = this
+  //   var url = "https://free-api.heweather.net/s6/air"
+  //   var params = {
+  //     location: city,
+  //     key: "97405f8168a04bd2b5c033c6d002f601"
+  //   }
+  //   wx.request({
+  //     url: url,
+  //     data: params,
+  //     success: function (res) {
+  //       console.log(res)
+  //       var qlty = res.data.HeWeather6[0].air_now_city.qlty;
+  //       that.setData({
+  //         qlty: qlty,
+  //       })
+  //     },
+  //     fail: function (res) {},
+  //     complete: function (res) {},
+  //   })
+  // },
   timeOut: function () {
     var that = this
     if (that.data.show == true) {
@@ -291,15 +288,15 @@ Page({
     var data = {
       userId: userId
     }
-    console.log(data)
-    util.request('user/getserialday', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
-      that.setData({
-        serialDay: res.data.data.serialDay,
-        hasClockOn: res.data.data.hasClockOn,
-        clockTimes: res.data.data.clockTimes
+    if(userId !=''){
+      util.request('user/getserialday', 'POST', data, '拼命加载中 ...', (res) => {
+        that.setData({
+          serialDay: res.data.data.serialDay,
+          hasClockOn: res.data.data.hasClockOn,
+          clockTimes: res.data.data.clockTimes
+        })
       })
-    })
+    }
   },
   initUser: function (userId) {
     var that = this;
@@ -309,14 +306,15 @@ Page({
       that.setData({
         userId: userId
       })
-      var data = { id: userId, openId: openId }
-      console.log(data)
+      var data = {
+        id: userId,
+        openId: openId
+      }
       wx.showLoading({
         title: '加载中',
         mask: true
       })
-      util.request('/user/getuserinfo', 'POST', data, '数据加载中 ...', (res) => {
-        console.log(res)
+      util.request('/user/getuserinfo', 'POST', data, '拼命加载中 ...', (res) => {
         if (res.data.success) {
           that.setData({
             avatarUrl: res.data.data.header_url,
@@ -332,7 +330,7 @@ Page({
             })
           }
           wx.hideLoading({
-            success: (res) => { },
+            success: (res) => {},
           })
         } else {
           app.globalData.userId = 0;
@@ -341,7 +339,7 @@ Page({
           })
           wx.clearStorageSync();
           wx.hideLoading({
-            success: (res) => { },
+            success: (res) => {},
           })
         }
       })
@@ -367,10 +365,8 @@ Page({
       page: that.data.page++,
       size: 15
     }
-    console.log(data)
-    util.request('user/getuserlist', 'POST', data, '数据加载中 ...', (res) => {
+    util.request('user/getuserlist', 'POST', data, '拼命加载中 ...', (res) => {
       if (res.data.success) {
-        console.log(res)
         that.setData({
           userList: res.data.data,
           actyIn: res.data.total
@@ -387,24 +383,22 @@ Page({
       actyIds: -1,
       page: 1
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       mask: true
     })
-    util.request('acty/getsports', 'POST', data, '数据加载中 ...', (res) => {
+    util.request('acty/getsports', 'POST', data, '拼命加载中 ...', (res) => {
       if (res.data.success) {
         var recordData = res.data.data
-        console.log(res.data)
         that.setData({
           recordList: recordData
         })
         wx.hideLoading({
-          success: (res) => { },
+          success: (res) => {},
         })
       } else {
         wx.hideLoading({
-          success: (res) => { },
+          success: (res) => {},
         })
         wx.showToast({
           title: res.data.error,
@@ -417,8 +411,7 @@ Page({
   getNews: function () {
     var that = this
     var data = {}
-    util.request('news/getlastnews', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
+    util.request('news/getlastnews', 'POST', data, '拼命加载中 ...', (res) => {
       if (res.data.success) {
         that.setData({
           title: res.data.data.title,
@@ -431,8 +424,7 @@ Page({
     var data = {
       type: '团跑'
     }
-    util.request('acty/getlastacty', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
+    util.request('acty/getlastacty', 'POST', data, '拼命加载中 ...', (res) => {
       if (res.data.success) {
         that.setData({
           acty_name: res.data.data.acty_name,
@@ -445,8 +437,7 @@ Page({
   getChallenge: function () {
     var that = this
     var data = {}
-    util.request('acty/rankListActy', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
+    util.request('acty/rankListActy', 'POST', data, '拼命加载中 ...', (res) => {
       if (res.data.success) {
         that.setData({
           challenge: res.data.data
@@ -458,7 +449,6 @@ Page({
     var userId = app.globalData.userId
     if (userId < 1 || userId == undefined) {
       util.showLogin((res) => {
-        console.log(res)
         var data = {
           code: res.code,
           encryptedData: "",
@@ -466,7 +456,6 @@ Page({
         }
         //取用户的openid
         util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes) => {
-          console.log(loginRes)
           var regData = {
             openId: loginRes.data.data.openid,
             imgUrl: res.userInfo.avatarUrl,
@@ -474,7 +463,6 @@ Page({
             sex: res.userInfo.gender,
             unionid: loginRes.data.data.unionid
           }
-          console.log(regData)
           util.request('user/wxregister', 'POST', regData, '', (regRes) => {
             app.globalData.userId = regRes.data.UserId
             app.globalData.openId = regData.openId
@@ -516,7 +504,18 @@ Page({
     })
     this.getLogo()
     this.getTips()
-    this.getLocation()
+    //this.getLocation()
+    //this.setPhoto()
+    var that = this;
+    //获取系统信息
+
+    wx.getSystemInfo({
+      success: (function (res) {
+        that.setData({
+          systemInfo: res
+        });
+      })
+    })
   },
   onPullDownRefresh: function () {
     this.setData({
@@ -539,6 +538,8 @@ Page({
     this.initDay(userId)
     this.initList()
     this.initRecord()
+  },
+  myLogin: function() {
     var that = this
     if (userId < 1 || userId == undefined) {
       wx.showModal({
@@ -546,7 +547,6 @@ Page({
         success(res) {
           if (res.confirm) {
             util.showLogin((res) => {
-              console.log(res)
               var data = {
                 code: res.code,
                 encryptedData: "",
@@ -554,7 +554,6 @@ Page({
               }
               //取用户的openid
               util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes) => {
-                console.log(loginRes)
                 var regData = {
                   openId: loginRes.data.data.openid,
                   imgUrl: res.userInfo.avatarUrl,
@@ -562,20 +561,22 @@ Page({
                   sex: res.userInfo.gender,
                   unionid: loginRes.data.data.unionid
                 }
-                console.log(regData)
                 util.request('user/wxregister', 'POST', regData, '', (regRes) => {
                   app.globalData.userId = regRes.data.UserId
                   app.globalData.openId = regData.openId
                   wx.setStorageSync('userId', regRes.data.UserId)
                   wx.setStorageSync('openId', regData.openId)
-                  var data = { id: regRes.data.UserId, openId: regData.openId }
-                  console.log(data)
+                  var data = {
+                    id: regRes.data.UserId,
+                    openId: regData.openId
+                  }
+                  that.getTips()
+                  that.initDay(regRes.data.UserId)
                   wx.showLoading({
                     title: '加载中',
                     mask: true
                   })
-                  util.request('/user/getuserinfo', 'POST', data, '数据加载中 ...', (res) => {
-                    console.log(res)
+                  util.request('/user/getuserinfo', 'POST', data, '拼命加载中 ...', (res) => {
                     if (res.data.success) {
                       that.setData({
                         avatarUrl: res.data.data.header_url,
@@ -591,7 +592,7 @@ Page({
                         })
                       }
                       wx.hideLoading({
-                        success: (res) => { },
+                        success: (res) => {},
                       })
                     } else {
                       app.globalData.userId = 0;
@@ -600,14 +601,13 @@ Page({
                       })
                       wx.clearStorageSync();
                       wx.hideLoading({
-                        success: (res) => { },
+                        success: (res) => {},
                       })
                     }
                   })
                 })
               })
             })
-
           } else if (res.cancel) {
             console.log('用户点击取消')
           }
@@ -615,15 +615,14 @@ Page({
       })
     }
   },
-  onHide: function () {
-  },
+  onHide: function () {},
   onShareAppMessage: function (res) {
     if (res.from === 'button') {
       // 来自页面内转发按钮
       console.log(res.target)
     }
     return {
-      title: '你的好友' + this.data.nickName + '邀请你加入微网跑团～',
+      title: '您的好友' + this.data.nickName + '邀请您加入悦跑团～',
       // path: '/pages/index/index'
     }
   }

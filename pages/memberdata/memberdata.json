@@ -1,7 +1,7 @@
 {
   "navigationStyle": "default",
   "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#4e505f",
-  "navigationBarTitleText": "跑量排行榜",
+  "navigationBarBackgroundColor": "#4CB944",
+  "navigationBarTitleText": "TOP30跑量排行榜",
   "navigationBarTextStyle":"white"
 }

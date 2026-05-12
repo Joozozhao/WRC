@@ -9,7 +9,7 @@
 <view class="vw-wrap" style="padding-top:100rpx;">
   <wxs src="../../utils/toDecimal2.wxs" module="module1" />
   <block wx:for="{{dataList}}" wx:key="index">
-    <view class="member my-data" data-id="{{item.id}}" bindtap="myData" wx:if="{{item.id == myId}}">
+    <view class="member my-data awesome-bg b-tapered2 .bg2" data-id="{{item.id}}" bindtap="myData" wx:if="{{item.id == myId}}">
       <view class="user-infor">
         <view class="rank" wx:if="{{index>2}}"><text class="rank-num">{{index+1}}</text></view>
         <view class="rank" wx:else>
@@ -34,9 +34,9 @@
               <image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image>
             </view>
           </view>
-          <view class="total" wx:if="{{id==0}}"><text class="tag">ID{{item.id}}</text> 跑步 {{item.month_times}} 次</view>
-          <view class="total" wx:if="{{id==1}}"><text class="tag">ID{{item.id}}</text> 跑步 {{item.year_times}} 次</view>
-          <view class="total" wx:if="{{id==2}}"><text class="tag">ID{{item.id}}</text> 跑步 {{item.sport_times}} 次</view>
+          <view class="total" wx:if="{{id==0}}"><text class="tag">ID.{{item.id}}</text> 跑步 {{item.month_times}} 次</view>
+          <view class="total" wx:if="{{id==1}}"><text class="tag">ID.{{item.id}}</text> 跑步 {{item.year_times}} 次</view>
+          <view class="total" wx:if="{{id==2}}"><text class="tag">ID.{{item.id}}</text> 跑步 {{item.sport_times}} 次</view>
         </view>
       </view>
       <view class="distance" wx:if="{{select==0}}">{{module1.toDecimal2(item.month_count)}}  km</view>
@@ -45,7 +45,7 @@
     </view>
   </block>
   <block wx:for="{{dataList}}" wx:key="index">
-    <view class="member" data-id="{{item.id}}" bindtap="myData">
+    <view class="member awesome-bg b-tapered2" data-id="{{item.id}}" bindtap="myData">
       <view class="user-infor">
         <view class="rank" wx:if="{{index>2}}"><text class="rank-num">{{index+1}}</text></view>
         <view class="rank" wx:else>
@@ -72,9 +72,9 @@
             </view>
           </view>
 
-          <view class="total" wx:if="{{id==0}}"><text class="tag">ID{{item.id}}</text> 跑步 {{item.month_times}} 次</view>
-          <view class="total" wx:if="{{id==1}}"><text class="tag">ID{{item.id}}</text> 跑步 {{item.year_times}} 次</view>
-          <view class="total" wx:if="{{id==2}}"><text class="tag">ID{{item.id}}</text> 跑步 {{item.sport_times}} 次</view>
+          <view class="total" wx:if="{{id==0}}"><text class="tag">ID.{{item.id}}</text> 跑步 {{item.month_times}} 次</view>
+          <view class="total" wx:if="{{id==1}}"><text class="tag">ID.{{item.id}}</text> 跑步 {{item.year_times}} 次</view>
+          <view class="total" wx:if="{{id==2}}"><text class="tag">ID.{{item.id}}</text> 跑步 {{item.sport_times}} 次</view>
         </view>
       </view>
       <view class="distance" wx:if="{{select==0}}">{{module1.toDecimal2(item.month_count)}} km</view>

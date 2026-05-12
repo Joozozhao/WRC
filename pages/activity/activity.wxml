@@ -11,19 +11,20 @@
       </view>
       <view class="activity-infor" bindtap="toDet" data-id="{{item.id}}">
         <view class="title">{{item.acty_name}}</view>
-        <view><text class="tag">{{item.acty_type}}</text><text class="tag org">{{item.region}}</text></view>
+        <view><text class="tag org">ID:{{item.id}}</text><text class="tag org">{{item.region}}</text></view>
         <view class="time letter-spacing">
-          <image src="/images/time.png"></image>{{item.start_timestr}}-{{item.end_timestr}}
+          Time：{{item.start_timestr}}-{{item.end_timestr}}
         </view>
         <view class="address">
-          <image src="/images/place.png"></image>{{item.address}}
+          Add：{{item.address}}
         </view>
-        <view>已参加：{{item.joins}}人</view>
+        <view>人数：{{item.joins}}人</view>
       </view>
       <view class="act-btn" wx:if="{{duty == '管理员'||duty == '管理员/团长'}}"><text class="btn edit" bindtap="editCon"
-          data-id="{{item.id}}">编辑</text><text class="btn del" bindtap="delCon" data-index="{{index}}"
-          data-id="{{item.id}}">删除</text></view>
+          data-id="{{item.id}}">Edit</text><text class="btn del" bindtap="delCon" data-index="{{index}}"
+          data-id="{{item.id}}">DEL</text></view>
     </view>
   </block>
 </view>
+<view style="height: 170rpx;"></view>
 <tabbar tabbar="{{tabbar}}"></tabbar>

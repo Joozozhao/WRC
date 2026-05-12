@@ -10,7 +10,7 @@ Component({
       value: {
         "backgroundColor": "#fff",
         "color": "#000",
-        "selectedColor": "#ffb6b9",
+        "selectedColor": "#FF6D31",
         "list": [{
           "pagePath": "pages/index/index",
           "text": "首页"

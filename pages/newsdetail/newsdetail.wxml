@@ -3,10 +3,10 @@
 <view class="vw-wrap">
   <view class="newsDetails">
     <view class="news-tit">{{title}}</view>
-    <view class="news-infor"><text class="author">{{author}}</text><text class="date">{{pubdate}}</text></view>
-    <view class="news-content">
+    <view class="news-infor"><view class="">{{author}}</view> 
+    <view data-text="{{author}}" bindtap="copywxtap" class="awesome-bg b-tapered"><text>点击复制链接，查看完整资料</text></view></view>
+    <view class="news-content" style="line-height: 50px; font-weight: 400;">
       <view class="wxParse">
-      <!-- 这里data中article为bindName -->
       <template is="wxParse" data="{{wxParseData:article.nodes}}"/>
       </view>
     </view>

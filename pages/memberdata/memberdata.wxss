@@ -27,17 +27,17 @@
 .all-item{
   overflow: hidden;
   display: flex;
-  padding: 30rpx 20rpx;
+  padding: 30rpx;
 }
 .all-item text{
   display: inline-block;
   font-size: 24rpx;
-  padding: 8rpx 20rpx;
+  padding: 15rpx 30rpx;
   border-radius: 50rpx;
   background: #f0f0f0;
   margin-right: 10rpx;
 }
 .all-item text.active{
-  background: #4ec17e;
+  background: linear-gradient(to right, #4CB944, #38ef7d);
   color: #fff;
 }

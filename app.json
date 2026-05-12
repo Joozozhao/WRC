@@ -52,7 +52,9 @@
     "pages/editaddress/editaddress",
     "pages/admin/admin",
     "pages/cropper/cropper",
-    "pages/cropper2/cropper"
+    "pages/cropper2/cropper",
+    "pages/results/results",
+    "pages/edituser/edituser"
   ],
   "window": {
     "navigationStyle": "custom"
@@ -60,37 +62,41 @@
   "tabBar": {
     "backgroundColor": "#fff",
     "color": "#000",
-    "selectedColor": "#ffb6b9",
-    "list": [{
-      "pagePath": "pages/index/index",
-     
-      "text": "首页"
-    }, {
-      "pagePath": "pages/activity/activity",
-     
-      "text": "团跑"
-    }, {
-      "pagePath": "pages/challenge/challenge",
-       
-      "text": "挑战"
-    }, {
-      "pagePath": "pages/mydata/mydata",
-       
-      "text": "我的"
-    }]
+    "selectedColor": "#FFCB18",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/activity/activity",
+        "text": "团跑"
+      },
+      {
+        "pagePath": "pages/challenge/challenge",
+        "text": "挑战"
+      },
+      {
+        "pagePath": "pages/mydata/mydata",
+        "text": "我的"
+      }
+    ]
   },
   "permission": {
     "scope.userLocation": {
       "desc": "你的位置信息将用于小程序天气预报的效果展示"
     }
   },
-  "plugins": {
-
-  },
+  "plugins": {},
   "usingComponents": {
     "time-picker": "/components/timePicker/timePicker"
   },
   "style": "v2",
+  "requiredPrivateInfos": [
+    "chooseLocation",
+    "getLocation",
+    "chooseAddress"
+  ],
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"
 }

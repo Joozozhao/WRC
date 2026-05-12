@@ -1,0 +1,60 @@
+<!--pages/energy/energy.wxml-->
+<view class="bg-gray">
+  <view class="vw-wrap im">
+    <view class="gg">公告：1.成绩数据截止至:{{syncDate}} 2.发现数据异常，可WRC群里反馈～</view>
+    <view class="ml-warp box-part">
+      <view class="ml-but">
+        <view>共</view>
+        <view class="my-points">{{dataTotal}}</view>
+      </view>
+      <view class="ml-but">
+        <view>全程马拉松</view>
+        <view class="my-points">{{wholeTotal}}</view>
+      </view>
+      <view class="ml-but">
+        <view>半程马拉松</view>
+        <view class="my-points">{{halfTotal}}</view>
+      </view>
+    </view>
+    <!-- 列表 -->
+    <view class="list-container" wx:for-items="{{marathons}}" wx:key="key">
+      <!-- 头部标题区 -->
+      <view class="header">
+        <view class="title">{{item.marathon_name}}</view>
+        <view class="subtitle">{{item.events_type}}</view>
+        <view class="pb-badge" wx:if="{{item.is_pb == 1}}">
+          <text class="stars">★★<text class="pb-text">PB</text>★★</text>
+        </view>
+      </view>
+
+      <!-- 基础成绩信息 -->
+      <view class="info-table">
+        <view class="row">
+          <view class="cell header-cell">比赛时间</view>
+          <view class="cell header-cell">项目</view>
+          <view class="cell header-cell">净成绩</view>
+          <view class="cell header-cell">枪声成绩</view>
+        </view>
+        <view class="row">
+          <view class="cell">{{item.playing_time}}</view>
+          <view class="cell">{{item.project_type}}</view>
+          <view class="cell time-cell">{{item.accurate_score}}</view>
+          <view class="cell time-cell">{{item.gunshot_score}}</view>
+        </view>
+      </view>
+
+      <!-- 分段成绩表格 -->
+      <view class="split-table">
+        <view wx:for="{{item.detail_km}}">
+          <view class="split-row">
+            <view class="split-cell" wx:for="{{item.name}}">{{item}}</view>
+          </view>
+          <view class="split-row">
+            <view class="split-cell time-cell" wx:for="{{item.dis}}">{{item}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view style="height: 100px;"></view>
+</view>

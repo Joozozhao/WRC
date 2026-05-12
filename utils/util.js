@@ -34,7 +34,7 @@ function dislodgeZero(str) {
   return strArray.join("-");
 }
 // const fmtUrl = "http://47.93.234.22/"
-const fmtUrl = "https://www.mlhb.com.cn/"
+const fmtUrl = "https://applet.51welink.com/"
 const baseUrl = fmtUrl + "sport/";
 const request = function(url, method, data, msg, succ, fail){
   wx.request({
@@ -65,13 +65,11 @@ const request = function(url, method, data, msg, succ, fail){
 }
 const showLogin = function(succ){
   wx.getUserProfile({
-    desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+    desc: '用于完善个人信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
     success: (res) => {
-      console.log("显示登录授权...获取用户信息...")
       console.log(res)
       wx.login({
         success: function(wxLoginRes){
-          console.log("获取登录的code...")
           console.log(wxLoginRes)
           if(wxLoginRes.code){
             var result = {

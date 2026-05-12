@@ -344,6 +344,11 @@ Page({
                 that.setData({
                   memberModal: false
                 })
+              } else{
+                wx.showToast({
+                  title: res.data.error,
+                  icon: 'error'
+                })
               }
             })
            } else {

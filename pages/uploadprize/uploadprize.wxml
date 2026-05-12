@@ -22,7 +22,7 @@
           </label>
           <label for="">
             <view style="display:inline-block;margin-right:20rpx;" bindtap="choose2">
-              <radio value="1"  checked="{{stype === 1 ? 'true' : ''}}" />能量
+              <radio value="1"  checked="{{stype === 1 ? 'true' : ''}}" />小花儿
             </view>
           </label><input type="digit" name="score" value="{{score}}" />
         </radio-group>

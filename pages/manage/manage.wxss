@@ -1,12 +1,16 @@
 /* pages/manage/manage.wxss */
-.meun-item{
+.meun-item {
   display: flex;
-  border-bottom: 1px solid #e1e1e1;
   font-size: 32rpx;
-  line-height: 100rpx;
+  line-height: 130rpx;
   position: relative;
+  padding-left: 15rpx;
 }
-.meun-item .add-arrow{
+.meun-item:hover,.meun-item:active {
+  background-color: aliceblue;
+}
+
+.meun-item .add-arrow {
   width: 30rpx;
   height: 30rpx;
   position: absolute;

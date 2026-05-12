@@ -1,5 +1,5 @@
 <!--pages/exchangeDetails/exchangeDetails.wxml-->
-<view class="bg-white address">
+<view class=" awesome-bg b-purple address">
   <view class="delivery-address" bindtap="chooseAddress">
     <view class="user-infor">
       <text>{{name}}</text><text class="tel">{{mobile}}</text>
@@ -9,21 +9,21 @@
     </view>
   </view>
 </view>
-<view class="bg-white ex-details">
+<view class=" awesome-bg b-purple g ex-details">
   <view class="confirm-product">
     <view class="product-img"><image src="{{goods_pic}}"></image></view>
     <view class="product-infor">
       <view class="name ellipsis">{{goods_name}}</view>
       <view class="add-num"><view>规格：<text>{{goods_tag}} {{tag_desc}}</text></view><view class="num">x{{goods_num}}</view></view>
       <view wx:if="{{goodType==0}}">{{score}}积分</view>
-      <view wx:else>{{energy}}能量</view>
+      <view wx:else>{{energy}}小花儿</view>
       
     </view>
   </view>
   <view class="vw-wrap point-total">
     <view>总共：</view>
     <view class="point" wx:if="{{goodType==0}}"><text class="red">{{score}}</text> 积分</view>
-    <view class="point" wx:else><text class="red">{{energy}}</text> 能量</view>
+    <view class="point" wx:else><text class="red">{{energy}}</text> 小花儿</view>
   </view>
 </view>
 <view class="bg-white order-details">
@@ -34,5 +34,5 @@
   <view wx:if="{{state == 1}}">订单状态：已发货</view>
   <view wx:if="{{state == 2}}">订单状态：已签收</view>
   <view wx:if="{{state == 3}}">订单状态：已退回</view>
-  <view class="order-btn" bindtap="conformOrder" wx:if="{{state !== 2&&state !==3}}">确认收货</view>
+  <view class="order-btn b-purple" bindtap="conformOrder" wx:if="{{state !== 2&&state !==3}}">确认收货</view>
 </view>

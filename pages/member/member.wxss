@@ -5,7 +5,7 @@
   padding: 20rpx 0;
   font-size: 32rpx;
   color: #999;
-  border-bottom: 1px solid #f0f0f0;
+   
 }
 /* .member:nth-child(1){
   border: none;
@@ -59,7 +59,7 @@
   font-size: 20rpx;
 }
 .member .state.over{
-  color: #4ec17e;
+  color: #fff;
 }
 .member .user-infor .infor .level{
   width: 100rpx;

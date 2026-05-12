@@ -26,6 +26,7 @@ App({
     //隐藏系统tabbar
     // wx.hideTabBar();
   },
+ 
   getSystemInfo: function () {
     let t = this;
     wx.getSystemInfo({
@@ -56,7 +57,7 @@ App({
     tabBar: {
       "backgroundColor": "#fff",
       "color": "#000",
-      "selectedColor": "#ffb6b9",
+      "selectedColor": "#4CB944", //仅此一个地儿 控制当前位置的颜色
       "list": [
         {
           "pagePath": "/pages/index/index",

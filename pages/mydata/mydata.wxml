@@ -7,7 +7,7 @@
         <view class="user-pic">
           <image src="{{headerImg}}" mode="widthFix" class="pic"></image>
         </view>
-        <view style="width:50%">
+        <view style="width:50%; margin-left: 20rpx;">
           <view class="infor">
             <view class="user-name" wx:if="{{userName==''&&nickName==''}}">请登录</view>
             <view class="user-name" wx:if="{{userName==''}}">{{nickName}}</view>
@@ -26,8 +26,9 @@
             </view>
           </view>
           <view class="user-name" style="margin-top:10rpx;">
-            <text class="tag" wx:if="{{userId>0}}">ID{{userId}}</text>
-            <view class="tag title" wx:if="{{duty=='团长'||duty=='管理员/团长'}}"><text> 团团 ヅ </text></view>
+            <text class="tag" wx:if="{{userId>0}}">ID.{{userId}}</text>
+            <view class="tag title svip" wx:if="{{duty=='团长'||duty=='管理员/团长'}}"><text> 永久SVIP ヅ </text>
+            </view>
           </view>
         </view>
         <view class="edit-infor" catchtap="editInfor">
@@ -35,33 +36,167 @@
         </view>
       </view>
       <view class="box-part-wrap index-part">
-        <view class="box-part">
+        <view class="box-part awesome-bg b-yellow">
           <view class="my-point" bindtap="checkPoint">
-            <view class="my-points">{{score}}</view>
-            <view class="tit">积分</view>
+            <view class="my-points" style="color: #ffb6b9;">{{score}}</view>
+            <view class="tit">剩余积分</view>
           </view>
           <view class="my-point" bindtap="checkEnergy">
-            <view class="my-points">{{energy}}</view>
-            <view class="tit">能量</view>
+            <view class="my-points" style="color: #8ac6d1;">{{module1.slice(energy)}}
+              <image src="../../images/f.svg" class="f-f"></image>
+            </view>
+            <view class="tit">小花儿</view>
           </view>
           <view class="my-point">
             <view class="my-points">{{module1.slice(monthDistance)}}</view>
-            <view class="tit">本月</view>
+            <view class="tit">本月跑量</view>
           </view>
           <view class="my-point">
             <view class="my-points">{{module1.slice(totalDistance)}}</view>
-            <view class="tit">总量</view>
+            <view class="tit">全部跑量</view>
+          </view>
+        </view>
+      </view>
+      <view class="x1" wx:if="{{marathons.length == 2 || marathons.length == 3}}">
+        <view class="race-card w50" bindtap="navigateWithParams">
+          <view class="card-header">
+            {{marathons[0].events_type}}
+          </view>
+          <view class="card-content">
+            <view class="race-title">
+              <text class="highlight">达标·</text>
+              <text>{{marathons[0].marathon_name}}</text>
+            </view>
+            <view class="race-info">
+              <view class="pb-badge">
+                <text class="star">★</text><text class="star">★</text>
+                <text class="pb-text">PB</text>
+                <text class="star">★</text><text class="star">★</text>
+              </view>
+            </view>
+            <!-- 成绩表格 -->
+            <view class="results-table">
+              <view class="table-row header-row">
+                <view class="table-cell">比赛时间</view>
+                <view class="table-cell">比赛项目</view>
+                <view class="table-cell">净成绩</view>
+              </view>
+              <view class="table-row">
+                <view class="table-cell">{{marathons[0].playing_time}}</view>
+                <view class="table-cell">{{marathons[0].project_type}}</view>
+                <view class="table-cell">{{marathons[0].accurate_score}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="race-card w50" bindtap="navigateWithParams">
+          <view class="card-header">
+            {{marathons[1].events_type}}
+          </view>
+          <view class="card-content">
+            <view class="race-title">
+              <text class="highlight">达标·</text>
+              <text>{{marathons[1].marathon_name}}</text>
+            </view>
+            <view class="race-info">
+              <view class="pb-badge">
+                <text class="star">★</text><text class="star">★</text>
+                <text class="pb-text">PB</text>
+                <text class="star">★</text><text class="star">★</text>
+              </view>
+            </view>
+            <!-- 成绩表格 -->
+            <view class="results-table">
+              <view class="table-row header-row">
+                <view class="table-cell">比赛时间</view>
+                <view class="table-cell">比赛项目</view>
+                <view class="table-cell">净成绩</view>
+              </view>
+              <view class="table-row">
+                <view class="table-cell">{{marathons[1].playing_time}}</view>
+                <view class="table-cell">{{marathons[1].project_type}}</view>
+                <view class="table-cell">{{marathons[1].accurate_score}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="race-card on1" bindtap="navigateWithParams" wx:if="{{marathons.length == 1}}">
+        <view class="card-header">
+          {{marathons[0].events_type}}
+        </view>
+        <view class="card-content">
+          <view class="race-title">
+            <text class="highlight">达标·</text>
+            <text>{{marathons[0].marathon_name}}</text>
+          </view>
+          <view class="race-info">
+            <view class="pb-badge">
+              <text class="star">★</text><text class="star">★</text>
+              <text class="pb-text">PB</text>
+              <text class="star">★</text><text class="star">★</text>
+            </view>
+          </view>
+          <!-- 成绩表格 -->
+          <view class="results-table">
+            <view class="table-row header-row">
+              <view class="table-cell">比赛时间</view>
+              <view class="table-cell">比赛项目</view>
+              <view class="table-cell">净成绩</view>
+              <view class="table-cell">枪声成绩</view>
+            </view>
+            <view class="table-row">
+              <view class="table-cell">{{marathons[0].playing_time}}</view>
+              <view class="table-cell">{{marathons[0].project_type}}</view>
+              <view class="table-cell">{{marathons[0].accurate_score}}</view>
+              <view class="table-cell">{{marathons[0].gunshot_score}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="race-card on1" bindtap="navigateWithParams" wx:if="{{marathons.length == 3}}">
+        <view class="card-header">
+          {{marathons[2].events_type}}
+        </view>
+        <view class="card-content">
+          <view class="race-title">
+            <text class="highlight">达标·</text>
+            <text>{{marathons[2].marathon_name}}</text>
+          </view>
+          <view class="race-info">
+            <view class="pb-badge">
+              <text class="star">★</text><text class="star">★</text>
+              <text class="pb-text">PB</text>
+              <text class="star">★</text><text class="star">★</text>
+            </view>
+          </view>
+          <!-- 成绩表格 -->
+          <view class="results-table">
+            <view class="table-row header-row">
+              <view class="table-cell">比赛时间</view>
+              <view class="table-cell">比赛项目</view>
+              <view class="table-cell">净成绩</view>
+              <view class="table-cell">枪声成绩</view>
+            </view>
+            <view class="table-row">
+              <view class="table-cell">{{marathons[2].playing_time}}</view>
+              <view class="table-cell">{{marathons[2].project_type}}</view>
+              <view class="table-cell">{{marathons[2].accurate_score}}</view>
+              <view class="table-cell">{{marathons[2].gunshot_score}}</view>
+            </view>
           </view>
         </view>
       </view>
     </view>
+
     <view class="week-data" wx:if="{{userId>0}}">
-      <view class="vw-wrap">
+      <view class="vw-wrap ">
         <view class="week-con">
           <view class="acty-tit tit-toggle small">
-          <view class="sub-tit {{weekChoosed?'actived':''}}" bindtap="weekClick">本周</view>
-          <view class="sub-tit {{monthChoosed?'actived':''}}" bindtap="monthClick">本月</view>
-          <text class="time-region" wx:if="{{weekShow}}">({{starTime}} ~ {{endTime}})</text>
+            <view class="sub-tit {{weekChoosed?'actived':''}}" bindtap="weekClick">本周</view>
+            <view class="sub-tit {{monthChoosed?'actived':''}}" bindtap="monthClick">本月</view>
+            <view class="sub-tit {{yearChoosed?'actived':''}}" bindtap="yearClick">本年</view>
+            <text class="time-region" wx:if="{{weekShow}}">({{starTime}} ~ {{endTime}})</text>
           </view>
           <view class="echart_panel" wx:if="{{weekShow}}">
             <ec-canvas ec="{{ecBar}}" bind:init="initBarData"></ec-canvas>
@@ -69,12 +204,15 @@
           <view class="echart_panel" wx:if="{{monthShow}}">
             <ec-canvas ec="{{ecBar}}" bind:init="initMonthData"></ec-canvas>
           </view>
+          <view class="echart_panel" wx:if="{{yearShow}}">
+            <ec-canvas ec="{{ecBar}}" bind:init="initYearData"></ec-canvas>
+          </view>
         </view>
       </view>
     </view>
     <view class="week-data" wx:if="{{haveSuperActy}}">
       <view class="vw-wrap">
-        <view class="data-con bg-white" style="margin-bottom: 30rpx;padding-bottom: 20rpx;">
+        <view class="data-con bg-white" style="margin-bottom: 20rpx;padding-bottom: 20rpx;">
           <view class="acty-tit tit-toggle">挑战项<text class="time-region">({{pasStartDate2}} ~ {{passEndDate2}})</text></view>
           <swiper wx:if="{{sex==1}}" autoplay="{{swiper2.autoplay}}" interval="{{swiper2.interval}}" duration="{{swiper2.duration}}" current="{{swiper2.current}}" circular="{{swiper2.circular}}" previous-margin="-30rpx" next-margin="-30rpx" style="height: 26vh;overflow: hidden;">
             <swiper-item wx:for="{{swiper2.qualifications}}" wx:key="index">
@@ -151,9 +289,9 @@
             </swiper-item>
           </swiper>
         </view>
-        <view class="data-con bg-white" style="margin-bottom: 30rpx;padding-bottom: 20rpx;">
+        <view class="data-con bg-white" style="margin-bottom: 20rpx;padding-bottom: 20rpx;">
           <view class="acty-tit tit-toggle">资格项<text class="time-region">({{pasStartDate}} ~ {{passEndDate}})</text></view>
-          <swiper wx:if="{{sex==1}}" autoplay="{{swiper.autoplay}}" interval="{{swiper.interval}}" duration="{{swiper.duration}}" current="{{swiper.current}}" circular="{{swiper.circular}}" previous-margin="-30rpx" next-margin="-30rpx" style="height: 26vh;overflow: hidden;">
+          <swiper wx:if="{{sex==1}}" autoplay="{{swiper.autoplay}}" interval="{{swiper.interval}}" duration="{{swiper.duration}}" current="{{swiper.current}}" circular="{{swiper.circular}}" previous-margin="-20rpx" next-margin="-20rpx" style="height: 26vh;overflow: hidden;">
             <swiper-item wx:for="{{swiper.qualifications}}" wx:key="index">
               <view class="data-body">
                 <view class="flex-con">
@@ -231,7 +369,7 @@
       </view>
     </view>
     <all-activity totalChallenge="{{totalChallenge}}" totalActy="{{totalActy}}" activityList="{{activityList}}" activityList2="{{activityList2}}" bind:parentEvent="loadMore" bind:parentEvent2="loadMore2" bind:parentEvent3="toDet"></all-activity>
-    <view style="height: 100rpx;"></view>
+    <view style="height: 240rpx;"></view>
   </scroll-view>
 </view>
 <tabbar tabbar="{{tabbar}}"></tabbar>

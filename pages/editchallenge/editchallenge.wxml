@@ -13,10 +13,6 @@
         <view class="del" bindtap="delete"><image src="../../images/delete.png"></image></view>
       </view>
     </view>
-    <!-- <view class="form-item vw-wrap">
-      <label for="" class="title">活动类型</label>
-      <input type="text" value="{{actyType}}" class="ipt" disabled="disabled"></input>
-    </view> -->
     <view class="form-item vw-wrap">
       <label for="" class="title">活动名称</label>
       <input type="text" focus="{{focus}}" value="{{actyName}}" name="actyName" placeholder="请输入活动名称" class="ipt ellipsis"></input>
@@ -36,11 +32,6 @@
       </view>
       <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
     </view>
-    <!-- <view class="form-item vw-wrap">
-      <label for="" class="title">活动地点</label>
-      <input type="text" value="{{address}}" name="address" placeholder="请输入活动地点" class="ipt ellipsis"></input>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
-    </view> -->
     <view class="form-item vw-wrap">
       <label for="" class="title">挑战距离</label>
       <input type="digit" focus="{{focus}}" value="{{distance}}" name="distance" class="ipt" placeholder="请输入挑战距离"></input>
@@ -57,7 +48,7 @@
           </label>
           <label for="">
             <view style="display:inline-block;margin-right:20rpx;" bindtap="choose2">
-              <radio value="1"  checked="{{stype === 1 ? 'true' : ''}}" disabled="disabled" />能量
+              <radio value="1"  checked="{{stype === 1 ? 'true' : ''}}" disabled="disabled" />小花儿
             </view>
             
           </label><input type="digit" name="score" value="{{score}}" disabled="disabled" />
@@ -68,7 +59,7 @@
     </view>
     <view class="form-item vw-wrap" style="display:block;">
       <label for="" class="title">挑战说明</label>
-      <textarea name="remark" focus="{{focus}}" maxlength="-1" class="ipt" placeholder="请输入挑战说明" style="display:block;width:100%;height:100rpx;line-height:1;overflow-y:scroll;padding:0;margin:0;text-align:left;" value="{{remark}}"></textarea>
+      <textarea name="remark" focus="{{focus}}" maxlength="-1" class="ipt" placeholder="请输入挑战说明" style="display:block;width:100%;height:300rpx;line-height:1;overflow-y:scroll;padding:0;margin:0;text-align:left;" value="{{remark}}"></textarea>
     </view>
     <view wx:if="{{actyType!=='V挑战'}}">
       <view class="sub-tit vw-wrap">报名填写项</view>
@@ -131,7 +122,7 @@
                         <view wx:if="{{item.level == 'VIP'}}"><image src="../../images/superVIP.svg" mode="widthFix" class="level"></image></view>
                         <view wx:if="{{item.level == '普通'}}"><image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image></view>
                         <view class="my-area" style="background:#f36838;" wx:if="{{item.address=='北京'}}">{{item.address}}</view>
-                        <view class="my-area" style="background:#7bcfa6;" wx:if="{{item.address=='日照'}}">{{item.address}}</view>
+                        <view class="my-area" style="background:#4CB944;" wx:if="{{item.address=='日照'}}">{{item.address}}</view>
                         <view class="my-area" style="background:#bacac6;" wx:if="{{item.address=='其他地区'}}">{{item.address}}</view>
                       </view>
                       <view class="total">

@@ -1,7 +1,7 @@
 <!--pages/confirmorder/confirmorder.wxml-->
 <form bindsubmit="submit">
 <view class="pg-wrap">
-  <view class="bg-white address">
+  <view class="awesome-bg b-green g address">
     <view class="choose-address">收货地址<view class="wechat-btn" bindtap="addAddr"><image src="../../images/weixin.png" mode="widthFix" style="height:auto;"></image>选择微信地址</view></view>
     <view class="default-address {{defaultAddressView?'show':'hide'}}" bindtap="chooseAddress">
       <view class="add-details">
@@ -19,16 +19,16 @@
       </view>
     </view>
   </view>
-  <view class="bg-white address code-change">
+  <view class="awesome-bg b-green address code-change">
     <input type="text" value="{{code}}" name="code" placeholder="兑换码" class="id-ipt"></input>    
     <view class="small-tips">*可使用抽奖兑换码兑换奖品</view>
   </view>
-  <view class="bg-white confirm-product">
+  <view class="awesome-bg b-green g confirm-product">
     <view class="product-img"><image src="{{imgSrc}}"></image></view>
     <view class="product-infor">
       <view class="name ellipsis">{{goodName}}</view>
       <view><text>{{typeOne}} {{typeTwo}}</text></view>
-      <view><text wx:if="{{goods_type==0}}">{{points}}积分</text><text wx:if="{{goods_type==1}}">{{energy}}能量</text></view>
+      <view><text wx:if="{{goods_type==0}}">{{points}}积分</text><text wx:if="{{goods_type==1}}">{{energy}}小花儿</text></view>
     </view>
   </view>
   <view class="bg-white special-tips">
@@ -43,14 +43,14 @@
   </view>
 </view>
 <view class="btm-btn rht">
-  <view class="point">总共：<text class="red" wx:if="{{goods_type==0}}">{{points}}</text> <text wx:if="{{goods_type==0}}">积分</text><text class="red" wx:if="{{goods_type==1}}">{{energy}}</text><text wx:if="{{goods_type==1}}">能量</text></view>
+  <view class="point">总共：<text class="red" wx:if="{{goods_type==0}}">{{points}}</text> <text wx:if="{{goods_type==0}}">积分</text><text class="red" wx:if="{{goods_type==1}}">{{energy}}</text><text wx:if="{{goods_type==1}}">小花儿</text></view>
   <button class="btn btnOne" form-type="submit" >提交</button>
 </view>
 </form>
 <view class="pop-up {{editTrue?'isRuleShow':'isRuleHide'}}">
   <view class="content">
     <view class="status-icon"><image src="../../images/jifen.png" mode="widthFix" style="height:auto;"></image></view>
-    <view>您将消耗<text wx:if="{{goods_type==0}}">{{points}}积分</text><text wx:if="{{goods_type==1}}">{{energy}}能量</text>兑换</view>
+    <view>您将消耗<text wx:if="{{goods_type==0}}">{{points}}积分</text><text wx:if="{{goods_type==1}}">{{energy}}小花儿</text>兑换</view>
     <view class="prize-name">{{goodName}}</view>
     <view class="btn white-btn" bindtap="confirmIt">确认兑换</view>
     <view class="btn" bindtap="prizeBtn">再去看看</view>
@@ -65,7 +65,7 @@
   </view>
   <!-- <view class="content">
     <view class="status-icon"><image src="../../images/cancle.png" mode="widthFix"></image></view>
-    <view class="prize-name">很遗憾 您的积分能量不足</view>
+    <view class="prize-name">很遗憾 您的积分小花儿不足</view>
     <view style="font-size:28rpx;margin-bottom:40rpx;">欢迎关注更多会员礼遇</view>
     <navigator url="/pages/exchange/exchange" hover-class="none"><view class="btn white-btn">查看更多</view></navigator>
   </view> -->

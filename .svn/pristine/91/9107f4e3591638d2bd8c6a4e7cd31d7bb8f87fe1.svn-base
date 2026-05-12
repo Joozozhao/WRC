@@ -1,6 +1,0 @@
-/* pages/energy/energy.wxss */
-@import "../checkpoint/checkpoint.wxss";
-.box-part{
-  display: flex;
-  justify-content: space-around;
-}

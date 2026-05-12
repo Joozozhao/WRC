@@ -1,7 +1,7 @@
 <!--pages/member/member.wxml-->
 <view class="vw-wrap">
   <block wx:for="{{memberList}}" wx:key="id" >
-    <view class="member" data-userid="{{item.id}}" bindtap="myData">
+    <view class="member awesome-bg b-tapered" data-userid="{{item.id}}" bindtap="myData">
       <view class="user-infor">
         <view class="user-pic">
           <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
@@ -15,12 +15,9 @@
           <view class="user-con">
             <view class="sex" wx:if="{{item.sex == 1}}"><image src="../../images/man.svg"></image></view>
             <view class="sex" wx:if="{{item.sex == 2}}"><image src="../../images/woman.svg"></image></view>
-            <view class="state over">已报名</view>
           </view>
         </view>
-        
-      </view>
-      
+      </view> 
     </view>
   </block>
 </view>

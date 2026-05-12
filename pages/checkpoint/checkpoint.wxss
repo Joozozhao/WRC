@@ -4,8 +4,8 @@
 }
 .tab-tit{
   width: 100%;
-  padding: 20rpx 0;
-  background: #ffb6b9;
+  padding: 30rpx 0 20rpx 0;
+  background-color: #4CB944;
   font-size: 32rpx;
   color: #fff;
   text-align: center;
@@ -17,7 +17,7 @@
 .sub text{
   display: inline-block;
   padding-bottom: 5rpx;
-  border-bottom: 2px solid #ffb6b9;
+  border-bottom: 2px solid #333;
 }
 .tab-tit .active text{
   border-bottom-color:#fff;
@@ -26,21 +26,21 @@
 .add-points{
   display: flex;
   justify-content: space-between;
-  padding: 30rpx 0;
-  border-bottom: 1px solid #e1e1e1;
-}
-.add-points:nth-last-child(1){
-  border-bottom: none;
+  padding: 15rpx;
 }
 .add-detail .detail{
-  padding-bottom: 20rpx;
+  font-weight: 100;
+  padding: 5rpx 0;
 } 
 .add-detail .time{
   font-size: 28rpx;
-  color: #666;
+  color: #999;
+  font-weight: 100;
+  margin-bottom: 5rpx;
 }
 .add-points .new-points{
-  line-height: 105rpx;
+  line-height: 95rpx;
+  font-size: 150%;
 }
 .deduct-points{
   text-align: center;
@@ -55,9 +55,21 @@
 .tabshow{
   visibility: visible;
   display: block;
-  background-color: #fafafa;
 }
 .tabhide{
   visibility: hidden;
   display: none;
+}
+.my-point {
+  position: relative;
+}
+.notices {
+  position: fixed;
+  bottom: 60rpx;
+  left: 15%;
+  width: 70%;
+  font-size: 150%;
+  border-radius: 10rpx;
+  color: #333;
+  text-shadow: #fff 1px -1px;
 }

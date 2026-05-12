@@ -18,9 +18,12 @@
   margin-left: 0;
 }
 .act-btn .btn.up{
-  background: #4ec17e;
-  border-color: #4ec17e;
+  background: #000;
+  border-color: #fff;
   color: #fff;
+}
+.modal-footer {
+  background: none;
 }
 .top-con{
   margin-top: 20rpx;
@@ -94,7 +97,7 @@
 .need-score{
   font-size: 24rpx;
   font-weight: bold;
-  color: #4ec17e;
+  color: #000;
 }
 .type-detail{
   display: flex;

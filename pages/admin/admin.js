@@ -48,7 +48,7 @@ Page({
                     wx.uploadFile({
                         filePath: res.tempFilePaths[0],
                         name: 'file',
-                        url: 'https://www.mlhb.com.cn/sport/news/sys/upload',
+                        url: 'https://applet.51welink.com/sport/news/sys/upload',
                         formData: { userId: userId, fileId: 'file' },
                         success: function (ret) {
                             console.log(ret);

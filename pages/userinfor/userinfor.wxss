@@ -13,6 +13,13 @@
   display: flex;
   justify-content: center;
 }
+.edit-but {
+  text-align: center;
+  display: block;
+  width: 30%;
+  padding: 10rpx !important;
+  margin: 0 auto !important;
+}
 .user-pic{
   position: relative;
   margin-bottom: 40rpx;
@@ -27,11 +34,9 @@
 }
  
 .user-pic .vip{
-  width: 40rpx;
-  height: 40rpx;
-  position: absolute;
-  right: 0;
-  bottom: 50rpx;
+  width: 50rpx;
+  height: 50rpx;
+ 
 }
 .vw-form{
   display: flex;
@@ -114,7 +119,6 @@ checkbox-group checkbox .wx-checkbox-input{
   text-align: center;
   font-size: 32rpx;
   font-weight: normal;
-  color: #555454;
   border-radius: 10rpx;
   background-color: #f1f1f1;
 }
@@ -129,4 +133,10 @@ checkbox-group checkbox .wx-checkbox-input{
   text-align: center;
   font-size: 32rpx;
   color: #666;
+}
+.versionnumber {
+  text-align: center;
+  font-size: 80%;
+  color: #dedede;
+  padding-bottom: 100rpx;
 }

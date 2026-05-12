@@ -24,13 +24,13 @@ Component({
       pixelRatio: device.pixelRatio,
       width,
       height,
-      scale: 2.5,
+      scale: 2.2,
       zoom: 8,
       cut: {
         x: (width - 300) / 2,
         y: (height - 300) / 2,
         width: 300,
-        height: 144
+        height: 240
       },
       boundStyle: {
         color: "#04b00f",
@@ -91,7 +91,7 @@ Component({
         this.cropper.getCropperImage()
           .then((src) => {
             wx.uploadFile({
-              url: 'https://www.mlhb.com.cn/sport/acty/uploadimg', //这里是上传的服务器地址
+              url: 'https://applet.51welink.com/sport/acty/uploadimg', //这里是上传的服务器地址
               filePath: src,
               name: "file",
               formData: {userId: userId,fileId:'file'},

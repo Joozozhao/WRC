@@ -97,7 +97,7 @@ Page({
 //          wx.uploadFile({
 //            filePath: res.tempFilePaths[0],
 //           name: 'file',
-//           url: 'https://www.mlhb.com.cn/sport/acty/uploadimg',
+//           url: 'https://applet.51welink.com/sport/acty/uploadimg',
 //           formData: { userId:  userId, fileId:'file' },
 //           success: function(ret){
 //             console.log(ret);

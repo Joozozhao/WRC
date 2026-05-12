@@ -41,7 +41,7 @@
               <text wx:if="{{item.name!==''}}">{{item.name}}</text>
               <text wx:else>{{item.nick_name}}</text>
               <text class="area" style="background:#f36838;" wx:if="{{item.address=='北京'}}">{{item.address}}</text>
-              <text class="area" style="background:#7bcfa6;" wx:if="{{item.address=='日照'}}">{{item.address}}</text>
+              <text class="area" style="background:#4CB944;" wx:if="{{item.address=='日照'}}">{{item.address}}</text>
               <text class="area" style="background:#bacac6;" wx:if="{{item.address=='其他地区'}}">{{item.address}}</text>
             </view>
           </view>
@@ -85,7 +85,7 @@
       </view>
     </view>
     <!-- 操作按钮 -->
-    <view class="modal-footer nopd">
+    <view class="modal-footer nopd none">
       <button class="btn btn-cancel" bindtap="onCancel" data-status="cancel">取消</button>
       <button class="btn btn-confirm" form-type="submit" data-status="confirm">确定</button>
     </view>

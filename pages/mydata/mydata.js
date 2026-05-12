@@ -14,8 +14,10 @@ Page({
   data: {
     weekChoosed: true,
     monthChoosed: false,
+    yearChoosed: false,
     weekShow: true,
     monthShow: false,
+    yearShow: false,
     tabbar: {},
     actyId: '',
     rule_id1: '',
@@ -90,13 +92,13 @@ Page({
     monthDistance: 0,
     totalDistance: 0,
     nickName: '',
-    userName: ''
+    userName: '',
+    marathons: [],
   },
   openLogin : function(){
     var userId = app.globalData.userId
     if(userId < 1 || userId == undefined){
     util.showLogin((res)=>{
-      console.log(res)
       var data = {
         code: res.code,
         encryptedData: "",
@@ -104,7 +106,6 @@ Page({
       }
       //取用户的openid
       util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes)=>{
-        console.log(loginRes)
         var regData = {
           openId: loginRes.data.data.openid,
           imgUrl: res.userInfo.avatarUrl,
@@ -112,7 +113,6 @@ Page({
           sex: res.userInfo.gender,
           unionid: loginRes.data.data.unionid
         }
-        console.log(regData)
         util.request('user/wxregister', 'POST', regData, '', (regRes)=>{
           app.globalData.userId = regRes.data.UserId
           app.globalData.openId = regData.openId
@@ -131,7 +131,6 @@ Page({
       userId: id
     }
     util.request('user/getsportinfo', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
       if (res.data.success) {
         var myData = res.data.data
         that.setData({
@@ -182,13 +181,27 @@ Page({
       weekShow: true,
       weekChoosed: true,
       monthChoosed: false,
-      monthShow: false
+      monthShow: false,
+      yearChoosed: false,
+      yearShow: false
     })
   },
   monthClick: function(){
     this.setData({
       monthShow: true,
       monthChoosed: true,
+      weekChoosed: false,
+      weekShow: false,
+      yearChoosed: false,
+      yearShow: false
+    })
+  },
+  yearClick: function(){
+    this.setData({
+      yearChoosed: true,
+      yearShow: true,
+      monthShow: false,
+      monthChoosed: false,
       weekChoosed: false,
       weekShow: false
     })
@@ -199,9 +212,7 @@ Page({
     var data = {
       user_id: id
     }
-    console.log(data)
     util.request('user/getUserJoinActy', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
       if (res.data.success) {
         that.setData({
           actyId: res.data.data[`V挑战`],
@@ -227,9 +238,7 @@ Page({
       acty_type: 1,
       sex: that.data.sex
     }
-    console.log(data)
     util.request('acty/getActyRuleByType', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
       if (res.data.success) {
         that.setData({
           rule_id1: res.data.data.id,
@@ -248,9 +257,7 @@ Page({
       acty_type: 2,
       sex: that.data.sex
     }
-    console.log(data)
     util.request('acty/getActyRuleByType', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
       if (res.data.success) {
         that.setData({
           rule_id2: res.data.data.id,
@@ -269,9 +276,7 @@ Page({
       rule_id: that.data.rule_id1,
       user_id: parseInt(that.data.userId)
     }
-    console.log(data)
     util.request('user/getRuleResult', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res.data)
       if (res.data.success) {
         var list = 'swiper.qualifications'
         that.setData({
@@ -283,7 +288,6 @@ Page({
           [list]: res.data.data.finish_month,
           echartShow: true
         })
-        console.log(that.data.swiper.qualifications)
         var nowDate
         var nowMonth = currentMonth + 1
         if (currentMonth < 10) {
@@ -293,10 +297,8 @@ Page({
         }
         var obj = that.data.swiper.qualifications
         var data = Object.keys(obj)
-        console.log(data)
         for (var i = 0; i < data.length; i++) {
           if (data[i] == nowDate) {
-            console.log(i)
             var cur = 'swiper.current'
             that.setData({
               [cur]: i
@@ -315,9 +317,7 @@ Page({
       rule_id: that.data.rule_id2,
       user_id: parseInt(that.data.userId)
     }
-    console.log(data)
     util.request('user/getRuleResult', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res.data)
       if (res.data.success) {
         var list = 'swiper2.qualifications'
         that.setData({
@@ -329,20 +329,17 @@ Page({
           [list]: res.data.data.finish_month,
           echartShow2: true
         })
-        console.log(that.data.swiper2)
         var nowDate
         var nowMonth = currentMonth + 1
-        if (currentMonth < 10) {
+        if (nowMonth < 10) {
           nowDate = currentYear + '-' + '0' + nowMonth
         } else {
           nowDate = currentYear + '-' + nowMonth
         }
         var obj = that.data.swiper2.qualifications
         var data = Object.keys(obj)
-        console.log(data)
         for (var i = 0; i < data.length; i++) {
           if (data[i] == nowDate) {
-            console.log(i)
             var cur = 'swiper2.current'
             that.setData({
               [cur]: i
@@ -358,7 +355,6 @@ Page({
     var swiper = this.data.swiper;
     var current = swiper.current;
     var arr = Object.keys(swiper.qualifications)
-    console.log(arr)
     swiper.current = current > 0 ? current - 1 : arr.length - 1;
     this.setData({
       swiper: swiper
@@ -368,7 +364,6 @@ Page({
     var swiper = this.data.swiper;
     var current = swiper.current;
     var arr = Object.keys(swiper.qualifications)
-    console.log(arr)
     swiper.current = current < (arr.length - 1) ? current + 1 : 0;
     this.setData({
       swiper: swiper
@@ -378,7 +373,6 @@ Page({
     var swiper = this.data.swiper2;
     var current = swiper.current;
     var arr = Object.keys(swiper.qualifications)
-    console.log(arr)
     swiper.current = current > 0 ? current - 1 : arr.length - 1;
     this.setData({
       swiper2: swiper
@@ -388,7 +382,6 @@ Page({
     var swiper = this.data.swiper2;
     var current = swiper.current;
     var arr = Object.keys(swiper.qualifications)
-    console.log(arr)
     swiper.current = current < (arr.length - 1) ? current + 1 : 0;
     this.setData({
       swiper2: swiper
@@ -402,9 +395,7 @@ Page({
       type: '挑战',
       page: that.data.page++
     }
-    console.log(data)
     util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res.data)
       if (res.data.success) {
         var allData = res.data.data
         for (var i = 0; i < allData.length; i++) {
@@ -439,9 +430,7 @@ Page({
       type: '团跑',
       page: that.data.page2++
     }
-    console.log(data)
     util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res.data)
       if (res.data.success) {
         var allData = res.data.data
         for (var i = 0; i < allData.length; i++) {
@@ -478,9 +467,7 @@ Page({
     var data = {
       user_id: that.data.userId
     }
-    console.log(data)
     util.request('user/getWeekRuleList', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res.data)
       if (res.data.success) {
         that.setData({
           starTime: res.data.data[0].sport_day.substring(5, 10),
@@ -512,13 +499,11 @@ Page({
     var data = {
       user_id: that.data.userId
     }
-    console.log(data)
     util.request('user/getMonthList', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res.data)
       if (res.data.success) {
         var nowDate
         var nowMonth = currentMonth + 1
-        if (currentMonth < 10) {
+        if (nowMonth < 10) {
           nowDate = currentYear + '-' + '0' + nowMonth
         } else {
           nowDate = currentYear + '-' + nowMonth
@@ -535,6 +520,33 @@ Page({
         }
         //load bar 
         option.initBar2(e.detail.canvas, e.detail.width, e.detail.height, e.detail.dpr, monthArr, max)
+      }
+    })
+  },
+  initYearData: function (e) {
+    var that = this
+    var monthArr = []
+    if (that.data.userId == undefined) {
+      return
+    }
+    var data = {
+      user_id: that.data.userId
+    }
+    util.request('user/getYearMonthList', 'POST', data, '数据加载中 ...', (res) => {
+      if (res.data.success) {
+        var max = 0;
+        for (var i = 0; i < res.data.data.length; i++) {
+          var distance = res.data.data[i].sport_total
+          if(i == 0) {
+            max = distance
+          }
+          if(max < distance) {
+            max = distance
+          }
+          monthArr.push(distance)
+        }
+        //load bar 
+        option.initBar3(e.detail.canvas, e.detail.width, e.detail.height, e.detail.dpr, monthArr, max)
       }
     })
   },
@@ -646,16 +658,116 @@ Page({
   onLoad: function () {
     wx.hideTabBar();
     app.editTabbar();
+    
     var userId = app.globalData.userId
     if (userId <= 0) {
-      return
+      this.myLogin(userId);
     }
     this.initInfor(userId)
     this.initActy(userId)
     this.initActy2(userId)
     this.getChallengeId(userId)
+    this.initMarathon(userId)
     this.setData({
       userId: userId //自己的id
     })
-  }
+  },
+  initMarathon: function(userId) {
+    var that = this
+    var data = { userId: userId}
+    util.request('user/marathonpb', 'POST', data, '拼命加载中 ...', (res) => {
+      that.setData({
+        marathons: res.data.data
+      })
+    });
+  },
+  myLogin: function(userId) {
+    var that = this
+    if (userId < 1 || userId == undefined) {
+      wx.showModal({
+        content: '请先登录小程序！',
+        success(res) {
+          if (res.confirm) {
+            util.showLogin((res) => {
+              var data = {
+                code: res.code,
+                encryptedData: "",
+                iv: ""
+              }
+              //取用户的openid
+              util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes) => {
+                var regData = {
+                  openId: loginRes.data.data.openid,
+                  imgUrl: res.userInfo.avatarUrl,
+                  nickName: res.userInfo.nickName,
+                  sex: res.userInfo.gender,
+                  unionid: loginRes.data.data.unionid
+                }
+                util.request('user/wxregister', 'POST', regData, '', (regRes) => {
+                  app.globalData.userId = regRes.data.UserId
+                  app.globalData.openId = regData.openId
+                  wx.setStorageSync('userId', regRes.data.UserId)
+                  wx.setStorageSync('openId', regData.openId)
+                  var data = {
+                    id: regRes.data.UserId,
+                    openId: regData.openId
+                  }
+                  wx.showLoading({
+                    title: '加载中',
+                    mask: true
+                  })
+                  util.request('/user/getuserinfo', 'POST', data, '拼命加载中 ...', (res) => {
+                    if (res.data.success) {
+                      that.setData({
+                        avatarUrl: res.data.data.header_url,
+                        nickName: res.data.data.nick_name,
+                        score: res.data.data.score,
+                        level: res.data.data.level,
+                        userId: res.data.data.id,
+                        duty: res.data.data.duty
+                      })
+                      if (res.data.data.duty == '团长,管理员' || res.data.data.duty == '管理员,团长') {
+                        that.setData({
+                          duty: '管理员/团长',
+                        })
+                      }
+                      wx.hideLoading({
+                        success: (res) => {},
+                      })
+                    } else {
+                      app.globalData.userId = 0;
+                      that.setData({
+                        userId: 0
+                      })
+                      wx.clearStorageSync();
+                      wx.hideLoading({
+                        success: (res) => {},
+                      })
+                    }
+                  })
+                })
+              })
+            })
+          } else if (res.cancel) {
+            console.log('用户点击取消')
+          }
+        }
+      })
+    }
+  },
+
+  // * 添加跳转到马拉松页面
+ // 添加缺失的方法
+ navigateWithParams: function() {
+  // 获取可能需要的数据参数（如果有）
+  // 注意：这里只是示例，您需要根据实际情况修改
+  const id = 123;
+  const name = "测试数据";
+  
+  // 执行页面跳转
+  wx.navigateTo({
+    url: '/pages/results/results?id=' + id + '&name=' + encodeURIComponent(name)
+  });
+}
+
 })

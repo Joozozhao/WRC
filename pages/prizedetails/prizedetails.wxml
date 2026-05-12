@@ -19,14 +19,13 @@
       <image src="../../images/point.png" class="ico"></image><text class="points">{{points}}</text><text>积分</text>
     </view>
     <view class="need-points" wx:if="{{goods_type==1}}">
-      <image src="../../images/en-ico.svg" class="ico"></image><text class="points">{{energy}}</text><text>能量</text>
+      <image src="../../images/en-ico.svg" class="ico"></image><text class="points">{{energy}}</text><text>小花儿</text>
     </view>
     <view class="prize-tit">{{goodName}}</view>
-    <!-- <view class="use-code" bindtap="useCode">使用兑换码</view> -->
   </view>
   <view class="bg-white prize-type">
     <view class="top-con" wx:if="{{allType}}">
-      <view class="mycon-tit">奖品规格<view class="total-wrap" wx:if="{{otherTit}}"><text class="total-num" wx:if="{{totalNum>0}}">库存：{{totalNum}}</text>
+      <view class="mycon-tit awesome-bg b-tapered">奖品规格<view class="total-wrap" wx:if="{{otherTit}}"><text class="total-num" wx:if="{{totalNum>0}}">库存：{{totalNum}}</text>
           <text class="total-num" wx:if="{{totalNum==0}}">库存：0</text>
         </view>
       </view>
@@ -54,19 +53,21 @@
         <image src="{{item.goods_pic}}" mode="widthFix" style="width:100%;height:auto;" />
       </view>
     </view>
-    <view class="">{{goodsRemark}}</view>
+
+    <view class="goods-style">
+        <rich-text nodes="{{goodsRemark}}"></rich-text>
+      </view>
   </view>
   <view class="exchange-list" wx:if="{{total>0}}">
-    <view class="tit">{{total}}人最近兑换了本奖品</view>
+    <view class="tit awesome-bg b-tapered"> Ta们最近兑换了这个奖品</view>
     <view class="user-list">
       <block wx:for="{{imgList}}" wx:key="index">
         <image src="{{item.header_url}}" class="avastar"></image>
-
       </block>
     </view>
   </view>
   <view class="vw-wrap">
-    <view class="mycon-tit">兑换明细</view>
+    <view class="mycon-tit awesome-bg b-tapered">兑换明细</view>
     <view class="tab-wrap">
       <view class="tab-item tab-item1">#</view>
       <view class="tab-item tab-item2">兑换人</view>

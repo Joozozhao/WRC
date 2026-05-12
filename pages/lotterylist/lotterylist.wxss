@@ -14,7 +14,7 @@
   color: #999;
 }
 .activity-infor .state-on{
-  color: #4ec17e;
+  color: #fff;
 }
 .activity{
   width: 100%;

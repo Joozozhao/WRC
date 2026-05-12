@@ -1,7 +1,7 @@
 {
-  "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#4e505f",
+  "backgroundTextStyle":"dark",
+  "backgroundColor": "#4CB944",
+  "navigationBarBackgroundColor": "#4CB944",
   "navigationBarTitleText": "挑战详情",
   "navigationBarTextStyle":"white",
   "usingComponents": {

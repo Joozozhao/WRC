@@ -2,7 +2,7 @@
 .add-type{
   width: 100% !important;
   line-height: 80rpx;
-  background: #4e505f;
+  background: #38ef7d;
   text-align: center;
   color: #fff;
   border-radius: 0;
@@ -26,7 +26,7 @@
 }
 .tag-desc{
   flex: 1;
-  background: #4e505f;
+  background: #38ef7d;
   color: #fff;
   padding: 0 20rpx;
   line-height: 50rpx;
@@ -60,7 +60,7 @@
 .new-btn{
   width: 16%;
   line-height: 100rpx;
-  background: #4e505f;
+  background: #38ef7d;
   margin-left: auto;
   font-size: 70rpx;
   color: #fff;
@@ -112,7 +112,7 @@
   color: #fff;
   text-align: center;
   line-height: 100rpx;
-  background: #4e505f;
+  background: #38ef7d;
 }
 .act-btn.del-con{
   background: #E66671;

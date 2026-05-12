@@ -1,8 +1,19 @@
 /* pages/clockdaily/clockdaily.wxss */
 @import '../creat/creat.wxss';
-.top-part .bg{
+.top-part {
   width: 100%;
-  position: relative;
+  position: relative !important;
+  z-index: 1;
+}
+.top-part .bg {
+  width: 100%;
+}
+.run-date {
+  width: 100%;
+  position: absolute;
+  top: 414rpx;
+  left: 0;
+  z-index: 999;
 }
 .back-btn{
   position: absolute;
@@ -17,10 +28,11 @@
   padding-bottom: 150rpx;
 }
 .clockin .upload-file{
-  background: #fff;
+  background: rgba(255, 255, 255, 0.6);
   text-align: center;
-  border: 4rpx dashed #ffb6b9;
+  border: 10rpx solid #e7ccb4;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 .show{
   display: flex;
@@ -33,6 +45,7 @@
   font-size: 24rpx;
   color: #666;
   padding: 30rpx 0 20rpx 30rpx;
+  
 }
 .con-all .vw-wrap:last-child .form-item{
   border: none;
@@ -50,12 +63,12 @@
   width: 80%;
 }
 .t-tips{
-  font-size: 24rpx;
-  color: #ffb6b9;
+  font-size: 30rpx;
+  color: #333;
 }
 .ruler-txt{
   font-size: 28rpx;
-  color: #ffb6b9;
+  color: #38ef7d;
 }
 .ruler-txt .content{
   font-size: 24rpx;
@@ -78,19 +91,20 @@
 .red-mark{
   color: red;
 }
+.show-pic {
+  height: 700rpx;
+  overflow-y: scroll;
+}
 .show-pic .fixed-wh{
-  width: 200rpx;
+  width: 100%;
   margin: 0 auto;
 }
 .upload-btn{
-  /* width: 80%;
-  color: #fff;
-  background: #FB8169; */
   margin: 50rpx auto 0;
 }
 .upload-btn .add{
-  color: #ffb6b9;
-  font-size: 180rpx;
+  color: #e7ccb4;
+  font-size: 160rpx;
 }
 .form-item.show{
   border: none;

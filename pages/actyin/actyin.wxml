@@ -16,7 +16,7 @@
     </view>
   </view>
   <block wx:for="{{memberList}}" wx:key="id" >
-    <view class="member" data-userid="{{item.id}}" bindtap="myData">
+    <view class="member awesome-bg b-tapered" data-userid="{{item.id}}" bindtap="myData">
       <view class="user-infor">
         <view class="user-pic">
           <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
@@ -28,9 +28,10 @@
           <view class="infor" wx:if="{{item.level == '普通'}}"><image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image></view>
           </view>
           <view class="user-con">
-            <view class="sex" wx:if="{{item.sex == 1}}"><image src="../../images/man.svg"></image></view>
+            <text class="tag">ID.{{item.id}}</text>
+            <!--<view class="sex" wx:if="{{item.sex == 1}}"><image src="../../images/man.svg"></image></view>
             <view class="sex" wx:if="{{item.sex == 2}}"><image src="../../images/woman.svg"></image></view>
-            <view class="state over">已报名</view>
+            <view class="state over">已报名</view>-->
           </view>
         </view>
       </view>
@@ -38,8 +39,8 @@
       <view class="progress-con">
         <view>{{module1.toDecimal2(item.finish_distance)}}/{{module1.toDecimal2(item.distance)}}</view>
         <view wx:if="{{module1.GetPercent(item.finish_distance,item.distance) >= 100}}">
-          <progress percent="100" stroke-width="3" color="#4ec17e" wx:if="{{item.finish_distance>item.distance}}"  />
-          <progress percent="{{module1.GetPercent(item.finish_distance,item.distance)}}" stroke-width="3" color="#4ec17e" wx:else  />
+          <progress percent="100" stroke-width="3" wx:if="{{item.finish_distance>item.distance}}"  />
+          <progress percent="{{module1.GetPercent(item.finish_distance,item.distance)}}" stroke-width="3" color="#fff" wx:else  />
         </view>
         <view wx:if="{{module1.GetPercent(item.finish_distance,item.distance)>=50&&module1.GetPercent(item.finish_distance,item.distance)<100}}">
           <progress percent="100" stroke-width="3" color="#566dd0" wx:if="{{item.finish_distance>item.distance}}"  />

@@ -35,7 +35,7 @@ Page({
           wx.uploadFile({
             filePath: res.tempFilePaths[0],
             name: 'file',
-            url: 'https://www.mlhb.com.cn/sport/goods/upload',
+            url: 'https://applet.51welink.com/sport/goods/upload',
             formData: { gId: 0, fileId: 'file' },
             success: function (ret) {
               console.log(ret);
@@ -69,7 +69,7 @@ Page({
           wx.uploadFile({
             filePath: src,
             name: 'file',
-            url: 'https://www.mlhb.com.cn/sport/goods/upload',
+            url: 'https://applet.51welink.com/sport/goods/upload',
             formData: { gId: 0, fileId: 'file' },
             success: function (ret) {
               console.log(ret);
@@ -143,7 +143,7 @@ Page({
       gn: formatDate.gn, //名称
       gp: formatDate.gp, //价格
       gty: that.data.stype, //类型
-      sc: formatDate.score, //积分能量
+      sc: formatDate.score, //积分小花儿
       gk: formatDate.remark, //备注
       pic: that.data.detailPics,
       imgs: goodImgs,

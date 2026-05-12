@@ -78,7 +78,7 @@ Page({
     var data = {
       name : "", 
       mobile : "", 
-      state : that.data.stateId-1, 
+      state : -2, 
       page: that.data.page++
     }
     console.log(data)
@@ -230,7 +230,7 @@ Page({
     var data = { 
       name : "", 
       mobile : "", 
-      state : this.data.stateId-1, 
+      state : -2, 
       page: this.data.page++
     }
     console.log(data)

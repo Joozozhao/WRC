@@ -32,11 +32,12 @@
 }
 .all-list{
   width: 47%;
-  background: #fff;
+  background-color: #fff;
   margin-top: 30rpx;
+  padding-bottom: 10rpx;
 }
 .all-list .img{
-  background: #ededed;
+  background-color: #ededed;
 }
 .all-list .img image{
   width: 100%;

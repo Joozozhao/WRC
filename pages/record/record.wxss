@@ -85,7 +85,7 @@ page {
   width: 120rpx;
   font-family: PingFangSC-Regular;
   font-size: 24rpx;
-  color: #FFFFFF;
+  color: #000;
   height: 210rpx;
   line-height: 210rpx;
   z-index: 1;
@@ -126,7 +126,7 @@ page {
 
 .state-bg {
   padding: 10rpx 20rpx;
-  background: #7bcfa6;
+  background: #4CB944;
   font-size: 20rpx;
   color: #fff;
   border-radius: 50rpx 0 0 50rpx;

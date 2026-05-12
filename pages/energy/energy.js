@@ -9,7 +9,7 @@ Page({
    */
   data: {
     point:0,
-    navTab:['能量增加','能量扣除'],
+    navTab:['小花儿增加','小花儿扣除'],
     currentTab: 0,
     tab1:'tabshow',
     tab2:'tabhide',

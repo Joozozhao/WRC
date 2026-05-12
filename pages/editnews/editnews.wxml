@@ -3,7 +3,6 @@
 <form bindsubmit="submit">
   <view class="form-con clockin">
   <view class="form-item upload-cover">
-    <!-- <label for="" class="title">上传记录</label> -->
     <view class="add-pic {{addView?'show':'hide'}}" bindtap="uploadAction">
       <view class="bg-wrap"></view>
       <image src="../../images/loadimg.svg"></image>

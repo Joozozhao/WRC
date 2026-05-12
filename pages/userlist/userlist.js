@@ -16,7 +16,7 @@ Page({
     ],
     sortList:[
       {text: '积分'},
-      {text:'能量'},
+      {text:'小花儿'},
       {text:'连续打卡'}
     ],
     tab: 0,
@@ -150,7 +150,7 @@ Page({
       sort: that.data.id,
       levelId: that.data.selLevel,
       page : 1,
-      size: 10000
+      size: 100 //控制显示多少数据
     }
     console.log(data)
     wx.showLoading({

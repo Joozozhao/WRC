@@ -13,8 +13,10 @@ Page({
   data: {
     weekChoosed: true,
     monthChoosed: false,
+    yearChoosed: false,
     weekShow: true,
     monthShow: false,
+    yearShow: false,
     tabbar: {},
     actyId: '',
     rule_id1: '',
@@ -128,13 +130,27 @@ Page({
       weekShow: true,
       weekChoosed: true,
       monthChoosed: false,
-      monthShow: false
+      monthShow: false,
+      yearChoosed: false,
+      yearShow: false
     })
   },
   monthClick: function(){
     this.setData({
       monthShow: true,
       monthChoosed: true,
+      weekChoosed: false,
+      weekShow: false,
+      yearChoosed: false,
+      yearShow: false
+    })
+  },
+  yearClick: function(){
+    this.setData({
+      yearChoosed: true,
+      yearShow: true,
+      monthShow: false,
+      monthChoosed: false,
       weekChoosed: false,
       weekShow: false
     })
@@ -280,7 +296,7 @@ Page({
         console.log(that.data.swiper2)
         var nowDate
         var nowMonth = currentMonth+1
-        if(currentMonth<10){
+        if(nowMonth<10){
           nowDate = currentYear +'-'+'0'+ nowMonth
         }else{
           nowDate = currentYear +'-'+ nowMonth
@@ -412,9 +428,7 @@ Page({
     var data = {
       user_id: that.data.userid
     }
-    console.log(data)
     util.request('user/getWeekRuleList', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)
       if(res.data.success){
         that.setData({
           starTime: res.data.data[0].sport_day.substring(5,10),
@@ -431,7 +445,6 @@ Page({
         if(Math.floor(max/5)!=max/5){
           max= Math.ceil(max/5)*5
         }
-        console.log(weekArr)
         var weekObj = { ...weekArr }
         //load bar 
         option.initBar(e.detail.canvas, e.detail.width, e.detail.height,e.detail.dpr,weekObj,max)
@@ -448,13 +461,11 @@ Page({
     var data = {
       user_id: that.data.userid
     }
-    console.log(data)
     util.request('user/getMonthList', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res.data)
       if (res.data.success) {
         var nowDate
         var nowMonth = currentMonth + 1
-        if (currentMonth < 10) {
+        if (nowMonth < 10) {
           nowDate = currentYear + '-' + '0' + nowMonth
         } else {
           nowDate = currentYear + '-' + nowMonth
@@ -471,6 +482,33 @@ Page({
         }
         //load bar 
         option.initBar2(e.detail.canvas, e.detail.width, e.detail.height, e.detail.dpr, monthArr, max)
+      }
+    })
+  },
+  initYearData: function (e) {
+    var that = this
+    var monthArr = []
+    if (that.data.userid == undefined) {
+      return
+    }
+    var data = {
+      user_id: that.data.userid
+    }
+    util.request('user/getYearMonthList', 'POST', data, '数据加载中 ...', (res) => {
+      if (res.data.success) {
+        var max = 0;
+        for (var i = 0; i < res.data.data.length; i++) {
+          var distance = res.data.data[i].sport_total
+          if(i == 0) {
+            max = distance
+          }
+          if(max < distance) {
+            max = distance
+          }
+          monthArr.push(distance)
+        }
+        //load bar 
+        option.initBar3(e.detail.canvas, e.detail.width, e.detail.height, e.detail.dpr, monthArr, max)
       }
     })
   },

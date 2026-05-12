@@ -1,8 +1,0 @@
-/* pages/uploadprize/uploadprize.wxss */
-@import "../creatchallenge/creatchallenge.wxss";
-.size-con .fm-con{
-  width: 32%;
-}
-.size-con .type-con .check{
-  display: flex;
-}

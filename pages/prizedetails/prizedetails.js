@@ -199,7 +199,7 @@ Page({
     var that = this    
     if(that.data.id==0){
       wx.showToast({
-        title: '请选择规格',
+        title: '选一下类型呀～',
         icon: 'none',
         duration: 1500
       })
@@ -207,7 +207,7 @@ Page({
     } 
     if(that.data.totalNum==0){
       wx.showToast({
-        title: '库存为0，不可兑换',
+        title: '库存没了～',
         icon: 'none',
         duration: 1500
       })
@@ -223,5 +223,18 @@ Page({
       })
     }
     
+  },
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function (res) {
+    if (res.from === 'button') {
+      // 来自页面内转发按钮
+      console.log(res.target)
+    }
+    return {
+        title: '快来兑换超级会员福利#' + this.data.goodName + '#限时兑换，过期视为放弃',
+        // path: '/pages/activitydetail/activitydetail' + this.data.actyId
+    }
   }
 })

@@ -1,16 +1,44 @@
 <!--index.wxml-->
 <view class="top-part">
-  <image src="{{logoSrc}}" class="logo"></image>
-  <view class="userinfo-avatar">
-    <view bindtap="openLogin" wx:if="{{userId==''}}">
-      <image src="{{avatarUrl}}" mode="widthFix"></image>
+  <!--开发位置-->
+  <block wx:if="{{systemInfo.platform == 'devtools'}}">
+    <image src="{{logoSrc}}" class="logo"></image>
+    <view class="userinfo-avatar">
+      <view bindtap="openLogin" wx:if="{{userId==''}}">
+        <image src="{{avatarUrl}}" mode="widthFix"></image>
+      </view>
+      <view bindtap="toUserCenter" wx:else>
+        <image src="{{avatarUrl}}" mode="widthFix"></image>
+      </view>
     </view>
-    <view bindtap="toUserCenter" wx:else>
-      <image src="{{avatarUrl}}" mode="widthFix"></image>
+  </block>
+  <!--苹果位置-->
+  <block wx:if="{{systemInfo.platform == 'ios'}}">
+    <image src="{{logoSrc}}" class="logo"></image>
+    <view class="userinfo-avatar">
+      <view bindtap="openLogin" wx:if="{{userId==''}}">
+        <image src="{{avatarUrl}}" mode="widthFix"></image>
+      </view>
+      <view bindtap="toUserCenter" wx:else>
+        <image src="{{avatarUrl}}" mode="widthFix"></image>
+      </view>
     </view>
-  </view>
+  </block>
+  <!--安卓位置-->
+  <block wx:if="{{systemInfo.platform == 'android'}}">
+    <image src="{{logoSrc}}" class="logo" style="margin: 20rpx auto 0;"></image>
+    <view class="userinfo-avatar" style="top: 60rpx; height: 60rpx; width: 60rpx;">
+      <view bindtap="openLogin" wx:if="{{userId==''}}">
+        <image src="{{avatarUrl}}" mode="widthFix"></image>
+      </view>
+      <view bindtap="toUserCenter" wx:else>
+        <image src="{{avatarUrl}}" mode="widthFix"></image>
+      </view>
+    </view>
+  </block>
+
 </view>
-<scroll-view scroll-y style="height:60%;margin-top:198rpx;">
+<scroll-view scroll-y style="height:60%;">
   <view class="scroll-view-item nav-mb">
     <view class="swiper">
       <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" style="height:{{height}}" circular="true">
@@ -23,92 +51,26 @@
         </block>
       </swiper>
     </view>
-    <view class="vw-wrap">
-    <view class="weahter-wrap">
-      <!--index.wxml wx:if="{{weahterState}}"-->
-      <view class="container">
-        <view class="nowWeather">
-          <view class="city"><image src="../../images/place-white.png" mode="widthFix" class="loction"></image>{{city}} {{district}}</view>
-          <view style="display:flex;align-items: center;">
-            <view class="iconfont iconfont-{{daily_forecast[0].cond_code_d}} bigger"></view>
-            <view style="display:flex;align-items: baseline;">
-              <view class="temp">{{tmp}}°</view>
-              <!-- <view class="today-detail">
-                <view class="weather">{{txt}}</view>
-                <view class="weather">{{daily_forecast[0].tmp_min}}°/{{daily_forecast[0].tmp_max}}°</view>
-              </view> -->
-            </view>
-            <view class="air-all" wx:if="{{qlty=='优'}}">
-              <view>{{txt}}</view>
-              <view class="air">
-                <text class="good"></text>{{qlty}}
-              </view>
-            </view>
-            <view class="air-all" wx:if="{{qlty=='良'}}">
-              <view>{{txt}}</view>
-              <view class="air">
-                <text class="soso"></text>{{qlty}}
-              </view>
-            </view>
-            <view class="air-all" wx:if="{{qlty=='轻度污染'}}">
-              <view>{{txt}}</view>
-              <view class="air">
-                <text class="bad"></text>{{qlty}}
-              </view>
-            </view>
-            <view class="air-all" wx:if="{{qlty=='中度污染'}}">
-              <view>{{txt}}</view>
-              <view class="air">
-                <text class="warning"></text>{{qlty}}
-              </view>
-            </view>
-            <view class="air-all" wx:if="{{qlty=='重度污染'}}">
-              <view>{{txt}}</view>
-              <view class="air">
-                <text class="bader"></text>{{qlty}}
-              </view>
-            </view>
-            <view class="air-all" wx:if="{{qlty=='严重污染'}}">
-              <view>{{txt}}</view>
-              <view class="air">
-                <text class="dead"></text>{{qlty}}
-              </view>
-            </view>
-          </view>
-          <view class="update-time">更新时间：{{update_time}}</view>
-        </view>
-      </view>
-      <view class="flex-weahter"> 
-        <view class="weahter-item" wx:key="item" wx:for-items="{{daily_forecast}}" wx:for-index="i">
-          <view class="iconfont iconfont-{{daily_forecast[0].cond_code_d}}"></view>
-          <view class="hor forcast">
-            <view class="day">{{day[i]}}</view>
-            <view class="tmp">{{item.tmp_min}}°/ {{item.tmp_max}}°</view>
-          </view>
-        </view>
-      </view>
-    </view>
-    </view>
-    <view class="vw-wrap">
-      <view class="infor-con" wx:if="{{userId!=0}}">
+    <view class="vw-wrap margin-b">
+      <view class="infor-con">
         <view class="list">
-          <block wx:for="{{userList}}" wx:key="index" wx:for-item="item" wx:if="{{index<8}}">
+          <block wx:for="{{userList}}" wx:key="index" wx:for-item="item" wx:if="{{index<11}}">
             <view class="item">
               <image src="{{item.header_url}}"></image>
             </view>
           </block>
         </view>
-        <view class="total" bindtap="toList">
-          <view><!--{{actyIn}} <text class="gray">成员</text>--><text class="gray">排行榜</text></view>
+        <view class="total awesome-bg b-tapered" bindtap="toList">
+          <view>{{actyIn}}<text class="gray">人使用</text></view>
           <view class="add-arrow">
             <image src="../../images/arrow-r-gray.png" mode="widthFix"></image>
           </view>
         </view>
       </view>
-      <view class="horizontal" wx:if="{{userId!=0}}">
+      <view class="horizontal">
         <wxs src="../../utils/toDecimal2.wxs" module="module1" />
         <scroll-view scroll-x style="width:100%;white-space:nowrap;">
-          <view class="member-item" wx:for="{{recordList}}" wx:key="index" data-img="{{item.sport_img}}" data-distance="{{item.distance}}" data-speed="{{item.speed}}" bindtap="popShow" wx:if="{{item.state!==2}}">
+          <view class="member-item awesome-bg b-rainbow" wx:for="{{recordList}}" wx:key="index" data-img="{{item.sport_img}}" data-distance="{{item.distance}}" data-speed="{{item.speed}}" bindtap="popShow" wx:if="{{item.state!==2}}">
             <view class="user-item">
               <image src="{{item.header_url}}"></image><text class="nick-name ellipsis" wx:if="{{item.name}}">{{item.name}}</text><text class="nick-name ellipsis" wx:else>{{item.nick_name}}</text>
             </view>
@@ -117,13 +79,15 @@
           </view>
         </scroll-view>
       </view>
+      <!--打卡提醒 打卡提醒-->
       <view class="daily-record">
         <view class="record">
-          <view><text class="days">打卡{{serialDay}}天</text></view>
-          <view class="more b">跑步只是一场自己和自己的较量</view>
+          <view class="b"><text class="days"><text class="days txt">连续打卡</text>{{serialDay}}<text class="days txt">天</text></text></view>
+          <view class="more">做一个自由又自律的人，靠势必实现的决心认真地活着。</view>
         </view>
         <view class="tips">{{myTip}}</view>
       </view>
+
     </view>
     <view class="vw-wrap">
       <view class="news-con">
@@ -142,33 +106,33 @@
       <view class="flex-wrap">
         <view class="flex-item demo-text-3" bindtap="toRecord">
           <view class="icon-circle">
-            <image src="../../images/i-4.svg" mode="widthFix"></image>
+            <image src="../../images/i-1.svg" mode="widthFix"></image>
           </view>
           <text>打卡记录</text>
         </view>
         <view class="flex-item demo-text-5" bindtap="toPrize">
-            <view class="icon-circle">
-              <image src="../../images/i-2.svg" mode="widthFix"></image>
-            </view>
-            <text>兑换好礼</text>
+          <view class="icon-circle">
+            <image src="../../images/i-2.svg" mode="widthFix"></image>
+          </view>
+          <text>兑换好礼</text>
         </view>
         <view class="flex-item demo-text-2" bindtap="toHistory">
           <view class="icon-circle">
-            <image src="../../images/i-1.svg" mode="widthFix"></image>
+            <image src="../../images/i-3.svg" mode="widthFix"></image>
           </view>
           <text>我的兑换</text>
         </view>
         <view class="flex-item demo-text-6">
           <navigator url="/pages/news/news" hover-class="none">
             <view class="icon-circle">
-              <image src="../../images/i-3.svg" mode="widthFix"></image>
+              <image src="../../images/i-4.svg" mode="widthFix"></image>
             </view>
-            <text>关于跑团</text>
+            <text>跑团介绍</text>
           </navigator>
         </view>
         <view class="flex-item demo-text-2" bindtap="toManage" wx:if="{{duty == '管理员'||duty == '管理员/团长'}}">
           <view class="icon-circle">
-            <image src="../../images/i-1.svg" mode="widthFix"></image>
+            <image src="../../images/i-5.svg" mode="widthFix"></image>
           </view>
           <text>Admin</text>
         </view>
@@ -177,6 +141,9 @@
           <text>心愿墙</text>
         </view>-->
       </view>
+    </view>
+    <view class="vw-wrap" style="margin-bottom: 120px;">
+
     </view>
   </view>
 </scroll-view>
@@ -191,8 +158,8 @@
     </view>
   </view>
   <!-- 操作按钮 -->
-  <view class="modal-footer" style="background: linear-gradient(to left, rgba(56,239,125,.7), rgba(17,153,142,.7)); padding-bottom: 20rpx;;">
-    <button class="btn btn-cancel white" bindtap="popHide">关闭</button>
+  <view class="modal-footer">
+    <button class="btn btn-cancel white" bindtap="popHide">真棒啊，我也要去跑步了～ Go Go Go</button>
     <view style="clear: both;"></view>
   </view>
 </view>

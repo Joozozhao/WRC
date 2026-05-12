@@ -1,9 +1,0 @@
-/* pages/activitylist/activitylist.wxss */
-@import "../activity/activity.wxss";
-.check-radio{
-  overflow: hidden;
-  margin-right: 10rpx;
-}
-.radio-group{
-  padding-bottom: 150rpx;
-}

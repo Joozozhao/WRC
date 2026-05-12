@@ -7,10 +7,12 @@
         <view class="state">{{state}}</view>
       </view>
       <image src="../../images/flag.png" mode="widthFix" class="cover-fix"></image>
+     
     </view>
     <view class="activity-infor">
       <view class="title">{{acty_name}}</view>
-      <view><text class="tag">{{acty_type}}</text><text class="tag org">{{region}}</text></view>
+      <view><text class="tag">活动ID:{{actyId}}</text><text class="tag org">{{region}}</text>
+      </view>
       <view class="time">
         <image src="/images/time-white.png"></image>{{start_time}}-{{end_time}}
       </view>
@@ -34,7 +36,7 @@
       <!-- <view class="nor-title">已报名团员</view> -->
       <view class="infor-con">
         <view class="list">
-          <block wx:for="{{avastars}}" wx:key="index" wx:for-item="item" wx:if="{{index<8}}">
+          <block wx:for="{{avastars}}" wx:key="index" wx:for-item="item" wx:if="{{index<12}}">
             <view class="item">
               <image src="{{item.header_url}}"></image>
             </view>
@@ -58,7 +60,7 @@
       </view>
       <view class="infor-con" wx:if="{{acty_level==1&&actyMember.length>0}}" style="padding-top:0;">
         <view class="list">
-          <block wx:for="{{actyMember}}" wx:key="index" wx:for-item="item" wx:if="{{index<8}}">
+          <block wx:for="{{actyMember}}" wx:key="index" wx:for-item="item" wx:if="{{index<12}}">
             <view class="item">
               <image src="{{item.header_url}}"></image>
             </view>
@@ -71,6 +73,7 @@
           </view>
         </view>
       </view>
+      
       <view class="lottery-con" wx:if="{{ltyList}}">
         <view class="nor-title">本期抽奖</view>
         <view class="lottery-list">
@@ -102,15 +105,13 @@
           </view>
         </view>
       </view>
-
     </view>
   </view>
-  <view class="data-wrap">
+  <view class="data-wrap listext">
     <view style="padding-bottom: 180rpx;" wx:if="{{dataList.length>0}}">
-
       <block wx:for="{{dataList}}" wx:key="index">
-        <view class="member">
-          <view class="user-infor">
+        <view class="member awesome-bg  b-tapered2 bg3">
+          <view class="user-infor ">
             <view class="user-pic">
               <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
             </view>
@@ -131,10 +132,10 @@
                   <image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image>
                 </view>
               </view>
-              <view class="speed">平均配速 {{item.speed}}</view>
+              <view class="speed"> 配速 {{item.speed}}</view>
             </view>
           </view>
-          <view class="distance">{{module1.toDecimal2(item.distance)}} 公里</view>
+          <view class="distance">{{module1.toDecimal2(item.distance)}} km</view>
         </view>
       </block>
     </view>
@@ -146,3 +147,4 @@
   <button class="btn green" bindtap="signIn" wx:if="{{signTrue}}">报名</button>
   <!--<button class="btn green {{opacity}}" style="opacity:0.7" wx:else>已报名</button>-->
 </view>
+<view style="height: 170rpx;"></view>

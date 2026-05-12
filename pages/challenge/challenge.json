@@ -1,8 +1,9 @@
 {
   "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#4e505f",
-  "navigationBarTitleText": "挑战",
+  "backgroundTextStyle":"dark",
+  "backgroundColor": "#4CB944",
+  "navigationBarBackgroundColor": "#4CB944",
+  "navigationBarTitleText": "挑战活动",
   "navigationBarTextStyle":"white",
   "usingComponents": {
     "tabbar": "../../components/tabbarComponent/tabbar"

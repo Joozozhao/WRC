@@ -2,7 +2,7 @@
 <wxs src="../../utils/toDecimal2.wxs" module="module1" />
 <view class="vw-wrap">
   <block wx:for="{{dataList}}" wx:key="index">
-    <view class="member my-data" data-id="{{item.user_id}}" bindtap="myData" wx:if="{{item.user_id == myId}}"> 
+    <view class="member my-data awesome-bg b-tapered" data-id="{{item.user_id}}" bindtap="myData" wx:if="{{item.user_id == myId}}"> 
       <view class="user-infor">
         <view class="rank" wx:if="{{index>2}}"><text class="rank-num" style="color:#fff;">{{index+1}}</text></view>
         <view class="rank" wx:else><image src="{{imgIcon[index]}}"></image></view>
@@ -17,7 +17,7 @@
             <view wx:if="{{item.level == 'VIP'}}"><image src="../../images/superVIP.svg" mode="widthFix" class="level"></image></view>
             <view wx:if="{{item.level == '普通'}}"><image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image></view>
           </view>
-          <view class="speed">平均配速 {{item.speed}}</view>
+          <view class="speed">配速 {{item.speed}}</view>
         </view>
       </view>
       <view class="distance">{{module1.toDecimal2(item.distance)}} km</view>
@@ -25,7 +25,7 @@
   </block>
 
   <block wx:for="{{dataList}}" wx:key="index">
-    <view class="member" data-id="{{item.user_id}}" bindtap="myData">
+    <view class="member awesome-bg b-tapered2" data-id="{{item.user_id}}" bindtap="myData">
       <view class="user-infor">
         <view class="rank" wx:if="{{index>2}}"><text class="rank-num">{{index+1}}</text></view>
         <view class="rank" wx:else><image src="{{imgIcon[index]}}"></image></view>
@@ -41,7 +41,7 @@
             <view wx:if="{{item.level == 'VIP'}}"><image src="../../images/superVIP.svg" mode="widthFix" class="level"></image></view>
               <view wx:if="{{item.level == '普通'}}"><image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image></view>
           </view>
-          <view class="speed">平均配速 {{item.speed}}</view>
+          <view class="speed">配速 {{item.speed}}</view>
         </view>
       </view>
       <view class="distance">{{module1.toDecimal2(item.distance)}} km</view>

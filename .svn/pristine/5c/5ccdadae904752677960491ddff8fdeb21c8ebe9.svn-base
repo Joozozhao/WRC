@@ -1,3 +1,0 @@
-/* pages/clockdaily/clockdaily.wxss */
-@import '../creat/creat.wxss';
-@import "../clockin/clockin.wxss";

@@ -19,7 +19,7 @@
           </checkbox-group>
         </view>
         <!-- 操作按钮 -->
-        <view class="modal-footer nopd">
+        <view class="modal-footer nopd none">
           <button class="btn btn-cancel" bindtap="onCancel" data-status="cancel">取消</button>
           <button class="btn btn-confirm" bindtap="onConfirm" data-status="confirm">确定</button>
         </view>
@@ -153,7 +153,7 @@
                         <view wx:if="{{item.level == 'VIP'}}"><image src="../../images/superVIP.svg" mode="widthFix" class="level"></image></view>
                         <view wx:if="{{item.level == '普通'}}"><image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image></view>
                         <view class="my-area" style="background:#f36838;" wx:if="{{item.address=='北京'}}">{{item.address}}</view>
-                        <view class="my-area" style="background:#7bcfa6;" wx:if="{{item.address=='日照'}}">{{item.address}}</view>
+                        <view class="my-area" style="background:#4CB944;" wx:if="{{item.address=='日照'}}">{{item.address}}</view>
                         <view class="my-area" style="background:#bacac6;" wx:if="{{item.address=='其他地区'}}">{{item.address}}</view>
                       </view>
                     </view>
@@ -164,7 +164,7 @@
           </scroll-view>
         </view>
         <!-- 操作按钮 -->
-        <view class="modal-footer nopd">
+        <view class="modal-footer nopd none">
           <button class="btn btn-cancel" bindtap="onCancel2" data-status="cancel">取消</button>
           <button class="btn btn-confirm" bindtap="onConfirm2">确定({{totalMan}})</button>
         </view>

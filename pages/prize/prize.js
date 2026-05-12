@@ -8,7 +8,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    navTab: ['积分兑换区','能量兑换区'],
+    navTab: ['积分兑换区','小花儿兑换区'],
     currentTab: 0,
     tab1:'tabshow',
     tab2:'tabhide',
@@ -112,7 +112,7 @@ Page({
       })
     } else {
       wx.showToast({
-        title: '仅限 VIP 成员兑换，继续加油',
+        title: '仅限超级会员兑换，继续加油',
         icon: 'none'
       })
     }

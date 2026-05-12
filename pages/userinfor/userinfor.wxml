@@ -1,7 +1,7 @@
 <!--pages/userinfor/userinfor.wxml-->
 <!-- <view class="vw-wrap page-tips">*完善的个人资料将帮助我们为您定制会员礼遇</view> -->
 <form bindsubmit="onSubmit">
-  <view class="user-infor">   
+  <view class="user-infor">
     <view class="user-wrap">
       <view class="user-pic {{level == 'VIP'?'add-bd':''}}" wx:if="{{level == 'VIP'}}" bindtap="loginout">
         <image src="{{avatarUrl}}" mode="widthFix" class="pic"></image>
@@ -18,15 +18,18 @@
         <view>{{nickName}}</view>
         <image src="../../images/none.svg" mode="cover" class="vip"></image>
       </view>
-      <view class="user-pic" wx:if="{{level == ''}}"><image src="{{avatarUrl}}" mode="widthFix" style="height:auto;" class="pic"></image></view>
+      <view class="user-pic" wx:if="{{level == ''}}">
+        <image src="{{avatarUrl}}" mode="widthFix" style="height:auto;" class="pic"></image>
+      </view>
     </view>
     <view class="content-wrap">
+      <view class="con-tit edit-but awesome-bg b-yellow" bindtap="editUrl">点击编辑昵称与头像</view>
       <view class="con-tit">以下字段为必填项</view>
       <view class="con-all bg-white">
         <view class="vw-wrap">
           <image src="../../images/name.png" class="icons"></image>
           <view class="form-item">
-            <label for="" class="title">姓名</label>
+            <label for="" class="title">真实姓名</label>
             <input type="text" focus="{{focus}}" value="{{name}}" name="name" class="ipt ellipsis" placeholder="请输入"></input>
           </view>
         </view>
@@ -42,27 +45,32 @@
           <view class="form-item">
             <label for="" class="title">性别</label>
             <radio-group class="sex" name="sex" style="width: 60%;">
-              <label for="" style="float: right;"><view style="display:inline-block;"><radio value="{{sex}}"  checked="{{sex == 2 ? 'true' : ''}}"bindtap='radiocon2' />女</view></label>
-              <label for="" style="float: right;"><view style="display:inline-block;"><radio value="{{sex}}"  checked="{{sex == 1 ? 'true' : ''}}" bindtap='radiocon1'/>男</view></label>
+              <label for="" style="float: right;">
+                <view style="display:inline-block;">
+                  <radio value="{{sex}}" checked="{{sex == 2 ? 'true' : ''}}" bindtap='radiocon2' />女
+                </view>
+              </label>
+              <label for="" style="float: right;">
+                <view style="display:inline-block;">
+                  <radio value="{{sex}}" checked="{{sex == 1 ? 'true' : ''}}" bindtap='radiocon1' />男
+                </view>
+              </label>
             </radio-group>
           </view>
         </view>
         <view class="vw-wrap">
           <image src="../../images/birthday.png" class="icons"></image>
           <view class="form-item">
-            <label for="" class="title">生日</label>
-            <picker mode="date" value="{{birthday}}" end="{{endDate}}" style='font-size:32rpx;color:#999;' bindchange="dateChange">
-              <view class="picker ipt {{clas}}" wx:if="{{birthday == ''}}">请选择</view>
-              <input type="text" class="picker ipt {{clas}}" wx:else  name="birthday" value="{{birthday}}" disabled="disabled">{{birthday}}</input>
-            </picker>
+            <label for="" class="title">身份证号</label>
+            <!-- 使用input代替picker -->
+            <input type="text" class="ipt {{clas}}" name="birthday" value="{{birthday}}" placeholder="请输入身份证号码" maxlength="18" />
           </view>
         </view>
         <view class="vw-wrap">
           <image src="../../images/address.png" class="icons"></image>
           <view class="form-item">
             <label for="" class="title">地区</label>
-            <picker mode="selector" range="{{addressArray}}" bindchange="pickerSelected" value="{{address}}" custom-item="{{customItem}}"
-      name="address" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' >
+            <picker mode="selector" range="{{addressArray}}" bindchange="pickerSelected" value="{{address}}" custom-item="{{customItem}}" name="address" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;'>
               <view class="picker ipt {{clas}}" wx:if="{{address == ''}}">请选择</view>
               <input type="text" class="picker ipt {{clas}}" wx:else name="address" value="{{address}}" disabled="disabled">{{address}}</input>
             </picker>
@@ -77,8 +85,7 @@
           <image src="../../images/default.svg" class="icons"></image>
           <view class="form-item">
             <label for="" class="title">上衣</label>
-            <picker mode="selector" range="{{jacketArray}}" bindchange="pickerJacket" value="{{jacket}}" custom-item="{{customItem}}"
-      name="jacket" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;'>
+            <picker mode="selector" range="{{jacketArray}}" bindchange="pickerJacket" value="{{jacket}}" custom-item="{{customItem}}" name="jacket" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;'>
               <view class="picker ipt {{clas}}" wx:if="{{jacket == ''}}">请选择</view>
               <input type="text" class="picker ipt {{clas}}" wx:else name="jacket" value="{{jacket}}" disabled="disabled">{{jacket}}</input>
             </picker>
@@ -88,30 +95,27 @@
           <image src="../../images/default.svg" class="icons"></image>
           <view class="form-item">
             <label for="" class="title">裤子</label>
-            <picker mode="selector" range="{{trousersArray}}" bindchange="pickerTrousers" value="{{trousers}}" custom-item="{{customItem}}"
-      name="trousers" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' >
-            <view class="picker ipt {{clas}}" wx:if="{{trousers == ''}}">请选择</view>
-            <input type="text" class="picker ipt {{clas}}" wx:else name="trousers" value="{{trousers}}" disabled="disabled">{{trousers}}</input>
-          </picker>
+            <picker mode="selector" range="{{trousersArray}}" bindchange="pickerTrousers" value="{{trousers}}" custom-item="{{customItem}}" name="trousers" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;'>
+              <view class="picker ipt {{clas}}" wx:if="{{trousers == ''}}">请选择</view>
+              <input type="text" class="picker ipt {{clas}}" wx:else name="trousers" value="{{trousers}}" disabled="disabled">{{trousers}}</input>
+            </picker>
           </view>
         </view>
         <view class="vw-wrap">
           <image src="../../images/default.svg" class="icons"></image>
           <view class="form-item">
             <label for="" class="title">头围</label>
-            <picker mode="selector" range="{{headArray}}" bindchange="pickerHead" value="{{headSize}}" custom-item="{{customItem}}"
-      name="headSize" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' >
-            <view class="picker ipt {{clas}}" wx:if="{{headSize == ''}}">请选择</view>
-            <input type="text" class="picker ipt {{clas}}" wx:else name="headSize" value="{{headSize}}" disabled="disabled">{{headSize}}</input>
-          </picker>
+            <picker mode="selector" range="{{headArray}}" bindchange="pickerHead" value="{{headSize}}" custom-item="{{customItem}}" name="headSize" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;'>
+              <view class="picker ipt {{clas}}" wx:if="{{headSize == ''}}">请选择</view>
+              <input type="text" class="picker ipt {{clas}}" wx:else name="headSize" value="{{headSize}}" disabled="disabled">{{headSize}}</input>
+            </picker>
           </view>
         </view>
         <view class="vw-wrap">
           <image src="../../images/default.svg" class="icons"></image>
           <view class="form-item">
             <label for="" class="title">手长</label>
-            <picker mode="selector" range="{{handArray}}" bindchange="pickerHand" value="{{handSize}}" custom-item="{{customItem}}"
-      name="handSize" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' >
+            <picker mode="selector" range="{{handArray}}" bindchange="pickerHand" value="{{handSize}}" custom-item="{{customItem}}" name="handSize" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;'>
               <view class="picker ipt {{clas}}" wx:if="{{handSize == ''}}">请选择</view>
               <input type="text" class="picker ipt {{clas}}" wx:else name="handSize" value="{{handSize}}" disabled="disabled">{{handSize}}</input>
             </picker>
@@ -121,8 +125,7 @@
           <image src="../../images/default.svg" class="icons"></image>
           <view class="form-item">
             <label for="" class="title">鞋号</label>
-            <picker mode="selector" range="{{shoesArray}}" bindchange="pickerShoes" value="{{shoes}}" custom-item="{{customItem}}"
-      name="shoes" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' >
+            <picker mode="selector" range="{{shoesArray}}" bindchange="pickerShoes" value="{{shoes}}" custom-item="{{customItem}}" name="shoes" style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;'>
               <view class="picker ipt {{clas}}" wx:if="{{shoes == ''}}">请选择</view>
               <input type="text" class="picker ipt {{clas}}" wx:else name="shoes" value="{{shoes}}" disabled="disabled">{{shoes}}</input>
             </picker>
@@ -133,6 +136,7 @@
   </view>
   <view class="btn-group">
     <button class="btn" bindtap="cancle">取消</button>
-    <button class="btn" formType="submit">确定</button>
+    <button class="btn b-rainbow" formType="submit">确定</button>
   </view>
+  <view class="versionnumber">版本号：{{versionNumber}}</view>
 </form>

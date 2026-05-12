@@ -3,7 +3,7 @@
   padding-bottom: 200rpx;
 }
 .prize-infor{
-  padding: 30rpx 40rpx;
+  padding: 30rpx 20rpx;
 }
 .prize-infor .need-points{
   display: flex;
@@ -11,6 +11,11 @@
   color: #666;
   line-height: 50rpx;
   padding-bottom: 20rpx;
+}
+.goods-style {
+  line-height: 2;
+  font-size: 1.1em;
+  color: #4CB944;
 }
 .need-points .ico{
   width: 50rpx;
@@ -60,8 +65,8 @@
 .use-code{
   display: inline-block;
   padding: 0 10rpx;
-  color: #4ec17e;
-  border: 1px solid #4ec17e;
+  color: #fff;
+  border: 1px solid #fff;
   border-radius: 10rpx;
   font-size: 24rpx;
   margin-top: 10rpx;
@@ -117,8 +122,9 @@
   margin-bottom: 50rpx;
 }
 .exchange-list .tit{
-  text-align: center;
+  text-align: left;
   padding: 20rpx 0;
+  margin: 20rpx;
 }
 .user-list{
   display: flex;
@@ -166,22 +172,21 @@
 .modal-choose .btnOne{
   width: 100%;
   border-radius: 0;
-  /* background: #d73021; */
   color: #fff;
   font-weight: normal;
   line-height: 100rpx;
 }
 .mycon-tit{
+  padding: 20rpx 0;
   margin-bottom: 20rpx;
   font-weight: bold;
 }
 .total-num{
-  font-size: 26rpx;
-  color: #999;
+  color: #d73021;
   text-align: right;
 }
 .prize-type{
-  padding: 20rpx 30rpx;
+  padding: 20rpx;
   margin-top: 20rpx;
 }
 .tab-wrap{

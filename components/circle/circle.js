@@ -61,7 +61,7 @@ Component({
       var gradient = context.createLinearGradient(2 * r, r, 0);
       gradient.addColorStop("0", "#38ef7d");
       gradient.addColorStop("0.5", "#40ED94");
-      gradient.addColorStop("1.0", "#11998e");
+      gradient.addColorStop("1.0", "#4CB944");
       context.setLineWidth(w);
       context.setStrokeStyle(gradient);
       context.setLineCap('round')

@@ -20,7 +20,7 @@
           </checkbox-group>
         </view>
         <!-- 操作按钮 -->
-        <view class="modal-footer nopd">
+        <view class="modal-footer nopd none">
           <button class="btn btn-cancel" bindtap="onCancel" data-status="cancel">取消</button>
           <button class="btn btn-confirm" bindtap="onConfirm" data-status="confirm">确定</button>
         </view>

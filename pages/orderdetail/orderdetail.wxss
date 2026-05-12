@@ -24,7 +24,7 @@
 }
 .order-details{
   padding: 40rpx;
-  font-size: 32rpx;
+  font-size: 26rpx;
   color: #666;
   line-height: 2;
 }
@@ -38,13 +38,15 @@
   margin-bottom: 30rpx;
 }
 .order-btn{
-  padding: 0 20rpx;
-  background: #4ec17e;
+  display: block;
+  width: 100%;
+  padding: 30rpx;
   border-radius: 5rpx;
   font-size: 26rpx;
   color: #fff;
-  margin-top: 10rpx;
-  float: right;
+  margin-top: 30rpx;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 

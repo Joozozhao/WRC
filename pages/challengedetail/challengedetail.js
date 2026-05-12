@@ -26,47 +26,48 @@ Page({
     userId: 0,
     animation: ''
   },
-  openLogin : function(){
+
+  openLogin: function () {
     var userId = app.globalData.userId
-    if(userId < 1 || userId == undefined){
-    util.showLogin((res)=>{
-      console.log(res)
-      var data = {
-        code: res.code,
-        encryptedData: "",
-        iv: ""
-      } 
-      //取用户的openid
-      util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes)=>{
-        console.log(loginRes)
-        var regData = {
-          openId: loginRes.data.data.openid,
-          imgUrl: res.userInfo.avatarUrl,
-          nickName: res.userInfo.nickName,
-          sex: res.userInfo.gender,
-          unionid: loginRes.data.data.unionid
+    if (userId < 1 || userId == undefined) {
+      util.showLogin((res) => {
+        console.log(res)
+        var data = {
+          code: res.code,
+          encryptedData: "",
+          iv: ""
         }
-        util.request('user/wxregister', 'POST', regData, '', (regRes)=>{
-          app.globalData.userId = regRes.data.UserId
-          app.globalData.openId = regData.openId
-          wx.setStorageSync('userId', regRes.data.UserId)
-          wx.setStorageSync('openId', regData.openId)
-          wx.switchTab({
-            url: '../index/index',
+        //取用户的openid
+        util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes) => {
+          console.log(loginRes)
+          var regData = {
+            openId: loginRes.data.data.openid,
+            imgUrl: res.userInfo.avatarUrl,
+            nickName: res.userInfo.nickName,
+            sex: res.userInfo.gender,
+            unionid: loginRes.data.data.unionid
+          }
+          util.request('user/wxregister', 'POST', regData, '', (regRes) => {
+            app.globalData.userId = regRes.data.UserId
+            app.globalData.openId = regData.openId
+            wx.setStorageSync('userId', regRes.data.UserId)
+            wx.setStorageSync('openId', regData.openId)
+            wx.switchTab({
+              url: '../index/index',
+            })
           })
         })
       })
-    })
-    // wx.showToast({
-    //   title: 'error',
-    //   icon: 'none',
-    //   duration: 1500
-    // })  
+      // wx.showToast({
+      //   title: 'error',
+      //   icon: 'none',
+      //   duration: 1500
+      // })  
     }
   },
-  toList:function(){
+  toList: function () {
     wx.navigateTo({
-      url: '../actyin/actyin?id='+this.data.actyId
+      url: '../actyin/actyin?id=' + this.data.actyId
     })
   },
   /**
@@ -89,19 +90,23 @@ Page({
       userId: userId,
       userid: userid
     })
-    var data = { id : userId }
-    util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
+    var data = {
+      id: userId
+    }
+    util.request('user/get', 'POST', data, '数据加载中 ...', (res) => {
+      if (res.data.success) {
         console.log(res)
         this.setData({
-          nickName : res.data.data.nick_name
+          nickName: res.data.data.nick_name
         })
       }
     })
-    if(userid!=undefined){
-      var data = { id : userid }
-      util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
-        if(res.data.success){
+    if (userid != undefined) {
+      var data = {
+        id: userid
+      }
+      util.request('user/get', 'POST', data, '数据加载中 ...', (res) => {
+        if (res.data.success) {
           console.log(res)
           this.setData({
             header_url: res.data.data.header_url,
@@ -110,24 +115,30 @@ Page({
       })
     }
   },
-  initChallenge:function(id){
+  //返回上一页
+  back: function () {
+    wx.navigateBack({
+      delta: 0,
+    })
+  },
+  initChallenge: function (id) {
     var that = this
     var userId = app.globalData.userId
-    if(that.data.userid==undefined){
+    if (that.data.userid == undefined) {
       var data = {
         actyId: id,
         userId: userId
       }
-    }else{
+    } else {
       var data = {
         actyId: id,
         userId: that.data.userid
       }
     }
     console.log(data)
-    util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res)=>{
+    util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res) => {
       console.log(res)
-      if(res.data.success){
+      if (res.data.success) {
         var challengeData = res.data.data
         that.setData({
           actyImg: challengeData.acty_img,
@@ -148,8 +159,8 @@ Page({
           score: challengeData.snum,
           stype: challengeData.stype
         })
-        if(that.data.target >= that.data.hasDistance){
-          var per = this.GetPercent(challengeData.hasDistance,that.data.target)
+        if (that.data.target >= that.data.hasDistance) {
+          var per = this.GetPercent(challengeData.hasDistance, that.data.target)
           // var num = new Number(per)
           that.setData({
             finalDis: challengeData.resDistance,
@@ -165,7 +176,7 @@ Page({
         wx.setNavigationBarTitle({
           title: that.data.actyName
         })
-        if(that.data.hasClickon==1){
+        if (that.data.hasClickon == 1) {
           that.setData({
             actyInfor: false,
             btnTxt: '已参加挑战',
@@ -173,7 +184,7 @@ Page({
           })
           return
         }
-      }else{
+      } else {
         wx.showToast({
           title: res.data.error,
           icon: 'none',
@@ -181,7 +192,7 @@ Page({
         })
       }
     })
-    if(that.data.userid==undefined){
+    if (that.data.userid == undefined) {
       var data = {
         actyId: id,
         userId: userId,
@@ -190,7 +201,7 @@ Page({
         level: '',
         distance: 1
       }
-    }else{
+    } else {
       var data = {
         actyId: id,
         userId: that.data.userid,
@@ -201,14 +212,14 @@ Page({
       }
     }
     console.log(data)
-    util.request('acty/getactyuser', 'POST', data, '数据加载中 ...', (res)=>{
+    util.request('acty/getactyuser', 'POST', data, '数据加载中 ...', (res) => {
       console.log(res)
-      if(res.data.success){
+      if (res.data.success) {
         var dataAll = res.data.data
         this.setData({
           actyInList: dataAll
         })
-      }else{
+      } else {
         // wx.showToast({
         //   title: res.data.error,
         //   icon: 'none',
@@ -235,33 +246,33 @@ Page({
     //   }
     // })
   },
-  toLty: function(e){
+  toLty: function (e) {
     var id = e.currentTarget.dataset.id
     wx.navigateTo({
-      url: '../lotterydetail/lotterydetail?id='+id
-    }) 
+      url: '../lotterydetail/lotterydetail?id=' + id
+    })
   },
   //百分比计算
   GetPercent: function (num, total) {
     num = parseFloat(num);
     total = parseFloat(total);
     if (isNaN(num) || isNaN(total)) {
-        return 0;
+      return 0;
     }
     return total <= 0 ? "0%" : (Math.round(num / total * 10000) / 100.00);
   },
-  changeIpt:function(){
+  changeIpt: function () {
     var that = this
     that.setData({
       changeModal: true
     })
   },
-  onConfirm: function(e){
+  onConfirm: function (e) {
     var that = this
     var formData = e.detail.value
     console.log(formData)
     var newDistance = formData.newDistance
-    if(newDistance < that.data.distance){
+    if (newDistance < that.data.distance) {
       wx.showToast({
         title: '请输入正确挑战公里数',
         icon: 'none',
@@ -275,31 +286,31 @@ Page({
       console.log(that.data.distance)
     }
   },
-  onCancel: function(){
+  onCancel: function () {
     var that = this
     that.setData({
       changeModal: false
     })
   },
   // 参与挑战
-  actyIn: function(){
+  actyIn: function () {
     var that = this
     var userId = app.globalData.userId
-    if(that.data.hasClickon == 0&&userId>0){
+    if (that.data.hasClickon == 0 && userId > 0) {
       wx.navigateTo({
-        url: '../signin/signin?id='+that.data.actyId + '&has_name='+that.data.has_name+'&has_mobile='+that.data.has_mobile+'&target='+that.data.distance+'&acty_type='+that.data.acty_type
+        url: '../signin/signin?id=' + that.data.actyId + '&has_name=' + that.data.has_name + '&has_mobile=' + that.data.has_mobile + '&target=' + that.data.distance + '&acty_type=' + that.data.acty_type
       })
-    }else{
+    } else {
       wx.showToast({
         title: '请先登录小程序！',
         icon: 'none',
         duration: 1000
       })
-      setTimeout(function(){
+      setTimeout(function () {
         wx.switchTab({
           url: '../index/index',
         })
-      },1000)
+      }, 1000)
     }
   },
   /**
@@ -319,7 +330,8 @@ Page({
       console.log(res.target)
     }
     return {
-        title: this.data.nickName + '发起了一个挑战活动#' + this.data.actyName + '#，一起来挑战吧～'
+      title: this.data.nickName + '发起了一个挑战活动#' + this.data.actyName + '#，喊你快来挑战～',
+      imageUrl: this.data.actyImg, // 添加此行，将actyImg设置为分享图片
     }
   }
 })

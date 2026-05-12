@@ -2,8 +2,12 @@
 @import "../index/index.wxss";
 @import "../activity/activity.wxss";
 @import "../activitydata/activitydata.wxss";
+page {
+  background:#00b8a9;
+  color: #fff;
+}
 .activity.bg-blcak{
-  background: #4e505f;
+  background: rgba(0,0,0,0.2);
   color: #fff;
 }
 .box-part-wrap.index-part{
@@ -16,7 +20,7 @@
   font-size: 24rpx;
 }
 .data-wrap{
-  padding: 0 30rpx;
+  padding: 0 20rpx;
 }
 .nor-title{
   font-size: 32rpx;
@@ -25,44 +29,49 @@
   text-align: left;
 }
 .con-wrap{
-  background: linear-gradient(to right, #1d976c, #93f9b9);
-  border-radius: 10rpx;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 5rpx;
   margin-bottom: 10rpx;
+  margin-top: 10rpx;
   color: #fff;
 }
 .con-wrap2{
-  background: #f6f8f9; 
-  border-radius: 10rpx;
-  margin-top: 10rpx;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 5rpx;
+  margin-top: 5rpx;
 }
 .data-con{
   display: flex;
   text-align: center;
   padding: 40rpx 0;
-  
+  color:#11999e;
 }
 .data-con .data{
   width: 50%;
   font-size: 24rpx;
   border-right: 1px solid rgba(190, 192, 192, 0.2);
 }
+.activity.marg {
+  padding-bottom: 0;
+  margin-bottom: 20rpx;
+}
 .data-con.full{
-  padding: 20rpx 0 30rpx;
+  padding: 0 0 30rpx;
 }
 .data-con.full .data{
   width: 100%;
   font-size: 24rpx;
 }
 .data-con.full .data .num{
-  font-size: 120rpx;
+  font-size: 250rpx;
+  font-weight: 900;
+  line-height: 280rpx;
+  color: #4CB944;
 }
 .data-con.full .data .unit{
-  background: rgba(255,255,255,.3);
-  border-radius: 20rpx;
-  padding: 4rpx 15rpx;
-  margin-left: 10rpx;
   position: relative;
   bottom: 10rpx;
+  font-size: 30rpx;
 }
 .data-con>view:nth-last-child(1){
   border: none;
@@ -71,7 +80,7 @@
   color: rgba(137, 200, 132);
 }
 .data-con .num{
-  font-size: 48rpx;
+  font-size: 70rpx;
 }
 .infor-con{
   display: flex;
@@ -101,7 +110,7 @@
   padding-right: 40rpx;
 }
 .total .green{
-  color: #4ec17e;
+  color: #112d4e;
 }
 .add-arrow image{
   width: 30rpx;
@@ -157,6 +166,9 @@
 }
 .member{
   padding: 30rpx 0;
+  background-size:  100% 5%;
+  background-repeat: repeat-x;
+  background-position: left 0% bottom 0%;
 }
 .btn-group{
   display: flex;
@@ -178,15 +190,21 @@
   font-weight: normal;
 }
 .btn-group .btn.green{
-  background: linear-gradient(to right, #11998e, #38ef7d);
+  background: linear-gradient(to right, #EE451F, #EE451F)
 }
 .btn-group .btn.red{
-  background: linear-gradient(to right, #ff5e62, #ff9966);
+  background: linear-gradient(to right, #ffde7d, #ff9966);
 }
 .opacity{
   opacity: .7;
 }
 .swiper{
   line-height: 70rpx;
-  margin-bottom: -20rpx;
+  /*margin-bottom: -20rpx;*/
+}
+.total,.nor-title,.total .green  {
+  color: #fff;
+}
+.listext .other-infor, .listext .member .distance {
+  color: #ebfffa;
 }

@@ -10,7 +10,7 @@ Page({
     // haveOrder: true,
     orderInfo: [],
     state: '',
-    navTab: ['积分奖品','能量奖品'],
+    navTab: ['积分奖品','小花儿兑换奖品'],
     currentTab: 0,
     total: 0,
     tab1:'tabshow',
