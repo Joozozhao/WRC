@@ -69,7 +69,7 @@ image {
 .box-part-wrap {
   background: #4CB944;
   border-radius: 20rpx 20rpx 0 0;
-  paddding-top: 20rpx;
+  padding-top: 20rpx;
   font-size: 28rpx;
   text-align: center;
   color: #fff;
