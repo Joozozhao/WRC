@@ -84,7 +84,7 @@
   },
   "permission": {
     "scope.userLocation": {
-      "desc": "你的位置信息将用于小程序天气预报的效果展示"
+      "desc": "你的位置信息将用于记录跑步轨迹和计算运动距离"
     }
   },
   "plugins": {},
