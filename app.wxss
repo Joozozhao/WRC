@@ -11,88 +11,10 @@
   z-index: 999;
 }
 
-/* === iOS Design System === */
 page {
-  background: #F2F2F7;
-  color: #1C1C1E;
-  font-family: -apple-system, BlinkMacSystemFont, ‘SF Pro Text’, ‘PingFang SC’, ‘Helvetica Neue’, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* iOS Cards */
-.ios-card {
-  background: #FFFFFF;
-  border-radius: 20rpx;
-  margin: 20rpx 0;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.06);
-}
-
-.ios-card-flat {
-  background: #FFFFFF;
-  border-radius: 20rpx;
-  margin: 20rpx 0;
-  padding: 24rpx;
-}
-
-/* iOS Section Headers */
-.ios-section-title {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #1C1C1E;
-  margin: 32rpx 24rpx 16rpx;
-}
-
-.ios-section-subtitle {
-  font-size: 24rpx;
-  color: #8E8E93;
-  margin: 0 24rpx 16rpx;
-}
-
-/* iOS List Cells */
-.ios-cell {
-  display: flex;
-  align-items: center;
-  padding: 28rpx 24rpx;
-  background: #FFFFFF;
-  border-bottom: 1rpx solid #E5E5EA;
-}
-
-.ios-cell:last-child {
-  border-bottom: none;
-}
-
-.ios-cell-text {
-  flex: 1;
-  font-size: 30rpx;
-  color: #1C1C1E;
-}
-
-.ios-cell-detail {
-  font-size: 28rpx;
-  color: #8E8E93;
-}
-
-/* iOS Buttons */
-.ios-btn-primary {
-  background: #007AFF;
-  color: #FFFFFF;
-  border-radius: 16rpx;
-  padding: 24rpx 0;
-  font-size: 32rpx;
-  font-weight: 600;
-  text-align: center;
-  border: none;
-}
-
-.ios-btn-primary::after {
-  border: none;
-}
-
-/* iOS Safe Area */
-.ios-safe-bottom {
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
+  background: #fff;
+  color: #333;
+  font-family: ‘Segoe UI’, Tahoma, Geneva, Verdana, sans-serif;
 }
 .letter-spacing {
   letter-spacing: -1px;
