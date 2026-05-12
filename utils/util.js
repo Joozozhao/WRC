@@ -92,11 +92,24 @@ function isPhone(value) {
   }
 }
 
-module.exports = {  
+function checkLogin() {
+  var openId = getApp().globalData.openId
+  if (!openId) {
+    wx.showToast({
+      title: '请先登录小程序！',
+      icon: 'none'
+    })
+    return false
+  }
+  return true
+}
+
+module.exports = {
   formatTime: formatTime,
   formatDate: formatDate,
   dislodgeZero: dislodgeZero,
   request: request,
   showLogin: showLogin,
-  isPhone: isPhone
+  isPhone: isPhone,
+  checkLogin: checkLogin
 }
