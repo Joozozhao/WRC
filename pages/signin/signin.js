@@ -35,9 +35,6 @@ Page({
         console.log(loginRes)
         var regData = {
           openId: loginRes.data.data.openid,
-          imgUrl: res.userInfo.avatarUrl,
-          nickName: res.userInfo.nickName,
-          sex: res.userInfo.gender,
           unionid: loginRes.data.data.unionid
         }
         util.request('user/wxregister', 'POST', regData, '', (regRes)=>{

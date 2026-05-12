@@ -64,22 +64,11 @@ const request = function(url, method, data, msg, succ, fail){
   })
 }
 const showLogin = function(succ){
-  wx.getUserProfile({
-    desc: '用于完善个人信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-    success: (res) => {
-      console.log(res)
-      wx.login({
-        success: function(wxLoginRes){
-          console.log(wxLoginRes)
-          if(wxLoginRes.code){
-            var result = {
-              userInfo : res.userInfo,
-              code: wxLoginRes.code
-            }
-            if(succ) succ(result);
-          }
-        }
-      })
+  wx.login({
+    success: function(wxLoginRes){
+      if(wxLoginRes.code){
+        if(succ) succ({ code: wxLoginRes.code });
+      }
     }
   })
 }
