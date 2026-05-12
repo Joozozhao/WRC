@@ -93,7 +93,6 @@ Page({
       userId : id
     }
     util.request('user/getsportinfo', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var myData = res.data.data
         that.setData({
@@ -161,9 +160,7 @@ Page({
     var data = {
       user_id: id
     }
-    console.log(data)
     util.request('user/getUserJoinActy', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           actyId: res.data.data[`V挑战`],
@@ -189,9 +186,7 @@ Page({
       acty_type: 1,
       sex: that.data.sex
     }
-    console.log(data)
     util.request('acty/getActyRuleByType', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           rule_id1: res.data.data.id,
@@ -210,15 +205,12 @@ Page({
       acty_type: 2,
       sex: that.data.sex
     }
-    console.log(data)
     util.request('acty/getActyRuleByType', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           rule_id2: res.data.data.id,
           passWeek2: res.data.data.week
         })
-        console.log(that.data.passWeek2)
         that.getRule2()
       } else {
         
@@ -232,9 +224,7 @@ Page({
       rule_id: that.data.rule_id1,
       user_id: parseInt(that.data.userid)
     }
-    console.log(data)
     util.request('user/getRuleResult', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)      
       if(res.data.success){
         var list = 'swiper.qualifications'
         that.setData({
@@ -246,8 +236,6 @@ Page({
           [list]: res.data.data.finish_month,
           echartShow: true
         })
-        console.log(that.data.passWeek)
-        console.log(that.data.swiper)
         var nowDate
         var nowMonth = currentMonth+1
         if(currentMonth<10){
@@ -257,10 +245,8 @@ Page({
         }
         var obj = that.data.swiper.qualifications
         var data = Object.keys(obj)
-        console.log(data)
         for(var i=0;i<data.length;i++){
           if(data[i]==nowDate){
-            console.log(i)
             var cur = 'swiper.current'
             that.setData({
               [cur]: i
@@ -279,9 +265,7 @@ Page({
       rule_id: that.data.rule_id2,
       user_id: parseInt(that.data.userid)
     }
-    console.log(data)
     util.request('user/getRuleResult', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)      
       if(res.data.success){
         var list = 'swiper2.qualifications'
         that.setData({
@@ -293,7 +277,6 @@ Page({
           [list]: res.data.data.finish_month,
           echartShow2: true
         })
-        console.log(that.data.swiper2)
         var nowDate
         var nowMonth = currentMonth+1
         if(nowMonth<10){
@@ -303,10 +286,8 @@ Page({
         }
         var obj = that.data.swiper2.qualifications
         var data = Object.keys(obj)
-        console.log(data)
         for(var i=0;i<data.length;i++){
           if(data[i]==nowDate){
-            console.log(i)
             var cur = 'swiper2.current'
             that.setData({
               [cur]: i
@@ -321,7 +302,6 @@ Page({
     var swiper = this.data.swiper;
     var current = swiper.current;
     var arr = Object.keys(swiper.qualifications)
-    console.log(arr)
     swiper.current = current > 0 ? current - 1 : arr.length - 1;
     this.setData({
       swiper: swiper
@@ -331,7 +311,6 @@ Page({
     var swiper = this.data.swiper;
     var current = swiper.current;
     var arr = Object.keys(swiper.qualifications)
-    console.log(arr)
     swiper.current = current < (arr.length - 1) ? current + 1 : 0;
     this.setData({
       swiper: swiper
@@ -341,7 +320,6 @@ Page({
     var swiper = this.data.swiper2;
     var current = swiper.current;
     var arr = Object.keys(swiper.qualifications)
-    console.log(arr)
     swiper.current = current > 0 ? current - 1 : arr.length - 1;
     this.setData({
       swiper2: swiper
@@ -351,7 +329,6 @@ Page({
     var swiper = this.data.swiper2;
     var current = swiper.current;
     var arr = Object.keys(swiper.qualifications)
-    console.log(arr)
     swiper.current = current < (arr.length - 1) ? current + 1 : 0;
     this.setData({
       swiper2: swiper
@@ -365,9 +342,7 @@ Page({
       type: '挑战',
       page: that.data.page++
     }
-    console.log(data)
     util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)      
       if(res.data.success){
         var allData = res.data.data
         for(var i=0; i<allData.length;i++){
@@ -397,9 +372,7 @@ Page({
       type: '团跑',
       page: that.data.page2++
     }
-    console.log(data)
     util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)      
       if(res.data.success){
         var allData = res.data.data
         for(var i=0; i<allData.length;i++){
@@ -438,7 +411,6 @@ Page({
         var max =0;
         for(var i=0; i<allData.length;i++){
           var distance = allData[i].sport_total
-          console.log(distance)
           weekArr.push(distance)
         }
         max = Math.max.apply(null, weekArr)
@@ -532,7 +504,6 @@ Page({
     option.initCirle(e.detail.canvas, e.detail.width, e.detail.height,e.detail.dpr,times,this.data.passWeek2)
   },
   toDet: function(e){
-    console.log(e)
     let id = e.detail.id
     let type = e.detail.type
     if(type == '挑战'){
@@ -552,13 +523,11 @@ Page({
       type: '挑战',
       page: that.data.page++
     }
-    console.log(data)
     // wx.showLoading({
     //   title: '加载中',
     //   icon: 'loading'
     // })
     util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)      
       if(res.data.success){
         var allData = res.data.data
         var content = that.data.activityList.concat(allData)
@@ -585,9 +554,7 @@ Page({
       type: '团跑',
       page: that.data.page2++
     }
-    console.log(data)
     util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)      
       if(res.data.success){
         var allData = res.data.data
         var content = that.data.activityList2.concat(allData)

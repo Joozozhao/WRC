@@ -29,7 +29,6 @@ Page({
     }
     util.request('news/get', 'POST', data, '数据请求中...', (res) => {
       if (res.data.success) {
-        console.log(res)
         that.setData({
           title: res.data.data.title,
           author: res.data.data.author,
@@ -52,7 +51,6 @@ Page({
       success: function (res) {
         wx.getClipboardData({
           success: function (res) {
-            console.log(res.data) // data
             wx.showToast({
               title: '已复制',
               duration: 2000, //显示时长

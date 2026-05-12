@@ -67,7 +67,6 @@ Page({
       addr: addr,
       actyType: actyType
     })
-    console.log(this.data);
     this.initActy()
   },
   initActy: function(){
@@ -81,7 +80,6 @@ Page({
       mask: true
     })
     util.request('acty/getactylist', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)      
       if(res.data.success){
         var allData = res.data.data
         for(var i=0; i<allData.length;i++){
@@ -128,7 +126,6 @@ Page({
       icon: 'none'
     })
     util.request('acty/getactylist', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)      
       if(res.data.success){
         var allData = res.data.data
         var content = that.data.activityList.concat(allData)

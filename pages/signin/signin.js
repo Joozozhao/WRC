@@ -24,7 +24,6 @@ Page({
     var userId = app.globalData.userId
     if(userId < 1 || userId == undefined){
     util.showLogin((res)=>{
-      console.log(res)
       var data = {
         code: res.code,
         encryptedData: "",
@@ -32,7 +31,6 @@ Page({
       }
       //取用户的openid
       util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes)=>{
-        console.log(loginRes)
         var regData = {
           openId: loginRes.data.data.openid,
           unionid: loginRes.data.data.unionid
@@ -89,7 +87,6 @@ Page({
           userName: res.data.data.name,
           sex: res.data.data.sex
         })
-        console.log(res.data.data)
       }
     })
   },
@@ -130,10 +127,8 @@ Page({
         userName: formatDate.userName,
         mobile: formatDate.mobile
       }
-      console.log(data)
       util.request('acty/joinacty', 'POST', data, '数据加载中 ...', (res)=>{
         if(res.data.success){
-        console.log(res)
         that.setData({
           disable: true
         })
@@ -182,7 +177,6 @@ Page({
       }
       util.request('acty/joinacty', 'POST', data, '数据加载中 ...', (res)=>{
         if(res.data.success){
-        console.log(res)
           wx.showToast({
             title: '报名成功',
             duration: 1000

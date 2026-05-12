@@ -14,7 +14,6 @@ Page({
   },
   chooseAdd:function (e){
     var addrId = e.currentTarget.dataset.id
-    console.log(addrId)
     var pages = getCurrentPages() // 当前页面
     var prevPage= pages[pages.length - 2] // 前一个页面
     wx.navigateBack({
@@ -32,10 +31,8 @@ Page({
       def: 1,
       userId: userId
     }
-    console.log(data)
     util.request('user/setdefaddress', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
-        console.log(res)
         that.setData({
           id: id
         })
@@ -67,7 +64,6 @@ Page({
           util.request('user/deladdr', 'POST', data, '数据加载中 ...', (res)=>{
             if(res.data.success){
               that.initList()
-              console.log(res)
               wx.showToast({
                 title: '已删除',
                 icon: 'none',
@@ -85,7 +81,6 @@ Page({
             }
           })
          } else {
-           console.log('用户取消')
          }
        }
     })
@@ -114,7 +109,6 @@ Page({
     })
     util.request('user/getaddrlist', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
-      console.log(res)
       that.setData({
         addressList: res.data.data
       })
@@ -139,9 +133,7 @@ Page({
     var data ={
       userId: userId
     }
-    console.log(data)
     util.request('user/getdefaddr', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)
       if(res.data.success){
         that.setData({
           id: res.data.data.id

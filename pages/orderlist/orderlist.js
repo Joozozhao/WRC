@@ -81,7 +81,6 @@ Page({
       state : -2, 
       page: that.data.page++
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'loading',
@@ -91,7 +90,6 @@ Page({
       var that = this
       if(res.data.success){
         var orderData = res.data.data
-        console.log(orderData)
         that.setData({
           orderList: orderData,
           noHistory: false
@@ -132,7 +130,6 @@ Page({
     // that.setData({
     //   radioItem: that.data.radioItem 
     // })
-    console.log(that.data)
   },
   delCon: function(e){
     var that = this
@@ -153,7 +150,6 @@ Page({
               that.setData({
                 orderList: orderList
               })
-              console.log(res)
               wx.showToast({
                 title: '已删除',
                 icon: 'none',
@@ -171,7 +167,6 @@ Page({
             }
           })
          } else {
-           console.log('用户取消')
          }
        }
     })
@@ -198,7 +193,6 @@ Page({
       userId: that.data.userId,
       orderNum: that.data.orderNum
     }
-    console.log(data)
     util.request('order/updatestate', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
         wx.showToast({
@@ -233,7 +227,6 @@ Page({
       state : -2, 
       page: this.data.page++
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'loading'
@@ -243,7 +236,6 @@ Page({
       if(res.data.success){
         var orderData = res.data.data
         var content = that.data.orderList.concat(orderData)
-        console.log(res.data)
         that.setData({
           orderList: content,
           noHistory: false

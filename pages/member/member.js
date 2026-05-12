@@ -29,9 +29,7 @@ Page({
       level: '',
       distance: 1
     }
-    console.log(data)
     util.request('acty/getactyuser', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           memberList: res.data.data

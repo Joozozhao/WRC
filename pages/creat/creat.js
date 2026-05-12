@@ -141,7 +141,6 @@ Page({
     });
   },
   setPickerTime: function(val) {
-    console.log(val);
     let data = val.detail;
     var startTime = util.dislodgeZero(data.startTime)
     var endTime = util.dislodgeZero(data.endTime)
@@ -159,7 +158,6 @@ Page({
       success:function(res) {
         var tempFilePaths = res.tempFilePaths[0]
         // var userId = app.globalData.userId
-        console.log(tempFilePaths)
         //  获取裁剪图片资源后，给data添加src属性及其值
         wx.navigateTo({
           url: `../cropper/cropper?src=${tempFilePaths}`,
@@ -174,7 +172,6 @@ Page({
 //           url: 'https://applet.51welink.com/sport/acty/uploadimg',
 //           formData: { userId:  userId, fileId:'file' },
 //           success: function(ret){
-//             console.log(ret);
 //             var obj = JSON.parse(ret.data)
 //             that.setData({
 //               tempFilePaths: obj.data.img,
@@ -183,7 +180,6 @@ Page({
 //             })
 //           },
 //           fail: function(ret){
-//             console.log(ret)
 //           }
 //         })
       }
@@ -230,7 +226,6 @@ Page({
       score: that.data.score,
       level: 0
     }
-    console.log(data)
     if(that.data.sealType == ''){
       wx.showToast({
         title: '请选择活动地区!',
@@ -288,7 +283,6 @@ Page({
       return false
     }
     util.request('acty/save', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           disable: true
@@ -316,6 +310,5 @@ Page({
     wx.hideShareMenu({})
   },
   onShow: function(){
-    console.log(this.data.tempFilePaths)
   }
 })

@@ -27,7 +27,6 @@ Page({
       sourceType: ['album', 'camera'],
       success: function (res) {
         var tempFilePaths = res.tempFilePaths
-        console.log(tempFilePaths)
         wx.showToast({
           icon: "loading",
           title: "正在上传"
@@ -38,17 +37,13 @@ Page({
             url: 'https://applet.51welink.com/sport/goods/upload',
             formData: { gId: 0, fileId: 'file' },
             success: function (ret) {
-              console.log(ret);
               var obj = JSON.parse(ret.data)
-              console.log(obj)
               that.setData({
                 detailPics: obj.data.goods_pic,
               })
-              console.log(that.data.detailPics)
 
             },
             fail: function (ret) {
-              console.log(ret)
             }
           })
       }
@@ -63,25 +58,20 @@ Page({
       success: function (res) {
         var tempFilePaths = res.tempFilePaths
         for (var i = 0; i < tempFilePaths.length; i++) {
-          console.log(res.tempFilePath)//最终图片路径
           var src = res.tempFilePaths[i]
-          console.log(src)
           wx.uploadFile({
             filePath: src,
             name: 'file',
             url: 'https://applet.51welink.com/sport/goods/upload',
             formData: { gId: 0, fileId: 'file' },
             success: function (ret) {
-              console.log(ret);
               var obj = JSON.parse(ret.data)
               pics2.push(obj.data)
-              console.log(pics2)
               that.setData({
                 detailPics2: pics2
               })
             },
             fail: function (ret) {
-              console.log(ret)
             }
           })
         }
@@ -93,15 +83,12 @@ Page({
     let that = this
     var deleID = e.currentTarget.dataset.id    //获取点击项目的内容
     var detailPics2 = that.data.detailPics2;
-    console.log(detailPics2)
     wx.showModal({
       title: '提示',
       content: '确定要删除此图片吗？',
       success: function (res) {
         if (res.confirm) {
-          console.log('点击确定了')
           detailPics2.splice(deleID, 1)
-          console.log(deleID)
           that.setData({
             detailPics2: that.data.detailPics2
           })
@@ -117,7 +104,6 @@ Page({
           })
 
         } else if (res.cancel) {
-          console.log('点击取消了');
           return false;
         }
       }
@@ -148,7 +134,6 @@ Page({
       pic: that.data.detailPics,
       imgs: goodImgs,
     }
-    console.log(data)
 
     if (formatDate.gn == '') {
       wx.showToast({
@@ -183,7 +168,6 @@ Page({
       return false
     }
     util.request('goods/save', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
       if (res.data.success) {
         that.setData({
           disable: true

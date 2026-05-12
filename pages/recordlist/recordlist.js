@@ -162,7 +162,6 @@ Page({
       actyIds: that.data.actType,
       page: that.data.page++
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'loading',
@@ -172,7 +171,6 @@ Page({
       var that = this
       if (res.data.success) {
         var recordData = res.data.data
-        console.log(recordData)
         that.setData({
           recordList: recordData,
           noHistory: false
@@ -203,17 +201,14 @@ Page({
     var that = this
     var userId = app.globalData.userId
     var recordList = that.data.recordList;
-    console.log(Index)
     var data = {
       id: id,
       userId: userId,
       state: 1,
       deductFraction: 0
     }
-    console.log(data)
     util.request('acty/setsportstate', 'POST', data, '数据加载中 ...', (res) => {
       if (res.data.success) {
-        console.log(res)
         for (let i in recordList) {
           //遍历列表数据      
           if (i == Index) {
@@ -257,8 +252,6 @@ Page({
       }
       util.request('acty/setsportstate', 'POST', data, '数据加载中 ...', (res) => {
         if (res.data.success) {
-          console.log(res)
-          console.log(state)
           if (state == 0) {
             state = 1
             //数组重新赋值
@@ -280,7 +273,6 @@ Page({
         }
       })
     }
-    console.log(ids)
   },
   refuseCon: function (e) {
     var that = this
@@ -322,7 +314,6 @@ Page({
       deductFraction: formatDate.score,
       desc: formatDate.reason
     }
-    console.log(data)
     util.request('acty/setsportstate', 'POST', data, '数据加载中 ...', (res) => {
       if (res.data.success) {
         wx.showToast({
@@ -358,7 +349,6 @@ Page({
       actyIds: this.data.actType,
       page: this.data.page++
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'loading'
@@ -368,7 +358,6 @@ Page({
       if (res.data.success) {
         var recordData = res.data.data
         var content = that.data.recordList.concat(recordData)
-        console.log(res.data)
         that.setData({
           recordList: content,
           noHistory: false

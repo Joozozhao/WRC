@@ -20,7 +20,6 @@ Page({
     that.setData({
       clas: '',
     // })　　　//下拉框所选择的值
-    // console.log('picker发送选择改变，携带值为', e.detail.value)
 
     // this.setData({
       //拼的字符串传后台
@@ -32,7 +31,6 @@ Page({
     // this.setData({
       "AddSite.area": e.detail.value[0] + "" + e.detail.value[1] + "" + e.detail.value[2]
     })
-    console.log(this.data.AddSite)
   },
   onSubmit: function (e){
     var that = this
@@ -85,9 +83,7 @@ Page({
       mobile: formData.mobile,
       addr: addr + formData.addressDet
     }
-    console.log(data)
     util.request('user/saveaddr', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           disable: true

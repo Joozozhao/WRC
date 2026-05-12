@@ -56,7 +56,6 @@ Page({
   },
   choose:function(e){
     var that = this
-    console.log(e.target.dataset.type);
     that.setData({
       actype:e.target.dataset.type
     })
@@ -99,11 +98,9 @@ Page({
     });
   },
   setPickerTime: function(val) {
-    console.log(val);
     let data = val.detail;
     // var startTime = util.dislodgeZero(data.startTime)
     // var endTime = util.dislodgeZero(data.endTime)
-    console.log()
     this.setData({
       startTime: data.startTime.substring(0,10),
       endTime: data.endTime.substring(0,10)
@@ -126,7 +123,6 @@ Page({
       score: formData.score,
       remark: formData.remark
     }
-    console.log(data)
     if(formData.distance == ''){
       wx.showToast({
         title: '请输入月跑公里!',
@@ -135,9 +131,7 @@ Page({
       })
       return false
     }
-    console.log(data)
     util.request('acty/saveRule', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         wx.showToast({
           title: '添加成功',
@@ -154,9 +148,7 @@ Page({
       acty_type: that.data.actype,
       sex: that.data.sextype
     }
-    console.log(data)
     util.request('acty/getActyRuleByType', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var allData = res.data.data
         var start = allData.start_time

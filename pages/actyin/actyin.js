@@ -125,14 +125,12 @@ Page({
       level: that.data.selLevel,
       distance: that.data.sortState
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       mask: true
     })
     util.request('acty/getactyuser', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
-        console.log(res.data.data)
         var mbData = res.data.data
         that.setData({
           memberList: mbData

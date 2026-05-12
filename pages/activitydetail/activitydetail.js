@@ -52,7 +52,6 @@ Page({
     }
     util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
-      console.log(res)
       if(res.data.success){
         that.setData({
           myAddress: res.data.data.address
@@ -127,9 +126,7 @@ Page({
     var data = {
       actyId: that.data.actyId
     }
-    console.log(data)
     util.request('acty/getactyimgs', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           actyImg:res.data.data
@@ -153,13 +150,11 @@ Page({
         userId: that.data.userid
       }
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       mask: true
     })
     util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var allData = res.data.data
         var createTime = allData.start_timestr.substring(0, 16)
@@ -242,7 +237,6 @@ Page({
       id: id
     }
     util.request('acty/getsport', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           allDistance: res.data.data.total,
@@ -272,11 +266,9 @@ Page({
         mobile: ''
       } 
     }
-    console.log(data)
     util.request('acty/getactyuser', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
         var dataAll = res.data.data
-        console.log(res.data.data)
         this.setData({
           avastars: dataAll, 
           actyIn: dataAll.length
@@ -290,7 +282,6 @@ Page({
       actyId : id
     }
     util.request('acty/getluckdrawlist', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)
       if(res.data.success){
         this.setData({
           ltyList: res.data.data
@@ -340,9 +331,7 @@ Page({
     var data = {
       actyId: that.data.actyId
     }
-    console.log(data)
     util.request('acty/getclickuser', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var allDta = res.data.data
         this.setData({
@@ -382,7 +371,6 @@ Page({
   onShareAppMessage: function (res) {
     if (res.from === 'button') {
       // 来自页面内转发按钮
-      console.log(res.target)
     }
     return {
         title: this.data.nickName + '邀请你参加#' + this.data.acty_name + '#，快来参加攒积分了～',

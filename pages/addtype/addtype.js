@@ -34,7 +34,6 @@ Page({
       gn: '',
       page: that.data.page++
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'loading',
@@ -42,7 +41,6 @@ Page({
     })
     util.request('goods/get', 'POST', data, '数据加载中 ...', (res) => {
       if (res.data.success) {
-        console.log(res)
         if(res.data.data.goodsStorageList!=undefined){
           this.setData({
             typeInfor: res.data.data.goodsStorageList,
@@ -53,7 +51,6 @@ Page({
             goods_name: res.data.data.goods_name
           })
         }
-        console.log(this.data.typeInfor)
         wx.hideLoading({
           success: (res) => { },
         })
@@ -70,7 +67,6 @@ Page({
     })
   },
   saveIpt: function(e){
-    console.log(e)
     var val = e.detail.value
     this.setData({
       value: val
@@ -88,7 +84,6 @@ Page({
     this.setData({
       [goodTemp]: lists.concat(newData)
     })
-    console.log(lists)
   },
   addTag: function () {
     var lists = this.data.typeInfor
@@ -99,9 +94,7 @@ Page({
       }],
       tagName: ''
     };
-    console.log(lists)
     lists.push(newData);//实质是添加lists数组内容，使for循环多一次
-    console.log(lists)
     this.setData({
       typeInfor: lists
     })
@@ -115,10 +108,8 @@ Page({
     if (id == undefined) {
       var infors = that.data.typeInfor
       var typeInfor = that.data.typeInfor[idx].goodsStorageList
-      console.log(typeInfor)
       if (typeInfor.length == 1) {
         var infor = 'typeInfor[' + idx + ']';
-        console.log(infor)
         infors.splice(idx, 1)
         that.setData({
           typeInfor: infors
@@ -140,7 +131,6 @@ Page({
             }
             util.request('goods/delgoodstags', 'POST', data, '数据加载中 ...', (res) => {
               if (res.data.success) {
-                console.log(res)
                 that.setData({
                   page: 1
                 })
@@ -148,7 +138,6 @@ Page({
                 var typeInfor = that.data.typeInfor[idx].goodsStorageList
                 if (typeInfor.length == 1) {
                   var infor = 'typeInfor[' + idx + ']';
-                  console.log(infor)
                   infors.splice(idx, 1)
                   that.setData({
                     typeInfor: infors
@@ -178,7 +167,6 @@ Page({
               }
             })
           } else {
-            console.log('用户取消')
           }
         }
       })
@@ -199,11 +187,9 @@ Page({
     })
   },
   submit: function (e) {
-    console.log(e)
     var that = this
     var typeInfor = that.data.typeInfor
     var formData = e.detail.value
-    console.log(typeInfor)
     var params = []
     var tag = ""
     var desc = ""
@@ -257,9 +243,7 @@ Page({
       desc: desc,
       stock: stock
     }
-    console.log(subData)
     util.request('goods/createupdatetags', 'POST', subData, '数据加载中 ...', (res) => {
-      console.log(res)
       if (res.data.success) {
         wx.showToast({
           title: '添加成功'

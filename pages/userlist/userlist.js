@@ -63,7 +63,6 @@ Page({
     this.setData({
       duty: duty.toString()
     })
-    console.log(this.data.duty)
   },
   onConfirm: function(){
     var that = this
@@ -72,10 +71,8 @@ Page({
       userId: userId,
       level: that.data.level
     }
-    console.log(data)
     util.request('user/setlevel', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
-        console.log(res)
         that.setData({
           page:1
         })
@@ -92,10 +89,8 @@ Page({
       userId: userId,
       duty: that.data.duty
     }
-    console.log(data)
     util.request('user/setduty', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
-        console.log(res)
         that.setData({
           page: 1
         })
@@ -152,14 +147,12 @@ Page({
       page : 1,
       size: 100 //控制显示多少数据
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       mask: true
     })
     util.request('user/getuserlist', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
-        console.log(res)
         that.setData({
           userList: res.data.data
         })
@@ -276,14 +269,12 @@ Page({
       page : that.data.page++,
       size: 15
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'loading'
     })
     util.request('user/getuserlist', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
-        console.log(res)
         var allData = res.data.data
         var content = that.data.userList.concat(allData)
         that.setData({

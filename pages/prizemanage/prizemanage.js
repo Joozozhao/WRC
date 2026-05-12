@@ -48,12 +48,10 @@ Page({
       type : "全部",
       page: that.data.page++
     }
-    console.log(data)
     util.request('goods/searchlist', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
       if(res.data.success){
         var orderData = res.data.data
-        console.log(orderData)
         that.setData({
           prizeList: orderData,
           noHistory: false
@@ -67,7 +65,6 @@ Page({
       id: id
     }
     util.request('goods/get', 'POST', data, '数据加载中...', (res)=>{
-      console.log(res.data)
       if(res.data.success){
         that.setData({
           allType: res.data.data.goodsStorageList
@@ -93,7 +90,6 @@ Page({
       id: id,
       state: state
     }
-    console.log(data)
     if(num!==''){
       util.request('goods/setstate', 'POST', data, '数据加载中 ...', (res)=>{
         if(res.data.success){
@@ -176,14 +172,12 @@ Page({
     var data ={
       id: id
     }
-    console.log(data)
     wx.showModal({   
       title: '是否确定删除此奖品？',
       success: function (res) {
         if (res.confirm) {             
           //点击确定后
           util.request('goods/del', 'POST', data, '数据加载中 ...', (res)=>{
-            console.log(res.data)
             if(res.data.success){
               wx.showToast({
                 title: '删除成功！',
@@ -209,7 +203,6 @@ Page({
             }
           })
          } else {
-           console.log('用户取消')
          }
        }
     })
@@ -228,7 +221,6 @@ Page({
   chooseOne:function(e){
     var that = this
     var id = e.currentTarget.dataset.id
-    console.log(id)
     that.setData({
       typeId: id,
       storageId: id
@@ -251,16 +243,13 @@ Page({
     var data = { 
       name: value
     }
-    console.log(data)
     util.request('user/searchname', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           nameList: res.data.data,
           viewShowed: true,
           add: true
         })
-        console.log(that.data.nameList)
       }
     })    
   },
@@ -307,7 +296,6 @@ Page({
     // util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
     util.request('user/searchname', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
-      console.log(res)
       if(res.data.success){
         that.setData({
           grantid: res.data.data[0].id,
@@ -330,13 +318,11 @@ Page({
         type: that.data.stype,
         score: formatDate.score
       }
-      console.log(data)
       wx.showModal({   
         title: '是否确定分配奖品给'+ that.data.getName + '吗？',
         success: function (res) {
           if (res.confirm) {             //点击确定后
             util.request('order/grant', 'POST', data, '数据加载中...', (res)=>{
-              console.log(res.data)
               if(res.data.success){
                 wx.showToast({
                   title: '分配成功！',
@@ -352,7 +338,6 @@ Page({
               }
             })
            } else {
-             console.log('用户取消')
            }
          }
       })
@@ -389,7 +374,6 @@ Page({
       type : "全部",
       page: that.data.page++
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'loading'
@@ -399,7 +383,6 @@ Page({
       if(res.data.success){
         var orderData = res.data.data
         var content = that.data.prizeList.concat(orderData)
-        console.log(res.data)
         that.setData({
           prizeList: content,
           noHistory: false

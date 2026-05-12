@@ -29,7 +29,6 @@ Page({
     })
     util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
-        console.log(res)
         var that = this
         that.setData({
           actyTimes: res.data.data.acty_times,
@@ -50,7 +49,6 @@ Page({
       type: 1
     }
     util.request('user/getscore', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data.data)
       if(res.data.success){
       var that = this
       var allData = res.data.data
@@ -110,7 +108,6 @@ Page({
       icon: 'loading'
     })
     util.request('user/getscore', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data.data)
       if(res.data.success){
       var that = this
       var allData = res.data.data

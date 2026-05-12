@@ -54,7 +54,6 @@ Page({
       success:function(res) {
         var tempFilePaths = res.tempFilePaths
         var userId = app.globalData.userId
-        console.log(tempFilePaths)
         wx.showToast({
          icon: "loading",
          title: "正在上传"
@@ -65,11 +64,8 @@ Page({
           url: 'https://applet.51welink.com/sport/user/uploadimg',
           formData: { userId:  userId, fileId:'file' },
           success: function(ret){
-            console.log(ret);
             var obj = JSON.parse(ret.data)
-            console.log(obj)
             var speedData = obj.data.speed
-            console.log(speedData)
             if(speedData!=undefined){
               var speed = speedData;//.replace(/[^0-9]/ig,"")
               if(speed.substring(0, 1)==0){
@@ -96,7 +92,6 @@ Page({
                   date: obj.data.date
                 })
               }
-              console.log(obj.data.date)
             }
             that.setData({
               tempFilePaths: obj.data.img,
@@ -105,7 +100,6 @@ Page({
             })
           },
           fail: function(ret){
-            console.log(ret)
           }
         })
       }
@@ -130,7 +124,6 @@ Page({
       isShow_03: false,
       speed: parseFloat(e.detail.choosedData[0]) + '′' + parseFloat(e.detail.choosedData[1]) + '″'
     })
-    console.log(e.detail)
   },
   cancleCallBack_03 () {
     this.setData({
@@ -146,9 +139,7 @@ Page({
     var data = {
       userId : userId
     }
-    console.log(data)
     util.request('user/getserialday', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       that.setData({
         clockTimes: res.data.data.clockTimes
       })
@@ -159,12 +150,10 @@ Page({
     wx.requestSubscribeMessage({
       tmplIds: ['atI2vNoA9gxEHR7iiJ8SXNC5-To5F3nz1GdAiJ9jKT8','WFf_l_J8AUitCUTw6x0dztYEz5P_zB5CN6MKUtARrVA','qxTeZfuzyqFwoPYMJ-C8wIfRJaladzRyVDA4CRr2b7c','DidkgePsPJU2N2xnJMEVEhmGu7jwQuXeHnW5T3c3J5E'],
       success (res) { 
-        console.log(res)
         var data={
           userId:res.data.data.id
         }
         util.request('user/setSubscribe', 'POST', data, '数据加载中 ...', (res)=>{
-          console.log(res);
         })
       }
     })
@@ -188,7 +177,6 @@ Page({
       stepRate: that.data.steps_frequency,
       stride: that.data.stride
     }
-    console.log(data)
     if(that.data.tempFilePaths == ''){
       wx.showToast({
         title: '请上传图片!',
@@ -214,10 +202,7 @@ Page({
       return false
     }
     util.request('user/uploadsport', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
-        console.log(formatDate.distance)
-        console.log(that.data.clockTimes)
         that.setData({
           disable: true
         })
@@ -255,7 +240,6 @@ Page({
   },
   myLogin: function(userId) {
     var that = this
-    console.log("----"+userId)
     if (userId < 1 || userId == undefined) {
       wx.showModal({
         content: '请先登录小程序！',
@@ -319,7 +303,6 @@ Page({
               })
             })
           } else if (res.cancel) {
-            console.log('用户点击取消')
           }
         }
       })

@@ -31,7 +31,6 @@ Page({
     var userId = app.globalData.userId
     if (userId < 1 || userId == undefined) {
       util.showLogin((res) => {
-        console.log(res)
         var data = {
           code: res.code,
           encryptedData: "",
@@ -39,7 +38,6 @@ Page({
         }
         //取用户的openid
         util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes) => {
-          console.log(loginRes)
           var regData = {
             openId: loginRes.data.data.openid,
             unionid: loginRes.data.data.unionid
@@ -92,7 +90,6 @@ Page({
     }
     util.request('user/get', 'POST', data, '数据加载中 ...', (res) => {
       if (res.data.success) {
-        console.log(res)
         this.setData({
           nickName: res.data.data.nick_name
         })
@@ -104,7 +101,6 @@ Page({
       }
       util.request('user/get', 'POST', data, '数据加载中 ...', (res) => {
         if (res.data.success) {
-          console.log(res)
           this.setData({
             header_url: res.data.data.header_url,
           })
@@ -132,9 +128,7 @@ Page({
         userId: that.data.userid
       }
     }
-    console.log(data)
     util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
       if (res.data.success) {
         var challengeData = res.data.data
         that.setData({
@@ -208,9 +202,7 @@ Page({
         distance: 1
       }
     }
-    console.log(data)
     util.request('acty/getactyuser', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res)
       if (res.data.success) {
         var dataAll = res.data.data
         this.setData({
@@ -229,7 +221,6 @@ Page({
     //   actyId : id
     // }
     // util.request('acty/getluckdrawlist', 'POST', data, '数据加载中 ...', (res)=>{
-    //   console.log(res.data)
     //   if(res.data.success){
     //     this.setData({
     //       ltyList: res.data.data
@@ -267,7 +258,6 @@ Page({
   onConfirm: function (e) {
     var that = this
     var formData = e.detail.value
-    console.log(formData)
     var newDistance = formData.newDistance
     if (newDistance < that.data.distance) {
       wx.showToast({
@@ -280,7 +270,6 @@ Page({
         distance: newDistance,
         changeModal: false
       })
-      console.log(that.data.distance)
     }
   },
   onCancel: function () {
@@ -324,7 +313,6 @@ Page({
   onShareAppMessage: function (res) {
     if (res.from === 'button') {
       // 来自页面内转发按钮
-      console.log(res.target)
     }
     return {
       title: this.data.nickName + '发起了一个挑战活动#' + this.data.actyName + '#，喊你快来挑战～',

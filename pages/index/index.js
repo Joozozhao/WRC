@@ -457,7 +457,6 @@ Page({
               })
             })
           } else if (res.cancel) {
-            console.log('用户点击取消')
           }
         }
       })
@@ -467,7 +466,6 @@ Page({
   onShareAppMessage: function (res) {
     if (res.from === 'button') {
       // 来自页面内转发按钮
-      console.log(res.target)
     }
     return {
       title: '您的好友' + this.data.nickName + '邀请您加入悦跑团～',

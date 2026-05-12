@@ -26,7 +26,6 @@ Page({
     var data = {}
     util.request('user/getvip', 'POST', data, '数据请求中...', (res)=>{
     if(res.data.success){
-      console.log(res)
       that.setData({
         vipList : res.data.data
       })

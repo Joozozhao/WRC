@@ -47,7 +47,6 @@ Page({
               that.setData({
                 activityList: activityList
               })
-              console.log(res)
               wx.showToast({
                 title: '已删除',
                 icon: 'none',
@@ -65,7 +64,6 @@ Page({
             }
           })
          } else {
-           console.log('用户取消')
          }
        }
     })
@@ -84,7 +82,6 @@ Page({
     }
     util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
-      console.log(res)
       if(res.data.success){
         if(res.data.data.duty=='团长,管理员'||res.data.data.duty=='管理员,团长'){
           that.setData({
@@ -104,13 +101,11 @@ Page({
       page: that.data.page++,
       type: '团跑'
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       mask: true
     })
     util.request('acty/getactylist', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)      
       if(res.data.success){
         var allData = res.data.data
         for(var i=0; i<allData.length;i++){
@@ -164,7 +159,6 @@ Page({
   },
   loadMore: function () {
     var that = this
-    console.log(that.data)
     var data = {
       page: that.data.page ++,
       type: '团跑'

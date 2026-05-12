@@ -61,13 +61,11 @@ Page({
       page: that.data.page++,
       type: that.data.currentTab
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       mask: true
     })
     util.request('order/list', 'POST', data, '数据加载中...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var orderData = res.data.data
         for(var i=0; i<orderData.length;i++){
@@ -128,7 +126,6 @@ Page({
       if(res.data.success){
         var orderData = res.data.data
         var content = that.data.orderInfo.concat(orderData)
-        console.log(orderData)
         for(var i=0; i<orderData.length;i++){
           var createTime = orderData[i].last_time.substring(0, 19)
           orderData[i].last_time = createTime

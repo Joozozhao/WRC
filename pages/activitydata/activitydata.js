@@ -32,16 +32,13 @@ Page({
       page: that.data.page++
     }
     var userId = app.globalData.userId
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       mask: true
     })
     util.request('acty/getsportlog', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)
       if(res.data.success){
         // var ownData = res.data.data.filter(item=>item.user_id=userId)
-        // console.log(ownData)
         that.setData({
           dataList: res.data.data,
           myId: userId
@@ -87,13 +84,11 @@ Page({
       page: that.data.page++
     }
     var userId = app.globalData.userId
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'none'
     })
     util.request('acty/getsportlog', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var allData = res.data.data
         var content = that.data.dataList.concat(allData)

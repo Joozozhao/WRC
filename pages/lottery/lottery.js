@@ -353,7 +353,6 @@ Page({
       num: formatData.actyNum,
       startTime: year + '-' + that.data.startDate + ':00',
     }
-    console.log(data)
     if(formatData.actyName == ''){
       wx.showToast({
         title: '请选择活动!',
@@ -378,7 +377,6 @@ Page({
       })
       return false
     }
-    console.log(that.data.total)
     if(Number(formatData.actyNum) > Number(that.data.total)){
       wx.showToast({
         title: '库存不足!',
@@ -404,14 +402,12 @@ Page({
       return false
     }
     util.request('user/createluckdraw', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)
       if(res.data.success){
         that.setData({
           luckId:res.data.luckId,
           disable: true
         })
         var luckId = that.data.luckId
-        console.log(luckId)
          wx.navigateTo({
            url: '../lotterydetail/lotterydetail?id=' + that.data.luckId,
          })
@@ -443,6 +439,5 @@ Page({
       total: total,
       sealType: addr
     })
-    console.log(this.data);
   }
 })

@@ -23,7 +23,6 @@ Page({
       page : that.data.page++
     }
     util.request('news/searchlist', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var allData = res.data.data
         for(var i=0; i<allData.length;i++){
@@ -59,14 +58,12 @@ Page({
           var data = {
             nId: id
           }
-          console.log(data)
           util.request('news/delete', 'POST', data, '数据加载中 ...', (res)=>{
             if(res.data.success){
               that.setData({
                 page: 1
               })
               that.onLoad()
-              console.log(res)
               wx.showToast({
                 title: '已删除',
                 icon: 'none',
@@ -90,7 +87,6 @@ Page({
             }
           })
          } else {
-           console.log('用户取消')
          }
        }
     })

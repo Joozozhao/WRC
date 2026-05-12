@@ -18,7 +18,6 @@ Page({
     init: function () {
         var data = {}
         util.request('news/sys/get', 'POST', data, '数据加载中 ...', (res) => {
-            console.log(res)
             if (res.data.success) {
                 var allData = res.data.data
                 this.setData({
@@ -40,7 +39,6 @@ Page({
             success: function (res) {
                 var tempFilePaths = res.tempFilePaths
                 var userId = app.globalData.userId
-                console.log(tempFilePaths)
                 wx.showToast({
                     icon: "loading",
                     title: "正在上传"
@@ -51,15 +49,12 @@ Page({
                         url: 'https://applet.51welink.com/sport/news/sys/upload',
                         formData: { userId: userId, fileId: 'file' },
                         success: function (ret) {
-                            console.log(ret);
                             var obj = JSON.parse(ret.data)
-                            console.log(obj)                
                             that.setData({
                                 logoSrc: obj.location
                             })
                         },
                         fail: function (ret) {
-                            console.log(ret)
                         }
                     })
             }
@@ -78,7 +73,6 @@ Page({
     submit: function (e) {
         var that = this
         var formData = e.detail.value
-        console.log(e)
         var data = {
             id: that.data.rule_id,
             logo: that.data.logoSrc,
@@ -86,9 +80,7 @@ Page({
             daily: parseFloat(formData.daily_run),
             luck_rule: that.data.luck_rule
         }
-        console.log(data)
         util.request('news/sys/set', 'POST', data, '数据加载中 ...', (res) => {
-            console.log(res)
             if (res.data.success) {
                 wx.showToast({
                   title: '保存成功！',

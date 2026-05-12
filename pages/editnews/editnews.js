@@ -18,7 +18,6 @@ Page({
       id: id
     }
     util.request('news/get', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var allData = res.data.data
         that.setData({
@@ -45,7 +44,6 @@ Page({
       success:function(res) {
         var tempFilePaths = res.tempFilePaths
         var userId = app.globalData.userId
-        console.log(tempFilePaths)
         wx.showToast({
          icon: "loading",
          title: "正在上传"
@@ -56,7 +54,6 @@ Page({
           url: 'https://applet.51welink.com/sport/user/uploadimg',
           formData: { userId:  userId, fileId:'file' },
           success: function(ret){
-            console.log(ret);
             var obj = JSON.parse(ret.data)
             that.setData({
               tempFilePaths: obj.data.img,
@@ -65,7 +62,6 @@ Page({
             })
           },
           fail: function(ret){
-            console.log(ret)
           }
         })
       }
@@ -83,7 +79,6 @@ Page({
       img : that.data.tempFilePaths, 
       r : '' 
     }
-    console.log(data)
     if(that.data.tempFilePaths == ''){
       wx.showToast({
         title: '请上传图片!',
@@ -109,7 +104,6 @@ Page({
       return false
     }
     util.request('news/save', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         wx.showToast({
           title: '提交成功',

@@ -53,7 +53,6 @@ Page({
     }
     util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
-      console.log(res)
       if(res.data.success){
         that.setData({
           score: res.data.data.score,
@@ -75,7 +74,6 @@ Page({
       mask: true
     })
     util.request('goods/searchlist', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)
       var allData = res.data.data
       var pointData = allData.filter(item=>item.goods_type==0)
       var energyData = allData.filter(item=>item.goods_type!==0)
@@ -134,7 +132,6 @@ Page({
       icon: 'loading'
     })
     util.request('goods/searchlist', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)
       var prizeData = res.data.data
       var content = that.data.listData.concat(prizeData)
       var content2 = that.data.listData2.concat(prizeData)

@@ -37,9 +37,7 @@ Page({
     var data = {
       id: id
     }
-    console.log(data)
     util.request('acty/delRule', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         wx.showToast({
           title: '删除成功',
@@ -62,7 +60,6 @@ Page({
     }
     util.request('acty/updateRankListActy', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
-      console.log(res)
       if(res.data.success){
         that.setData({
           showTop:false,
@@ -81,10 +78,8 @@ Page({
     var data = { 
       actyId : id
     }
-    console.log(data)
     util.request('acty/updateLastRankListActy', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
-      console.log(res)
       if(res.data.success){
         that.setData({
           showTop:false,
@@ -110,14 +105,12 @@ Page({
             id : acty_id
           }
           util.request('acty/del', 'POST', data, '数据加载中 ...', (res)=>{
-            console.log(res)
             if(res.data.success){
               var challengeList = that.data.challengeList
               challengeList.splice(idx,1);
               that.setData({
                 challengeList: challengeList
               })
-              console.log(res)
               wx.showToast({
                 title: '已删除',
                 icon: 'none',
@@ -132,7 +125,6 @@ Page({
             }
           })
          } else {
-           console.log('用户取消')
          }
         }
     })
@@ -158,7 +150,6 @@ Page({
     }
     util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
-      console.log(res)
       if(res.data.success){
         that.setData({
           duty: res.data.data.duty
@@ -179,13 +170,11 @@ Page({
       type: '挑战',
       page: that.data.page ++
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       mask: true
     })
     util.request('acty/getchallengeacty', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var challengeData = res.data.data
         that.setData({
@@ -220,13 +209,11 @@ Page({
       type: '挑战',
       page: that.data.page ++
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'none'
     })
     util.request('acty/getchallengeacty', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var challengeData = res.data.data
         var content = this.data.challengeList.concat(challengeData)

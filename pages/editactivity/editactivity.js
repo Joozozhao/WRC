@@ -154,7 +154,6 @@ Page({
     });
   },
   setPickerTime: function(val) {
-    console.log(val);
     let data = val.detail;
     this.setData({
       startTime: data.startTime,
@@ -170,7 +169,6 @@ Page({
       success:function(res) {
         var tempFilePaths = res.tempFilePaths[0]
         var userId = app.globalData.userId
-        console.log(tempFilePaths)
         wx.navigateTo({
           url: `../cropper/cropper?src=${tempFilePaths}`,
         })
@@ -184,7 +182,6 @@ Page({
 //           url: 'https://applet.51welink.com/sport/acty/uploadimg',
 //           formData: { userId:  userId, fileId:'file' },
 //           success: function(ret){
-//             console.log(ret);
 //             var obj = JSON.parse(ret.data)
 //             that.setData({
 //               tempFilePaths: obj.data.img,
@@ -193,7 +190,6 @@ Page({
 //             })
 //           },
 //           fail: function(ret){
-//             console.log(ret)
 //           }
 //         })
       }
@@ -210,7 +206,6 @@ Page({
         var tempFilePaths = res.tempFilePaths
         for (var i = 0; i < tempFilePaths.length; i++) {
           // tempFilePaths.push(tempFilePaths[i])
-        console.log(tempFilePaths)
         wx.showToast({
          icon: "loading",
          title: "正在上传"
@@ -221,12 +216,10 @@ Page({
           url: 'https://applet.51welink.com/sport/acty/uploadactyimg',
           formData: { actyId: actyId, fileId:'file' },
           success: function(ret){
-            console.log(ret);
             var obj = JSON.parse(ret.data)
             that.getUrl()
           },
           fail: function(ret){
-            console.log(ret)
           }
         })
       }
@@ -238,25 +231,21 @@ Page({
     let that = this
     var deleID = e.currentTarget.dataset.id    //获取点击项目的内容
     var detailPics = that.data.detailPics;
-    console.log(detailPics)
     wx.showModal({
       title: '提示',
       content: '确定要删除此图片吗？',
       success: function (res) {
        if (res.confirm) {
-        console.log('点击确定了')
         var data = {
           id: deleID
         }
         util.request('acty/delactyimgs', 'POST', data, '数据加载中 ...', (res)=>{
-          console.log(res)
           if(res.data.success){
             detailPics.splice(deleID,1)
             var data = {
               actyId: that.data.actyId
             }
             util.request('acty/getactyimgs', 'POST', data, '数据加载中 ...', (res)=>{
-              console.log(res)
               if(res.data.success){
                 that.setData({
                   detailPics: res.data.data
@@ -275,7 +264,6 @@ Page({
           }
         })
        } else if (res.cancel) {
-         console.log('点击取消了');
          return false;   
         }
       }
@@ -322,7 +310,6 @@ Page({
       actyId: that.data.actyId
     }
     util.request('acty/getactyimgs', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           detailPics: res.data.data
@@ -342,9 +329,7 @@ Page({
     var data = {
       actyId: that.data.actyId
     }
-    console.log(data)
     util.request('acty/getclickuser', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         this.setData({
           actyMember: res.data.data,
@@ -378,9 +363,7 @@ Page({
       userIds: userCount,
       actyId: that.data.actyId
     }
-    console.log(data)
     util.request('acty/updatejoinstate', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.initActyIn()
       }
@@ -392,9 +375,7 @@ Page({
     var data = {
       actyId: that.data.actyId
     }
-    console.log(data)
     util.request('acty/getactyimgs', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           showImgUrl: res.data.data
@@ -415,7 +396,6 @@ Page({
         }
       }
     }
-    console.log(indexes)
     that.setData({
       avastars,
       userid: indexes,
@@ -458,7 +438,6 @@ Page({
       level: that.data.hasPart,
       score: 0
     }
-    console.log(data)
     if(that.data.sealType == ''){
       wx.showToast({
         title: '请选择活动地区!',
@@ -500,7 +479,6 @@ Page({
       return false
     }
     util.request('acty/save', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         wx.showToast({
           title: '修改成功',
@@ -530,11 +508,9 @@ Page({
       userName: '',
       mobile: ''
     } 
-    console.log(data)
     util.request('acty/getactyuser', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
         var dataAll = res.data.data
-        console.log(res.data.data)
         this.setData({
           avastars: dataAll
         })
@@ -568,9 +544,7 @@ Page({
     var data = {
       actyId: that.data.actyId
     }
-    console.log(data)
     util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var startStr = "pickerConfig.initStartTime"
         var endStr = "pickerConfig.initEndTime"

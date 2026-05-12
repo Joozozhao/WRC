@@ -82,9 +82,7 @@ Page({
       var data = {
         code: mycode
       }
-      console.log(data)
       util.request('user/checkcode', 'POST', data, '数据加载中...', (res)=>{
-        console.log(res)
         if(res.data.success){
           that.setData({
             editTrue: true
@@ -112,7 +110,6 @@ Page({
       id: userId
     }
     util.request('user/get', 'POST', data, '数据加载中...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           myScore: res.data.data.score,
@@ -135,7 +132,6 @@ Page({
             addressView: true,
             defaultAddressView: false
           })
-          console.log(this.data.addrInfo.userName)
         },
         fail:()=>{
             //  this.openConfirm()   // 如果获取地址权限失败，弹出确认弹窗，让用户选择是否要打开设置，手动去开权限
@@ -154,7 +150,6 @@ Page({
                   success: (res) => { }   //打开设置面板
               })
           } else {
-              console.log('用户点击取消')
           }
       }
     });
@@ -180,10 +175,8 @@ Page({
       storageId: that.data.storageId,  // storageId是库存规格的id
       code: that.data.mycode
     }
-    console.log(data)
     util.request('order/save', 'POST', data, '数据加载中...', (res)=>{
       if(res.data.success){
-        console.log(res)
         that.setData({
           editTrue: false,
           confirmTrue: true
@@ -227,7 +220,6 @@ Page({
       code: code,
       clicked: false
     })
-    // console.log(addrId)
     this.initDetail()
     this.initdefAdd(id)
     this.initUser()
@@ -238,7 +230,6 @@ Page({
       id: that.data.itemId
     }
     util.request('goods/get', 'POST', data, '数据加载中...', (res)=>{
-      console.log(res)
       that.setData({
         imgSrc: res.data.data.goods_pic,
         points: res.data.data.score,
@@ -254,9 +245,7 @@ Page({
     var data ={
       id: addrId
     }
-    console.log(data)
     util.request('user/getaddr', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)
       if(res.data.success){
         let addrInfo = {
           userName: res.data.data.name,
@@ -283,9 +272,7 @@ Page({
     var data ={
       userId: userId
     }
-    console.log(data)
     util.request('user/getdefaddr', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data)
       if(res.data.success){
         let addrInfo = {
           userName: res.data.data.name,

@@ -35,7 +35,6 @@ Page({
       wx.getSetting({
         withSubscriptions: true, //是否同时获取用户订阅消息的订阅状态，默认不获取
         success: (res) => {
-          console.log(res)
           if (res.subscriptionsSetting && res.subscriptionsSetting.itemSettings &&
             res.subscriptionsSetting.itemSettings[message] == "reject") {
             //打开设置去设置
@@ -84,14 +83,12 @@ Page({
         if (res.confirm) {
           wx.openSetting({
             success: (res) => {
-              console.log(res.authSetting)
             },
             fail: (error) => {
               console.log(error)
             }
           })
         } else {
-          console.log('用户点击取消')
         }
       }
     });
@@ -114,7 +111,6 @@ Page({
     }
     util.request('user/get', 'POST', data, '数据加载中 ...', (res) => {
       if (res.data.success) {
-        console.log(res)
         var that = this
         that.setData({
           point: res.data.data.score
@@ -139,7 +135,6 @@ Page({
         var allData = res.data.data
         var addCon = allData.filter(item => item.opt_type > 0)
         var reduceCon = allData.filter(item => item.opt_type < 0)
-        console.log(allData)
         for (var i = 0; i < allData.length; i++) {
           var createTime = allData[i].create_time.substring(0, 19)
           allData[i].create_time = createTime
@@ -211,7 +206,6 @@ Page({
         var allData = res.data.data
         var addCon = allData.filter(item => item.opt_type > 0)
         var reduceCon = allData.filter(item => item.opt_type < 0)
-        console.log(allData)
         var content = that.data.addCon.concat(addCon)
         var content2 = that.data.reduceCon.concat(reduceCon)
         for (var i = 0; i < allData.length; i++) {

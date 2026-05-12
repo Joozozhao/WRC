@@ -29,12 +29,10 @@ Page({
     var data = {
       page: that.data.page++
     }
-    console.log(data)
     util.request('user/luckdraw', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
       if(res.data.success){
         var orderData = res.data.data
-        console.log(orderData)
         for(var i=0; i<orderData.length;i++){
           var endTime = orderData[i].start_time.substring(0, 16)
           orderData[i].start_time = endTime
@@ -69,7 +67,6 @@ Page({
                 page: 1
               })
               that.onLoad()
-              console.log(res)
               wx.showToast({
                 title: '已删除',
                 icon: 'none',
@@ -87,7 +84,6 @@ Page({
             }
           })
          } else {
-           console.log('用户取消')
          }
        }
     })
@@ -101,7 +97,6 @@ Page({
   },
   loadMore: function () {
     var that = this
-    console.log(that.data)
     var data = {
       page: that.data.page ++
     }
@@ -116,7 +111,6 @@ Page({
         for(var i=0; i<orderData.length;i++){
           var endTime = orderData[i].start_time.substring(0, 16)
           orderData[i].start_time = endTime
-          console.log(orderData)
         }
         that.setData({
           orderList: content,

@@ -3,7 +3,6 @@ import WeCropper from './we-cropper.js'
 const app = getApp()
 const util = require('../../utils/util.js')
 const device = wx.getSystemInfoSync()
-console.log(device);
 const width = device.windowWidth
 const height = device.windowHeight+50
 Component({
@@ -96,14 +95,10 @@ Component({
               name: "file",
               formData: {userId: userId,fileId:'file'},
               success: function (res) {
-                console.log(res);
-                console.log("uploadOK");
                 var obj = JSON.parse(res.data)
                 var filePath = obj.data.img
-                console.log(obj)
                 let pages = getCurrentPages();  // 当前页的数据，可以输出来看看有什么东西
                 let prevPage = pages[pages.length - 2];  // 上一页的数据，也可以输出来看看有什么东西
-                console.log(prevPage)
                 /** 设置数据 这里面的 value 是上一页你想被携带过去的数据， */
                 prevPage.setData({
                   tempFilePaths: filePath,
@@ -125,11 +120,9 @@ Component({
                 }, 1000)
               },
               fail(){
-                console.log('ss')
               }
             })
           }).catch(() => {
-            console.log('获取图片地址失败，请稍后重试')
           })
         }
     },
@@ -152,7 +145,6 @@ Component({
           if (src) {
             ctx.pushOrign(src);
           }
-          console.log(`wecropper is ready for work!`)
         })
         .on('beforeImageLoad', (ctx) => {
           wx.showToast({

@@ -64,14 +64,12 @@ Page({
       size: 30 //总取人数
     }
     var userId = app.globalData.userId
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       mask: true
     })
     util.request('user/getuserlist', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
-        console.log(res)
         that.setData({
           dataList: res.data.data,
           myId: userId
@@ -116,13 +114,11 @@ Page({
       page : that.data.page++,
       size: 15
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'loading'
     })
     util.request('user/getuserlist', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var allData = res.data.data
         var content = that.data.dataList.concat(allData)

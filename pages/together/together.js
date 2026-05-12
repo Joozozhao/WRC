@@ -27,9 +27,7 @@ Page({
     var data = {
       actyId: id
     }
-    console.log(data)
     util.request('acty/getclickuser', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var allDta = res.data.data
         this.setData({

@@ -63,9 +63,7 @@ Page({
       gId: that.data.itemId,
       type: 0
     }
-    console.log(data)
     util.request('goods/getlistimgs', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res.data.data)
       if(res.data.success){
         that.setData({
           goods_pic: res.data.data[0].goods_pic
@@ -79,9 +77,7 @@ Page({
       gId: that.data.itemId,
       type: 1
     }
-    console.log(data)
     util.request('goods/getlistimgs', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           detailSrc: res.data.data
@@ -91,7 +87,6 @@ Page({
   },
   // 图片加载失败
   findError: function (e) {
-    console.log(e)
     var index = e.currentTarget.dataset.index;   // html中必须有data-index属性
     this.setData({
       [`roomList[${index}].imgSrc`]: "https://ww1.sinaimg.cn/large/007rAy9hgy1g24by9t530j30i20i2glm.jpg",
@@ -108,7 +103,6 @@ Page({
       mask: true
     })
     util.request('goods/get', 'POST', data, '数据加载中...', (res)=>{
-      console.log(res.data)
       if(res.data.success){
         var allData = res.data.data
         that.setData({
@@ -127,7 +121,6 @@ Page({
         //   myLength: myLength,
         //   con: con
         // })
-        // console.log(con)
         wx.hideLoading({
           success: (res) => {},
         })
@@ -148,7 +141,6 @@ Page({
       page: 1
     }
     util.request('goods/getusers', 'POST', data, '数据加载中...', (res)=>{
-      console.log(res.data)
       if(res.data.success){
         var allData = res.data.data
         
@@ -230,7 +222,6 @@ Page({
   onShareAppMessage: function (res) {
     if (res.from === 'button') {
       // 来自页面内转发按钮
-      console.log(res.target)
     }
     return {
         title: '快来兑换超级会员福利#' + this.data.goodName + '#限时兑换，过期视为放弃',

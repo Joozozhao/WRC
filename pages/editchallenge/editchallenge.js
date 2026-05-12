@@ -68,7 +68,6 @@ Page({
     });
   },
   setPickerTime: function(val) {
-    console.log(val);
     let data = val.detail;
     // var startTime = util.dislodgeZero(data.startTime)
     // var endTime = util.dislodgeZero(data.endTime)
@@ -86,7 +85,6 @@ Page({
       success:function(res) {
         var tempFilePaths = res.tempFilePaths[0]
         var userId = app.globalData.userId
-        console.log(tempFilePaths)
         wx.navigateTo({
           url: `../cropper2/cropper?src=${tempFilePaths}`,
         })
@@ -100,7 +98,6 @@ Page({
 //           url: 'https://applet.51welink.com/sport/acty/uploadimg',
 //           formData: { userId:  userId, fileId:'file' },
 //           success: function(ret){
-//             console.log(ret);
 //             var obj = JSON.parse(ret.data)
 //             that.setData({
 //               tempFilePaths: obj.data.img,
@@ -109,7 +106,6 @@ Page({
 //             })
 //           },
 //           fail: function(ret){
-//             console.log(ret)
 //           }
 //         })
       }
@@ -165,7 +161,6 @@ Page({
         }
       }
     } 
-    console.log(indexes)
     that.setData({
       avastars,
       userid: indexes,
@@ -187,7 +182,6 @@ Page({
   // signIn: function(){
   //   var that = this
   //   var allId = that.data.userid
-  //   console.log(allId)
   //   var userCount = allId.toString()
   //   var data = {
   //     actyId : that.data.actyId,
@@ -197,10 +191,8 @@ Page({
   //     userName: formatDate.userName,
   //     mobile: formatDate.mobile
   //   }
-  //   console.log(data)
   //   util.request('acty/joinacty', 'POST', data, '数据加载中 ...', (res)=>{
   //     if(res.data.success){
-  //     console.log(res)
   //     that.setData({
   //       disable: true
   //     })
@@ -230,9 +222,7 @@ Page({
     var data = {
       actyId: that.data.actyId
     }
-    console.log(data)
     util.request('acty/chooseuser', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           actyMember: res.data.data,
@@ -248,7 +238,6 @@ Page({
             that.setData({
               totalIn: IDs.length
             })    
-            console.log(that.data.totalIn)  
           }
         }
         that.setData({
@@ -275,9 +264,7 @@ Page({
       userId: userCount,
       actyId: that.data.actyId
     }
-    console.log(data)
     util.request('acty/choosejoinacty', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         this.initActyIn()
         wx.showToast({
@@ -295,7 +282,6 @@ Page({
   //     user_id: 4
   //   }
   //   util.request('acty/listRule', 'POST', data, '数据加载中 ...', (res)=>{
-  //     console.log(res)
   //     if(res.data.success){
 
   //     }
@@ -323,7 +309,6 @@ Page({
       score: formatDate.score,
       level: 0
     }
-    console.log(data)
     if(formatDate.actyName == ''){
       wx.showToast({
         title: '名称不能为空!',
@@ -365,7 +350,6 @@ Page({
       return false
     }
     util.request('acty/save', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         wx.showToast({
           title: '编辑成功',
@@ -403,9 +387,7 @@ Page({
     var data = {
       actyId: id
     }
-    console.log(data)
     util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
       if(res.data.success){
         var startStr = "pickerConfig.initStartTime"
         var endStr = "pickerConfig.initEndTime"

@@ -567,7 +567,6 @@ Page({
     option.initCirle(e.detail.canvas, e.detail.width, e.detail.height, e.detail.dpr, times, this.data.passWeek2)
   },
   toDet: function(e){
-    console.log(e)
     let id = e.detail.id
     let type = e.detail.type
     if(type == '挑战'){
@@ -587,13 +586,11 @@ Page({
       type: '挑战',
       page: that.data.page++
     }
-    console.log(data)
     // wx.showLoading({
     //   title: '加载中',
     //   icon: 'loading'
     // })
     util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res.data)
       if (res.data.success) {
         var allData = res.data.data
         var content = that.data.activityList.concat(allData)
@@ -623,13 +620,11 @@ Page({
       type: '团跑',
       page: that.data.page2++
     }
-    console.log(data)
     // wx.showLoading({
     //   title: '加载中',
     //   icon: 'loading'
     // })
     util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res) => {
-      console.log(res.data)
       if (res.data.success) {
         var allData = res.data.data
         var content = that.data.activityList2.concat(allData)
@@ -743,7 +738,6 @@ Page({
               })
             })
           } else if (res.cancel) {
-            console.log('用户点击取消')
           }
         }
       })

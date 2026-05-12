@@ -33,14 +33,12 @@ Page({
     var data = {
       id: that.data.goodId
     }
-    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'loading',
       mask: true
     })
     util.request('order/get', 'POST', data, '数据加载中...', (res)=>{
-      console.log(res)
       if(res.data.success){
         that.setData({
           address: res.data.data.address,
@@ -91,7 +89,6 @@ Page({
           }
           util.request('order/updatestate', 'POST', data, '数据加载中 ...', (res)=>{
             if(res.data.success){
-              console.log(res)
               that.setData({
                 state: 2,
                 // hiddenName: true
@@ -105,7 +102,6 @@ Page({
             }
           })
         } else {
-           console.log('用户取消')
          }
        }
     })

@@ -144,7 +144,6 @@ Page({
       var that = this 
       if(res.data.success){
         var recordData = res.data.data
-        console.log(recordData)
         for(var i=0;i<recordData.length;i++){
           var now = new Date(); //当前日期 
           var nowDayOfWeek = now.getDay(); //今天本周的第几天 
@@ -181,7 +180,6 @@ Page({
         i = i - 1; // i - 1 ,因为空元素在数组下标 2 位置，删除空之后，后面的元素要向前补位
       }
     }
-    // console.log(randomTxtArr)
     this.setData({
       randomTxt: randomTxtArr
     })
@@ -216,7 +214,6 @@ Page({
               that.setData({
                 recordList
               })
-              console.log(res)
               wx.showToast({
                 title: '已删除',
                 icon: 'none',
@@ -231,7 +228,6 @@ Page({
             }
           })
          } else {
-           console.log('用户取消')
          }
        }
     })
