@@ -1,6 +1,245 @@
 /**index.wxss**/
 page {
+  background: #F2F2F7;
+}
+
+/* === iOS Overrides === */
+
+/* Top bar iOS style */
+.top-part {
+  background: linear-gradient(180deg, #4CB944 0%, #3DA83D 100%);
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+  border-radius: 0 0 32rpx 32rpx;
+  box-shadow: 0 8rpx 32rpx rgba(76, 185, 68, 0.2);
+}
+
+.top-part .logo {
+  margin: 60rpx auto 20rpx;
+}
+
+/* Swiper iOS card */
+.swiper {
+  margin: 20rpx 24rpx 0;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.08);
+}
+
+.swiper swiper {
+  border-radius: 24rpx;
+}
+
+/* Member info card */
+.infor-con {
   background: #fff;
+  border-radius: 24rpx;
+  margin: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.06);
+}
+
+.infor-con .list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.infor-con .list .item image {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  border: 2rpx solid #F2F2F7;
+}
+
+.infor-con .total {
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #E5E5EA;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 28rpx;
+  color: #8E8E93;
+}
+
+/* Horizontal scroll records */
+.horizontal {
+  margin: 0 24rpx;
+}
+
+.horizontal .member-item {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-right: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
+  display: inline-block;
+  min-width: 280rpx;
+}
+
+.horizontal .member-item .user-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.horizontal .member-item .user-item image {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+}
+
+.horizontal .member-item .nick-name {
+  font-size: 28rpx;
+  color: #1C1C1E;
+  font-weight: 600;
+  max-width: 160rpx;
+}
+
+.horizontal .rd-distance {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #1C1C1E;
+  margin-bottom: 8rpx;
+}
+
+.horizontal .rd-distance .distance {
+  font-size: 48rpx;
+}
+
+.horizontal .rd-speed {
+  font-size: 24rpx;
+  color: #8E8E93;
+}
+
+/* Daily record card */
+.daily-record {
+  background: linear-gradient(135deg, #4CB944 0%, #38D139 100%);
+  border-radius: 24rpx;
+  margin: 24rpx;
+  padding: 32rpx;
+  color: #fff;
+  box-shadow: 0 8rpx 32rpx rgba(76, 185, 68, 0.25);
+}
+
+.daily-record .record .days {
+  font-size: 64rpx;
+  font-weight: 800;
+}
+
+.daily-record .record .days.txt {
+  font-size: 28rpx;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.daily-record .more {
+  font-size: 24rpx;
+  opacity: 0.85;
+  margin-top: 12rpx;
+  line-height: 1.5;
+}
+
+.daily-record .tips {
+  margin-top: 20rpx;
+  font-size: 24rpx;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+/* News cards */
+.news-con {
+  margin: 0 24rpx;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+}
+
+.news-con .con-item {
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
+  position: relative;
+}
+
+.news-con .con-item image {
+  width: 100%;
+  height: 200rpx;
+  object-fit: cover;
+}
+
+.news-con .con-item .bg-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx;
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+/* Grid menu iOS style */
+.grid-menu {
+  margin: 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.06);
+}
+
+.grid-menu .flex-wrap {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24rpx;
+}
+
+.grid-menu .flex-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 0;
+}
+
+.grid-menu .flex-item .icon-circle {
+  width: 96rpx;
+  height: 96rpx;
+  background: #F2F2F7;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12rpx;
+}
+
+.grid-menu .flex-item .icon-circle image {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.grid-menu .flex-item text {
+  font-size: 24rpx;
+  color: #1C1C1E;
+  font-weight: 500;
+}
+
+/* Modal iOS style */
+.modal-dialog {
+  border-radius: 24rpx;
+  box-shadow: 0 20rpx 60rpx rgba(0,0,0,0.15);
+}
+
+.modal-footer .btn {
+  border-radius: 16rpx;
+}
+
+/* Scroll view padding for bottom */
+.scroll-view-item {
+  padding-bottom: 40rpx;
 }
 
 .userinfo-avatar {
