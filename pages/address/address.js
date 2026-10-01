@@ -10,10 +10,12 @@ Page({
     addressList: [],
     page: 1,
     addrId: 0,
-    id: 0
+    id: 0,
+    listState: 'loading'
   },
   chooseAdd:function (e){
     var addrId = e.currentTarget.dataset.id
+    console.log(addrId)
     var pages = getCurrentPages() // 当前页面
     var prevPage= pages[pages.length - 2] // 前一个页面
     wx.navigateBack({
@@ -31,8 +33,10 @@ Page({
       def: 1,
       userId: userId
     }
+    console.log(data)
     util.request('user/setdefaddress', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
+        console.log(res)
         that.setData({
           id: id
         })
@@ -64,15 +68,13 @@ Page({
           util.request('user/deladdr', 'POST', data, '数据加载中 ...', (res)=>{
             if(res.data.success){
               that.initList()
+              console.log(res)
               wx.showToast({
                 title: '已删除',
                 icon: 'none',
                 duration: 1500
               })              
             }else{
-              that.setData({
-                addressList: []
-              })
               wx.showToast({
                 title: res.data.error,
                 icon: 'none',
@@ -81,6 +83,7 @@ Page({
             }
           })
          } else {
+           console.log('用户取消')
          }
        }
     })
@@ -102,22 +105,21 @@ Page({
     var data = {
       userId : userId
     }
-    wx.showLoading({
-      title: '加载中',
-      icon: 'loading',
-      mask: true
-    })
+    if (that.data.addressList.length == 0) {
+      that.setData({
+        listState: 'loading'
+      })
+    }
     util.request('user/getaddrlist', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
+      console.log(res)
       that.setData({
-        addressList: res.data.data
-      })
-      wx.hideLoading({
-        success: (res) => {},
+        addressList: Array.isArray(res.data.data) ? res.data.data : [],
+        listState: 'ready'
       })
     }else{
-      wx.hideLoading({
-        success: (res) => {},
+      that.setData({
+        listState: 'ready'
       })
       wx.showToast({
         title: res.data.error,
@@ -125,6 +127,10 @@ Page({
         duration: 1500
       })  
     }
+    }, () => {
+      that.setData({
+        listState: 'error'
+      })
     })
   },
   initdefAdd: function(){
@@ -133,7 +139,9 @@ Page({
     var data ={
       userId: userId
     }
+    console.log(data)
     util.request('user/getdefaddr', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res.data)
       if(res.data.success){
         that.setData({
           id: res.data.data.id

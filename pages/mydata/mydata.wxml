@@ -1,375 +1,172 @@
-<!--pages/mydata/mydata.wxml-->
-<wxs src="../../utils/toDecimal2.wxs" module="module1" />
-<view class="gradient-bg">
-  <scroll-view scroll-y="true" style="height: 100vh;">
-    <view class="vw-wrap">
-      <view class="user-infor" bindtap="openLogin">
-        <view class="user-pic">
-          <image src="{{headerImg}}" mode="widthFix" class="pic"></image>
-        </view>
-        <view style="width:50%; margin-left: 20rpx;">
-          <view class="infor">
-            <view class="user-name" wx:if="{{userName==''&&nickName==''}}">请登录</view>
-            <view class="user-name" wx:if="{{userName==''}}">{{nickName}}</view>
-            <view class="user-name" wx:else>{{userName}}</view>
-            <view class="sex" wx:if="{{sex == 1}}">
-              <image src="../../images/me-n.svg"></image>
-            </view>
-            <view class="sex" wx:if="{{sex == 2}}">
-              <image src="../../images/me-v.svg"></image>
-            </view>
-            <view wx:if="{{level == 'VIP'}}">
-              <image src="../../images/superVIP.svg" mode="widthFix" class="level"></image>
-            </view>
-            <view wx:if="{{level == '普通'}}">
-              <image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image>
-            </view>
-          </view>
-          <view class="user-name" style="margin-top:10rpx;">
-            <text class="tag" wx:if="{{userId>0}}">ID.{{userId}}</text>
-            <view class="tag title svip" wx:if="{{duty=='团长'||duty=='管理员/团长'}}"><text> 永久SVIP ヅ </text>
-            </view>
-          </view>
-        </view>
-        <view class="edit-infor" catchtap="editInfor">
-          <image src="../../images/ellipsis.svg" mode="widthFix"></image>
+<wxs src="../../utils/toDecimal2.wxs" module="number" />
+<view class="profile-page">
+  <site-header avatar="{{headerImg}}" bindprofiletap="openProfile"></site-header>
+  <scroll-view scroll-y="true" class="profile-scroll">
+    <view class="profile-shell">
+      <view class="profile-hero">
+        <text class="profile-eyebrow">WRC · MY RUNNING</text>
+        <view class="profile-title-row">
+          <text class="profile-title">我的跑步</text>
+          <text class="profile-intro">每一步，都有回响。</text>
         </view>
       </view>
-      <view class="box-part-wrap index-part">
-        <view class="box-part awesome-bg b-yellow">
-          <view class="my-point" bindtap="checkPoint">
-            <view class="my-points" style="color: #ffb6b9;">{{score}}</view>
-            <view class="tit">剩余积分</view>
-          </view>
-          <view class="my-point" bindtap="checkEnergy">
-            <view class="my-points" style="color: #8ac6d1;">{{module1.slice(energy)}}
-              <image src="../../images/f.svg" class="f-f"></image>
-            </view>
-            <view class="tit">小花儿</view>
-          </view>
-          <view class="my-point">
-            <view class="my-points">{{module1.slice(monthDistance)}}</view>
-            <view class="tit">本月跑量</view>
-          </view>
-          <view class="my-point">
-            <view class="my-points">{{module1.slice(totalDistance)}}</view>
-            <view class="tit">全部跑量</view>
-          </view>
+      <view class="profile-person">
+        <view class="profile-avatar-wrap" bindtap="openProfile" hover-class="profile-touch" role="button" aria-label="{{userId > 0 ? '查看个人资料' : '登录'}}">
+          <image class="profile-avatar" src="{{headerImg || '/images/default.png'}}" mode="aspectFill"></image>
+          <image wx:if="{{level == 'VIP'}}" class="profile-vip-badge" src="/images/vip_1.svg" mode="aspectFit"></image>
         </view>
-      </view>
-      <view class="x1" wx:if="{{marathons.length == 2 || marathons.length == 3}}">
-        <view class="race-card w50" bindtap="navigateWithParams">
-          <view class="card-header">
-            {{marathons[0].events_type}}
+        <view class="profile-person-main" bindtap="openProfile" hover-class="profile-touch">
+          <view class="profile-name-row">
+            <text class="profile-name">{{userId > 0 ? (userName || nickName || '跑者') : '你好，跑者'}}</text>
+            <text class="profile-duty-tag" wx:if="{{userId > 0 && (duty == '团长' || duty == '管理员/团长' || duty == '管理员')}}">{{duty == '管理员' ? '管理员' : '团长'}}</text>
           </view>
-          <view class="card-content">
-            <view class="race-title">
-              <text class="highlight">达标·</text>
-              <text>{{marathons[0].marathon_name}}</text>
-            </view>
-            <view class="race-info">
-              <view class="pb-badge">
-                <text class="star">★</text><text class="star">★</text>
-                <text class="pb-text">PB</text>
-                <text class="star">★</text><text class="star">★</text>
-              </view>
-            </view>
-            <!-- 成绩表格 -->
-            <view class="results-table">
-              <view class="table-row header-row">
-                <view class="table-cell">比赛时间</view>
-                <view class="table-cell">比赛项目</view>
-                <view class="table-cell">净成绩</view>
-              </view>
-              <view class="table-row">
-                <view class="table-cell">{{marathons[0].playing_time}}</view>
-                <view class="table-cell">{{marathons[0].project_type}}</view>
-                <view class="table-cell">{{marathons[0].accurate_score}}</view>
-              </view>
-            </view>
-          </view>
+          <text class="profile-sub">{{userId > 0 ? '跑者 ID · ' + userId : '登录后，记录你的每一步'}}</text>
         </view>
-        <view class="race-card w50" bindtap="navigateWithParams">
-          <view class="card-header">
-            {{marathons[1].events_type}}
+        <view class="profile-asset-buttons" wx:if="{{userId > 0}}">
+          <view class="profile-asset-btn" bindtap="checkPoint" hover-class="profile-asset-btn-hover" role="button" aria-label="查看积分">
+            <text class="profile-asset-btn-num">{{statsLoaded ? score : '0'}}</text>
+            <text class="profile-asset-btn-label">积分</text>
           </view>
-          <view class="card-content">
-            <view class="race-title">
-              <text class="highlight">达标·</text>
-              <text>{{marathons[1].marathon_name}}</text>
-            </view>
-            <view class="race-info">
-              <view class="pb-badge">
-                <text class="star">★</text><text class="star">★</text>
-                <text class="pb-text">PB</text>
-                <text class="star">★</text><text class="star">★</text>
-              </view>
-            </view>
-            <!-- 成绩表格 -->
-            <view class="results-table">
-              <view class="table-row header-row">
-                <view class="table-cell">比赛时间</view>
-                <view class="table-cell">比赛项目</view>
-                <view class="table-cell">净成绩</view>
-              </view>
-              <view class="table-row">
-                <view class="table-cell">{{marathons[1].playing_time}}</view>
-                <view class="table-cell">{{marathons[1].project_type}}</view>
-                <view class="table-cell">{{marathons[1].accurate_score}}</view>
-              </view>
-            </view>
-          </view>
-        </view>
-      </view>
-      <view class="race-card on1" bindtap="navigateWithParams" wx:if="{{marathons.length == 1}}">
-        <view class="card-header">
-          {{marathons[0].events_type}}
-        </view>
-        <view class="card-content">
-          <view class="race-title">
-            <text class="highlight">达标·</text>
-            <text>{{marathons[0].marathon_name}}</text>
-          </view>
-          <view class="race-info">
-            <view class="pb-badge">
-              <text class="star">★</text><text class="star">★</text>
-              <text class="pb-text">PB</text>
-              <text class="star">★</text><text class="star">★</text>
-            </view>
-          </view>
-          <!-- 成绩表格 -->
-          <view class="results-table">
-            <view class="table-row header-row">
-              <view class="table-cell">比赛时间</view>
-              <view class="table-cell">比赛项目</view>
-              <view class="table-cell">净成绩</view>
-              <view class="table-cell">枪声成绩</view>
-            </view>
-            <view class="table-row">
-              <view class="table-cell">{{marathons[0].playing_time}}</view>
-              <view class="table-cell">{{marathons[0].project_type}}</view>
-              <view class="table-cell">{{marathons[0].accurate_score}}</view>
-              <view class="table-cell">{{marathons[0].gunshot_score}}</view>
-            </view>
-          </view>
-        </view>
-      </view>
-      <view class="race-card on1" bindtap="navigateWithParams" wx:if="{{marathons.length == 3}}">
-        <view class="card-header">
-          {{marathons[2].events_type}}
-        </view>
-        <view class="card-content">
-          <view class="race-title">
-            <text class="highlight">达标·</text>
-            <text>{{marathons[2].marathon_name}}</text>
-          </view>
-          <view class="race-info">
-            <view class="pb-badge">
-              <text class="star">★</text><text class="star">★</text>
-              <text class="pb-text">PB</text>
-              <text class="star">★</text><text class="star">★</text>
-            </view>
-          </view>
-          <!-- 成绩表格 -->
-          <view class="results-table">
-            <view class="table-row header-row">
-              <view class="table-cell">比赛时间</view>
-              <view class="table-cell">比赛项目</view>
-              <view class="table-cell">净成绩</view>
-              <view class="table-cell">枪声成绩</view>
-            </view>
-            <view class="table-row">
-              <view class="table-cell">{{marathons[2].playing_time}}</view>
-              <view class="table-cell">{{marathons[2].project_type}}</view>
-              <view class="table-cell">{{marathons[2].accurate_score}}</view>
-              <view class="table-cell">{{marathons[2].gunshot_score}}</view>
-            </view>
+          <view class="profile-asset-btn" bindtap="checkEnergy" hover-class="profile-asset-btn-hover" role="button" aria-label="查看小花儿">
+            <text class="profile-asset-btn-num">{{statsLoaded ? number.slice(energy) : '0'}}</text>
+            <text class="profile-asset-btn-label">小花</text>
           </view>
         </view>
       </view>
     </view>
 
-    <view class="week-data" wx:if="{{userId>0}}">
-      <view class="vw-wrap ">
-        <view class="week-con">
-          <view class="acty-tit tit-toggle small">
-            <view class="sub-tit {{weekChoosed?'actived':''}}" bindtap="weekClick">本周</view>
-            <view class="sub-tit {{monthChoosed?'actived':''}}" bindtap="monthClick">本月</view>
-            <view class="sub-tit {{yearChoosed?'actived':''}}" bindtap="yearClick">本年</view>
-            <text class="time-region" wx:if="{{weekShow}}">({{starTime}} ~ {{endTime}})</text>
+    <view class="profile-content">
+      <view class="profile-summary">
+        <view class="profile-summary-head">
+          <text>本月跑量</text>
+          <text class="profile-summary-period">MONTHLY DISTANCE</text>
+        </view>
+        <view class="profile-summary-main">
+          <text class="profile-summary-number">{{userId > 0 && statsLoaded ? number.toDecimal2(monthDistance) : '—'}}</text>
+          <text class="profile-summary-unit">公里</text>
+        </view>
+        <view class="profile-summary-accent"></view>
+        <view class="profile-summary-stats">
+          <view class="profile-summary-stat">
+            <text class="profile-stat-value">{{userId > 0 && weekLoaded ? weekDistance : '—'}}</text>
+            <text class="profile-stat-label">本周跑量 / 公里</text>
           </view>
-          <view class="echart_panel" wx:if="{{weekShow}}">
-            <ec-canvas ec="{{ecBar}}" bind:init="initBarData"></ec-canvas>
+          <view class="profile-summary-stat">
+            <text class="profile-stat-value">{{userId > 0 && yearLoaded ? yearDistance : '—'}}</text>
+            <text class="profile-stat-label">本年跑量 / 公里</text>
           </view>
-          <view class="echart_panel" wx:if="{{monthShow}}">
-            <ec-canvas ec="{{ecBar}}" bind:init="initMonthData"></ec-canvas>
-          </view>
-          <view class="echart_panel" wx:if="{{yearShow}}">
-            <ec-canvas ec="{{ecBar}}" bind:init="initYearData"></ec-canvas>
+          <view class="profile-summary-stat">
+            <text class="profile-stat-value profile-stat-total">{{userId > 0 && statsLoaded ? number.slice(totalDistance) : '—'}}</text>
+            <text class="profile-stat-label">累计跑量 / 公里</text>
           </view>
         </view>
       </view>
-    </view>
-    <view class="week-data" wx:if="{{haveSuperActy}}">
-      <view class="vw-wrap">
-        <view class="data-con bg-white" style="margin-bottom: 20rpx;padding-bottom: 20rpx;">
-          <view class="acty-tit tit-toggle">挑战项<text class="time-region">({{pasStartDate2}} ~ {{passEndDate2}})</text></view>
-          <swiper wx:if="{{sex==1}}" autoplay="{{swiper2.autoplay}}" interval="{{swiper2.interval}}" duration="{{swiper2.duration}}" current="{{swiper2.current}}" circular="{{swiper2.circular}}" previous-margin="-30rpx" next-margin="-30rpx" style="height: 26vh;overflow: hidden;">
-            <swiper-item wx:for="{{swiper2.qualifications}}" wx:key="index">
-              <view class="data-body">
-                <view class="flex-con">
-                  <view class="pre arrow" bindtap="prev2">
-                    <image src="/images/prev.svg" mode="widthFix"></image>
-                  </view>
-                  <view class="choose-date">{{index}}</view>
-                  <view class="next arrow" bindtap="next2">
-                    <image src="/images/next.svg" mode="widthFix"></image>
-                  </view>
-                </view>
-                <view class="flex-con pies-con">
-                  <view class="pies-wrap" wx:for="{{item.week_temps}}" wx:for-item="items" wx:for-index="childindex" wx:key="index">
-                    <view class="pies-subwrap" wx:if="{{echartShow}}">
-                      <view class="echart_panel">
-                        <ec-canvas ec="{{ecPie1}}" bind:init="initPie2" data-times="{{items.sport_days}}"></ec-canvas>
-                      </view>
-                    </view>
-                    <view class="line"></view>
-                    <view class="date">
-                      <view>{{childindex}}</view>
-                    </view>
-                  </view>
-                </view>
-                <view class="progress-content">
-                  <view class="progress-con">
-                    <view class="data">{{item.sport_amount}}/{{passDistance2}}</view>
-                    <view class="percent">{{module1.slice(module1.GetPercent(item.sport_amount,passDistance2))}}%</view>
-                    <view wx:if="{{module1.GetPercent(item.sport_amount,passDistance2) >= 100}}">
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance2)}}" stroke-width="30" color="#4ecca3" backgroundColor="#f7f6e7" />
-                    </view>
-                    <view wx:else>
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance2)}}" stroke-width="30" color="#fb929e" backgroundColor="#f7f6e7" />
-                    </view>
-                  </view>
-                </view>
-              </view>
-            </swiper-item>
-          </swiper>
-          <swiper wx:if="{{sex==2}}" autoplay="{{swiper2.autoplay}}" interval="{{swiper2.interval}}" duration="{{swiper2.duration}}" current="{{swiper2.current}}" circular="{{swiper2.circular}}" previous-margin="-30rpx" next-margin="-30rpx" style="height: 43vh;overflow: hidden;">
-            <swiper-item wx:for="{{swiper2.qualifications}}" wx:key="index">
-              <view class="data-body">
-                <view class="flex-con">
-                  <view class="pre arrow" bindtap="prev2">
-                    <image src="/images/prev.svg" mode="widthFix"></image>
-                  </view>
-                  <view class="choose-date">{{index}}</view>
-                  <view class="next arrow" bindtap="next2">
-                    <image src="/images/next.svg" mode="widthFix"></image>
-                  </view>
-                </view>
-                <view class="girls-circle">
-                  <view class="pies-subwrap">
-                    <view class="echart_panel">
-                      <ec-canvas ec="{{ecPie00}}" bind:init="initPie00" data-days="{{item.sport_days}}" data-list="{{item.week_list}}"></ec-canvas>
-                    </view>
-                  </view>
-                </view>
-                <view class="progress-content">
-                  <view class="progress-con">
-                    <view class="data">{{item.sport_amount}}/{{passDistance2}}</view>
-                    <view class="percent">{{module1.slice(module1.GetPercent(item.sport_amount,passDistance2))}}%</view>
-                    <view wx:if="{{module1.GetPercent(item.sport_amount,passDistance2) >= 100}}">
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance2)}}" stroke-width="30" color="#4ecca3" backgroundColor="#f7f6e7" />
-                    </view>
-                    <view wx:else>
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance2)}}" stroke-width="30" color="#fb929e" backgroundColor="#f7f6e7" />
-                    </view>
-                  </view>
-                </view>
-              </view>
-            </swiper-item>
-          </swiper>
+
+      <view class="profile-heatmap-section">
+        <view class="profile-heatmap-heading">
+          <text class="profile-heatmap-title">最近 {{heatmapRangeValue}} 个月跑步打卡 <text class="profile-heatmap-days">{{heatmapDaysText}}</text> 天</text>
+          <picker class="profile-heatmap-picker" mode="selector" range="{{heatmapRangeLabels}}" value="{{heatmapRangeIndex}}" bindchange="onHeatmapRangeChange">
+            <view class="profile-heatmap-picker-inner" hover-class="profile-touch" aria-role="button" aria-label="选择统计月份范围">
+              <text>{{heatmapRangeLabels[heatmapRangeIndex]}}</text>
+              <view class="profile-heatmap-caret"></view>
+            </view>
+          </picker>
         </view>
-        <view class="data-con bg-white" style="margin-bottom: 20rpx;padding-bottom: 20rpx;">
-          <view class="acty-tit tit-toggle">资格项<text class="time-region">({{pasStartDate}} ~ {{passEndDate}})</text></view>
-          <swiper wx:if="{{sex==1}}" autoplay="{{swiper.autoplay}}" interval="{{swiper.interval}}" duration="{{swiper.duration}}" current="{{swiper.current}}" circular="{{swiper.circular}}" previous-margin="-20rpx" next-margin="-20rpx" style="height: 26vh;overflow: hidden;">
-            <swiper-item wx:for="{{swiper.qualifications}}" wx:key="index">
-              <view class="data-body">
-                <view class="flex-con">
-                  <view class="pre arrow" bindtap="prev">
-                    <image src="/images/prev.svg" mode="widthFix"></image>
-                  </view>
-                  <view class="choose-date">{{index}}</view>
-                  <view class="next arrow" bindtap="next">
-                    <image src="/images/next.svg" mode="widthFix"></image>
-                  </view>
+        <block wx:if="{{heatmapStatus == 'ready'}}">
+          <view class="profile-heatmap-body" role="img" aria-label="最近 {{heatmapRangeValue}} 个月跑步热力图，颜色越深表示当天跑量越多">
+            <view class="profile-heatmap-weekdays">
+              <view class="profile-heatmap-weekday-spacer" style="height: {{heatmapMonthAxisHeight}}rpx;"></view>
+              <view class="profile-heatmap-weekday" wx:for="{{heatmapWeekdayRows}}" wx:key="index" style="height: {{heatmapCellSize}}rpx; margin-bottom: {{heatmapColumnGap}}rpx;">{{item}}</view>
+            </view>
+            <scroll-view class="profile-heatmap-scroll" scroll-x="true" scroll-left="{{heatmapScrollLeft}}" scroll-with-animation="true" show-scrollbar="{{false}}">
+              <view class="profile-heatmap-canvas" style="width: {{heatmapCanvasWidth}}rpx;">
+                <view class="profile-heatmap-months" style="height: {{heatmapMonthAxisHeight}}rpx; width: {{heatmapCanvasWidth}}rpx;">
+                  <view class="profile-heatmap-month" wx:for="{{recentHeatmap.monthLabels}}" wx:key="key" style="left: {{item.index * heatmapColumnStride}}rpx;">{{item.label}}</view>
                 </view>
-                <view class="flex-con pies-con">
-                  <view class="pies-wrap" wx:for="{{item.week_temps}}" wx:for-item="items" wx:for-index="childindex" wx:key="index">
-                    <view class="pies-subwrap" wx:if="{{echartShow}}">
-                      <view class="echart_panel">
-                        <ec-canvas ec="{{ecPie1}}" bind:init="initPie1" data-times="{{items.sport_days}}"></ec-canvas>
-                      </view>
-                    </view>
-                    <view class="line"></view>
-                    <view class="date">
-                      <view>{{childindex}}</view>
-                    </view>
-                  </view>
-                </view>
-                <view class="progress-content">
-                  <view class="progress-con">
-                    <view class="data">{{item.sport_amount}}/{{passDistance}}</view>
-                    <view class="percent">{{module1.slice(module1.GetPercent(item.sport_amount,passDistance))}}%</view>
-                    <view wx:if="{{module1.GetPercent(item.sport_amount,passDistance) >= 100}}">
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance)}}" stroke-width="30" color="#4ecca3" backgroundColor="#f7f6e7" />
-                    </view>
-                    <view wx:else>
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance)}}" stroke-width="30" color="#fb929e" backgroundColor="#f7f6e7" />
-                    </view>
+                <view class="profile-heatmap-grid">
+                  <view class="profile-heatmap-week" wx:for="{{recentHeatmap.weeks}}" wx:for-item="week" wx:key="key" style="width: {{heatmapCellSize}}rpx; margin-right: {{heatmapColumnGap}}rpx;">
+                    <view class="profile-heatmap-day level-{{day.level}} {{day.isPadding ? 'is-padding' : ''}}" wx:for="{{week.days}}" wx:for-item="day" wx:key="key" style="width: {{heatmapCellSize}}rpx; height: {{heatmapCellSize}}rpx; margin-bottom: {{heatmapColumnGap}}rpx;"></view>
                   </view>
                 </view>
               </view>
-            </swiper-item>
-          </swiper>
-          <swiper wx:if="{{sex==2}}" autoplay="{{swiper.autoplay}}" interval="{{swiper.interval}}" duration="{{swiper.duration}}" current="{{swiper.current}}" circular="{{swiper.circular}}" previous-margin="-30rpx" next-margin="-30rpx" style="height: 43vh;overflow: hidden;">
-            <swiper-item wx:for="{{swiper.qualifications}}" wx:key="index">
-              <view class="data-body">
-                <view class="flex-con">
-                  <view class="pre arrow" bindtap="prev">
-                    <image src="/images/prev.svg" mode="widthFix"></image>
-                  </view>
-                  <view class="choose-date">{{index}}</view>
-                  <view class="next arrow" bindtap="next">
-                    <image src="/images/next.svg" mode="widthFix"></image>
-                  </view>
-                </view>
-                <view class="girls-circle">
-                  <view class="pies-subwrap">
-                    <view class="echart_panel">
-                      <ec-canvas ec="{{ecPie0}}" bind:init="initPie0" data-days="{{item.sport_days}}" data-list="{{item.week_list}}"></ec-canvas>
-                    </view>
-                  </view>
-                </view>
-                <view class="progress-content">
-                  <view class="progress-con">
-                    <view class="data">{{item.sport_amount}}/{{passDistance}}</view>
-                    <view class="percent">{{module1.slice(module1.GetPercent(item.sport_amount,passDistance))}}%</view>
-                    <view wx:if="{{module1.GetPercent(item.sport_amount,passDistance) >= 100}}">
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance)}}" stroke-width="30" color="#4ecca3" backgroundColor="#f7f6e7" />
-                    </view>
-                    <view wx:else>
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance)}}" stroke-width="30" color="#fb929e" backgroundColor="#f7f6e7" />
-                    </view>
-                  </view>
-                </view>
-              </view>
-            </swiper-item>
-          </swiper>
+            </scroll-view>
+          </view>
+          <view class="profile-heatmap-footer">
+            <text class="profile-heatmap-hint">颜色越深，当天跑量越多</text>
+            <view class="profile-heatmap-legend" aria-label="颜色越深，跑量越多">
+              <text>少</text>
+              <view class="profile-heatmap-swatch level-0"></view>
+              <view class="profile-heatmap-swatch level-1"></view>
+              <view class="profile-heatmap-swatch level-2"></view>
+              <view class="profile-heatmap-swatch level-3"></view>
+              <view class="profile-heatmap-swatch level-4"></view>
+              <text>多</text>
+            </view>
+          </view>
+        </block>
+        <view wx:elif="{{heatmapStatus == 'error'}}" class="profile-heatmap-state">
+          <text>跑步记录暂时无法加载</text>
+          <view class="profile-heatmap-retry" bindtap="retryHeatmap" hover-class="profile-touch" role="button" aria-label="重新加载跑步热力图">重新加载 →</view>
+        </view>
+        <view wx:else class="profile-heatmap-state">{{heatmapStatus == 'guest' ? '登录后，点亮你的跑步足迹' : '正在加载跑步足迹…'}}</view>
+      </view>
+
+      <view wx:if="{{userId <= 0}}" class="profile-guest">
+        <view class="profile-login" bindtap="openLogin" hover-class="profile-touch" role="button" aria-label="登录并同步跑步数据">
+          <text>登录并同步跑步数据</text><text>→</text>
+        </view>
+        <view class="profile-section-head profile-guest-head">
+          <text class="profile-section-title">开始探索</text>
+          <text class="profile-section-note">和跑友一起出发</text>
+        </view>
+        <view class="profile-guide-row" bindtap="goActivity" hover-class="profile-touch" role="button" aria-label="发现团跑">
+          <text>发现团跑</text><text class="profile-guide-desc">看看附近的活动 →</text>
+        </view>
+        <view class="profile-guide-row" bindtap="goChallenge" hover-class="profile-touch" role="button" aria-label="看看挑战">
+          <text>看看挑战</text><text class="profile-guide-desc">为自己定个目标 →</text>
         </view>
       </view>
+
+      <block wx:if="{{userId > 0}}">
+        <view class="profile-services">
+          <view class="profile-section-head">
+            <text class="profile-section-title">常用服务</text>
+            <text class="profile-section-note">记录 · 兑换 · 管理</text>
+          </view>
+          <view class="profile-services-grid">
+            <view class="profile-service-row" bindtap="toRecord" hover-class="profile-touch" role="button" aria-label="查看打卡记录"><text>打卡记录</text><text class="profile-service-arrow">→</text></view>
+            <view class="profile-service-row" bindtap="toHistory" hover-class="profile-touch" role="button" aria-label="查看我的兑换"><text>我的兑换</text><text class="profile-service-arrow">→</text></view>
+            <view class="profile-service-row" bindtap="toPrize" hover-class="profile-touch" role="button" aria-label="兑换好礼"><text>兑换好礼</text><text class="profile-service-arrow">→</text></view>
+            <view class="profile-service-row" wx:if="{{duty == '管理员' || duty == '管理员/团长'}}" bindtap="toManage" hover-class="profile-touch" role="button" aria-label="进入跑团管理"><text>跑团管理</text><text class="profile-service-arrow">→</text></view>
+          </view>
+        </view>
+
+        <view class="profile-races" wx:if="{{marathons.length}}">
+          <view class="profile-section-head">
+            <text class="profile-section-title">马拉松成绩</text>
+            <text class="profile-section-note">你的高光时刻</text>
+          </view>
+          <view class="profile-race" wx:for="{{marathons}}" wx:key="index" bindtap="navigateWithParams" hover-class="profile-touch" role="button" aria-label="查看马拉松成绩">
+            <view class="profile-race-info">
+              <text class="profile-race-type">{{item.events_type}} · {{item.project_type}}</text>
+              <text class="profile-race-name">{{item.marathon_name}}</text>
+              <text class="profile-race-date">{{item.playing_time}}</text>
+            </view>
+            <text class="profile-race-score">{{item.accurate_score}}</text>
+          </view>
+          <view class="profile-race-more" bindtap="navigateWithParams" role="button" aria-label="查看全部马拉松成绩">查看全部成绩 →</view>
+        </view>
+      </block>
     </view>
-    <all-activity totalChallenge="{{totalChallenge}}" totalActy="{{totalActy}}" activityList="{{activityList}}" activityList2="{{activityList2}}" bind:parentEvent="loadMore" bind:parentEvent2="loadMore2" bind:parentEvent3="toDet"></all-activity>
-    <view style="height: 240rpx;"></view>
+
+    <view class="profile-section-head profile-activity-head" wx:if="{{userId > 0 && (activityList.length || activityList2.length)}}">
+      <view class="profile-section-heading-copy">
+        <text class="profile-section-title">参与记录</text>
+        <text class="profile-section-note">每一次挑战与团聚</text>
+      </view>
+    </view>
+    <all-activity wx:if="{{userId > 0}}" totalChallenge="{{totalChallenge}}" totalActy="{{totalActy}}" activityList="{{activityList}}" activityList2="{{activityList2}}" bind:parentEvent="loadMore" bind:parentEvent2="loadMore2" bind:parentEvent3="toDet"></all-activity>
+    <view class="profile-bottom-space"></view>
   </scroll-view>
 </view>
 <tabbar tabbar="{{tabbar}}"></tabbar>

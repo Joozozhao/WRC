@@ -1,74 +1,54 @@
-<!--pages/challenge/challenge.wxml-->
-<view class="nav-mb">
-  <block wx:for="{{challengeList}}" wx:key='index'>
-    <view class="challenge" wx:if="{{item.acty_type!=='V挑战'}}">
-      <view class="challenge-img" bindtap="toDetail" data-id="{{item.acty_id}}" data-name="{{item.acty_name}}">
-        <image src="{{item.acty_img}}" mode="widthFix" style="height:auto;" class="challenge-cover"></image>
-        <view wx:if="{{item.days < 0}}">
-          <view class="challenge-wrap"></view>
-          <image src="/images/2-1.png" mode="widthFix" style="height:auto;" class="challenge-state" wx:if="{{item.rate == '100%'&&item.join_time !== '未参加该挑战!'}}"></image>
-          <image src="../../images/3-1.png" mode="widthFix" style="height:auto;" class="challenge-state" wx:if="{{item.join_time == '未参加该挑战!'}}"></image>
-          <image src="/images/1-1.png" mode="widthFix" style="height:auto;" class="challenge-state" wx:if="{{item.rate !== '100%'&&item.join_time !== '未参加该挑战!'}}"></image>
+<site-header bindprofiletap="openMyPage"></site-header>
+<view class="challenge-page">
+  <view class="challenge-hero">
+    <text class="challenge-eyebrow">WRC · CHALLENGE YOURSELF</text>
+    <text class="challenge-title">给自己一个<text class="challenge-title-break">新目标。</text></text>
+    <view class="challenge-title-line"></view>
+    <text class="challenge-intro">每一步都算数。从今天的距离，跑向下一个自己。</text>
+  </view>
+  <view class="challenge-heading">
+    <text>挑战活动</text>
+    <text class="challenge-heading-count" wx:if="{{challengeList.length}}">{{challengeList.length}} 个已加载</text>
+  </view>
+  <view class="challenge-list" wx:if="{{challengeList.length}}">
+    <block wx:for="{{challengeList}}" wx:key="acty_id">
+      <view class="challenge-card" wx:if="{{item.acty_type !== 'V挑战' || duty == '管理员' || duty == '管理员/团长'}}">
+        <view class="challenge-card-main" bindtap="toDetail" data-id="{{item.acty_id}}" data-name="{{item.acty_name}}">
+          <image class="challenge-poster" src="{{item.acty_img}}" mode="aspectFill"></image>
+          <view class="challenge-card-content">
+            <text class="challenge-kicker">{{item.acty_type || '跑步挑战'}}</text>
+            <text class="challenge-card-title">{{item.acty_name}}</text>
+            <view class="challenge-meta" wx:if="{{item.days >= 0}}">
+              <text>剩余 {{item.days + 1}} 天</text>
+              <text wx:if="{{item.join_time && item.join_time != '未参加该挑战!' && item.rate}}">进度 {{item.rate}}</text>
+            </view>
+            <view class="challenge-meta" wx:else>
+              <text>结束日期 {{item.end_time}}</text>
+              <text wx:if="{{item.join_time && item.join_time != '未参加该挑战!' && item.rate}}">完成 {{item.rate}}</text>
+            </view>
+            <view class="challenge-progress-bar" wx:if="{{item.join_time && item.join_time != '未参加该挑战!' && item.rate}}"><view class="challenge-progress-fill" style="width: {{item.rate}}"></view></view>
+            <view class="challenge-card-foot">
+              <text>{{item.join_time && item.join_time != '未参加该挑战!' ? '已参加' : '尚未参加'}}</text>
+              <text class="challenge-detail-link">查看挑战 →</text>
+            </view>
+          </view>
+          <text class="challenge-state {{item.days < 0 ? 'is-ended' : ''}}">{{item.days < 0 ? '已结束' : '可参与'}}</text>
+        </view>
+        <view class="challenge-admin" wx:if="{{duty == '管理员'||duty == '管理员/团长'}}">
+          <text wx:if="{{item.days >= 0 && item.acty_type == 'V挑战'}}" bindtap="addRules" data-id="{{item.acty_id}}">加规则</text>
+          <text wx:if="{{item.days >= 0 && item.acty_type == 'V挑战'}}" bindtap="delRules" data-id="{{item.acty_id}}">删规则</text>
+          <text wx:if="{{item.days >= 0}}" bindtap="editCon" data-id="{{item.acty_id}}">编辑</text>
+          <text bindtap="delCon" data-index="{{index}}" data-id="{{item.acty_id}}">删除</text>
         </view>
       </view>
-      <view class="acty-infors" wx:if="{{item.days >= 0}}" bindtap="toDetail" data-id="{{item.acty_id}}" data-name="{{item.acty_name}}">
-        <view><text class="acty-state">火热进行中</text> 剩余{{item.days+1}}天</view>
-        <view class="flex-con"><text class="acty-name">{{item.acty_name}}</text><!-- <text class="num">{{item.joins}}人参与</text> --></view>
-      </view>
-      <view class="acty-infors" wx:else>
-        <view><text class="acty-state">挑战结束</text> <text class="num">结束日期：{{item.end_time}}</text></view>
-        <view class="flex-con"><text class="acty-name">{{item.acty_name}}</text><!-- <text class="num">{{item.joins}}人参与</text> --></view>
-      </view>
-      <view class="act-btn" wx:if="{{duty == '管理员'||duty == '管理员/团长'}}">
-        <text class="btn edit" wx:if="{{item.days>=0&&item.acty_type=='V挑战'}}" bindtap="addRules" data-id="{{item.acty_id}}">+规则</text>
-        <text class="btn edit" wx:if="{{item.days>=0&&item.acty_type=='V挑战'}}" bindtap="delRules" data-id="{{item.acty_id}}">删除规则</text>
-        <text class="btn edit" wx:if="{{item.days>=0}}" bindtap="editCon" data-id="{{item.acty_id}}">编辑</text>
-        <text class="btn del" wx:if="{{item.rank_list==0}}" bindtap="toTop" data-id="{{item.acty_id}}">上榜</text>
-        <text class="btn del" wx:if="{{item.rank_list==1}}" bindtap="upTop" data-id="{{item.acty_id}}">下榜</text>
-        <text class="btn del" bindtap="delCon" data-index="{{index}}" data-id="{{item.acty_id}}">删除</text>
-      </view>
-    </view>
-    <view class="challenge" wx:if="{{item.acty_type=='V挑战'&&(duty=='管理员'||duty=='管理员/团长')}}">
-      <view class="challenge-img" bindtap="toDetail" data-id="{{item.acty_id}}" data-name="{{item.acty_name}}">
-        <image src="{{item.acty_img}}" mode="widthFix" style="height:auto;" class="challenge-cover"></image>
-        <view wx:if="{{item.days < 0}}">
-          <view class="challenge-wrap"></view>
-          <image src="/images/2-1.png" mode="widthFix" style="height:auto;" class="challenge-state" wx:if="{{item.rate == '100%'&&item.join_time !== '未参加该挑战!'}}"></image>
-          <image src="../../images/3-1.png" mode="widthFix" style="height:auto;" class="challenge-state" wx:if="{{item.join_time == '未参加该挑战!'}}"></image>
-          <image src="/images/1-1.png" mode="widthFix" style="height:auto;" class="challenge-state" wx:if="{{item.rate !== '100%'&&item.join_time !== '未参加该挑战!'}}"></image>
-        </view>
-      </view>
-      <view class="acty-infors" wx:if="{{item.days >= 0}}" bindtap="toDetail" data-id="{{item.acty_id}}" data-name="{{item.acty_name}}">
-        <view><text class="acty-state">火热进行中</text> 剩余{{item.days+1}}天</view>
-        <view class="flex-con"><text class="acty-name">{{item.acty_name}}</text><!--<text class="num">{{item.joins}}人参与</text> --></view>
-      </view>
-      <view class="acty-infors" wx:else>
-        <view><text class="acty-state">挑战结束</text> <text class="num">结束日期：{{item.end_time}}</text></view>
-        <view class="flex-con"><text class="acty-name">{{item.acty_name}}</text><!--<text class="num">{{item.joins}}人参与</text> --></view>
-      </view>
-      <view class="act-btn" wx:if="{{duty == '管理员'||duty == '管理员/团长'}}">
-        <text class="btn edit" wx:if="{{item.days>=0&&item.acty_type=='V挑战'}}" bindtap="addRules" data-id="{{item.acty_id}}">+规则</text>
-        <text class="btn edit" wx:if="{{item.days>=0&&item.acty_type=='V挑战'}}" bindtap="delRules" data-id="{{item.acty_id}}">删除规则</text>
-        <text class="btn edit" wx:if="{{item.days>=0}}" bindtap="editCon" data-id="{{item.acty_id}}">编辑</text>
-        <text class="btn del" bindtap="delCon" data-index="{{index}}" data-id="{{item.acty_id}}">删除</text>
-      </view>
-    </view>
-  </block>
+    </block>
+  </view>
+  <view class="challenge-empty" wx:elif="{{!loading}}">
+    <text class="challenge-empty-symbol">◎</text>
+    <text class="challenge-empty-title">{{loadError ? '暂时无法加载挑战' : '新挑战，即将开始'}}</text>
+    <text class="challenge-empty-copy">{{loadError ? '请检查网络后重试。' : '目前没有可展示的挑战活动。'}}</text>
+    <text class="challenge-empty-action" bindtap="retryLoad">重新加载 →</text>
+  </view>
+  <view class="challenge-tail" wx:if="{{challengeList.length && !hasMore}}">已经看到全部挑战</view>
 </view>
 <tabbar tabbar="{{tabbar}}"></tabbar>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

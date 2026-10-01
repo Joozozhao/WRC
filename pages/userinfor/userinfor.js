@@ -46,6 +46,7 @@ Page({
   //     clas: '',
   //     birthday: e.detail.value
   //   })
+  //   console.log(this.data.birthday)
   // },
   //地区选择
   pickerSelected: function (e) {
@@ -109,7 +110,7 @@ Page({
       success: function (res) {
         if (res.confirm) { //这里是点击了确定以后
           wx.setStorageSync('userId', ''); //userId
-          wx.setStorageSync('openId', ''); //openId  
+          wx.setStorageSync('openId', ''); //openId
           app.globalData.userId='';
           app.globalData.openId='';
           var pages = getCurrentPages(); //获取页面栈
@@ -123,6 +124,7 @@ Page({
             url: '/pages/index/index', //跳去登录页
           })
         } else { //这里是点击了取消以后
+          console.log('用户点击取消')
         }
       }
     })
@@ -144,6 +146,7 @@ Page({
       hand_size: formatDate.handSize
     }
     util.request('user/updateuser', 'POST', data, '数据加载中...', (res) => {
+      console.log(res)
       if (res.data.success) {
         if (formatDate.name == '') {
           wx.showToast({
@@ -169,7 +172,7 @@ Page({
           })
           return false
         }
-        
+
         wx.showToast({
           title: '保存成功',
           icon: 'success',
@@ -194,7 +197,7 @@ Page({
       delta: 1
     })
   },
- 
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -221,6 +224,7 @@ Page({
         id: userId
       }
       util.request('user/get', 'POST', data, '数据加载中 ...', (res) => {
+        console.log(res);
         if (res.data.success) {
           that.setData({
             avatarUrl: res.data.data.header_url,
@@ -264,6 +268,7 @@ Page({
           handSize: res.data.data.hand_size,
           shoes: res.data.data.shoe_size
         })
+        console.log(res.data.data)
       }
     })
   }

@@ -1,38 +1,91 @@
-<!--pages/exchangeDetails/exchangeDetails.wxml-->
-<view class=" awesome-bg b-purple address">
-  <view class="delivery-address" bindtap="chooseAddress">
-    <view class="user-infor">
-      <text>{{name}}</text><text class="tel">{{mobile}}</text>
-    </view>
-    <view class="add-details">
-      <view><image src="../../images/address.png" mode="widthFix" style="height:auto;" class="address-icon"></image>{{address}}</view>
-    </view>
+<site-header show-back="{{true}}" back-url="/pages/history/history"></site-header>
+<!--pages/orderdetail/orderdetail.wxml-->
+<view class="od-page">
+  <view class="od-loading" wx:if="{{detailState == 'loading'}}">
+    <view class="od-skeleton-card"></view>
+    <view class="od-skeleton-line od-skeleton-line-long"></view>
+    <view class="od-skeleton-line"></view>
+    <text class="od-state-tip">正在加载订单详情…</text>
   </view>
-</view>
-<view class=" awesome-bg b-purple g ex-details">
-  <view class="confirm-product">
-    <view class="product-img"><image src="{{goods_pic}}"></image></view>
-    <view class="product-infor">
-      <view class="name ellipsis">{{goods_name}}</view>
-      <view class="add-num"><view>规格：<text>{{goods_tag}} {{tag_desc}}</text></view><view class="num">x{{goods_num}}</view></view>
-      <view wx:if="{{goodType==0}}">{{score}}积分</view>
-      <view wx:else>{{energy}}小花儿</view>
-      
+
+  <view class="od-error" wx:elif="{{detailState == 'error'}}">
+    <text class="od-kicker">WRC · ORDERS</text>
+    <text class="od-error-title">订单暂时无法显示</text>
+    <text class="od-error-copy">数据加载失败，请稍后重试。</text>
+    <button class="od-retry-button" bindtap="retryPage">重新加载</button>
+  </view>
+
+  <block wx:if="{{detailState == 'ready'}}">
+    <view class="od-head">
+      <text class="od-kicker">WRC · ORDERS</text>
+      <text class="od-head-label">兑换详情 / 订单信息</text>
     </view>
-  </view>
-  <view class="vw-wrap point-total">
-    <view>总共：</view>
-    <view class="point" wx:if="{{goodType==0}}"><text class="red">{{score}}</text> 积分</view>
-    <view class="point" wx:else><text class="red">{{energy}}</text> 小花儿</view>
-  </view>
-</view>
-<view class="bg-white order-details">
-  <view class="con-title">订单细节</view>
-  <view>订单号： {{order_num}}</view>
-  <view>订单时间：{{last_time}}</view>
-  <view wx:if="{{state == 0}}">订单状态：未发货</view>
-  <view wx:if="{{state == 1}}">订单状态：已发货</view>
-  <view wx:if="{{state == 2}}">订单状态：已签收</view>
-  <view wx:if="{{state == 3}}">订单状态：已退回</view>
-  <view class="order-btn b-purple" bindtap="conformOrder" wx:if="{{state !== 2&&state !==3}}">确认收货</view>
+
+    <view class="od-section">
+      <view class="od-section-heading">
+        <text class="od-section-title">收货信息</text>
+        <text class="od-section-index">01 / ADDRESS</text>
+      </view>
+      <view class="od-address-card">
+        <view class="od-address-top">
+          <text class="od-address-name">{{name}}</text>
+          <text class="od-address-tel">{{mobile}}</text>
+        </view>
+        <text class="od-address-detail">{{address}}</text>
+      </view>
+    </view>
+
+    <view class="od-section">
+      <view class="od-section-heading">
+        <text class="od-section-title">兑换商品</text>
+        <text class="od-section-index">02 / PRIZE</text>
+      </view>
+      <view class="od-product-card">
+        <view class="od-product-img">
+          <image src="{{goods_pic}}" mode="aspectFill"></image>
+        </view>
+        <view class="od-product-info">
+          <text class="od-product-name">{{goods_name}}</text>
+          <text class="od-product-spec">规格：{{goods_tag}} {{tag_desc}}</text>
+          <text class="od-product-cost" wx:if="{{goodType==0}}">{{score}}积分 ×{{goods_num}}</text>
+          <text class="od-product-cost" wx:else>{{energy}}小花儿 ×{{goods_num}}</text>
+        </view>
+      </view>
+      <view class="od-total">
+        <text class="od-total-label">总共</text>
+        <text class="od-total-value" wx:if="{{goodType==0}}">{{score}} 积分</text>
+        <text class="od-total-value" wx:else>{{energy}} 小花儿</text>
+      </view>
+    </view>
+
+    <view class="od-section">
+      <view class="od-section-heading">
+        <text class="od-section-title">订单信息</text>
+        <text class="od-section-index">03 / ORDER</text>
+      </view>
+      <view class="od-info-card">
+        <view class="od-info-row">
+          <text class="od-info-label">订单号</text>
+          <text class="od-info-value">{{order_num}}</text>
+        </view>
+        <view class="od-info-row">
+          <text class="od-info-label">订单时间</text>
+          <text class="od-info-value">{{last_time}}</text>
+        </view>
+        <view class="od-info-row">
+          <text class="od-info-label">订单状态</text>
+          <text class="od-state is-pending" wx:if="{{state == 0}}">未发货</text>
+          <text class="od-state is-shipped" wx:if="{{state == 1}}">已发货</text>
+          <text class="od-state is-done" wx:if="{{state == 2}}">已签收</text>
+          <text class="od-state is-returned" wx:if="{{state == 3}}">已退回</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="od-action">
+      <button class="od-action-button" wx:if="{{state !== 2&&state !==3}}" bindtap="conformOrder">确认收货</button>
+      <text class="od-action-hint" wx:elif="{{state == 2}}">订单已签收，感谢参与 WRC 兑换</text>
+      <text class="od-action-hint" wx:else>订单已退回</text>
+    </view>
+  </block>
 </view>

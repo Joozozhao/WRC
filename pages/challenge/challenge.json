@@ -1,11 +1,12 @@
 {
-  "navigationStyle": "default",
-  "backgroundTextStyle":"dark",
-  "backgroundColor": "#4CB944",
-  "navigationBarBackgroundColor": "#4CB944",
-  "navigationBarTitleText": "挑战活动",
-  "navigationBarTextStyle":"white",
+  "navigationStyle": "custom",
+  "backgroundTextStyle": "dark",
+  "backgroundColor": "#fbfcf9",
+  "navigationBarBackgroundColor": "#fbfcf9",
+  "navigationBarTitleText": "挑战",
+  "navigationBarTextStyle": "black",
   "usingComponents": {
-    "tabbar": "../../components/tabbarComponent/tabbar"
+    "tabbar": "../../components/tabbarComponent/tabbar",
+    "site-header": "../../components/site-header/site-header"
   }
 }

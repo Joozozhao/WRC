@@ -11,7 +11,8 @@ Page({
     detailed: '请选择',
     formData: '',
     address: '',
-    itemId: ''
+    itemId: '',
+    submitting: false
   },
   //省市联动
   bindRegionChange: function (e) {
@@ -20,6 +21,7 @@ Page({
     that.setData({
       clas: '',
     // })　　　//下拉框所选择的值
+    // console.log('picker发送选择改变，携带值为', e.detail.value)
 
     // this.setData({
       //拼的字符串传后台
@@ -36,6 +38,9 @@ Page({
     var that = this
     // var userId = app.globalData.userId
     var formData = e.detail.value
+    if (that.data.submitting) {
+      return false
+    }
     if (formData.name == '') {
       wx.showToast({
         title: '联系人不能为空!',
@@ -84,18 +89,46 @@ Page({
       mobile: formData.mobile,
       addr: newAddr + formData.addressDet
     }
+    console.log(data)
+    that.setData({
+      submitting: true
+    })
+    wx.showLoading({
+      title: '保存中',
+      mask: true
+    })
     util.request('user/updateaddr', 'POST', data, '数据加载中 ...', (res)=>{
+      wx.hideLoading()
+      console.log(res)
       if(res.data.success){
-        wx.navigateTo({
-          url: '../address/address'
+        wx.navigateBack({
+          delta: 1,
+          fail: function () {
+            wx.redirectTo({
+              url: '../address/address'
+            })
+          }
         })
       }else{
+        that.setData({
+          submitting: false
+        })
         wx.showToast({
           title: res.data.error,
           icon: 'none',
           duration: 1500
         })  
       }
+    }, () => {
+      wx.hideLoading()
+      that.setData({
+        submitting: false
+      })
+      wx.showToast({
+        title: '网络错误，请稍后再试...',
+        icon: 'none',
+        duration: 1500
+      })
     })
   },
   /**
@@ -114,8 +147,11 @@ Page({
     var data = {
       id: id
     }
+    console.log(data)
     util.request('user/getaddr', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
       if(res.data.success){
+        console.log(res.data)
         that.setData({
           name: res.data.data.name,
           mobile: res.data.data.mobile,

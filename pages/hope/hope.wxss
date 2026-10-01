@@ -1,48 +1,22 @@
 /* pages/hope/hope.wxss */
-.page-wrap{
-  padding: 3vw 30rpx 180rpx;
-}
-.hope-list{
-  /* display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly; */
-  display: inline-block;
-  width: 48%;
-}
-
-.hope-list:nth-child(2){
-  float: right;
-}
-.hope-item{
-  width: 100%;
-  background: #fff;
-  border-radius: 10rpx;
-  margin-bottom: 30rpx;
-}
-.hope-item .hope-pic{
-  width: 100%;
-}
-.hope-item .hope-pic image{
-  width: 100%;
-  height: 400rpx;
-}
-.hope-item .hope-name{
-  padding:10rpx 20rpx;
-  text-align: justify;
-  /* line-height: 60rpx; */
-}
-.btm-content{
-  display: flex;
-  color: #999;
-}
-
-.btm-content .mla{
-  display: flex;
-  padding: 0 20rpx 20rpx;
-  margin-left: auto;
-}
-.btm-content .mla .ico{
-  width: 40rpx;
-  height: 40rpx;
-  margin-right: 6rpx;
-}
+page { background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
+.hope-page { min-height: 100vh; padding: 180rpx 40rpx calc(190rpx + env(safe-area-inset-bottom)); box-sizing: border-box; }
+.hope-hero { padding: 18rpx 4rpx 35rpx; border-bottom: 1rpx solid #e1e9e3; }
+.hope-eyebrow { display: block; color: #0d6447; font-size: 22rpx; font-weight: 750; letter-spacing: 3rpx; }
+.hope-title { display: block; margin-top: 27rpx; font-size: 72rpx; line-height: 1.15; font-weight: 800; letter-spacing: -2rpx; }
+.hope-title-line { width: 185rpx; height: 7rpx; margin-top: 4rpx; border-radius: 10rpx; background: #d9ff3f; transform: rotate(-2deg); }
+.hope-intro { display: block; margin-top: 22rpx; color: #7a8980; font-size: 26rpx; line-height: 1.6; }
+.hope-waterfall { display: flex; align-items: flex-start; margin-top: 30rpx; }
+.hope-list { flex: 1; min-width: 0; }
+.hope-list + .hope-list { margin-left: 20rpx; }
+.hope-item { overflow: hidden; margin-bottom: 24rpx; border: 1rpx solid #e3ebe4; border-radius: 18rpx; background: #fff; }
+.hope-pic { width: 100%; background: #eef2ed; }
+.hope-pic image { width: 100%; height: 400rpx; }
+.hope-name { padding: 16rpx 18rpx 4rpx; color: #153d31; font-size: 26rpx; line-height: 1.5; font-weight: 700; }
+.hope-meta { display: flex; justify-content: flex-end; padding: 10rpx 18rpx 18rpx; }
+.hope-want { display: flex; align-items: center; color: #7a8980; font-size: 22rpx; }
+.hope-ico { width: 34rpx; height: 34rpx; margin-right: 8rpx; }
+.hope-state { display: flex; min-height: 220rpx; align-items: center; justify-content: center; margin-top: 28rpx; border: 1rpx solid #e3ebe4; border-radius: 20rpx; background: #fff; color: #718078; font-size: 25rpx; }
+.hope-footer { position: fixed; z-index: 5; right: 0; bottom: 0; left: 0; padding: 15rpx 40rpx calc(19rpx + env(safe-area-inset-bottom)); border-top: 1rpx solid #dfe8df; background: #fbfcf9; }
+.hope-submit { display: flex; width: 100%; height: 92rpx; align-items: center; justify-content: center; box-sizing: border-box; margin: 0; border-radius: 48rpx; background: #d9ff3f; color: #092f27; font-size: 29rpx; font-weight: 800; line-height: 1.2; }
+.hope-submit::after { border: 0; }

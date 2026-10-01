@@ -1,0 +1,13 @@
+<view class="site-header {{backMode ? 'site-header-fixed' : ''}}" style="padding-top: {{menuTop}}px;">
+  <view class="site-header-row" style="height: {{barHeight}}px;">
+    <view class="site-header-leading">
+      <view class="site-header-back" wx:if="{{backMode}}" bindtap="handleBack" hover-class="site-header-back-pressed" aria-label="返回">
+        <view class="site-header-back-chevron"></view>
+      </view>
+      <image wx:if="{{!backMode}}" class="site-header-logo" src="/images/redesign/wr-mark.png" mode="aspectFit"></image>
+      <view wx:if="{{!backMode}}" class="site-header-avatar-hit" bindtap="handleAvatarTap" hover-class="site-header-avatar-pressed" aria-label="打开个人页面">
+        <image class="site-header-avatar" src="{{avatar || '/images/default.png'}}" mode="aspectFill"></image>
+      </view>
+    </view>
+  </view>
+</view>

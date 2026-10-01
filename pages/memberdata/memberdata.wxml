@@ -1,85 +1,66 @@
-<!--pages/memberdata/memberdata.wxml-->
-<!--pages/activitydata/activitydata.wxml-->
-<view class="fix-wrap">
-  <view class="all-item">
-    <text class="{{id==index ? 'active' : ''}}" wx:for="{{btnTab}}" wx:key="index" data-id="{{index}}"
-      data-txt="{{item}}" bindtap="choose">{{item}}</text>
+<site-header show-back="{{true}}" back-url="/pages/mydata/mydata"></site-header>
+<view class="ranking-page">
+  <view class="ranking-head">
+    <text class="eyebrow">WRC · RUNNING COMMUNITY</text>
+    <text class="page-title">跑量排行榜</text>
+    <text class="page-note">和跑友一起，把每一步都跑进记录里</text>
+    <view class="sort-tabs">
+      <view wx:for="{{tabs}}" wx:key="sort" class="sort-tab {{activeIndex === index ? 'active' : ''}}" data-index="{{index}}" bindtap="choose">
+        {{item.label}}
+      </view>
+    </view>
   </view>
-</view>
-<view class="vw-wrap" style="padding-top:100rpx;">
-  <wxs src="../../utils/toDecimal2.wxs" module="module1" />
-  <block wx:for="{{dataList}}" wx:key="index">
-    <view class="member my-data awesome-bg b-tapered2 .bg2" data-id="{{item.id}}" bindtap="myData" wx:if="{{item.id == myId}}">
-      <view class="user-infor">
-        <view class="rank" wx:if="{{index>2}}"><text class="rank-num">{{index+1}}</text></view>
-        <view class="rank" wx:else>
-          <image src="{{imgIcon[index]}}"></image>
-        </view>
-        <view class="user-pic">
-          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
-        </view>
-        <view class="other-infor">
-          <view class="infor">
-            <view class="nick-name">{{item.name}}</view>
-            <view class="sex" wx:if="{{item.sex == 1}}">
-              <image src="../../images/man.svg"></image>
-            </view>
-            <view class="sex" wx:if="{{item.sex == 2}}">
-              <image src="../../images/woman.svg"></image>
-            </view>
-            <view wx:if="{{item.level == 'VIP'}}">
-              <image src="../../images/superVIP.svg" mode="widthFix" class="level"></image>
-            </view>
-            <view wx:if="{{item.level == '普通'}}">
-              <image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image>
-            </view>
-          </view>
-          <view class="total" wx:if="{{id==0}}"><text class="tag">ID.{{item.id}}</text> 跑步 {{item.month_times}} 次</view>
-          <view class="total" wx:if="{{id==1}}"><text class="tag">ID.{{item.id}}</text> 跑步 {{item.year_times}} 次</view>
-          <view class="total" wx:if="{{id==2}}"><text class="tag">ID.{{item.id}}</text> 跑步 {{item.sport_times}} 次</view>
-        </view>
-      </view>
-      <view class="distance" wx:if="{{select==0}}">{{module1.toDecimal2(item.month_count)}}  km</view>
-      <view class="distance" wx:if="{{select==1}}">{{module1.toDecimal2(item.year_count)}} km</view>
-      <view class="distance" wx:if="{{select==2}}">{{module1.toDecimal2(item.total)}} km</view>
-    </view>
-  </block>
-  <block wx:for="{{dataList}}" wx:key="index">
-    <view class="member awesome-bg b-tapered2" data-id="{{item.id}}" bindtap="myData">
-      <view class="user-infor">
-        <view class="rank" wx:if="{{index>2}}"><text class="rank-num">{{index+1}}</text></view>
-        <view class="rank" wx:else>
-          <image src="{{imgIcon[index]}}"></image>
-        </view>
-        <view class="user-pic">
-          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
-        </view>
-        <view class="other-infor">
-          <view class="infor">
-            <view class="nick-name">{{item.name}}</view>
-            <view class="nick-name" wx:if="{{item.name==''}}">{{item.nick_name}}</view>
-            <view class="sex" wx:if="{{item.sex == 1}}">
-              <image src="../../images/man.svg"></image>
-            </view>
-            <view class="sex" wx:if="{{item.sex == 2}}">
-              <image src="../../images/woman.svg"></image>
-            </view>
-            <view wx:if="{{item.level == 'VIP'}}">
-              <image src="../../images/superVIP.svg" mode="widthFix" class="level"></image>
-            </view>
-            <view wx:if="{{item.level == '普通'}}">
-              <image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image>
-            </view>
-          </view>
 
-          <view class="total" wx:if="{{id==0}}"><text class="tag">ID.{{item.id}}</text> 跑步 {{item.month_times}} 次</view>
-          <view class="total" wx:if="{{id==1}}"><text class="tag">ID.{{item.id}}</text> 跑步 {{item.year_times}} 次</view>
-          <view class="total" wx:if="{{id==2}}"><text class="tag">ID.{{item.id}}</text> 跑步 {{item.sport_times}} 次</view>
-        </view>
+  <view class="list-heading">
+    <text>跑者</text>
+    <text>累计跑量</text>
+  </view>
+
+  <view wx:if="{{loading && !loaded}}" class="state-block">
+    <view class="state-mark loading-mark"></view>
+    <text class="state-title">正在读取榜单</text>
+    <text class="state-copy">排名和跑量以服务端记录为准</text>
+  </view>
+
+  <view wx:elif="{{error && dataList.length === 0}}" class="state-block">
+    <view class="state-mark">!</view>
+    <text class="state-title">榜单暂时无法加载</text>
+    <text class="state-copy">请检查网络后重试</text>
+    <view class="retry-button" bindtap="retry">重新加载</view>
+  </view>
+
+  <view wx:elif="{{loaded && dataList.length === 0}}" class="state-block">
+    <view class="state-mark">—</view>
+    <text class="state-title">这个榜单还没有记录</text>
+    <text class="state-copy">开始跑步后，真实成绩会显示在这里</text>
+  </view>
+
+  <block wx:elif="{{dataList.length > 0}}">
+    <view wx:for="{{dataList}}" wx:key="id" class="runner-row {{item.isMe ? 'is-me' : ''}}" data-id="{{item.id}}" bindtap="myData">
+      <view class="runner-rank {{item.rank <= 3 ? 'top-rank' : ''}}">
+        <text wx:if="{{item.rank <= 3}}">0{{item.rank}}</text>
+        <text wx:else>{{item.rank}}</text>
       </view>
-      <view class="distance" wx:if="{{select==0}}">{{module1.toDecimal2(item.month_count)}} km</view>
-      <view class="distance" wx:if="{{select==1}}">{{module1.toDecimal2(item.year_count)}} km</view>
-      <view class="distance" wx:if="{{select==2}}">{{module1.toDecimal2(item.total)}} km</view>
+      <image wx:if="{{item.header_url}}" class="runner-avatar" src="{{item.header_url}}" mode="aspectFill" />
+      <view wx:else class="runner-avatar avatar-placeholder">跑</view>
+      <view class="runner-info">
+        <view class="runner-name-line">
+          <text class="runner-name">{{item.displayName}}</text>
+          <text wx:if="{{item.isMe}}" class="me-badge">我</text>
+          <image wx:if="{{item.sex == 1}}" class="sex-icon" src="../../images/man.svg" />
+          <image wx:if="{{item.sex == 2}}" class="sex-icon" src="../../images/woman.svg" />
+        </view>
+        <text class="runner-meta">ID {{item.id}} · 跑步 {{item.displayCount}} 次</text>
+      </view>
+      <view class="runner-result">
+        <text class="distance">{{item.displayDistance}}</text>
+        <text class="unit">KM</text>
+      </view>
     </view>
+    <view wx:if="{{loadingMore}}" class="list-foot">正在加载更多</view>
+    <view wx:elif="{{!hasMore}}" class="list-foot">已经到底了</view>
+    <view wx:elif="{{error}}" class="list-foot retry-more" bindtap="retry">加载失败，点此重试</view>
   </block>
+
+  <view wx:if="{{userId <= 0}}" class="guest-note">访客也可以浏览榜单 · 登录后可查看自己的排名</view>
 </view>

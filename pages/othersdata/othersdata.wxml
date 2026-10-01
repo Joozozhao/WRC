@@ -1,236 +1,152 @@
-<!--pages/othersdata/othersdata.wxml-->
-<wxs src="../../utils/toDecimal2.wxs" module="module1" />
-<view class="gradient-bg">
-  <scroll-view scroll-y="true" style="height: 100vh;">
-    <view class="vw-wrap">
-      <view class="user-infor">
-        <view class="user-pic">
-          <image src="{{headerImg}}" mode="widthFix" class="pic"></image>
-        </view>
-        <view style="width:50%">
-          <view class="infor">
-            <view class="user-name" wx:if="{{userName==''}}">{{nickName}}</view>
-            <view class="user-name" wx:else>{{userName}}</view>
-            <view class="sex" wx:if="{{sex == 1}}">
-              <image src="../../images/me-n.svg"></image>
-            </view>
-            <view class="sex" wx:if="{{sex == 2}}">
-              <image src="../../images/me-v.svg"></image>
-            </view>
-            <view wx:if="{{level == 'VIP'}}">
-              <image src="../../images/superVIP.svg" mode="widthFix" class="level"></image>
-            </view>
-            <view wx:if="{{level == '普通'}}">
-              <image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image>
-            </view>
-          </view>
-          <view class="user-name" style="margin-top:10rpx;">
-            <text class="tag" wx:if="{{userid>0}}">ID.{{userid}}</text>
-            <view class="tag title svip" wx:if="{{duty=='团长'||duty=='管理员/团长'}}"><text> 永久SVIP ヅ </text></view>
-          </view>
-        </view>
+<!-- WRC Runner Profile: TA的主页 -->
+<site-header show-back="{{true}}" back-url="/pages/index/index"></site-header>
+<view class="others-page">
+  <!-- 头部英雄区 -->
+  <view class="hero-card">
+    <view class="eyebrow">WRC · RUNNER PROFILE</view>
+    <view class="person-row">
+      <view class="avatar-wrap">
+        <image class="avatar-img" src="{{headerImg}}" mode="aspectFill"></image>
+        <image wx:if="{{level === 'VIP'}}" class="vip-badge" src="/images/vip_1.svg" mode="aspectFit"></image>
       </view>
-      <view class="box-part-wrap index-part awesome-bg b-purple">
-        <view class="box-part">
-          <view class="my-point">
-            <view class="my-points">{{score}}</view>
-            <view class="tit">积分</view>
-          </view>
-          <view class="my-point">
-            <view class="my-points">{{module1.slice(energy)}}</view>
-            <view class="tit">小花儿</view>
-          </view>
-          <view class="my-point">
-            <view class="my-points">{{module1.slice(monthDistance)}}</view>
-            <view class="tit">本月跑量</view>
-          </view>
-          <view class="my-point">
-            <view class="my-points">{{module1.slice(totalDistance)}}</view>
-            <view class="tit">全部跑量</view>
-          </view>
+      <view class="person-info">
+        <view class="name-line">
+          <text class="runner-name">{{userName || nickName || "跑者"}}</text>
+          <image wx:if="{{sex == 1}}" class="sex-icon" src="/images/me-n.svg" mode="aspectFit"></image>
+          <image wx:elif="{{sex == 2}}" class="sex-icon" src="/images/me-v.svg" mode="aspectFit"></image>
+          <text class="duty-tag" wx:if="{{duty}}">{{duty}}</text>
+        </view>
+        <view class="id-line">
+          <text class="id-tag">跑者 ID · {{targetUserId}}</text>
         </view>
       </view>
     </view>
-    <view class="week-data">
-      <view class="vw-wrap">
-        <view class="week-con">
-          <view class="acty-tit tit-toggle small">
-          <view class="sub-tit {{weekChoosed?'actived':''}}" bindtap="weekClick">本周</view>
-          <view class="sub-tit {{monthChoosed?'actived':''}}" bindtap="monthClick">本月</view>
-          <view class="sub-tit {{yearChoosed?'actived':''}}" bindtap="yearClick">本年</view>
-          <text class="time-region" wx:if="{{weekShow}}">({{starTime}} ~ {{endTime}})</text>
-          </view>
-          <view class="echart_panel" wx:if="{{weekShow}}">
-            <ec-canvas ec="{{ecBar}}" bind:init="initBarData"></ec-canvas>
-          </view>
-          <view class="echart_panel" wx:if="{{monthShow}}">
-            <ec-canvas ec="{{ecBar}}" bind:init="initMonthData"></ec-canvas>
-          </view>
-          <view class="echart_panel" wx:if="{{yearShow}}">
-            <ec-canvas ec="{{ecBar}}" bind:init="initYearData"></ec-canvas>
-          </view>
-        </view>
+  </view>
+
+  <!-- 数据概览四宫格卡片 -->
+  <view class="stats-card">
+    <view class="stat-item">
+      <text class="stat-number highlight">{{statsLoaded ? monthDistance : "—"}}</text>
+      <text class="stat-label">本月跑量 (公里)</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-number">{{statsLoaded ? totalDistance : "—"}}</text>
+      <text class="stat-label">累计跑量 (公里)</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-number">{{statsLoaded ? score : "—"}}</text>
+      <text class="stat-label">积分资产</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-number">{{statsLoaded ? energy : "—"}}</text>
+      <text class="stat-label">小花儿</text>
+    </view>
+  </view>
+
+  <!-- 跑步日历热力图 -->
+  <view class="section-card">
+    <view class="section-head">
+      <view class="section-title-wrap">
+        <text class="section-title">跑步日历</text>
+        <text class="section-sub">打卡足迹与跑量分布</text>
+      </view>
+      <view class="heatmap-nav" wx:if="{{heatmapStatus === 'ready'}}">
+        <view class="nav-arrow {{canPrevMonth ? '' : 'disabled'}}" bindtap="onPrevMonth">‹</view>
+        <text class="nav-label">{{myHeatmap.monthLabel}}</text>
+        <view class="nav-arrow {{canNextMonth ? '' : 'disabled'}}" bindtap="onNextMonth">›</view>
       </view>
     </view>
-    <view class="week-data" wx:if="{{haveSuperActy}}">
-      <view class="vw-wrap">
-        <view class="data-con bg-white" style="margin-bottom: 30rpx;padding-bottom: 20rpx;">
-          <view class="acty-tit tit-toggle">挑战项<text class="time-region">({{pasStartDate2}} ~ {{passEndDate2}})</text></view>
-          <swiper wx:if="{{sex==1}}" autoplay="{{swiper2.autoplay}}" interval="{{swiper2.interval}}" duration="{{swiper2.duration}}" current="{{swiper2.current}}" circular="{{swiper2.circular}}" previous-margin="-30rpx" next-margin="-30rpx" style="height: 26vh;overflow: hidden;">
-            <swiper-item wx:for="{{swiper2.qualifications}}" wx:key="index">
-              <view class="data-body">
-                <view class="flex-con">
-                  <view class="pre arrow" bindtap="prev2">
-                    <image src="/images/prev.svg" mode="widthFix"></image>
-                  </view>
-                  <view class="choose-date">{{index}}</view>
-                  <view class="next arrow" bindtap="next2">
-                    <image src="/images/next.svg" mode="widthFix"></image>
-                  </view>
-                </view>
-                <view class="flex-con pies-con">
-                  <view class="pies-wrap" wx:for="{{item.week_temps}}" wx:for-item="items" wx:for-index="childindex" wx:key="index">
-                    <view class="pies-subwrap" wx:if="{{echartShow}}">
-                      <view class="echart_panel">
-                        <ec-canvas ec="{{ecPie1}}" bind:init="initPie2" data-times="{{items.sport_days}}"></ec-canvas>
-                      </view>
-                    </view>
-                    <view class="line"></view>
-                    <view class="date">
-                      <view>{{childindex}}</view>
-                    </view>
-                  </view>
-                </view>
-                <view class="progress-content">
-                  <view class="progress-con">
-                    <view class="data">{{item.sport_amount}}/{{passDistance2}}</view>
-                    <view class="percent">{{module1.slice(module1.GetPercent(item.sport_amount,passDistance2))}}%</view>
-                    <view wx:if="{{module1.GetPercent(item.sport_amount,passDistance2) >= 100}}">
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance2)}}" stroke-width="30" color="#4ecca3" backgroundColor="#f7f6e7" />
-                    </view>
-                    <view wx:else>
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance2)}}" stroke-width="30" color="#fb929e" backgroundColor="#f7f6e7" />
-                    </view>
-                  </view>
-                </view>
-              </view>
-            </swiper-item>
-          </swiper>
-          <swiper wx:if="{{sex==2}}" autoplay="{{swiper2.autoplay}}" interval="{{swiper2.interval}}" duration="{{swiper2.duration}}" current="{{swiper2.current}}" circular="{{swiper2.circular}}" previous-margin="-30rpx" next-margin="-30rpx" style="height: 43vh;overflow: hidden;">
-            <swiper-item wx:for="{{swiper2.qualifications}}" wx:key="index">
-              <view class="data-body">
-                <view class="flex-con">
-                  <view class="pre arrow" bindtap="prev2">
-                    <image src="/images/prev.svg" mode="widthFix"></image>
-                  </view>
-                  <view class="choose-date">{{index}}</view>
-                  <view class="next arrow" bindtap="next2">
-                    <image src="/images/next.svg" mode="widthFix"></image>
-                  </view>
-                </view>
-                <view class="girls-circle">
-                  <view class="pies-subwrap">
-                    <view class="echart_panel">
-                      <ec-canvas ec="{{ecPie00}}" bind:init="initPie00" data-days="{{item.sport_days}}" data-list="{{item.week_list}}"></ec-canvas>
-                    </view>
-                  </view>
-                </view>
-                <view class="progress-content">
-                  <view class="progress-con">
-                    <view class="data">{{item.sport_amount}}/{{passDistance2}}</view>
-                    <view class="percent">{{module1.slice(module1.GetPercent(item.sport_amount,passDistance2))}}%</view>
-                   <view wx:if="{{module1.GetPercent(item.sport_amount,passDistance2) >= 100}}">
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance2)}}" stroke-width="30" color="#4ecca3" backgroundColor="#f7f6e7" />
-                    </view>
-                    <view wx:else>
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance2)}}" stroke-width="30" color="#fb929e" backgroundColor="#f7f6e7" />
-                    </view>
-                  </view>
-                </view>
-              </view>
-            </swiper-item>
-          </swiper>
-        </view>
-        <view class="data-con bg-white" style="margin-bottom: 30rpx;padding-bottom: 20rpx;">
-          <view class="acty-tit tit-toggle">资格项<text class="time-region">({{pasStartDate}} ~ {{passEndDate}})</text></view>
-          <swiper wx:if="{{sex==1}}" autoplay="{{swiper.autoplay}}" interval="{{swiper.interval}}" duration="{{swiper.duration}}" current="{{swiper.current}}" circular="{{swiper.circular}}" previous-margin="-30rpx" next-margin="-30rpx" style="height: 26vh;overflow: hidden;">
-            <swiper-item wx:for="{{swiper.qualifications}}" wx:key="index">
-              <view class="data-body">
-                <view class="flex-con">
-                  <view class="pre arrow" bindtap="prev">
-                    <image src="/images/prev.svg" mode="widthFix"></image>
-                  </view>
-                  <view class="choose-date">{{index}}</view>
-                  <view class="next arrow" bindtap="next">
-                    <image src="/images/next.svg" mode="widthFix"></image>
-                  </view>
-                </view>
-                <view class="flex-con pies-con">
-                  <view class="pies-wrap" wx:for="{{item.week_temps}}" wx:for-item="items" wx:for-index="childindex" wx:key="index">
-                    <view class="pies-subwrap" wx:if="{{echartShow}}">
-                      <view class="echart_panel">
-                        <ec-canvas ec="{{ecPie1}}" bind:init="initPie1" data-times="{{items.sport_days}}"></ec-canvas>
-                      </view>
-                    </view>
-                    <view class="line"></view>
-                    <view class="date">
-                      <view>{{childindex}}</view>
-                    </view>
-                  </view>
-                </view>
-                <view class="progress-content">
-                  <view class="progress-con">
-                    <view class="data">{{item.sport_amount}}/{{passDistance}}</view>
-                    <view class="percent">{{module1.slice(module1.GetPercent(item.sport_amount,passDistance))}}%</view>
-                    <view wx:if="{{module1.GetPercent(item.sport_amount,passDistance) >= 100}}">
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance)}}" stroke-width="30" color="#4ecca3" backgroundColor="#f7f6e7" />
-                    </view>
-                    <view wx:else>
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance)}}" stroke-width="30" color="#fb929e" backgroundColor="#f7f6e7" />
-                    </view>
-                  </view>
-                </view>
-              </view>
-            </swiper-item>
-          </swiper>
-          <swiper wx:if="{{sex==2}}" autoplay="{{swiper.autoplay}}" interval="{{swiper.interval}}" duration="{{swiper.duration}}" current="{{swiper.current}}" circular="{{swiper.circular}}" previous-margin="-30rpx" next-margin="-30rpx" style="height: 43vh;overflow: hidden;">
-            <swiper-item wx:for="{{swiper.qualifications}}" wx:key="index">
-              <view class="data-body">
-                <view class="flex-con">
-                  <view class="pre arrow" bindtap="prev">
-                    <image src="/images/prev.svg" mode="widthFix"></image>
-                  </view>
-                  <view class="choose-date">{{index}}</view>
-                  <view class="next arrow" bindtap="next">
-                    <image src="/images/next.svg" mode="widthFix"></image>
-                  </view>
-                </view>
-                <view class="girls-circle">
-                  <view class="pies-subwrap">
-                    <view class="echart_panel">
-                      <ec-canvas ec="{{ecPie0}}" bind:init="initPie0" data-days="{{item.sport_days}}" data-list="{{item.week_list}}"></ec-canvas>
-                    </view>
-                  </view>
-                </view>
-                <view class="progress-content">
-                  <view class="progress-con">
-                    <view class="data">{{item.sport_amount}}/{{passDistance}}</view>
-                    <view class="percent">{{module1.slice(module1.GetPercent(item.sport_amount,passDistance))}}%</view>
-                    <view wx:if="{{module1.GetPercent(item.sport_amount,passDistance) >= 100}}">
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance)}}" stroke-width="30" color="#4ecca3" backgroundColor="#f7f6e7" />
-                    </view>
-                    <view wx:else>
-                      <progress percent="{{module1.GetPercent(item.sport_amount,passDistance)}}" stroke-width="30" color="#fb929e" backgroundColor="#f7f6e7" />
-                    </view>
-                  </view>
-                </view>
-              </view>
-            </swiper-item>
-          </swiper>
-        </view>
+
+    <view class="calendar-grid" wx:if="{{heatmapStatus === 'ready'}}">
+      <view class="weekdays-row">
+        <text wx:for="{{['一', '二', '三', '四', '五', '六', '日']}}" wx:key="*this">{{item}}</text>
+      </view>
+      <view class="days-grid">
+        <block wx:for="{{myHeatmap.days}}" wx:key="index">
+          <view wx:if="{{item.isEmpty}}" class="day-cell is-empty"></view>
+          <view
+            wx:else
+            class="day-cell level-{{item.level}} {{item.isFuture ? 'is-future' : ''}} {{item.isToday ? 'is-today' : ''}}">
+            <text class="cell-day-text" wx:if="{{item.distance <= 0}}">{{item.day}}</text>
+            <view class="cell-run-wrap" wx:if="{{item.distance > 0}}">
+              <text class="cell-run-km">{{item.displayKm}}</text>
+              <text class="cell-run-unit">km</text>
+            </view>
+          </view>
+        </block>
       </view>
     </view>
-    <all-activity totalChallenge="{{totalChallenge}}" totalActy="{{totalActy}}" activityList="{{activityList}}" activityList2="{{activityList2}}" bind:parentEvent="loadMore" bind:parentEvent2="loadMore2" bind:parentEvent3="toDet"></all-activity>
-    <view style="height: 80rpx;"></view>
-  </scroll-view>
+    <view class="calendar-loading" wx:elif="{{heatmapStatus === 'loading'}}">
+      <text>正在读取跑步日历…</text>
+    </view>
+  </view>
+
+  <!-- 马拉松成绩 -->
+  <view class="section-card" wx:if="{{marathons.length > 0}}">
+    <view class="section-head" bindtap="toMarathonAll">
+      <view class="section-title-wrap">
+        <text class="section-title">马拉松成绩</text>
+        <text class="section-sub">共完赛 {{totalMarathons}} 场认证赛事</text>
+      </view>
+      <text class="section-link">全部成绩 →</text>
+    </view>
+
+    <view class="marathon-list">
+      <block wx:for="{{marathons}}" wx:key="index">
+        <view class="marathon-card" bindtap="toMarathonAll">
+          <view class="marathon-head">
+            <text class="marathon-title">{{item.marathon_name}}</text>
+            <text class="pb-tag" wx:if="{{item.is_pb == 1}}">★ PB</text>
+          </view>
+          <view class="marathon-body">
+            <text class="marathon-type">{{item.events_type || "认证赛事"}} · {{item.playing_time}}</text>
+            <text class="marathon-score">{{item.accurate_score || "—"}}</text>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 参与活动与挑战 -->
+  <view class="section-card">
+    <view class="section-tabs">
+      <view
+        class="tab-item {{activeTab === 'challenge' ? 'active' : ''}}"
+        data-tab="challenge"
+        bindtap="switchTab">
+        参与的挑战 ({{totalChallenge}})
+      </view>
+      <view
+        class="tab-item {{activeTab === 'activity' ? 'active' : ''}}"
+        data-tab="activity"
+        bindtap="switchTab">
+        参与的团跑 ({{totalActy}})
+      </view>
+    </view>
+
+    <!-- 挑战列表 -->
+    <view class="acty-grid" wx:if="{{activeTab === 'challenge'}}">
+      <block wx:for="{{activityList}}" wx:key="id">
+        <view class="acty-card" data-id="{{item.id || item.acty_id}}" bindtap="toChallengeDetail">
+          <image class="acty-img" src="{{item.acty_img || '/images/default.png'}}" mode="aspectFill"></image>
+          <text class="acty-name">{{item.acty_name}}</text>
+        </view>
+      </block>
+      <view class="empty-tip" wx:if="{{activityList.length === 0}}">TA 暂未参加挑战</view>
+    </view>
+
+    <!-- 团跑列表 -->
+    <view class="acty-grid" wx:if="{{activeTab === 'activity'}}">
+      <block wx:for="{{activityList2}}" wx:key="id">
+        <view class="acty-card" data-id="{{item.id || item.acty_id}}" bindtap="toActivityDetail">
+          <image class="acty-img" src="{{item.acty_img || '/images/default.png'}}" mode="aspectFill"></image>
+          <text class="acty-name">{{item.acty_name}}</text>
+        </view>
+      </block>
+      <view class="empty-tip" wx:if="{{activityList2.length === 0}}">TA 暂未参加团跑活动</view>
+    </view>
+  </view>
 </view>

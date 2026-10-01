@@ -1,10 +1,11 @@
 {
+  "navigationStyle": "custom",
   "backgroundTextStyle":"dark",
-  "backgroundColor": "#4CB944",
-  "navigationBarBackgroundColor": "#4CB944",
+  "backgroundColor": "#fbfcf9",
+  "navigationBarBackgroundColor": "#fbfcf9",
   "navigationBarTitleText": "挑战详情",
-  "navigationBarTextStyle":"white",
+  "navigationBarTextStyle":"black",
   "usingComponents": {
-    "circle": "../../components/circle/circle"
+    "site-header": "../../components/site-header/site-header"
   }
 }

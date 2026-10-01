@@ -1,32 +1,57 @@
+<site-header show-back="{{true}}" back-url="/pages/mydata/mydata"></site-header>
 <!--pages/address/address.wxml-->
-<view class="address-list">
-<block wx:for="{{addressList}}" wx:key="index">
-    <view class="vw-wrap bg-white list-item">
-      <!-- <navigator url="../confirmorder/confirmorder?id={{item.id}}" hover-class="none"> -->
-        <view class="address-infor" data-id="{{item.id}}" bindtap="chooseAdd">
-          <view class="receiver">
-            <view class="name">{{item.name}}</view>
-            <view class="number">{{item.mobile}}</view>
-          </view>
-          <view class="address-details">{{item.address}}</view>
+<view class="addr-page">
+  <view class="addr-head">
+    <text class="addr-kicker">WRC · ADDRESS</text>
+    <text class="addr-head-label">选择收货地址</text>
+  </view>
+
+  <view class="addr-loading" wx:if="{{listState == 'loading'}}">
+    <view class="addr-skeleton-card" wx:for="{{[1, 2]}}" wx:key="*this">
+      <view class="addr-skeleton-line addr-skeleton-line-long"></view>
+      <view class="addr-skeleton-line"></view>
+    </view>
+    <text class="addr-state-tip">正在加载地址…</text>
+  </view>
+
+  <view class="addr-error" wx:elif="{{listState == 'error'}}">
+    <text class="addr-kicker">WRC · ADDRESS</text>
+    <text class="addr-error-title">地址暂时无法显示</text>
+    <text class="addr-error-copy">数据加载失败，请检查网络后重试。</text>
+    <button class="addr-retry-button" bindtap="initList">重新加载</button>
+  </view>
+
+  <block wx:if="{{listState == 'ready'}}">
+    <view class="addr-empty" wx:if="{{addressList.length == 0}}">
+      <text class="addr-empty-title">暂无收货地址</text>
+      <text class="addr-empty-copy">添加一个常用地址，兑换奖品时更快提交。</text>
+    </view>
+
+    <view class="addr-card" wx:for="{{addressList}}" wx:key="index">
+      <view class="addr-main" data-id="{{item.id}}" bindtap="chooseAdd">
+        <view class="addr-top">
+          <text class="addr-name">{{item.name}}</text>
+          <text class="addr-tel">{{item.mobile}}</text>
+          <text class="addr-default-tag" wx:if="{{item.id==id}}">默认</text>
         </view>
-      <!-- </navigator> -->
-      <view class="edit-address">
-        <view class="default">
-            <label class="radio" >
-                <radio value='{{item.id}}' bindtap="setdefAdd" data-id="{{item.id}}" checked="{{item.id==id}}" />
-                <text>设为默认地址</text>
-            </label>
-        </view>
-        <view class="icons">
-          <view class="icon" bindtap="editIt" data-id="{{item.id}}"><image src="../../images/edit-gray.png"></image></view>
-          <view class="icon" bindtap="delIt" data-id="{{item.id}}"><image src="../../images/del-gray.png"></image></view>
+        <text class="addr-detail">{{item.address}}</text>
+      </view>
+      <view class="addr-foot">
+        <label class="addr-default">
+          <radio value="{{item.id}}" bindtap="setdefAdd" data-id="{{item.id}}" checked="{{item.id==id}}" color="#0b503b" class="addr-radio" />
+          <text class="addr-default-text">设为默认地址</text>
+        </label>
+        <view class="addr-ops">
+          <button class="addr-op" bindtap="editIt" data-id="{{item.id}}">编辑</button>
+          <button class="addr-op is-danger" bindtap="delIt" data-id="{{item.id}}">删除</button>
         </view>
       </view>
     </view>
-</block>
-</view>
+  </block>
 
-<view class="bg-white full-btn">
-  <navigator url="/pages/newaddress/newaddress" hover-class="none"><button class="btn btnOne">添加新地址</button></navigator>
+  <view class="addr-bar">
+    <navigator url="/pages/newaddress/newaddress" hover-class="none" class="addr-bar-nav">
+      <button class="addr-bar-button">添加新地址</button>
+    </navigator>
+  </view>
 </view>

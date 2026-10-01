@@ -1,12 +1,122 @@
-/* pages/editaddress/editaddress.wxss */
-@import "../userinfor/userinfor.wxss";
- .new-address .vw-form{
-  border-bottom: 1px solid #f1f1f1;
+/* pages/editaddress/editaddress.wxss —— 自包含表单样式（不再 @import userinfor.wxss），暖白 / 深松绿 / 荧光黄绿 */
+page {
+  background: #fbfcf9;
+  color: #072f27;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
 }
-.new-address .vw-form .fm-tit{
-  width: 20%;
-  margin-right: 20rpx;
+.addrform-page {
+  min-height: 100vh;
+  padding-top: 180rpx;
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
 }
-.new-address .vw-form .fm-con{
-  border: none;
-} 
+.addrform-kicker {
+  display: block;
+  color: #0d6447;
+  font-size: 21rpx;
+  font-weight: 750;
+  letter-spacing: 3rpx;
+}
+.addrform-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 36rpx 40rpx 10rpx;
+}
+.addrform-head-label {
+  color: #819187;
+  font-size: 21rpx;
+}
+.addrform-section {
+  margin: 28rpx 40rpx 0;
+}
+.addrform-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+.addrform-title {
+  font-size: 30rpx;
+  line-height: 1.25;
+  font-weight: 800;
+}
+.addrform-badge {
+  color: #87938c;
+  font-size: 21rpx;
+}
+.addrform-card {
+  padding: 0 28rpx;
+  border: 1rpx solid #e3ebe4;
+  border-radius: 22rpx;
+  background: #fff;
+}
+.addrform-row {
+  display: flex;
+  align-items: center;
+  min-height: 108rpx;
+  border-bottom: 1rpx solid #f0f4ef;
+}
+.addrform-row:last-child {
+  border-bottom: 0;
+}
+.addrform-label {
+  flex: none;
+  width: 170rpx;
+  color: #082f27;
+  font-size: 27rpx;
+  font-weight: 750;
+}
+.addrform-input {
+  flex: 1;
+  color: #072f27;
+  font-size: 26rpx;
+  text-align: right;
+}
+.addrform-placeholder {
+  color: #9aa69e;
+}
+.addrform-picker {
+  flex: 1;
+}
+.addrform-picker-value {
+  color: #072f27;
+  font-size: 26rpx;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.addrform-arrow {
+  margin-left: 8rpx;
+  color: #798782;
+  font-size: 20rpx;
+}
+.addrform-footer {
+  position: fixed;
+  z-index: 5;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 15rpx 40rpx calc(19rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #dfe8df;
+  background: #fbfcf9;
+}
+.addrform-save {
+  display: flex;
+  width: 100%;
+  height: 92rpx;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+  border-radius: 48rpx;
+  background: #d9ff3f;
+  color: #092f27;
+  font-size: 29rpx;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.addrform-save::after {
+  border: 0;
+}

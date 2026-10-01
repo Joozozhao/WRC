@@ -1,133 +1,133 @@
-<!--pages/prizedetails/prizedetails.wxml-->
-<view class="pg-wrap">
-  <!-- <view class="main-pic"><image src="{{imgSrc}}" mode="widthFix" style="height:auto;"></image></view> -->
-  <!-- <view class="swiper">
-    <swiper indicator-dots="{{indicatorDots}}"
-      autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" style="height:{{height}}" circular="true">
-      <block wx:for="{{imgSrc}}" wx:key="index" wx:if="{{index<9}}">
-        <swiper-item>
-          <image src="{{item.goods_pic}}" mode="widthFix" style="width:100%;" bindload='goheight' data-index="{{index}}" binderror="findError"/>
+<site-header show-back="{{true}}" back-url="/pages/prize/prize"></site-header>
+<view class="reward-page">
+  <view class="reward-loading" wx:if="{{detailState == 'loading'}}">
+    <view class="reward-loading-art"></view>
+    <view class="reward-loading-line reward-loading-line-long"></view>
+    <view class="reward-loading-line"></view>
+    <text>正在加载奖品详情…</text>
+  </view>
+
+  <view class="reward-error" wx:elif="{{detailState == 'error'}}">
+    <text class="reward-kicker">WRC · REWARDS</text>
+    <text class="reward-error-title">奖品暂时无法显示</text>
+    <text class="reward-error-copy">{{itemId ? '数据加载失败，请稍后重试。' : '奖品参数缺失，请返回兑换中心重新选择。'}}</text>
+    <button class="reward-retry-button" wx:if="{{itemId}}" bindtap="retryPage">重新加载</button>
+  </view>
+
+  <block wx:if="{{detailState == 'ready'}}">
+    <view class="reward-head">
+      <text class="reward-kicker">WRC · REWARDS</text>
+      <text class="reward-head-label">奖品详情 / 兑换礼遇</text>
+    </view>
+
+    <view class="reward-media">
+      <swiper class="reward-gallery" wx:if="{{gallery.length}}" current="{{heroIndex}}" circular="{{gallery.length > 1}}" bindchange="changeHero">
+        <swiper-item wx:for="{{gallery}}" wx:for-item="photo" wx:for-index="photoIndex" wx:key="url">
+          <image class="reward-gallery-image" wx:if="{{!photo.failed}}" src="{{photo.url}}" mode="aspectFit" data-index="{{photoIndex}}" binderror="heroImageError"></image>
+          <view class="reward-image-fallback" wx:else>这张奖品图片暂时无法显示</view>
         </swiper-item>
-      </block>
-    </swiper>
-  </view> -->
-  <view>
-    <image src="{{imgSrc}}" mode="widthFix" style="width:100%;" />
-  </view>
-  <view class="bg-white prize-infor">
-    <view class="need-points" wx:if="{{goods_type==0}}">
-      <image src="../../images/point.png" class="ico"></image><text class="points">{{points}}</text><text>积分</text>
-    </view>
-    <view class="need-points" wx:if="{{goods_type==1}}">
-      <image src="../../images/en-ico.svg" class="ico"></image><text class="points">{{energy}}</text><text>小花儿</text>
-    </view>
-    <view class="prize-tit">{{goodName}}</view>
-  </view>
-  <view class="bg-white prize-type">
-    <view class="top-con" wx:if="{{allType}}">
-      <view class="mycon-tit awesome-bg b-tapered">奖品规格<view class="total-wrap" wx:if="{{otherTit}}"><text class="total-num" wx:if="{{totalNum>0}}">库存：{{totalNum}}</text>
-          <text class="total-num" wx:if="{{totalNum==0}}">库存：0</text>
-        </view>
+      </swiper>
+      <view class="reward-image-fallback" wx:else>
+        <text wx:if="{{galleryState == 'loading'}}">正在加载奖品图片…</text>
+        <text wx:elif="{{galleryState == 'error'}}">奖品图片加载失败</text>
+        <text wx:else>奖品图片暂未提供</text>
       </view>
-      <view wx:for="{{allType}}" wx:key="index">
-        <view wx:if="{{allType.length>1}}">{{item.tagName}}</view>
-        <view class="tpye-con">
-          <view wx:for="{{item.goodsStorageList}}" wx:for-item="items" wx:for-index="childindex" wx:key="index">
-            <view class="tag-desc {{id == items.id ? 'active' : ''}} {{totalNum==0 ? 'dis' : ''}}" wx:if="{{items.tag_desc}}" data-id="{{items.id}}" data-index="{{items.goods_tag}}" data-tag="{{items.tag_desc}}" data-stock="{{items.stock}}" bindtap="chooseOne">{{items.tag_desc}}</view>
+      <view class="reward-gallery-count" wx:if="{{gallery.length > 1}}">{{heroIndex + 1}} / {{gallery.length}}</view>
+    </view>
+    <button class="reward-text-action reward-gallery-retry" wx:if="{{galleryState == 'error'}}" bindtap="retryGallery">奖品图片加载失败，点击重试</button>
+
+    <view class="reward-intro">
+      <text class="reward-intro-label">RUN MORE · GET MORE</text>
+      <text class="reward-name">{{goodName || '奖品名称暂未提供'}}</text>
+      <view class="reward-price-panel">
+        <view class="reward-price-top">
+          <text>兑换所需</text>
+          <text class="reward-vip" wx:if="{{goodsType == 1}}">超级会员专享</text>
+        </view>
+        <view class="reward-price" wx:if="{{priceKnown}}">
+          <text class="reward-price-number">{{priceValue}}</text>
+          <text class="reward-price-unit">{{priceUnit}}</text>
+        </view>
+        <text class="reward-price-missing" wx:else>兑换价格或方式暂未提供</text>
+        <text class="reward-price-note">兑换资格与余额以订单确认、提交结果为准</text>
+      </view>
+    </view>
+
+    <view class="reward-section" id="reward-specifications">
+      <view class="reward-section-heading">
+        <text class="reward-section-title">选择规格</text>
+        <text class="reward-section-index">01 / SPEC</text>
+      </view>
+      <text class="reward-section-copy">库存按具体规格显示，提交订单时仍需再次确认。</text>
+      <block wx:if="{{specCount > 0}}">
+        <view class="reward-spec-group" wx:for="{{specGroups}}" wx:for-item="group" wx:key="key">
+          <text class="reward-spec-label">{{group.title}}</text>
+          <view class="reward-spec-options" wx:if="{{group.options.length}}">
+            <button class="reward-spec-chip {{selectedStorageId == option.id ? 'is-selected' : ''}} {{!option.available ? 'is-unavailable' : ''}}" wx:for="{{group.options}}" wx:for-item="option" wx:key="key" data-id="{{option.id}}" disabled="{{!option.available}}" bindtap="chooseSpec">
+              <text class="reward-spec-name">{{option.label}}</text>
+              <text class="reward-spec-stock">{{option.stockLabel}}</text>
+            </button>
           </view>
+          <text class="reward-muted" wx:else>这个分组暂无可选规格</text>
         </view>
-      </view>
-    </view>
-    <view class="vw-wrap" wx:else>
-      <view style="padding:30rpx 0;">暂无规格</view>
-    </view>
-  </view>
-  <view class="page-tit" wx:if="{{detailSrc!==''}}">
-    <view class="line"></view>
-    <view>礼品详情</view>
-    <view class="line"></view>
-  </view>
-  <view class="bg-white prize-details" wx:if="{{detailSrc!==''}}">
-    <view wx:for="{{detailSrc}}" wx:key="index">
-      <view>
-        <image src="{{item.goods_pic}}" mode="widthFix" style="width:100%;height:auto;" />
-      </view>
-    </view>
-
-    <view class="goods-style">
-        <rich-text nodes="{{goodsRemark}}"></rich-text>
-      </view>
-  </view>
-  <view class="exchange-list" wx:if="{{total>0}}">
-    <view class="tit awesome-bg b-tapered"> Ta们最近兑换了这个奖品</view>
-    <view class="user-list">
-      <block wx:for="{{imgList}}" wx:key="index">
-        <image src="{{item.header_url}}" class="avastar"></image>
+        <view class="reward-selection" wx:if="{{selectedStorageId}}">
+          <text>已选 {{selectedTypeOne}} {{selectedTypeTwo}}</text>
+          <text>库存 {{selectedStock}}</text>
+        </view>
+        <text class="reward-stock-alert" wx:if="{{availableCount == 0}}">目前没有库存充足且信息完整的规格，暂无法前往订单页。</text>
       </block>
+      <text class="reward-stock-alert" wx:else>暂未提供奖品规格，无法前往订单页。</text>
     </view>
-  </view>
-  <view class="vw-wrap">
-    <view class="mycon-tit awesome-bg b-tapered">兑换明细</view>
-    <view class="tab-wrap">
-      <view class="tab-item tab-item1">#</view>
-      <view class="tab-item tab-item2">兑换人</view>
-      <view class="tab-item tab-item3">兑换时间</view>
-    </view>
-    <block wx:for="{{imgList}}" wx:key="index">
-      <view class="tab-wrap">
-        <view class="tab-item tab-item1">{{index+1}}</view>
-        <view class="tab-item tab-item2">{{item.name}}</view>
-        <view class="tab-item tab-item3">{{item.create_time}}</view>
-      </view>
-    </block>
-  </view>
-</view>
-<view class="bg-white full-btn">
-  <button class="btn btnOne" bindtap="exchange">立即兑换</button>
-</view>
-<!-- 遮罩层 -->
-<view class="modal-mask" wx:if="{{typePop}}" bindtap="close"></view>
-<!-- 弹出框 -->
-<view class="modal-choose" wx:if="{{typePop}}">
-  <view class="modal-content">
 
-    <view class="top-con" wx:if="{{allType}}">
-      <view class="mycon-tit">奖品规格<view class="total-wrap" wx:if="{{otherTit}}"><text class="total-num" wx:if="{{totalNum>0}}">库存：{{totalNum}}</text>
-          <text class="total-num" wx:if="{{totalNum==0}}">库存：0</text>
+    <view class="reward-section reward-detail-section">
+      <view class="reward-section-heading">
+        <text class="reward-section-title">奖品详情</text>
+        <text class="reward-section-index">02 / DETAIL</text>
+      </view>
+      <view class="reward-detail-images" wx:if="{{detailImages.length}}">
+        <view class="reward-detail-image-wrap" wx:for="{{detailImages}}" wx:for-item="photo" wx:for-index="photoIndex" wx:key="key">
+          <image wx:if="{{!photo.failed}}" src="{{photo.url}}" mode="widthFix" data-index="{{photoIndex}}" binderror="detailImageError"></image>
+          <text class="reward-detail-image-error" wx:else>这张详情图片暂时无法显示</text>
         </view>
       </view>
-      <view wx:for="{{allType}}" wx:key="index">
-        <view>{{item.tagName}}</view>
-        <view class="tpye-con">
-          <view wx:for="{{item.goodsStorageList}}" wx:for-item="items" wx:for-index="childindex" wx:key="index">
-            <view class="tag-desc {{id==items.id ? 'active' : ''}} {{totalNum==0 ? 'dis' : ''}}" wx:if="{{items.tag_desc}}" data-id="{{items.id}}" data-index="{{items.goods_tag}}" data-tag="{{items.tag_desc}}" data-stock="{{items.stock}}" bindtap="chooseOne">{{items.tag_desc}}</view>
-          </view>
+      <view class="reward-description" wx:if="{{goodsRemark}}"><rich-text nodes="{{goodsRemark}}"></rich-text></view>
+      <text class="reward-muted" wx:if="{{detailImagesState == 'loading' && !detailImages.length}}">正在加载详情图片…</text>
+      <view class="reward-inline-state" wx:if="{{detailImagesState == 'error'}}">
+        <text>详情图片加载失败</text>
+        <button class="reward-text-action" bindtap="retryDetailImages">点击重试</button>
+      </view>
+      <text class="reward-muted" wx:if="{{detailImagesState == 'empty' && !goodsRemark}}">暂无图文详情</text>
+    </view>
+
+    <view class="reward-section reward-record-section">
+      <view class="reward-section-heading">
+        <text class="reward-section-title">最近兑换</text>
+        <text class="reward-section-index">03 / RECORD</text>
+      </view>
+      <text class="reward-section-copy" wx:if="{{recordsState == 'ready'}}">{{recordCountLabel}} · 以下显示近期记录</text>
+      <text class="reward-muted" wx:if="{{recordsState == 'loading'}}">正在加载兑换记录…</text>
+      <text class="reward-muted" wx:if="{{recordsState == 'empty'}}">暂无兑换记录</text>
+      <view class="reward-inline-state" wx:if="{{recordsState == 'error'}}">
+        <text>兑换记录加载失败</text>
+        <button class="reward-text-action" bindtap="retryRecords">点击重试</button>
+      </view>
+      <view class="reward-record" wx:for="{{records}}" wx:for-item="record" wx:key="key">
+        <image class="reward-avatar" wx:if="{{record.avatar}}" src="{{record.avatar}}" mode="aspectFill"></image>
+        <view class="reward-avatar reward-avatar-empty" wx:else>·</view>
+        <view class="reward-record-copy">
+          <text class="reward-record-name">{{record.name}}</text>
+          <text class="reward-record-time">{{record.time}}</text>
         </view>
-      </view>
-    </view>
-    <view class="vw-wrap" wx:else>
-      <view style="padding:30rpx 0;">暂无规格</view>
-    </view>
-
-    <button class="btn btnOne" bindtap="sure">确定</button>
-  </view>
-</view>
-<view class="modal-mask" wx:if="{{codeModal}}" bindtap="closeIt"></view>
-<!-- 弹出框 -->
-<view class="modal-dialog" style="width:90%;" wx:if="{{codeModal}}">
-  <form bindsubmit="onConfirm">
-    <view class="modal-content">
-      <!-- <view class="con-t">兑换奖品</view> -->
-      <view>
-        <view class="con-t">兑换码</view>
-        <input type="number" value="{{code}}" name="code" placeholder="请输入兑换码" class="id-ipt"></input>
+        <text class="reward-record-mark">已兑换</text>
       </view>
     </view>
 
-    <!-- 操作按钮 -->
-    <view class="modal-footer nopd">
-      <button class="btn btn-cancel" bindtap="onCancel" data-status="cancel">取消</button>
-      <button class="btn btn-confirm" form-type="submit">确定</button>
+    <view class="reward-action">
+      <text class="reward-action-hint" wx:if="{{!priceKnown || !goodName}}">奖品信息暂不完整</text>
+      <text class="reward-action-hint" wx:elif="{{availableCount == 0}}">暂无可兑换库存</text>
+      <text class="reward-action-hint" wx:elif="{{selectedStorageId}}">已选 {{selectedTypeTwo}} · 库存 {{selectedStock}}</text>
+      <text class="reward-action-hint" wx:else>选择规格后前往订单页</text>
+      <button class="reward-action-button {{!priceKnown || !goodName || availableCount == 0 || actionBusy ? 'is-unavailable' : ''}}" bindtap="startExchange" disabled="{{!priceKnown || !goodName || availableCount == 0 || actionBusy}}">{{actionBusy ? '正在确认库存…' : '前往确认订单'}} <text>↗</text></button>
     </view>
-  </form>
+  </block>
 </view>

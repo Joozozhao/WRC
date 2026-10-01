@@ -1,2 +1,208 @@
-/* pages/together/together.wxss */
-@import "../member/member.wxss"
+/* WRC Together: 聚跑成员视觉规范（独立样式，不再 @import member.wxss） */
+page {
+  background-color: #fbfcf9;
+  color: #072f27;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+.together-page {
+  min-height: 100vh;
+  padding: 180rpx 36rpx calc(80rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.together-header {
+  margin-bottom: 34rpx;
+}
+
+.eyebrow {
+  display: block;
+  color: #0d6447;
+  font-size: 22rpx;
+  font-weight: 750;
+  letter-spacing: 3rpx;
+}
+
+.page-title {
+  display: block;
+  margin-top: 20rpx;
+  color: #072f27;
+  font-size: 56rpx;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -2rpx;
+}
+
+.title-line {
+  width: 140rpx;
+  height: 6rpx;
+  margin-top: 18rpx;
+  border-radius: 8rpx;
+  background: #d9ff3f;
+}
+
+.page-subtitle {
+  display: block;
+  color: #78897e;
+  font-size: 24rpx;
+  margin-top: 18rpx;
+  line-height: 1.4;
+}
+
+.member-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.member-card {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1rpx solid #e3ebe4;
+  border-radius: 24rpx;
+  padding: 22rpx 24rpx;
+  box-sizing: border-box;
+  box-shadow: 0 4rpx 14rpx rgba(7, 47, 39, 0.02);
+  transition: background 0.15s ease;
+}
+
+.card-hover {
+  background: #f0f5ec;
+}
+
+.member-avatar {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  border: 2rpx solid #e5eee4;
+  background: #e9f0e8;
+  flex: none;
+}
+
+.member-info {
+  flex: 1;
+  min-width: 0;
+  margin-left: 18rpx;
+  padding-right: 12rpx;
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.member-name {
+  font-size: 29rpx;
+  font-weight: 800;
+  color: #083427;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 260rpx;
+}
+
+.vip-icon {
+  width: 28rpx;
+  height: 28rpx;
+  flex: none;
+}
+
+.sex-icon {
+  width: 24rpx;
+  height: 24rpx;
+  flex: none;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-top: 6rpx;
+}
+
+.member-id {
+  font-size: 20rpx;
+  color: #8fa094;
+}
+
+.state-tag {
+  background: #f1f6ef;
+  color: #2b5f44;
+  font-size: 19rpx;
+  font-weight: 600;
+  padding: 2rpx 12rpx;
+  border-radius: 6rpx;
+}
+
+.member-action {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  flex: none;
+}
+
+.action-text {
+  font-size: 22rpx;
+  color: #637d6e;
+  font-weight: 600;
+}
+
+.action-arrow {
+  font-size: 24rpx;
+  color: #0c6246;
+  font-weight: 800;
+}
+
+.empty-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-mark {
+  font-size: 72rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #103d2e;
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  color: #7e8d83;
+  margin-top: 12rpx;
+}
+
+.loading-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+}
+
+.loading-spinner {
+  width: 44rpx;
+  height: 44rpx;
+  border: 4rpx solid #dce8db;
+  border-top-color: #0c6246;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 24rpx;
+  color: #768a7d;
+  margin-top: 18rpx;
+}

@@ -1,7 +1,8 @@
 {
-  "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#4CB944",
+  "navigationStyle": "custom",
+  "backgroundTextStyle": "dark",
+  "navigationBarBackgroundColor": "#fbfcf9",
   "navigationBarTitleText": "我的小花儿",
-  "navigationBarTextStyle":"white"
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#fbfcf9"
 }

@@ -1,31 +1,26 @@
-/* pages/lotterylist/lotterylist.wxss */
-@import "../orderlist/orderlist.wxss";
-.activity-infor{
-  display: block;
-  font-size: 24rpx;
-  color: #999;
-}
-.activity-infor .prize-tit{
-  font-size: 32rpx;
-  color: #333;
-}
-.activity-infor .prize-num{
-  font-size: 24rpx;
-  color: #999;
-}
-.activity-infor .state-on{
-  color: #fff;
-}
-.activity{
-  width: 100%;
-  display: flex;
-  padding: 20rpx 30rpx;
-  box-sizing: border-box;
-}
-.activity .cover-img {
-  width: 210rpx;
-}
-.activity .activity-infor{
-  display: block;
-  width: 52%;
-}
+/* pages/lotterylist/lotterylist.wxss 自包含：不再 @import orderlist.wxss */
+page { background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
+.draw-page { min-height: 100vh; padding: 180rpx 40rpx calc(190rpx + env(safe-area-inset-bottom)); box-sizing: border-box; }
+.draw-hero { padding: 18rpx 4rpx 35rpx; border-bottom: 1rpx solid #e1e9e3; }
+.draw-eyebrow { display: block; color: #0d6447; font-size: 22rpx; font-weight: 750; letter-spacing: 3rpx; }
+.draw-title { display: block; margin-top: 27rpx; font-size: 72rpx; line-height: 1.15; font-weight: 800; letter-spacing: -2rpx; }
+.draw-title-line { width: 185rpx; height: 7rpx; margin-top: 4rpx; border-radius: 10rpx; background: #d9ff3f; transform: rotate(-2deg); }
+.draw-intro { display: block; margin-top: 22rpx; color: #7a8980; font-size: 26rpx; line-height: 1.6; }
+.draw-list { margin-top: 26rpx; }
+.draw-card { margin-bottom: 24rpx; padding: 22rpx 24rpx 20rpx; border: 1rpx solid #e3ebe4; border-radius: 22rpx; background: #fff; box-sizing: border-box; }
+.draw-main { display: flex; align-items: flex-start; }
+.draw-cover { overflow: hidden; flex: none; width: 200rpx; height: 200rpx; margin-right: 22rpx; border-radius: 14rpx; background: #eef2ed; }
+.draw-cover image { width: 100%; height: 100%; }
+.draw-info { flex: 1; min-width: 0; color: #718078; font-size: 23rpx; line-height: 1.6; }
+.draw-name { color: #153d31; font-size: 29rpx; font-weight: 750; line-height: 1.4; }
+.draw-num { color: #7a8980; font-size: 22rpx; font-weight: 600; }
+.draw-line { margin-top: 4rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.draw-state { display: inline-block; margin-top: 10rpx; padding: 5rpx 16rpx; border-radius: 20rpx; background: #eef2ed; color: #718078; font-size: 21rpx; font-weight: 700; }
+.draw-state.is-pending { background: #d9ff3f; color: #0b392b; }
+.draw-ops { display: flex; justify-content: flex-end; margin-top: 16rpx; padding-top: 16rpx; border-top: 1rpx solid #e9efe9; }
+.draw-op { padding: 6rpx 20rpx; border: 1rpx solid #dfe8df; border-radius: 24rpx; color: #0b593e; font-size: 23rpx; font-weight: 700; }
+.draw-op.is-danger { border-color: #ecd8d2; color: #a8432c; }
+.draw-empty { display: flex; min-height: 260rpx; align-items: center; justify-content: center; margin-top: 28rpx; border: 1rpx solid #e3ebe4; border-radius: 20rpx; background: #fff; color: #718078; font-size: 25rpx; }
+.draw-footer { position: fixed; z-index: 5; right: 0; bottom: 0; left: 0; padding: 15rpx 40rpx calc(19rpx + env(safe-area-inset-bottom)); border-top: 1rpx solid #dfe8df; background: #fbfcf9; }
+.draw-submit { display: flex; width: 100%; height: 92rpx; align-items: center; justify-content: center; box-sizing: border-box; margin: 0; border-radius: 48rpx; background: #d9ff3f; color: #092f27; font-size: 29rpx; font-weight: 800; line-height: 1.2; }
+.draw-submit::after { border: 0; }

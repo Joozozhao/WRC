@@ -1,2 +1,270 @@
-/* pages/lottery/lottery.wxss */
-@import "../creat/creat.wxss"
+/* WRC Lottery: 自包含视觉规范（暖白/深绿/荧光黄绿） */
+page {
+  background-color: #fafbf7;
+  color: #103d2e;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+.edit-page {
+  min-height: 100vh;
+  padding: 180rpx 36rpx 180rpx;
+  box-sizing: border-box;
+}
+
+.edit-header {
+  margin-bottom: 28rpx;
+}
+
+.eyebrow {
+  display: block;
+  color: #547767;
+  font-size: 20rpx;
+  font-weight: 750;
+  letter-spacing: 3rpx;
+  margin-bottom: 12rpx;
+}
+
+.page-title {
+  display: block;
+  color: #073329;
+  font-size: 54rpx;
+  font-weight: 850;
+  line-height: 1.15;
+  letter-spacing: -1.5rpx;
+}
+
+.page-subtitle {
+  display: block;
+  color: #7d8b82;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+  line-height: 1.4;
+}
+
+.form-card {
+  background: #ffffff;
+  border: 1rpx solid #e3ebe4;
+  border-radius: 26rpx;
+  padding: 32rpx 28rpx;
+  box-sizing: border-box;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(7, 47, 39, 0.03);
+}
+
+.card-badge {
+  font-size: 22rpx;
+  font-weight: 800;
+  color: #105942;
+  letter-spacing: 1rpx;
+  margin-bottom: 22rpx;
+}
+
+.form-group {
+  margin-bottom: 24rpx;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 750;
+  color: #073329;
+  margin-bottom: 12rpx;
+}
+
+.form-input {
+  width: 100%;
+  height: 84rpx;
+  background: #f7faf7;
+  border: 1rpx solid #dfe9df;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  font-size: 27rpx;
+  color: #073329;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.form-input.is-placeholder {
+  color: #9cb0a3;
+}
+
+.placeholder-text {
+  color: #9cb0a3;
+  font-size: 26rpx;
+}
+
+.select-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.select-input {
+  flex: 1;
+  padding-right: 56rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 24rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 34rpx;
+  color: #92a498;
+  line-height: 1;
+}
+
+.hidden-input {
+  display: none;
+}
+
+.field-tip {
+  display: block;
+  font-size: 21rpx;
+  color: #87998d;
+  margin-top: 10rpx;
+}
+
+.time-picker {
+  width: 100%;
+}
+
+.select-field-inner {
+  width: 100%;
+}
+
+/* 地区选择弹窗 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(7, 47, 39, 0.5);
+  z-index: 200;
+}
+
+.area-modal {
+  position: fixed;
+  left: 36rpx;
+  right: 36rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #ffffff;
+  border-radius: 28rpx;
+  overflow: hidden;
+  z-index: 201;
+  box-shadow: 0 16rpx 48rpx rgba(0, 0, 0, 0.18);
+}
+
+.modal-head {
+  display: flex;
+  flex-direction: column;
+  padding: 30rpx 28rpx 20rpx;
+  border-bottom: 1rpx solid #e8efe8;
+}
+
+.modal-title {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #073329;
+}
+
+.modal-sub {
+  font-size: 21rpx;
+  color: #87998d;
+  margin-top: 6rpx;
+}
+
+.area-row {
+  display: flex;
+  align-items: center;
+  padding: 22rpx 28rpx;
+  border-bottom: 1rpx solid #f2f6f2;
+}
+
+.area-row checkbox {
+  transform: scale(0.85);
+}
+
+.area-name {
+  font-size: 27rpx;
+  font-weight: 650;
+  color: #073329;
+  margin-left: 8rpx;
+}
+
+.modal-foot {
+  display: flex;
+  gap: 16rpx;
+  padding: 24rpx 28rpx;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  font-weight: 750;
+}
+
+.cancel-btn {
+  background: #f1f5f1;
+  color: #4b6657;
+}
+
+.confirm-btn {
+  background: #d9ff3f;
+  color: #123d2f;
+  font-weight: 850;
+}
+
+.bottom-action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24rpx 36rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: rgba(250, 251, 247, 0.96);
+  backdrop-filter: blur(12px);
+  border-top: 1rpx solid #e3ede3;
+  z-index: 100;
+}
+
+.primary-submit-btn {
+  background: #d9ff3f;
+  color: #123d2f;
+  font-size: 30rpx;
+  font-weight: 850;
+  border-radius: 999rpx;
+  height: 94rpx;
+  line-height: 94rpx;
+  border: none;
+  box-shadow: 0 8rpx 24rpx rgba(18, 61, 47, 0.12);
+}
+
+.primary-submit-btn::after {
+  border: none;
+}
+
+.primary-submit-btn[disabled] {
+  background: #e6ede2;
+  color: #9db0a2;
+  box-shadow: none;
+}
+
+.btn-pressed {
+  transform: scale(0.985);
+  background: #cbf22f;
+}

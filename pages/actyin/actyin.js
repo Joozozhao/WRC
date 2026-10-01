@@ -1,156 +1,117 @@
-// pages/actyin/actyin.js
-var util = require('../../utils/util.js');
-// 获取应用实例
+const util = require("../../utils/util.js")
 const app = getApp()
+
+function toFixed(num) {
+  const n = Number(num)
+  if (!Number.isFinite(n)) return "0.00"
+  return (Math.round(n * 100) / 100).toFixed(2)
+}
+
+function calcPercent(finish, total) {
+  const f = Number(finish) || 0
+  const t = Number(total) || 0
+  if (t <= 0) return 0
+  const p = Math.round((f / t) * 100)
+  return Math.min(100, Math.max(0, p))
+}
+
 Page({
-  /**
-   * 页面的初始数据
-   */
   data: {
-    memberList: [],
-    selList: ['全部','VIP','普通','非会员'],
-    selLevel: '',
-    sortState: 1,
-    iconState: true,
-    iconState2: true,
-    selAll: false,
-    phoneH: '',
     actyId: 0,
-    per: 0,
-    id: 0,
-    state1: true,
-    state2: false,
-    noList: false
+    memberList: [],
+    levelList: ["全部", "VIP", "普通", "非会员"],
+    activeLevelIndex: 0,
+    sortOrder: 1, // 1: 降序, 0: 升序
+    loading: false,
+    loaded: false,
+    totalCount: 0
   },
-  getH: function(){
-    //获取机型可用高度
-    var that = this
-    wx.getSystemInfo({
-      success: function (res) {
-        that.setData({
-          phoneH: res.windowHeight - (res.windowWidth / 750) * 94 + "px"
+
+  onLoad(options) {
+    const id = options && options.id ? options.id : 0
+    this.setData({ actyId: id })
+    this.fetchMembers()
+  },
+
+  onPullDownRefresh() {
+    this.fetchMembers(() => {
+      wx.stopPullDownRefresh()
+    })
+  },
+
+  chooseLevel(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    if (index === this.data.activeLevelIndex) return
+    this.setData({ activeLevelIndex: index })
+    this.fetchMembers()
+  },
+
+  toggleSort() {
+    const nextOrder = this.data.sortOrder === 1 ? 0 : 1
+    this.setData({ sortOrder: nextOrder })
+    this.fetchMembers()
+  },
+
+  fetchMembers(cb) {
+    this.setData({ loading: true })
+    const levelStr = this.data.activeLevelIndex === 0 ? "" : this.data.levelList[this.data.activeLevelIndex]
+    const data = {
+      actyId: this.data.actyId,
+      level: levelStr,
+      distance: this.data.sortOrder
+    }
+
+    util.request("acty/getactyuser", "POST", data, "", (res) => {
+      if (res && res.data && res.data.success && Array.isArray(res.data.data)) {
+        const rawList = res.data.data
+        const processed = rawList.map((item, idx) => {
+          const finish = Number(item.finish_distance) || 0
+          const rawTarget = Number(item.distance) || 0
+          const target = Math.round(rawTarget)
+          const percent = calcPercent(finish, target)
+          return Object.assign({}, item, {
+            displayFinish: toFixed(finish),
+            displayTarget: String(target),
+            percent: percent,
+            isCompleted: finish >= target && target > 0,
+            rankNum: idx + 1
+          })
         })
-      }
-    })
-  },
-  clickLevel: function(){
-    var that = this
-    that.setData({
-      selAll: !that.data.selAll,
-      iconState: !that.data.iconState
-    })
-    if(that.data.getH==''){
-      that.setData({
-        getH: that.data.phoneH
-      })
-    } else {
-      that.setData({
-        getH: ''
-      })
-    }
-  },
-  choose: function(e){
-    var id = e.currentTarget.dataset.id
-    var txt = e.currentTarget.dataset.txt
-    var that = this
-    if(txt == '全部'){
-      that.setData({
-        id: id,
-        selLevel: ''
-      })
-    } else {
-      that.setData({
-        id: id,
-        selLevel: txt
-      })
-    }
-  },
-  selBtn: function(){
-    var that = this
-    that.initMember()
-    that.setData({
-      selAll: false,
-      iconState: true,
-      getH: ''
-    })
-  },
-  clickSort: function(){
-    var that = this
-    that.setData({
-      sortState: 0,
-      state1: false,
-      state2: true,
-      selAll: false
-    })
-    that.initMember()
-  },
-  clickSort2: function(){
-    var that = this
-    that.setData({
-      sortState: 1,
-      state1: true,
-      state2: false,
-      selAll: false
-    })
-    that.initMember()
-  },
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-    var id = options.id
-    this.setData({
-      actyId: id
-    })
-    this.getH()
-    this.initMember(id)
-  },
-  myData: function(e){
-    var id = e.currentTarget.dataset.userid
-    var userId = app.globalData.userId
-    if(id==userId){
-      wx.switchTab({
-        url: '../mydata/mydata'
-      })
-    }else{
-      wx.navigateTo({
-        url: '../othersdata/othersdata?id=' + id
-      })
-    }
-  },
-  initMember: function(id){
-    var that = this
-    var data = {
-      actyId : that.data.actyId,
-      level: that.data.selLevel,
-      distance: that.data.sortState
-    }
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
-    util.request('acty/getactyuser', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        var mbData = res.data.data
-        that.setData({
-          memberList: mbData
+
+        this.setData({
+          memberList: processed,
+          totalCount: processed.length,
+          loading: false,
+          loaded: true
         })
-        wx.hideLoading({
-          success: (res) => {},
-        })
-      }else{
-        that.setData({
+      } else {
+        this.setData({
           memberList: [],
-          noList: true
-        })
-        wx.hideLoading({
-          success: (res) => {},
+          totalCount: 0,
+          loading: false,
+          loaded: true
         })
       }
+      if (typeof cb === "function") cb()
+    }, () => {
+      this.setData({
+        memberList: [],
+        totalCount: 0,
+        loading: false,
+        loaded: true
+      })
+      if (typeof cb === "function") cb()
     })
   },
-  dedupe: function (array){
-    return Array.from(new Set(array));
-    //这里的 Array.from（）方法是将两类对象转为真正的数组：类似数组的对象和可遍历的对象（包括es6新增的数据结构Set和Map）
+
+  myData(e) {
+    const id = e.currentTarget.dataset.userid
+    if (!id) return
+    const currentUserId = app.globalData.userId
+    if (currentUserId && String(id) === String(currentUserId)) {
+      wx.switchTab({ url: "../mydata/mydata" })
+    } else {
+      wx.navigateTo({ url: "../othersdata/othersdata?id=" + id })
+    }
   }
 })

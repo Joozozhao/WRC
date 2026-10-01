@@ -5,8 +5,8 @@ var endDate = util.formatTime(new Date(new Date().getTime() + 24 * 60 * 60 * 100
 //明天的时间
 var day1 = new Date()
 day1.setTime(day1.getTime()+24*60*60*1000)
-var s1 = day1.getFullYear()+"-"+(day1.getMonth()+1) + "-" +day1.getDate()
-var s2 = (day1.getFullYear()+10)+"-"+(day1.getMonth()+1) + "-" +day1.getDate()
+var s1 = util.formatDate(day1)
+var s2 = (day1.getFullYear() + 10) + s1.substring(4)
 
 // 获取应用实例
 const app = getApp()
@@ -24,6 +24,7 @@ Page({
     monthDay: 0,
     score: 0,
     focus: false,
+    rulesState: 'loading',
     startTime: now_time.substring(0,10),
     endTime: endDate.substring(0,10),
     isPickerRender: false,
@@ -39,13 +40,8 @@ Page({
     },
   },
   initTime: function(){
-    if(day1.getMonth()+1<10||day1.getDate()<10){
-      var s1 = day1.getFullYear()+"-"+0+(day1.getMonth()+1) + "-" +0+day1.getDate()
-      var s2 = (day1.getFullYear()+10)+"-"+0+(day1.getMonth()+1) + "-" +0+day1.getDate()
-    }else{
-      var s1 = day1.getFullYear()+"-"+(day1.getMonth()+1) + "-" +day1.getDate()
-      var s2 = (day1.getFullYear()+10)+"-"+(day1.getMonth()+1) + "-" +day1.getDate()
-    }
+    var s1 = util.formatDate(day1)
+    var s2 = (day1.getFullYear() + 10) + s1.substring(4)
     let  initEndTime = 'pickerConfig.initEndTime'
     let  limitEndTime = 'pickerConfig.limitEndTime'
     this.setData({
@@ -56,6 +52,7 @@ Page({
   },
   choose:function(e){
     var that = this
+    console.log(e.target.dataset.type);
     that.setData({
       actype:e.target.dataset.type
     })
@@ -98,9 +95,11 @@ Page({
     });
   },
   setPickerTime: function(val) {
+    console.log(val);
     let data = val.detail;
     // var startTime = util.dislodgeZero(data.startTime)
     // var endTime = util.dislodgeZero(data.endTime)
+    console.log()
     this.setData({
       startTime: data.startTime.substring(0,10),
       endTime: data.endTime.substring(0,10)
@@ -123,6 +122,7 @@ Page({
       score: formData.score,
       remark: formData.remark
     }
+    console.log(data)
     if(formData.distance == ''){
       wx.showToast({
         title: '请输入月跑公里!',
@@ -131,7 +131,9 @@ Page({
       })
       return false
     }
+    console.log(data)
     util.request('acty/saveRule', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
       if(res.data.success){
         wx.showToast({
           title: '添加成功',
@@ -143,12 +145,22 @@ Page({
   },
   initRules: function(){
     var that = this
+    var token = (that._rulesToken || 0) + 1
+    that._rulesToken = token
     var data ={
       acty_id: that.data.actyId,
       acty_type: that.data.actype,
       sex: that.data.sextype
     }
+    console.log(data)
+    this.setData({
+      rulesState: 'loading'
+    })
     util.request('acty/getActyRuleByType', 'POST', data, '数据加载中 ...', (res)=>{
+      if (token !== that._rulesToken) {
+        return
+      }
+      console.log(res)
       if(res.data.success){
         var allData = res.data.data
         var start = allData.start_time
@@ -167,7 +179,8 @@ Page({
           weekDay: allData.week,
           monthDay: allData.month,
           distance: allData.distance,
-          remark: allData.remark
+          remark: allData.remark,
+          rulesState: 'ready'
         })
       }else{
         that.setData({
@@ -180,9 +193,23 @@ Page({
           weekDay: '',
           monthDay: '',
           distance: '',
-          remark: ''
+          remark: '',
+          rulesState: 'ready'
         })
       }
+    }, (err)=>{
+      if (token !== that._rulesToken) {
+        return
+      }
+      console.log(err)
+      that.setData({
+        rulesState: 'error'
+      })
+      wx.showToast({
+        title: '规则加载失败，请重试',
+        icon: 'none',
+        duration: 1500
+      })
     })
   },
   /**

@@ -1,7 +1,8 @@
-/* components/cropper/cropper.wxss */
-page{
-  background: #000;
+/* pages/cropper/cropper.wxss — WRC 深绿/荧光黄绿统一视觉 */
+page {
+  background: #062b23;
 }
+
 .cropper-wrapper {
   position: relative;
   display: flex;
@@ -11,6 +12,13 @@ page{
   height: 100%;
 }
 
+.cropper {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* 底部工具栏：深松绿底 + 荧光黄绿主按钮，适配安全区，不被画布遮挡 */
 .cropper-buttons {
   display: flex;
   justify-content: space-between;
@@ -20,38 +28,79 @@ page{
   left: 0;
   z-index: 999;
   width: 100%;
-  /* height: 119rpx; */
-   height: 100rpx;
-   /* line-height: 100rpx; */
+  min-height: 120rpx;
   box-sizing: border-box;
-  font-size: 32rpx;
-  color: white;
-  text-align: center;
-  border-top: 1rpx solid #313131;
-  background: #000000;
-}
-
-/* 分割线 */
-
-.cropper {
-  position: absolute;
-  top: 0;
-  left: 0;
+  padding: 16rpx 40rpx;
+  padding-bottom: calc(16rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background: #073329;
+  border-top: 1rpx solid rgba(217, 255, 63, 0.18);
 }
 
 .cropper-buttons .btn {
-  padding: 20rpx 50rpx;
-  /* background: red; */
+  flex: 1;
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 999rpx;
+  font-size: 30rpx;
+  letter-spacing: 2rpx;
 }
 
-.disable.btn{
-  color:rgba(255,255,255,.3);
+.cropper-buttons .btn + .btn {
+  margin-left: 24rpx;
 }
 
-.rotate{
+/* 取消：弱操作 */
+.cropper-buttons .btn-ghost {
+  color: #e2e9e4;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cropper-buttons .btn-ghost-hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* 还原：荧光描边 */
+.cropper-buttons .btn-accent {
+  color: #d9ff3f;
+  background: transparent;
+  border: 1rpx solid rgba(217, 255, 63, 0.45);
+}
+
+.cropper-buttons .btn-accent-hover {
+  background: rgba(217, 255, 63, 0.12);
+}
+
+.cropper-buttons .btn-accent.disable {
+  color: rgba(226, 233, 228, 0.3);
+  border-color: rgba(226, 233, 228, 0.15);
+}
+
+/* 完成：荧光黄绿主操作 */
+.cropper-buttons .btn-primary {
+  color: #073329;
+  font-weight: 600;
+  background: #d9ff3f;
+}
+
+.cropper-buttons .btn-primary-hover {
+  opacity: 0.8;
+}
+
+/* 旋转：cover-image 覆盖在原生画布上，圆形深绿按钮 */
+.rotate {
   position: fixed;
-  left: 30rpx;
-  bottom: 140rpx;
-  width: 80rpx;
-  height: 80rpx;
+  left: 32rpx;
+  bottom: calc(200rpx + constant(safe-area-inset-bottom));
+  bottom: calc(200rpx + env(safe-area-inset-bottom));
+  width: 96rpx;
+  height: 96rpx;
+  box-sizing: border-box;
+  padding: 22rpx;
+  background: rgba(7, 51, 39, 0.72);
+  border: 1rpx solid rgba(217, 255, 63, 0.4);
+  border-radius: 50%;
 }

@@ -13,8 +13,12 @@ Page({
     actyName: '',
     page: 1,
     actyState: 0,
-    showTop: true,
-    hideTop: false
+    loading: true,
+    hasMore: true,
+    loadError: false
+  },
+  openMyPage: function () {
+    wx.switchTab({ url: '../mydata/mydata' })
   },
   toDetail:function (e){
     var id = e.currentTarget.dataset.id
@@ -37,7 +41,9 @@ Page({
     var data = {
       id: id
     }
+    console.log(data)
     util.request('acty/delRule', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
       if(res.data.success){
         wx.showToast({
           title: '删除成功',
@@ -53,46 +59,6 @@ Page({
       url: '../editchallenge/editchallenge?id='+id
     })
   },
-  toTop: function(e){
-    var id = e.currentTarget.dataset.id
-    var data = { 
-      actyId : id
-    }
-    util.request('acty/updateRankListActy', 'POST', data, '数据加载中 ...', (res)=>{
-      var that = this
-      if(res.data.success){
-        that.setData({
-          showTop:false,
-          hideTop: true
-        })
-        wx.showToast({
-          title: '上榜成功',
-          icon: 'none',
-          duration: 1500
-        })
-      }
-    })
-  },
-  upTop: function(e){
-    var id = e.currentTarget.dataset.id
-    var data = { 
-      actyId : id
-    }
-    util.request('acty/updateLastRankListActy', 'POST', data, '数据加载中 ...', (res)=>{
-      var that = this
-      if(res.data.success){
-        that.setData({
-          showTop:false,
-          hideTop: true
-        })
-        wx.showToast({
-          title: '已下榜',
-          icon: 'none',
-          duration: 1500
-        })
-      }
-    })
-  },
   delCon: function(e){
     var acty_id = e.currentTarget.dataset.id
     var idx = e.currentTarget.dataset.index
@@ -105,12 +71,14 @@ Page({
             id : acty_id
           }
           util.request('acty/del', 'POST', data, '数据加载中 ...', (res)=>{
+            console.log(res)
             if(res.data.success){
               var challengeList = that.data.challengeList
               challengeList.splice(idx,1);
               that.setData({
                 challengeList: challengeList
               })
+              console.log(res)
               wx.showToast({
                 title: '已删除',
                 icon: 'none',
@@ -125,6 +93,7 @@ Page({
             }
           })
          } else {
+           console.log('用户取消')
          }
         }
     })
@@ -138,18 +107,21 @@ Page({
   },
   onShow: function(){
     wx.hideTabBar();
-    this.setData({
-      page: 1
-    })
+    this.initLimit()
     this.initChallenge()
   },
   initLimit: function(){
     var userId = app.globalData.userId
+    if (!userId || userId <= 0) {
+      this.setData({ duty: '' })
+      return
+    }
     var data = { 
       id : userId
     }
     util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
+      console.log(res)
       if(res.data.success){
         that.setData({
           duty: res.data.data.duty
@@ -168,32 +140,26 @@ Page({
     var data = {
       userId: userId,
       type: '挑战',
-      page: that.data.page ++
+      page: 1
     }
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
+    this.setData({ page: 1, loading: true, loadError: false })
     util.request('acty/getchallengeacty', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        var challengeData = res.data.data
+      if(res.data && res.data.success){
+        var challengeData = res.data.data || []
         that.setData({
-          challengeList: challengeData
-        })
-        wx.hideLoading({
-          success: (res) => {},
+          challengeList: challengeData,
+          page: 2,
+          loading: false,
+          hasMore: challengeData.length > 0,
+          loadError: false
         })
       }else{
-        wx.hideLoading({
-          success: (res) => {},
-        })
-        // wx.showToast({
-        //   title: res.data.error,
-        //   icon: 'none',
-        //   duration: 1500
-        // })
+        that.setData({ challengeList: [], loading: false, hasMore: false, loadError: true })
       }
     })
+  },
+  retryLoad: function() {
+    this.initChallenge()
   },
   /**
    * 页面上拉触底事件的处理函数
@@ -202,36 +168,26 @@ Page({
     this.loadMore()
   },
   loadMore: function(){
+    if (this.data.loading || !this.data.hasMore) return
     var that = this
     var userId = app.globalData.userId
     var data = {
       userId: userId,
       type: '挑战',
-      page: that.data.page ++
+      page: that.data.page
     }
-    wx.showLoading({
-      title: '加载中',
-      icon: 'none'
-    })
+    this.setData({ loading: true })
     util.request('acty/getchallengeacty', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        var challengeData = res.data.data
-        var content = this.data.challengeList.concat(challengeData)
+      if(res.data && res.data.success){
+        var challengeData = res.data.data || []
         that.setData({
-          challengeList: content
-        })
-        wx.hideLoading({
-          success: (res) => {},
+          challengeList: that.data.challengeList.concat(challengeData),
+          page: that.data.page + 1,
+          hasMore: challengeData.length > 0,
+          loading: false
         })
       }else{
-        wx.hideLoading({
-          success: (res) => {},
-        })
-        // wx.showToast({
-        //   title: res.data.error,
-        //   icon: 'none',
-        //   duration: 1500
-        // })
+        that.setData({ loading: false })
       }
     })
   }

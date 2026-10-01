@@ -1,85 +1,111 @@
-<!--pages/addtype/addtype.wxml-->
-<view style="margin:0 0 180rpx">
-<view class="vw-wrap">
-  </view>
-  <form action="" bindsubmit="submit">
-    <view class="choose-type form-item">
-      <view class="type-item {{actype==1?'current':''}}" data-type="1" catchtap="choose">资格项</view>
-      <view class="type-item {{actype==2?'current':''}}" data-type="2" catchtap="choose">挑战项</view>
+<site-header show-back="{{true}}" back-url="/pages/challenge/challenge"></site-header>
+<!-- WRC Add Rules: 添加规则 -->
+<view class="edit-page">
+  <form bindsubmit="submit">
+    <view class="edit-header">
+      <text class="eyebrow">WRC · CHALLENGE RULES</text>
+      <text class="page-title">添加规则</text>
+      <text class="page-subtitle">为挑战设置资格项或挑战项的达标规则</text>
     </view>
-    <view class="form-item vw-wrap">
-      <!-- <label for="" class="title">选择</label> -->
-      <view class="fm-con" style="width:100%;margin-left: 0;">
-        <radio-group name="sextype" class="type-con" style="display:flex;justify-content: space-around;">
-          <label for="">
-            <view style="display:inline-block;margin-right:20rpx;" catchtap="chooseSex">
-              <radio value="1"  checked="{{sextype == 1 ? 'true' : ''}}" />男生版
-            </view>
+
+    <view class="state-note loading-note" wx:if="{{rulesState == 'loading'}}">正在加载已有规则…</view>
+    <view class="state-note error-note" wx:elif="{{rulesState == 'error'}}">
+      <text class="state-text">规则加载失败，请重试</text>
+      <text class="state-action" bindtap="initRules">重试</text>
+    </view>
+
+    <!-- 01 规则类型 -->
+    <view class="form-card">
+      <view class="card-badge">01 / 规则类型</view>
+
+      <view class="form-group">
+        <label class="form-label">规则类型</label>
+        <view class="chip-group">
+          <view class="chip {{actype==1?'active':''}}" data-type="1" catchtap="choose">资格项</view>
+          <view class="chip {{actype==2?'active':''}}" data-type="2" catchtap="choose">挑战项</view>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">适用版本</label>
+        <radio-group name="sextype" class="chip-radio-group">
+          <label class="reward-chip {{sextype == 1 ? 'active' : ''}}" catchtap="chooseSex">
+            <radio value="1" checked="{{sextype == 1 ? 'true' : ''}}" color="#075b40" />男生版
           </label>
-          <label for="">
-            <view style="display:inline-block;margin-right:20rpx;" catchtap="chooseSex2">
-              <radio value="2"  checked="{{sextype == 2 ? 'true' : ''}}" />女生版
-            </view>
+          <label class="reward-chip {{sextype == 2 ? 'active' : ''}}" catchtap="chooseSex2">
+            <radio value="2" checked="{{sextype == 2 ? 'true' : ''}}" color="#075b40" />女生版
           </label>
         </radio-group>
       </view>
-    </view>
-    <view class="form-item vw-wrap">
-        <label for="" class="title">挑战扣除</label>
-        <view class="fm-con">
-          <radio-group name="stype" class="type-con" style="display:flex;">
-            <label for="">
-              <view style="display:inline-block;margin-right:20rpx;" bindtap="chooseScore">
-                <radio value="0"  checked="{{stype == 0 ? 'true' : ''}}" />积分
-              </view>
-            </label>
-            <label for="">
-              <view style="display:inline-block;margin-right:20rpx;" bindtap="chooseScore2">
-                <radio value="1"  checked="{{stype == 1 ? 'true' : ''}}" />小花儿
-              </view>
-              
-            </label><input type="digit" focus="{{focus}}" name="score" value="{{score}}" />
-          </radio-group>
-        </view>
-      </view>
-    
-    <!-- <view class="sub-tit vw-wrap">报名填写项</view> -->
-    <view class="special-con">
-      <view class="form-item vw-wrap">
-        <label for="" class="title">开始时间</label>
-        <view class="ipt">
-          <input type="text" focus="{{focus}}" value="{{startTime}}" class="ipt" style="margin-right:0;" disabled="disabled" bindtap="pickerShow" wx:if="{{startTime}}"></input>
-        </view>
-        <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
-      </view>
-      <view class="form-item vw-wrap">
-        <label for="" class="title">结束时间</label>
-        <view class="ipt">
-          <input type="text" focus="{{focus}}" value="{{endTime}}" class="ipt" style="margin-right:0;" disabled="disabled" bindtap="pickerShow" wx:if="{{endTime}}"></input>
-        </view>
-        <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
-      </view>
-      <view class="form-item vw-wrap">
-        <label for="" class="title">周跑天数</label>
-        <input type="number" focus="{{focus}}" value="{{weekDay}}" name="weekDay" placeholder="0" class="ipt ellipsis"></input>天
-      </view>
-      <view class="form-item vw-wrap">
-        <label for="" class="title">月跑天数</label>
-        <input type="number" focus="{{focus}}" value="{{monthDay}}" name="monthDay" placeholder="0" class="ipt ellipsis"></input>天
-      </view>
-      <view class="form-item vw-wrap">
-        <label for="" class="title">月跑公里</label>
-        <input type="number" focus="{{focus}}" value="{{distance}}" name="distance" placeholder="0" class="ipt ellipsis"></input>公里
-      </view>
-      <view class="form-item vw-wrap" style="display:block;">
-        <label for="" class="title">其他说明</label>
-        <textarea name="remark" focus="{{focus}}" maxlength="-1" class="ipt" placeholder="请输入其他说明" style="display:block;width:100%;height:100rpx;line-height:1;overflow-y:scroll;padding:0;margin:0;text-align:left;" value="{{remark}}"></textarea>
+
+      <view class="form-group">
+        <label class="form-label">挑战扣除</label>
+        <radio-group name="stype" class="chip-radio-group">
+          <label class="reward-chip {{stype == 0 ? 'active' : ''}}" bindtap="chooseScore">
+            <radio value="0" checked="{{stype == 0 ? 'true' : ''}}" color="#075b40" />积分
+          </label>
+          <label class="reward-chip {{stype == 1 ? 'active' : ''}}" bindtap="chooseScore2">
+            <radio value="1" checked="{{stype == 1 ? 'true' : ''}}" color="#075b40" />小花儿
+          </label>
+          <input class="reward-input" type="digit" focus="{{focus}}" name="score" value="{{score}}" placeholder="数量" placeholder-class="placeholder-text" />
+        </radio-group>
       </view>
     </view>
-    <view class="full-btn">
-      <button class="btn btnTwo" form-type="submit"  disabled="{{disable}}">完成</button>
+
+    <!-- 02 达标规则 -->
+    <view class="form-card">
+      <view class="card-badge">02 / 达标规则</view>
+
+      <view class="form-group" bindtap="pickerShow">
+        <label class="form-label">起止时间</label>
+        <view class="time-display-box">
+          <view class="time-item">
+            <text class="time-sub">开始</text>
+            <text class="time-val"><block wx:if="{{startTime}}">{{startTime}}</block><block wx:else>点击选择开始时间</block></text>
+          </view>
+          <text class="time-arrow">→</text>
+          <view class="time-item">
+            <text class="time-sub">结束</text>
+            <text class="time-val"><block wx:if="{{endTime}}">{{endTime}}</block><block wx:else>点击选择结束时间</block></text>
+          </view>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">周跑天数</label>
+        <view class="input-suffix">
+          <input class="form-input suffix-input" type="number" focus="{{focus}}" value="{{weekDay}}" name="weekDay" placeholder="0" placeholder-class="placeholder-text" />
+          <text class="suffix-text">天</text>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">月跑天数</label>
+        <view class="input-suffix">
+          <input class="form-input suffix-input" type="number" focus="{{focus}}" value="{{monthDay}}" name="monthDay" placeholder="0" placeholder-class="placeholder-text" />
+          <text class="suffix-text">天</text>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">月跑公里</label>
+        <view class="input-suffix">
+          <input class="form-input suffix-input" type="number" focus="{{focus}}" value="{{distance}}" name="distance" placeholder="0" placeholder-class="placeholder-text" />
+          <text class="suffix-text">公里</text>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">其他说明</label>
+        <textarea class="form-textarea" name="remark" focus="{{focus}}" maxlength="-1" placeholder="请输入其他说明" placeholder-class="placeholder-text" value="{{remark}}"></textarea>
+      </view>
+    </view>
+
+    <!-- 底部固定操作栏 -->
+    <view class="bottom-action-bar">
+      <button class="primary-submit-btn" form-type="submit" disabled="{{rulesState !== 'ready'}}" hover-class="btn-pressed">保存规则</button>
     </view>
   </form>
 </view>
-<time-picker pickerShow="{{isPickerShow}}" id="picker" wx:if="{{isPickerRender}}" bind:hidePicker="pickerHide" bind:setPickerTime="setPickerTime"
-  config="{{pickerConfig}}"></time-picker>
+
+<time-picker pickerShow="{{isPickerShow}}" id="picker" wx:if="{{isPickerRender}}" bind:hidePicker="pickerHide" bind:setPickerTime="setPickerTime" config="{{pickerConfig}}"></time-picker>

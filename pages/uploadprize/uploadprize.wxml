@@ -1,77 +1,77 @@
+<site-header show-back="{{true}}" back-url="/pages/manage/manage"></site-header>
 <!--pages/uploadprize/uploadprize.wxml-->
-<form bindsubmit="submit">
-  <view class="form-con">
-    <view class="form-item vw-wrap">
-      <label for="" class="title">奖品名称</label>
-      <input type="text" value="{{gn}}" name="gn" placeholder="请输入奖品名称" class="ipt ellipsis"></input>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
-    </view>
-    <view class="form-item vw-wrap">
-      <label for="" class="title">奖品价格</label>
-      <input type="digit" value="{{gp}}" name="gp" placeholder="请输入奖品价格" class="ipt ellipsis"></input>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
-    </view>
-    <view class="form-item vw-wrap">
-      <label for="" class="title">消耗</label>
-      <view class="fm-con">
-        <radio-group name="stype" class="type-con" style="display:flex;">
-          <label for="">
-            <view style="display:inline-block;margin-right:20rpx;" bindtap="choose">
-              <radio value="0"  checked="{{stype === 0 ? 'true' : ''}}" />积分
-            </view>
-          </label>
-          <label for="">
-            <view style="display:inline-block;margin-right:20rpx;" bindtap="choose2">
-              <radio value="1"  checked="{{stype === 1 ? 'true' : ''}}" />小花儿
-            </view>
-          </label><input type="digit" name="score" value="{{score}}" />
-        </radio-group>
+<view class="fp-page">
+  <view class="fp-hero">
+    <text class="fp-eyebrow">WRC · NEW PRIZE</text>
+    <text class="fp-title">上传奖品</text>
+    <view class="fp-title-line"></view>
+    <text class="fp-intro">填写奖品信息并上传图片，提交后进入奖品库</text>
+  </view>
+  <form bindsubmit="submit">
+    <view class="fp-card">
+      <view class="fp-field">
+        <label for="" class="fp-label">奖品名称</label>
+        <input type="text" value="{{gn}}" name="gn" placeholder="请输入奖品名称" placeholder-class="fp-ph" class="fp-ipt"></input>
       </view>
-    </view>
-    <view class="form-item vw-wrap" style="display:block;padding-bottom:20rpx;">
-      <label for="" class="title">奖品图片</label>
-      <view class='content'>
-        <view class='img-box'>
-          <view class='img-list'>
-            <view class='chooseimg' bindtap='uploadAction' wx:if="{{detailPics==''}}">
-              <view class="weui-uploader__input-box"></view>
-            </view>
-            <!-- <block wx:for="{{detailPics}}" wx:key="index"> -->
-              <view class='img-item' bindtap='uploadAction' wx:else>
-                <image src='{{detailPics}}'></image>
+      <view class="fp-field">
+        <label for="" class="fp-label">奖品价格</label>
+        <input type="digit" value="{{gp}}" name="gp" placeholder="请输入奖品价格" placeholder-class="fp-ph" class="fp-ipt"></input>
+      </view>
+      <view class="fp-field">
+        <label for="" class="fp-label">消耗</label>
+        <view class="fp-consume">
+          <radio-group name="stype" class="fp-radios">
+            <label for="">
+              <view class="fp-radio" bindtap="choose">
+                <radio value="0" checked="{{stype === 0 ? 'true' : ''}}" color="#0b503b" />积分
               </view>
-            <!-- </block> -->
-            
-          </view>
+            </label>
+            <label for="">
+              <view class="fp-radio" bindtap="choose2">
+                <radio value="1" checked="{{stype === 1 ? 'true' : ''}}" color="#0b503b" />小花儿
+              </view>
+            </label>
+          </radio-group>
+          <input type="digit" name="score" value="{{score}}" placeholder="消耗值" placeholder-class="fp-ph" class="fp-ipt fp-score" />
         </view>
       </view>
     </view>
-    <view class="form-item vw-wrap" style="display:block;padding-bottom:20rpx;">
-      <label for="" class="title">奖品详情</label>
-      <view class='content'>
-        <view class='img-box'>
-          <view class='img-list'>
-            <block wx:for="{{detailPics2}}" wx:key="index">
-              <view class='img-item'>
-                <image src='{{item.goods_pic}}' bindlongpress="bindlongpressimg2" data-id='{{index}}'></image>
-              </view>
-            </block>
-            <view class='chooseimg' bindtap='uploadAction2' wx:if="{{detailPics2.length!==9}}">
-              <view class="weui-uploader__input-box"></view>
-            </view>
+
+    <view class="fp-card">
+      <view class="fp-field">
+        <label for="" class="fp-label">奖品图片</label>
+        <view class="fp-imgs">
+          <view class="fp-imgbox fp-imgbox-add" bindtap="uploadAction" wx:if="{{detailPics==''}}">
+            <view class="fp-add">+</view>
           </view>
-          <view class='tips'>长按对应的图片即可删除</view>
+          <view class="fp-imgbox" bindtap="uploadAction" wx:else>
+            <image src="{{detailPics}}" mode="aspectFill"></image>
+          </view>
         </view>
       </view>
+      <view class="fp-field">
+        <label for="" class="fp-label">奖品详情</label>
+        <view class="fp-imgs">
+          <block wx:for="{{detailPics2}}" wx:key="index">
+            <view class="fp-imgbox">
+              <image src="{{item.goods_pic}}" mode="aspectFill" bindlongpress="bindlongpressimg2" data-id="{{index}}"></image>
+            </view>
+          </block>
+          <view class="fp-imgbox fp-imgbox-add" bindtap="uploadAction2" wx:if="{{detailPics2.length!==9}}">
+            <view class="fp-add">+</view>
+          </view>
+        </view>
+        <view class="fp-tips">长按对应的图片即可删除</view>
+      </view>
+      <view class="fp-field">
+        <label for="" class="fp-label">备注</label>
+        <textarea name="remark" maxlength="-1" class="fp-textarea" placeholder="请输入备注" placeholder-class="fp-ph" value="{{remark}}"></textarea>
+      </view>
     </view>
-    <view class="form-item vw-wrap" style="display:block;">
-      <label for="" class="title">备注</label>
-      <textarea name="remark" maxlength="-1" class="ipt" placeholder="请输入备注" style="display:block;width:100%;height:100rpx;line-height:1;overflow-y:scroll;padding:0;margin:0;text-align:left;" value="{{remark}}"></textarea>
+    <view class="fp-footer">
+      <button class="fp-submit" form-type="submit" disabled="{{disable}}">完成</button>
     </view>
-  </view>
-  <view class="full-btn">
-    <button class="btn btnTwo" form-type="submit"  disabled="{{disable}}">完成</button>
-  </view>
-</form>
+  </form>
+</view>
 <!-- 仅供缩放图片使用，整个流程跑成功后可通过样式让其不可见 -->
 <!-- <canvas style="width: {{cWidth}}px; height: {{cHeight}}px;position: absolute; z-index: -1; left: -10000rpx; top: -10000rpx;" canvas-id="myCanvas"></canvas> -->

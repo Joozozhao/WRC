@@ -1,7 +1,7 @@
 {
-  "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#4CB944",
+  "navigationStyle": "custom",
+  "backgroundTextStyle": "dark",
+  "navigationBarBackgroundColor": "#0b503b",
   "navigationBarTitleText": "兑换详情",
-  "navigationBarTextStyle":"white"
+  "navigationBarTextStyle": "white"
 }

@@ -1,20 +1,103 @@
 /* pages/manage/manage.wxss */
-.meun-item {
-  display: flex;
-  font-size: 32rpx;
-  line-height: 130rpx;
-  position: relative;
-  padding-left: 15rpx;
-}
-.meun-item:hover,.meun-item:active {
-  background-color: aliceblue;
+page {
+  min-height: 100%;
+  background: #fbfcf9;
+  color: #072f27;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
 }
 
-.meun-item .add-arrow {
-  width: 30rpx;
-  height: 30rpx;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  margin-top: -15rpx;
+.admin-page {
+  min-height: 100vh;
+  padding: 180rpx 40rpx 120rpx;
+  box-sizing: border-box;
+}
+
+.admin-hero {
+  padding: 44rpx 2rpx 30rpx;
+}
+
+.admin-eyebrow {
+  display: block;
+  color: #0d6447;
+  font-size: 22rpx;
+  font-weight: 750;
+  letter-spacing: 3rpx;
+}
+
+.admin-title {
+  display: block;
+  margin-top: 20rpx;
+  font-size: 56rpx;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -2rpx;
+}
+
+.admin-title-line {
+  width: 140rpx;
+  height: 6rpx;
+  margin-top: 18rpx;
+  border-radius: 8rpx;
+  background: #d9ff3f;
+}
+
+.admin-intro {
+  display: block;
+  margin-top: 20rpx;
+  color: #78897e;
+  font-size: 25rpx;
+}
+
+.admin-section {
+  margin-top: 36rpx;
+}
+
+.admin-section-label {
+  display: block;
+  margin: 0 2rpx 18rpx;
+  color: #7d8b80;
+  font-size: 22rpx;
+  font-weight: 750;
+  letter-spacing: 2rpx;
+}
+
+.admin-menu {
+  border-top: 1rpx solid #e1e9e3;
+}
+
+.admin-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx 2rpx;
+  border-bottom: 1rpx solid #e1e9e3;
+}
+
+.admin-item-hover {
+  background-color: #f0f5ec;
+}
+
+.admin-item-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.admin-item-name {
+  color: #072f27;
+  font-size: 31rpx;
+  font-weight: 650;
+}
+
+.admin-item-desc {
+  margin-top: 8rpx;
+  color: #8a998f;
+  font-size: 22rpx;
+}
+
+.admin-item-arrow {
+  flex: none;
+  width: 32rpx;
+  height: 32rpx;
+  margin-left: 20rpx;
 }

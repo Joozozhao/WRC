@@ -1,143 +1,397 @@
-/* pages/energy/energy.wxss */
-@import "../checkpoint/checkpoint.wxss";
-.gg {
-  font-size: 16rpx;
-  line-height: 20rpx;
-  color: #a81b1f;
-  margin-bottom: 20rpx;
-}
-.box-part {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 0 20rpx 0;
-}
-.ml-warp {
-  text-align: center;
-  margin: 0;
-}
-.ml-but {
-  padding: 15rpx 0;
-  width: 32%;
-  font-weight: 200;
-  font-size: 0.7rem;
-  color: #a81b1f; background-color: #dedede;
-  border-radius: 15rpx;
+/* WRC Marathon Archive: 我的马历视觉规范 */
+page {
+  background-color: #fafbf7;
+  color: #103d2e;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
 
-/* 基础样式 */
-.list-container {
-  padding: 20rpx;
-  border: 1rpx solid #ddd;
-  border-radius: 15rpx;
-  margin-bottom: 20rpx;
+.results-page {
+  min-height: 100vh;
+  padding: 180rpx 36rpx 80rpx;
+  box-sizing: border-box;
 }
-/* 头部标题 */
-.header {
-  position: relative;
-  margin-bottom: 20rpx;
-  padding-bottom: 20rpx;
-  border-bottom: 1rpx solid #eee;
+
+/* 页面头部 */
+.results-header {
+  margin-bottom: 34rpx;
 }
-.title {
-  font-size: 38rpx;
-  line-height: 40rpx;
+
+.eyebrow {
+  display: block;
+  color: #547767;
+  font-size: 20rpx;
+  font-weight: 750;
+  letter-spacing: 3rpx;
+  margin-bottom: 12rpx;
 }
-.subtitle {
-  display: inline-block;
-  margin-top: 6rpx;
+
+.page-title {
+  display: block;
+  color: #073329;
+  font-size: 54rpx;
+  font-weight: 850;
+  line-height: 1.15;
+  letter-spacing: -1.5rpx;
+}
+
+.page-subtitle {
+  display: block;
+  color: #7d8b82;
   font-size: 24rpx;
-  font-weight: 300;
-  color: #a81b1f;
-  background-color: #e7d2d3;
-  padding: 5rpx 10rpx;
-  border-radius: 5rpx;
+  margin-top: 10rpx;
+  line-height: 1.4;
 }
-.pb-badge {
-  position: absolute;
-  right: 0;
-  bottom: 20rpx;
+
+/* 公告栏 */
+.notice-bar {
+  display: flex;
+  align-items: center;
+  background: #f1f6ef;
+  border: 1rpx solid #dfeae0;
+  border-radius: 14rpx;
+  padding: 12rpx 18rpx;
+  margin-top: 24rpx;
+}
+
+.notice-tag {
+  background: #0b503b;
+  color: #ffffff;
+  font-size: 18rpx;
+  font-weight: 700;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+  margin-right: 12rpx;
+  flex: none;
+}
+
+.notice-text {
+  font-size: 21rpx;
+  color: #4b6656;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 汇总统计面板 */
+.stats-card-grid {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 26rpx;
+}
+
+.stat-card {
+  flex: 1;
+  background: #ffffff;
+  border: 1rpx solid #e3ebe4;
+  border-radius: 20rpx;
+  padding: 22rpx 12rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
 }
-.stars {
-  color: #e53935;
-  font-size: 24rpx;
-  letter-spacing: 5rpx;
+
+.stat-number {
+  font-size: 46rpx;
+  font-weight: 850;
+  color: #073329;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-number.highlight {
+  color: #0c6246;
+}
+
+.stat-label {
+  font-size: 20rpx;
+  color: #839188;
+  margin-top: 10rpx;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* 赛事卡片列表 */
+.race-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.race-card {
+  background: #ffffff;
+  border: 1rpx solid #e3ebe4;
+  border-radius: 26rpx;
+  padding: 30rpx 28rpx;
+  box-sizing: border-box;
+  box-shadow: 0 4rpx 16rpx rgba(7, 47, 39, 0.03);
+}
+
+.race-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.race-title-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.race-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #073329;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.race-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 12rpx;
+}
+
+.race-tag {
+  background: #edf4ee;
+  color: #165b3f;
+  font-size: 20rpx;
+  font-weight: 650;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.race-tag-project {
+  background: #f4f7f4;
+  color: #5d7567;
+  font-size: 20rpx;
+  font-weight: 500;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+/* PB徽章 */
+.pb-badge {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+  border: 1rpx solid #ffd54f;
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  flex: none;
+}
+
+.pb-star {
+  color: #e65100;
+  font-size: 22rpx;
+  margin-right: 6rpx;
 }
 
 .pb-text {
-  color: #e53935;
-  font-size: 26rpx;
-  font-weight: bold;
-  margin-top: 4rpx;
-}
-
-/* 基础信息表格 */
-.info-table {
-  border: 1rpx solid #f1f1f1;
-  border-radius: 8rpx;
-  margin-bottom: 20rpx;
-}
-
-.row {
-  display: flex;
-}
-
-.cell {
-  flex: 1;
-  text-align: center;
-  padding: 10rpx 0;
-  font-size: 24rpx;
-  border-right: 1rpx solid #f1f1f1;
-}
-
-.cell:last-child {
-  border-right: none;
-}
-
-.header-cell {
-  font-weight: 500;
-  background-color: #f9f9f9;
-}
-
-.time-cell {
-  font-weight: 400;
-  color: #000;
-}
-
-/* 分段成绩表格 */
-.split-table {
-  margin-top: 20rpx;
-  overflow: hidden;
-  padding-top: 20rpx;
-  border-top: 1rpx solid #eee;
-}
-
-.split-row {
-  display: flex;
-}
-
-.split-row:last-child {
-  border-bottom: none;
-}
-
-.split-cell {
-  flex: 1;
-  text-align: center;
-  padding: 5rpx 0;
+  color: #bf360c;
   font-size: 20rpx;
-  font-weight: 400;
+  font-weight: 800;
+  letter-spacing: 0.5rpx;
 }
 
-.split-cell:last-child {
+/* 比赛日期 */
+.race-meta-line {
+  display: flex;
+  align-items: center;
+  margin-top: 14rpx;
+  font-size: 22rpx;
+  color: #849289;
+}
+
+.race-meta-icon {
+  font-size: 20rpx;
+  margin-right: 8rpx;
+}
+
+/* 成绩高亮面板 */
+.score-highlight-panel {
+  display: flex;
+  align-items: center;
+  background: #f7faf6;
+  border: 1rpx solid #e4ede3;
+  border-radius: 18rpx;
+  padding: 22rpx 20rpx;
+  margin-top: 22rpx;
+}
+
+.score-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.score-col.primary {
+  padding-right: 12rpx;
+}
+
+.score-col.secondary {
+  padding-left: 20rpx;
+}
+
+.score-value {
+  font-size: 48rpx;
+  font-weight: 850;
+  color: #073b2d;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1rpx;
+}
+
+.score-value-sub {
+  font-size: 32rpx;
+  font-weight: 750;
+  color: #4a6755;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-label {
+  font-size: 20rpx;
+  color: #809085;
+  margin-top: 8rpx;
+  font-weight: 500;
+}
+
+.score-divider {
+  width: 1rpx;
+  height: 60rpx;
+  background: #dfe8de;
+  flex: none;
+}
+
+/* 分段成绩 */
+.split-section {
+  margin-top: 24rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx dashed #e5eee4;
+}
+
+.split-title {
+  font-size: 22rpx;
+  font-weight: 750;
+  color: #436653;
+  margin-bottom: 14rpx;
+}
+
+.split-table-wrap {
+  background: #fbfcf9;
+  border: 1rpx solid #e7eee6;
+  border-radius: 14rpx;
+  overflow: hidden;
+}
+
+.split-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.split-columns {
+  display: flex;
+  padding: 12rpx 8rpx;
+}
+
+.split-col {
+  flex: none;
+  min-width: 110rpx;
+  padding: 8rpx 10rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 1rpx solid #edf2ec;
+  box-sizing: border-box;
+}
+
+.split-col:last-child {
   border-right: none;
 }
 
-/* 时间字段特殊样式 */
-.time-cell {
-  font-family: monospace;
-  /* 等宽字体更整齐 */
+.split-km {
+  font-size: 19rpx;
+  font-weight: 650;
+  color: #72887a;
+  margin-bottom: 6rpx;
 }
-.dabiao {color: #4CB944;
-  margin-right: 5px; font-weight: 700;}
+
+.split-time {
+  font-size: 22rpx;
+  font-weight: 750;
+  color: #0b4534;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 列表底部状态 */
+.list-footer {
+  text-align: center;
+  padding: 36rpx 0 16rpx;
+  font-size: 22rpx;
+  color: #8fa094;
+}
+
+/* 空状态 */
+.empty-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-mark {
+  font-size: 72rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #103d2e;
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  color: #7e8d83;
+  margin-top: 12rpx;
+  line-height: 1.55;
+  max-width: 480rpx;
+}
+
+/* 加载状态 */
+.loading-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+}
+
+.loading-spinner {
+  width: 44rpx;
+  height: 44rpx;
+  border: 4rpx solid #dce8db;
+  border-top-color: #0c6246;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 24rpx;
+  color: #768a7d;
+  margin-top: 18rpx;
+}

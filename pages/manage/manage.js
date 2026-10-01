@@ -47,11 +47,6 @@ Page({
       url: '../creatchallenge/creatchallenge'
     })
   },
-  toNews: function () {
-    wx.navigateTo({
-      url: '../newscon/newscon'
-    })
-  },
   /**
    * 生命周期函数--监听页面加载
    */

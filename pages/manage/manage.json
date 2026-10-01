@@ -1,7 +1,8 @@
 {
-  "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#4CB944",
-  "navigationBarTitleText": "管理菜单",
-  "navigationBarTextStyle":"white"
+  "navigationStyle": "custom",
+  "backgroundTextStyle": "dark",
+  "backgroundColor": "#fbfcf9",
+  "navigationBarBackgroundColor": "#fbfcf9",
+  "navigationBarTitleText": "跑团管理",
+  "navigationBarTextStyle": "black"
 }

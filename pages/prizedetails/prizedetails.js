@@ -1,231 +1,319 @@
-// pages/prizedetails/prizedetails.js
 const util = require('../../utils/util.js')
-// 获取应用实例
-const app = getApp()
+
 Page({
-  /**
-   * 页面的初始数据
-   */
   data: {
-    indicatorDots: true,
-    vertical: false,
-    autoplay: false,
-    interval: 2000,
-    duration: 500,
-    imgSrc: [],
-    points: 0,
-    goodName: '',
-    type: '',
-    itemId: '',
-    goodsRemark: '',
-    goods_type: '',
-    energy: 0,
-    chooseOne: false,
-    id: 0,
-    typeOne: '',
-    typeTwo: '',
-    totalNum: 0,
-    detailSrc: '',
-    otherTit:false,
-    codeModal: false,
-    code: ''
+    itemId: '', code: '', hasCode: false,
+    detailState: 'loading', goodName: '', goodsType: -1,
+    priceValue: '', priceUnit: '', priceKnown: false, goodsRemark: '',
+    primaryImage: '', gallery: [], galleryState: 'loading', heroIndex: 0,
+    detailImages: [], detailImagesState: 'loading',
+    records: [], recordsState: 'loading', recordCountLabel: '',
+    specGroups: [], specCount: 0, availableCount: 0,
+    selectedStorageId: '', selectedTypeOne: '', selectedTypeTwo: '', selectedStock: null,
+    actionBusy: false
   },
-  /**
-   * 生命周期函数--监听页面加载
-   */
+
   onLoad: function (options) {
-    var id = options.id
-    var code = options.code
-    this.initDetail(id)
+    const params = options || {}
+    const itemId = params.id == null ? '' : String(params.id)
     this.setData({
-      itemId: id,
-      code: code
+      itemId,
+      code: params.code == null ? '' : String(params.code),
+      hasCode: Object.prototype.hasOwnProperty.call(params, 'code')
     })
-    this.getUrl()
-    this.getUrl2()
-  },
-  goheight:function (e) {
-    var width = wx.getSystemInfoSync().windowWidth
-    //获取可使用窗口宽度
-    var imgheight = e.detail.height
-    //获取图片实际高度
-    var imgwidth = e.detail.width
-    //获取图片实际宽度
-    var height = width * imgheight / imgwidth +"px"
-    //计算等比swiper高度
-    this.setData({
-      height: height
-    })
-  },
-  getUrl:function(){
-    var that = this
-    var data = {
-      gId: that.data.itemId,
-      type: 0
+    if (!itemId) {
+      this.setData({ detailState: 'error' })
+      return
     }
-    util.request('goods/getlistimgs', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        that.setData({
-          goods_pic: res.data.data[0].goods_pic
+    this.loadPage()
+  },
+
+  loadPage: function () {
+    const version = (this._requestVersion || 0) + 1
+    this._requestVersion = version
+    this._extraImages = []
+    this.setData({
+      detailState: 'loading', goodName: '', goodsType: -1,
+      priceValue: '', priceUnit: '', priceKnown: false, goodsRemark: '',
+      primaryImage: '', gallery: [], galleryState: 'loading', heroIndex: 0,
+      detailImages: [], detailImagesState: 'loading',
+      records: [], recordsState: 'loading', recordCountLabel: '',
+      specGroups: [], specCount: 0, availableCount: 0,
+      selectedStorageId: '', selectedTypeOne: '', selectedTypeTwo: '', selectedStock: null,
+      actionBusy: false
+    })
+    this.loadGoods(version)
+    this.loadGallery(version)
+    this.loadDetailImages(version)
+    this.loadRecords(version)
+  },
+
+  retryPage: function () {
+    if (this.data.itemId) this.loadPage()
+  },
+
+  loadGoods: function (version) {
+    util.request('goods/get', 'POST', { id: this.data.itemId }, '', (res) => {
+      if (version !== this._requestVersion) return
+      const body = res && res.data
+      if (!body || !body.success || !body.data || typeof body.data !== 'object' || Array.isArray(body.data)) {
+        this.setData({ detailState: 'error' })
+        return
+      }
+      this.applyGoods(body.data)
+    }, () => {
+      if (version === this._requestVersion) this.setData({ detailState: 'error' })
+    })
+  },
+
+  normalizeGroups: function (rawGroups) {
+    if (!Array.isArray(rawGroups)) return []
+    return rawGroups.map((group, groupIndex) => {
+      const rawOptions = group && Array.isArray(group.goodsStorageList) ? group.goodsStorageList : []
+      return {
+        key: 'group-' + groupIndex,
+        title: group && typeof group.tagName === 'string' && group.tagName.trim() ? group.tagName.trim() : '规格分组未命名',
+        options: rawOptions.map((option, optionIndex) => {
+          const rawStock = option && option.stock
+          const stockText = rawStock == null ? '' : String(rawStock).trim()
+          const stock = Number(stockText)
+          const stockKnown = stockText !== '' && Number.isInteger(stock) && stock >= 0
+          const id = option && option.id != null ? String(option.id) : ''
+          const validId = Number.isInteger(Number(id)) && Number(id) > 0
+          const label = option && typeof option.tag_desc === 'string' ? option.tag_desc.trim() : ''
+          return {
+            key: groupIndex + '-' + optionIndex,
+            id,
+            label: label || '规格名称未提供',
+            typeOne: option && option.goods_tag != null ? String(option.goods_tag) : '',
+            typeTwo: label,
+            stock: stockKnown ? stock : null,
+            stockLabel: !validId || !label ? '规格信息不完整' : !stockKnown ? '库存待确认' : stock > 0 ? '剩余 ' + stock : '已兑完',
+            available: Boolean(validId && label && stockKnown && stock > 0)
+          }
         })
       }
     })
   },
-  getUrl2:function(){
-    var that = this
-    var data = {
-      gId: that.data.itemId,
-      type: 1
+
+  findOption: function (groups, id) {
+    if (!id) return null
+    for (let i = 0; i < groups.length; i++) {
+      const option = groups[i].options.find(item => item.id === String(id))
+      if (option) return option
     }
-    util.request('goods/getlistimgs', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        that.setData({
-          detailSrc: res.data.data
-        })
-      }
-    })
+    return null
   },
-  // 图片加载失败
-  findError: function (e) {
-    var index = e.currentTarget.dataset.index;   // html中必须有data-index属性
+
+  applyGoods: function (goods) {
+    const type = goods.goods_type === 0 || goods.goods_type === '0' ? 0
+      : goods.goods_type === 1 || goods.goods_type === '1' ? 1 : -1
+    const rawPrice = type === 0 ? goods.score : type === 1 ? goods.energy : null
+    const priceText = rawPrice == null ? '' : String(rawPrice).trim()
+    const priceKnown = priceText !== '' && Number.isFinite(Number(priceText)) && Number(priceText) >= 0
+    const groups = this.normalizeGroups(goods.goodsStorageList)
+    const options = groups.reduce((list, group) => list.concat(group.options), [])
+    const selected = this.findOption(groups, this.data.selectedStorageId)
+    const current = selected && selected.available ? selected : null
     this.setData({
-      [`roomList[${index}].imgSrc`]: "https://ww1.sinaimg.cn/large/007rAy9hgy1g24by9t530j30i20i2glm.jpg",
-// roomList 即 映射数组；imgSrc数组中的key值；其他原样copy即可
+      detailState: 'ready',
+      goodName: typeof goods.goods_name === 'string' ? goods.goods_name.trim() : '',
+      goodsType: type,
+      priceValue: priceKnown ? priceText : '',
+      priceUnit: type === 0 ? '积分' : type === 1 ? '小花儿' : '',
+      priceKnown,
+      goodsRemark: typeof goods.goods_remark === 'string' ? goods.goods_remark.trim() : '',
+      primaryImage: typeof goods.goods_pic === 'string' ? goods.goods_pic.trim() : '',
+      specGroups: groups,
+      specCount: options.length,
+      availableCount: options.filter(item => item.available).length,
+      selectedStorageId: current ? current.id : '',
+      selectedTypeOne: current ? current.typeOne : '',
+      selectedTypeTwo: current ? current.typeTwo : '',
+      selectedStock: current ? current.stock : null
     })
+    this.updateGallery()
+    return { groups, priceKnown }
   },
-  initDetail : function(id){
-    var that = this
-    var data = {
-      id: id
+
+  updateGallery: function () {
+    const urls = []
+    const seen = new Set()
+    const add = (url) => {
+      if (url && !seen.has(url)) {
+        seen.add(url)
+        urls.push(url)
+      }
     }
-    wx.showLoading({
-      title: '加载中',
-      mask: true
+    add(this.data.primaryImage)
+    const extraImages = this._extraImages || []
+    extraImages.forEach(add)
+    const oldGallery = this.data.gallery
+    this.setData({
+      gallery: urls.map(url => {
+        const old = oldGallery.find(item => item.url === url)
+        return { url, failed: old ? old.failed : false }
+      }),
+      heroIndex: Math.min(this.data.heroIndex, Math.max(urls.length - 1, 0))
     })
-    util.request('goods/get', 'POST', data, '数据加载中...', (res)=>{
-      if(res.data.success){
-        var allData = res.data.data
-        that.setData({
-          imgSrc: allData.goods_pic,
-          points: allData.score,
-          energy: allData.energy,
-          goodName: allData.goods_name,
-          goodsRemark: allData.goods_remark,
-          goods_type: allData.goods_type,
-          allType: allData.goodsStorageList
-        })
-        // var allType = that.data.allType
-        // var myLength = allType.length
-        // var con = allType[0]
-        // that.setData({
-        //   myLength: myLength,
-        //   con: con
-        // })
-        wx.hideLoading({
-          success: (res) => {},
-        })
-      }else{
-        wx.hideLoading({
-          success: (res) => {},
-        })
-        wx.showToast({
-          title: res.data.error,
-          icon: 'none',
-          duration: 1500
-        })
+  },
+
+  loadGallery: function (version) {
+    this.setData({ galleryState: 'loading' })
+    util.request('goods/getlistimgs', 'POST', { gId: this.data.itemId, type: 0 }, '', (res) => {
+      if (version !== this._requestVersion) return
+      const body = res && res.data
+      if (!body || !body.success || !Array.isArray(body.data)) {
+        this.setData({ galleryState: 'error' })
+        return
       }
-      
+      this._extraImages = body.data.map(item => item && item.goods_pic).filter(url => typeof url === 'string' && url.trim()).map(url => url.trim())
+      this.setData({ galleryState: this._extraImages.length ? 'ready' : 'empty' })
+      this.updateGallery()
+    }, () => {
+      if (version === this._requestVersion) this.setData({ galleryState: 'error' })
     })
-    var data = {
-      goodsId: id,
-      page: 1
+  },
+
+  retryGallery: function () {
+    if (this.data.galleryState === 'error') this.loadGallery(this._requestVersion)
+  },
+
+  changeHero: function (e) {
+    this.setData({ heroIndex: e.detail.current })
+  },
+
+  heroImageError: function (e) {
+    const index = Number(e.currentTarget.dataset.index)
+    if (this.data.gallery[index]) this.setData({ ['gallery[' + index + '].failed']: true })
+  },
+
+  loadDetailImages: function (version) {
+    this.setData({ detailImagesState: 'loading' })
+    util.request('goods/getlistimgs', 'POST', { gId: this.data.itemId, type: 1 }, '', (res) => {
+      if (version !== this._requestVersion) return
+      const body = res && res.data
+      if (!body || !body.success || !Array.isArray(body.data)) {
+        this.setData({ detailImagesState: 'error' })
+        return
+      }
+      const images = body.data.map(item => item && item.goods_pic).filter(url => typeof url === 'string' && url.trim()).map((url, index) => ({ key: index, url: url.trim(), failed: false }))
+      this.setData({ detailImages: images, detailImagesState: images.length ? 'ready' : 'empty' })
+    }, () => {
+      if (version === this._requestVersion) this.setData({ detailImagesState: 'error' })
+    })
+  },
+
+  retryDetailImages: function () {
+    if (this.data.detailImagesState === 'error') this.loadDetailImages(this._requestVersion)
+  },
+
+  detailImageError: function (e) {
+    const index = Number(e.currentTarget.dataset.index)
+    if (this.data.detailImages[index]) this.setData({ ['detailImages[' + index + '].failed']: true })
+  },
+
+  loadRecords: function (version) {
+    this.setData({ recordsState: 'loading' })
+    util.request('goods/getusers', 'POST', { goodsId: this.data.itemId, page: 1 }, '', (res) => {
+      if (version !== this._requestVersion) return
+      const body = res && res.data
+      if (!body || !body.success || !Array.isArray(body.data)) {
+        this.setData({ recordsState: 'error' })
+        return
+      }
+      const records = body.data.filter(item => item && typeof item === 'object').map((item, index) => ({
+        key: index,
+        name: typeof item.name === 'string' && item.name.trim() ? item.name.trim() : '昵称暂缺',
+        avatar: typeof item.header_url === 'string' ? item.header_url.trim() : '',
+        time: typeof item.create_time === 'string' && item.create_time.trim() ? item.create_time.trim().slice(0, 19) : '时间暂缺'
+      }))
+      const total = Number(body.total)
+      const count = body.total != null && body.total !== '' && Number.isFinite(total) && total >= records.length ? total : records.length
+      this.setData({ records, recordsState: records.length ? 'ready' : 'empty', recordCountLabel: '共 ' + count + ' 条' })
+    }, () => {
+      if (version === this._requestVersion) this.setData({ recordsState: 'error' })
+    })
+  },
+
+  retryRecords: function () {
+    if (this.data.recordsState === 'error') this.loadRecords(this._requestVersion)
+  },
+
+  chooseSpec: function (e) {
+    const option = this.findOption(this.data.specGroups, e.currentTarget.dataset.id)
+    if (!option || !option.available) return
+    this.setData({
+      selectedStorageId: option.id,
+      selectedTypeOne: option.typeOne,
+      selectedTypeTwo: option.typeTwo,
+      selectedStock: option.stock
+    })
+  },
+
+  startExchange: function () {
+    if (this.data.detailState !== 'ready' || this.data.actionBusy) return
+    if (!this.data.priceKnown || !this.data.goodName) {
+      wx.showToast({ title: '奖品信息暂不完整', icon: 'none' })
+      return
     }
-    util.request('goods/getusers', 'POST', data, '数据加载中...', (res)=>{
-      if(res.data.success){
-        var allData = res.data.data
-        
-        for(var i=0; i<allData.length;i++){
-          var createTime = allData[i].create_time.substring(0, 19)
-          allData[i].create_time = createTime 
-        }
-        that.setData({
-          imgList: allData,
-          total: res.data.total
-        })
-      }else{
-        // wx.showToast({
-        //   title: res.data.error,
-        //   icon: 'none',
-        //   duration: 1500
-        // })  
+    if (!this.data.availableCount) {
+      wx.showToast({ title: '当前没有可选库存', icon: 'none' })
+      return
+    }
+    const storageId = this.data.selectedStorageId
+    if (!storageId) {
+      wx.showToast({ title: '请先选择奖品规格', icon: 'none' })
+      wx.pageScrollTo({ selector: '#reward-specifications', duration: 280 })
+      return
+    }
+
+    // 进入订单页前重读库存；最终兑换仍由订单页的提交操作处理。
+    this.setData({ actionBusy: true })
+    const version = this._requestVersion
+    util.request('goods/get', 'POST', { id: this.data.itemId }, '', (res) => {
+      if (version !== this._requestVersion) return
+      const body = res && res.data
+      if (!body || !body.success || !body.data || typeof body.data !== 'object' || Array.isArray(body.data)) {
+        this.setData({ actionBusy: false })
+        wx.showToast({ title: '库存确认失败，请重试', icon: 'none' })
+        return
       }
-    })
-    
-  },
-  exchange: function(){
-    var that = this
-    that.setData({
-      typePop: true
-    })
-    
-  },
-  chooseOne: function(e){
-    var id = e.currentTarget.dataset.id
-    var index = e.currentTarget.dataset.index
-    var tag = e.currentTarget.dataset.tag
-    var stock = e.currentTarget.dataset.stock
-    this.setData({
-      id: id,
-      typeOne: index,
-      typeTwo: tag,
-      totalNum: stock,
-      otherTit: true
-    })
-  },
-  close: function(){
-    this.setData({
-      typePop: false
-    })
-  },
-  sure: function(e){
-    var that = this    
-    if(that.data.id==0){
-      wx.showToast({
-        title: '选一下类型呀～',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    } 
-    if(that.data.totalNum==0){
-      wx.showToast({
-        title: '库存没了～',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    } 
-    if(that.data.code==undefined){
+      const fresh = this.applyGoods(body.data)
+      const option = this.findOption(fresh.groups, storageId)
+      if (!option || !option.available) {
+        this.setData({ actionBusy: false })
+        wx.showToast({ title: '所选规格已无库存，请重选', icon: 'none' })
+        return
+      }
+      if (!fresh.priceKnown || !this.data.goodName) {
+        this.setData({ actionBusy: false })
+        wx.showToast({ title: '奖品信息暂不完整', icon: 'none' })
+        return
+      }
+      const encode = encodeURIComponent
+      let url = '../confirmorder/confirmorder?id=' + encode(this.data.itemId)
+        + '&storageId=' + encode(option.id)
+        + '&typeOne=' + encode(option.typeOne)
+        + '&typeTwo=' + encode(option.typeTwo)
+      if (this.data.hasCode) url += '&code=' + encode(this.data.code)
       wx.navigateTo({
-        url: '../confirmorder/confirmorder?id='+this.data.itemId + '&storageId=' + this.data.id + '&typeOne=' + this.data.typeOne + '&typeTwo=' + this.data.typeTwo
+        url,
+        fail: () => wx.showToast({ title: '订单页暂无法打开', icon: 'none' }),
+        complete: () => this.setData({ actionBusy: false })
       })
-    } else {
-      wx.navigateTo({
-        url: '../confirmorder/confirmorder?id='+this.data.itemId + '&storageId=' + this.data.id + '&typeOne=' + this.data.typeOne + '&typeTwo=' + this.data.typeTwo + '&code=' + this.data.code
-      })
-    }
-    
+    }, () => {
+      if (version === this._requestVersion) {
+        this.setData({ actionBusy: false })
+        wx.showToast({ title: '库存确认失败，请重试', icon: 'none' })
+      }
+    })
   },
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function (res) {
-    if (res.from === 'button') {
-      // 来自页面内转发按钮
-    }
+
+  onShareAppMessage: function () {
     return {
-        title: '快来兑换超级会员福利#' + this.data.goodName + '#限时兑换，过期视为放弃',
-        // path: '/pages/activitydetail/activitydetail' + this.data.actyId
+      title: (this.data.goodName || '奖品详情') + '｜WRC 兑换中心',
+      path: '/pages/prizedetails/prizedetails?id=' + encodeURIComponent(this.data.itemId)
     }
   }
 })

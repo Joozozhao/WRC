@@ -1,56 +1,107 @@
+<site-header show-back="{{true}}" back-url="/pages/mydata/mydata"></site-header>
 <!--pages/checkpoint/checkpoint.wxml-->
-<view class="bg-gray">
-  <view class="vw-wrap im b-weave">
-    <view class="box-part-wrap">
-      <view class="box-part">
-        <view class="my-point">
-          <view>我的积分</view>
-          <view class="my-points">{{point}}</view>
-          <view class="notices b-weave" bindtap="subscribeMessage">点击授权积分变动通知</view>
-        </view>
-      </view>
-    </view>
+<view class="asset-page">
+  <!-- Hero Section -->
+  <view class="asset-hero">
+    <text class="asset-eyebrow">WRC · POINTS</text>
+    <text class="asset-title">我的积分</text>
+    <view class="asset-title-line"></view>
+    <text class="asset-intro">打卡、活动与挑战累积的每一份积分，都记录着奔跑的坚持</text>
   </view>
-  <view class="tab-tit awesome-bg top-bg">
-    <view wx:for="{{navTab}}" wx:key="index" data-idx="{{index}}" bindtap="currentTab" class="sub {{currentTab==index ? 'active' : ''}}"><text>{{item}}</text></view>
-  </view>
-  <view class="vw-wrap bg-white {{tab1}}">
-    <view wx:if="{{addCon.length>0}}">
-      <block wx:for="{{addCon}}" wx:key="index">
-        <view class="add-points awesome-bg b-weave">
-          <view class="add-detail ellipsis">
-            <view class="detail ellipsis">{{item.remark}}</view>
-            <view class="time">{{item.create_time}}</view>
-          </view>
-          <view class="new-points">+{{item.score}}</view>
-        </view>
-      </block>
-    </view>
-    <view class="vw-wrap bg-white" wx:else>
-      <view class="bg-white deduct-points">
-        <view class="lg-txt">您还未使用过积分</view>
-        <view>敬请关注更多跑团活动</view>
+
+  <!-- 余额总览 -->
+  <view class="balance-card">
+    <view class="balance-info">
+      <text class="balance-label">当前积分余额</text>
+      <view class="balance-value-row">
+        <text class="balance-value">{{balanceState === 'ready' ? point : '—'}}</text>
+        <text class="balance-unit" wx:if="{{balanceState === 'ready'}}">分</text>
       </view>
+      <text class="balance-hint" wx:if="{{balanceState === 'error'}}" bindtap="retryBalance">余额加载失败，点击重试</text>
     </view>
-  </view>
-  <view class="vw-wrap bg-white {{tab2}}">
-    <view wx:if="{{reduceCon.length>0}}">
-      <block wx:for="{{reduceCon}}" wx:key="index">
-        <view class="add-points awesome-bg b-weave">
-          <view class="add-detail ellipsis">
-            <view class="detail ellipsis">{{item.remark}}</view>
-            <view class="time">{{item.create_time}}</view>
-          </view>
-          <view class="new-points">{{item.score}}</view>
-        </view>
-      </block>
-    </view>
-    <view class="vw-wrap bg-white" wx:else>
-      <view class="bg-white deduct-points">
-        <view class="lg-txt">您还未使用过积分</view>
-        <view>敬请关注更多跑团活动</view>
-      </view>
+    <view class="balance-action" wx:if="{{userId > 0}}" bindtap="subscribeMessage">
+      <text class="balance-action-icon">🔔</text>
+      <text class="balance-action-text">积分变动通知</text>
     </view>
   </view>
 
+  <!-- 增加 / 扣除 切换 -->
+  <view class="asset-tabs">
+    <view class="asset-tab {{currentTab === index ? 'is-active' : ''}}" wx:for="{{navTab}}" wx:key="index" data-idx="{{index}}" bindtap="currentTab">
+      <text class="tab-text">{{item}}</text>
+      <view class="tab-mark" wx:if="{{currentTab === index}}"></view>
+    </view>
+  </view>
+
+  <!-- Content Section -->
+  <view class="asset-section">
+    <!-- 1. Guest State -->
+    <view class="state-card" wx:if="{{listState === 'guest'}}">
+      <view class="state-icon-circle">
+        <text class="state-icon">👤</text>
+      </view>
+      <text class="state-title">登录后查看积分流水</text>
+      <text class="state-copy">登录后可查看积分余额，以及每一笔增加、扣除记录</text>
+      <button class="state-action-btn" bindtap="goLogin">前往登录 →</button>
+    </view>
+
+    <!-- 2. Loading State -->
+    <view class="state-card" wx:elif="{{listState === 'loading'}}">
+      <view class="loading-spinner"></view>
+      <text class="state-copy">正在加载积分流水…</text>
+    </view>
+
+    <!-- 3. Error State -->
+    <view class="state-card" wx:elif="{{listState === 'error'}}">
+      <view class="state-icon-circle is-error">
+        <text class="state-icon">⚠️</text>
+      </view>
+      <text class="state-title">积分流水加载失败</text>
+      <text class="state-copy">网络连接稍有迟疑，请点击下方重试</text>
+      <view class="retry-btn" bindtap="retry">点击重试</view>
+    </view>
+
+    <!-- 4. Ready State -->
+    <block wx:elif="{{listState === 'ready'}}">
+      <!-- Empty State：按当前分类提示 -->
+      <view class="state-card" wx:if="{{currentTab === 0 && addCon.length === 0}}">
+        <view class="state-icon-circle">
+          <text class="state-icon">🌱</text>
+        </view>
+        <text class="state-title">暂无积分增加记录</text>
+        <text class="state-copy">参与每日打卡、团跑活动与挑战，即可累积积分</text>
+      </view>
+      <view class="state-card" wx:elif="{{currentTab === 1 && reduceCon.length === 0}}">
+        <view class="state-icon-circle">
+          <text class="state-icon">🍃</text>
+        </view>
+        <text class="state-title">暂无积分扣除记录</text>
+        <text class="state-copy">您的积分还没有过扣除记录，敬请关注更多跑团活动</text>
+      </view>
+
+      <!-- Flow List -->
+      <view class="flow-list" wx:else>
+        <view class="flow-row" wx:for="{{currentTab === 0 ? addCon : reduceCon}}" wx:key="index">
+          <view class="flow-detail">
+            <text class="flow-remark">{{item.remark}}</text>
+            <text class="flow-time">{{item.create_time}}</text>
+          </view>
+          <text class="flow-score {{currentTab === 0 ? 'is-add' : 'is-reduce'}}">{{currentTab === 0 ? '+' : ''}}{{item.score}}</text>
+        </view>
+      </view>
+
+      <!-- Load More / Footer Info -->
+      <view class="list-pagination" wx:if="{{addCon.length > 0 || reduceCon.length > 0}}">
+        <view class="pagination-loading" wx:if="{{loadingMore}}">
+          <text>正在加载更多记录…</text>
+        </view>
+        <view class="pagination-retry" wx:elif="{{moreError}}" bindtap="retryMore">
+          <text>加载失败，点击重试</text>
+        </view>
+        <view class="pagination-end" wx:elif="{{!hasMore}}">
+          <text>— 已显示全部积分记录 —</text>
+        </view>
+      </view>
+    </block>
+  </view>
 </view>

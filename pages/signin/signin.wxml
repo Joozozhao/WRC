@@ -1,21 +1,49 @@
-<!--pages/signin/signin.wxml-->
-<form bindsubmit="submit">
-  <view class="form-con">
-    <view class="form-item vw-wrap" wx:if="{{hasName == 1}}">
-      <label for="" class="title">姓名</label>
-      <input type="text" value="{{userName}}" placeholder="请输入姓名" name="userName" class="ipt"></input>
+<site-header show-back="{{true}}" back-url="/pages/activity/activity"></site-header>
+<!-- WRC Signin: 活动报名 -->
+<view class="edit-page">
+  <form bindsubmit="submit">
+    <view class="edit-header">
+      <text class="eyebrow">WRC · SIGN UP</text>
+      <text class="page-title">活动报名</text>
+      <text class="page-subtitle">确认报名信息后，点击底部按钮完成报名</text>
     </view>
-    <view class="form-item vw-wrap" wx:if="{{hasMobile == 1}}">
-      <label for="" class="title">电话号码</label>
-      <input type="number" maxlength="11" value="{{mobile}}" placeholder="请输入电话号码" name="mobile" class="ipt"></input>
+
+    <view class="form-card">
+      <view class="card-badge">01 / 报名信息</view>
+
+      <view class="form-group" wx:if="{{hasName == 1}}">
+        <label class="form-label">姓名</label>
+        <input class="form-input" type="text" value="{{userName}}" placeholder="请输入姓名" placeholder-class="placeholder-text" name="userName" />
+      </view>
+
+      <view class="form-group" wx:if="{{hasMobile == 1}}">
+        <label class="form-label">电话号码</label>
+        <input class="form-input" type="number" maxlength="11" value="{{mobile}}" placeholder="请输入电话号码" placeholder-class="placeholder-text" name="mobile" />
+      </view>
+
+      <view class="form-group" wx:if="{{target > 0}}">
+        <label class="form-label">挑战公里数</label>
+        <input class="form-input target-input" type="number" maxlength="11" value="{{target}}" placeholder="请输入整数公里数" placeholder-class="placeholder-text" name="target" />
+        <text class="field-tip">需为不小于原目标 {{distance}} 公里的整数</text>
+      </view>
+
+      <view class="empty-state" wx:if="{{hasName != 1 && hasMobile != 1 && target <= 0}}">
+        <text class="empty-icon">🎽</text>
+        <text class="empty-title">无需填写额外信息</text>
+        <text class="empty-sub">点击下方按钮即可直接完成报名</text>
+      </view>
     </view>
-    <view class="form-item vw-wrap my-point" wx:if="{{target > 0}}">
-      <label for="" class="title">挑战公里数</label>
-      <input type="number" maxlength="11" value="{{target}}" placeholder="请输入挑战公里数" name="target" class="ipt"></input>
+
+    <view class="bottom-action-bar">
+      <button class="primary-submit-btn" form-type="submit" disabled="{{disable}}" hover-class="btn-pressed">确认报名</button>
     </view>
+  </form>
+</view>
+
+<!-- 未登录遮罩：点击任意处触发登录 -->
+<view class="modal-login" bindtap="openLogin" wx:if="{{userId <= 0||userId == undefined}}">
+  <view class="login-tip">
+    <text class="login-tip-title">请先登录</text>
+    <text class="login-tip-sub">点击任意处授权登录后再报名</text>
   </view>
-  <view class="full-btn">
-    <button class="btn btnTwo" form-type="submit" disabled="{{disable}}">完成</button>
-  </view>
-</form>
-<view class="modal-login" bindtap="openLogin" wx:if="{{userId <= 0||userId == undefined}}"></view>
+</view>

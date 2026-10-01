@@ -1,13 +1,30 @@
+<site-header show-back="{{true}}" back-url="/pages/mydata/mydata"></site-header>
 <!--pages/edituser/edituser.wxml-->
-<view data-weui-theme="{{theme}}">
-  <button class="avatar-wrapper" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-    <image class="avatar" src="{{avatarUrl}}"></image>
-  </button> 
+<view class="eu-page" data-weui-theme="{{theme}}">
+  <view class="eu-header">
+    <text class="eyebrow">WRC · PROFILE</text>
+    <text class="page-title">头像与昵称</text>
+    <view class="title-line"></view>
+    <text class="page-subtitle">使用微信头像与昵称，保存后同步到跑团资料</text>
+  </view>
+
+  <view class="eu-avatar-block">
+    <button class="avatar-wrapper" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar" hover-class="avatar-hover">
+      <image class="avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
+    </button>
+    <text class="eu-avatar-hint">点击头像更换</text>
+  </view>
+
   <form catchsubmit="formSubmit">
-    <view class="row">
-      <view class="text1">昵称：</view>
-        <input type="nickname" class="weui-input" name="nickname" placeholder="请输入昵称"/>
+    <view class="eu-card">
+      <view class="eu-row">
+        <text class="eu-label">昵称</text>
+        <input type="nickname" class="eu-input" name="nickname" placeholder="请输入昵称" placeholder-class="eu-ph" />
+      </view>
     </view>
-    <button type="primary" style="margin-top: 40rpx;margin-bottom: 20rpx;" form-type="submit">提交</button>
+
+    <view class="eu-action">
+      <button class="eu-btn" form-type="submit" hover-class="eu-btn-hover">保存</button>
+    </view>
   </form>
 </view>

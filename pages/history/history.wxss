@@ -1,30 +1,37 @@
-/* pages/history/history.wxss */
-@import "../checkpoint/checkpoint.wxss";
-@import "../confirmorder/confirmorder.wxss";
-.order-infor{
-  display: flex;
-  align-content: center;
-  line-height: 3;
-  padding: 0 20rpx;
-  font-size: 28rpx;
-  border-bottom: 1px solid #f1f1f1;
-}
-.order-infor .status{
-  margin-left: auto;
-}
-.exchange-history .confirm-product{
-  padding: 20rpx 0 50rpx 0;
-  position: relative;
-}
-.exchange-history .confirm-product .product-infor{
-  width: 60%;
-}
-.product-infor .add-num{
-  display: flex;
-}
-.add-num .num{
-  margin-left: auto;
-}
-.exchange-history .confirm-product .arrow{
-  margin-top: 80rpx;
-}
+page { min-height: 100%; background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
+.history-page { min-height: 100vh; padding: 180rpx 40rpx 100rpx; box-sizing: border-box; }
+.history-hero { padding: 18rpx 4rpx 30rpx; border-bottom: 1rpx solid #e1e9e3; }
+.history-eyebrow { display: block; color: #0d6447; font-size: 22rpx; font-weight: 750; letter-spacing: 3rpx; }
+.history-title { display: block; margin-top: 27rpx; font-size: 68rpx; line-height: 1.15; font-weight: 800; letter-spacing: -2rpx; }
+.history-title-line { width: 185rpx; height: 7rpx; margin-top: 4rpx; border-radius: 10rpx; background: #d9ff3f; transform: rotate(-2deg); }
+.history-intro { display: block; margin-top: 22rpx; color: #7a8980; font-size: 26rpx; line-height: 1.6; }
+.loaded-count { margin-top: 22rpx; color: #718078; font-size: 22rpx; }
+.history-tabs { display: flex; margin-top: 24rpx; border-bottom: 1rpx solid #e1e9e3; }
+.history-tab { position: relative; flex: 1; padding: 21rpx 0 24rpx; color: #78867e; text-align: center; font-size: 27rpx; font-weight: 650; }
+.history-tab.is-active { color: #0b503b; font-weight: 800; }
+.tab-mark { position: absolute; right: 27%; bottom: -1rpx; left: 27%; height: 6rpx; border-radius: 8rpx; background: #d9ff3f; }
+.history-section { padding-bottom: 35rpx; }
+.section-heading { display: flex; align-items: baseline; justify-content: space-between; padding: 34rpx 4rpx 19rpx; }
+.section-title { color: #092f27; font-size: 34rpx; font-weight: 800; }
+.section-note { color: #829087; font-size: 20rpx; }
+.order-card { overflow: hidden; margin-top: 16rpx; border: 1rpx solid #e3ebe4; border-radius: 18rpx; background: #fff; }
+.order-meta { display: flex; align-items: center; justify-content: space-between; min-height: 74rpx; padding: 0 20rpx; border-bottom: 1rpx solid #edf1ed; }
+.order-time { color: #78867e; font-size: 22rpx; }
+.order-status { padding: 8rpx 14rpx; border-radius: 20rpx; background: #f0f4ed; color: #526b5e; font-size: 20rpx; font-weight: 700; }
+.order-status.is-shipped { background: #eff4db; color: #586d20; }
+.order-status.is-done { background: #e8f3eb; color: #0b6949; }
+.order-status.is-returned { background: #f5eeea; color: #89654e; }
+.product-row { display: flex; align-items: center; min-height: 190rpx; padding: 20rpx; }
+.product-image { flex: none; width: 142rpx; height: 142rpx; border-radius: 12rpx; background: #eef2ed; }
+.product-info { display: flex; min-width: 0; flex: 1; flex-direction: column; align-self: stretch; justify-content: center; margin-left: 20rpx; }
+.product-name { overflow: hidden; color: #153d31; font-size: 27rpx; line-height: 1.45; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+.product-spec { overflow: hidden; margin-top: 8rpx; color: #829087; font-size: 21rpx; text-overflow: ellipsis; white-space: nowrap; }
+.product-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 17rpx; }
+.product-quantity { color: #829087; font-size: 21rpx; }
+.product-cost { padding: 6rpx 11rpx; border-radius: 18rpx; background: #f1f6e3; color: #31593f; font-size: 21rpx; font-weight: 750; }
+.order-arrow { margin-left: 12rpx; color: #a1aca4; font-size: 40rpx; }
+.history-state { display: flex; min-height: 200rpx; flex-direction: column; align-items: center; justify-content: center; margin-top: 12rpx; border: 1rpx solid #e3ebe4; border-radius: 20rpx; background: #fff; color: #718078; text-align: center; font-size: 25rpx; }
+.state-title { color: #264b3d; font-size: 27rpx; font-weight: 750; }
+.state-copy { margin-top: 11rpx; color: #829087; font-size: 22rpx; }
+.retry-action { margin-top: 15rpx; color: #0b593e; font-weight: 750; }
+.history-tail { padding: 27rpx 0 5rpx; color: #8d9991; text-align: center; font-size: 21rpx; }

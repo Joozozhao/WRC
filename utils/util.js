@@ -64,11 +64,22 @@ const request = function(url, method, data, msg, succ, fail){
   })
 }
 const showLogin = function(succ){
-  wx.login({
-    success: function(wxLoginRes){
-      if(wxLoginRes.code){
-        if(succ) succ({ code: wxLoginRes.code });
-      }
+  wx.getUserProfile({
+    desc: '用于完善个人信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+    success: (res) => {
+      console.log(res)
+      wx.login({
+        success: function(wxLoginRes){
+          console.log(wxLoginRes)
+          if(wxLoginRes.code){
+            var result = {
+              userInfo : res.userInfo,
+              code: wxLoginRes.code
+            }
+            if(succ) succ(result);
+          }
+        }
+      })
     }
   })
 }
@@ -81,24 +92,11 @@ function isPhone(value) {
   }
 }
 
-function checkLogin() {
-  var openId = getApp().globalData.openId
-  if (!openId) {
-    wx.showToast({
-      title: '请先登录小程序！',
-      icon: 'none'
-    })
-    return false
-  }
-  return true
-}
-
-module.exports = {
+module.exports = {  
   formatTime: formatTime,
   formatDate: formatDate,
   dislodgeZero: dislodgeZero,
   request: request,
   showLogin: showLogin,
-  isPhone: isPhone,
-  checkLogin: checkLogin
+  isPhone: isPhone
 }

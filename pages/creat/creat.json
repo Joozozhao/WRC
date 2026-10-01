@@ -1,7 +1,7 @@
 {
-  "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#4CB944",
+  "navigationStyle": "custom",
+  "backgroundTextStyle": "light",
+  "navigationBarBackgroundColor": "#072f27",
   "navigationBarTitleText": "创建团跑",
-  "navigationBarTextStyle":"white"
+  "navigationBarTextStyle": "white"
 }

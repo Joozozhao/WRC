@@ -1,7 +1,8 @@
 {
-  "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#4CB944",
+  "navigationStyle": "custom",
+  "backgroundTextStyle": "dark",
+  "navigationBarBackgroundColor": "#fafbf7",
   "navigationBarTitleText": "编辑活动",
-  "navigationBarTextStyle":"white"
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#fafbf7"
 }

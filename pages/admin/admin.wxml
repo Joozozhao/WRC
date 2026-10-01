@@ -1,55 +1,59 @@
+<site-header show-back="{{true}}" back-url="/pages/manage/manage"></site-header>
 <!--pages/admin/admin.wxml-->
-<form bindsubmit="submit">
-    <view class="form-con clockin">
-        <view class="content-wrap">
-            <view class="con-tit">所有配置项</view>
-            <view class="con-all bg-white">
-                <view class="vw-wrap">
-                    <image src="../../images/default.svg" class="icons"></image>
-                    <view class="form-item">
-                        <label for="" class="title">LOGO</label>
-                        <view class="upload-logo" bindtap="uploadAction" wx:if="{{logoSrc==''}}">上传</view>
-                        <view class="logo" bindtap="uploadAction" wx:else>
-                            <image src="{{logoSrc}}" mode="widthFix"></image>
-                        </view>
-                    </view>
-                </view>
-                <view class="vw-wrap">
-                    <image src="../../images/default.svg" class="icons"></image>
-                    <view class="form-item">
-                        <label for="" class="title">团跑积分</label>
-                        <input type="digit" focus="{{focus}}" value="{{group_run}}" name="group_run" class="ipt ellipsis" placeholder="请输入团跑积分"></input>
-                    </view>
-                </view>
-                <view class="vw-wrap">
-                    <image src="../../images/default.svg" class="icons"></image>
-                    <view class="form-item">
-                        <label for="" class="title">日常打卡积分</label>
-                        <input type="digit" focus="{{focus}}" value="{{daily_run}}" name="daily_run" class="ipt ellipsis" placeholder="请输入日常打卡积分"></input>
-                    </view>
-                </view>
-                <view class="vw-wrap">
-                    <image src="../../images/default.svg" class="icons"></image>
-                    <view class="form-item">
-                        <label for="" class="title">抽奖规则</label>
-                        <radio-group class="sex" name="rules" style="width: 60%;">
-                            <label for="" style="float: right;">
-                                <view style="display:inline-block;">
-                                    <radio value="{{luck_rule}}" checked="{{luck_rule == 2 ? 'true' : ''}}" bindtap='radiocon2' />随量
-                                </view>
-                            </label>
-                            <label for="" style="float: right;">
-                                <view style="display:inline-block;">
-                                    <radio value="{{luck_rule}}" checked="{{luck_rule == 1 ? 'true' : ''}}" bindtap='radiocon1' />随机
-                                </view>
-                            </label>
-                        </radio-group>
-                    </view>
-                </view>
-            </view>
+<view class="cfg-page">
+  <view class="cfg-header">
+    <text class="eyebrow">WRC · CLUB CONFIG</text>
+    <text class="page-title">跑团配置</text>
+    <view class="title-line"></view>
+    <text class="page-subtitle">跑团标识、积分规则与抽奖规则的统一设置</text>
+  </view>
+
+  <form bindsubmit="submit">
+    <view class="cfg-card">
+      <view class="cfg-row">
+        <view class="cfg-main">
+          <text class="cfg-label">LOGO</text>
+          <text class="cfg-hint">点击右侧上传或更换跑团标识</text>
         </view>
+        <view class="cfg-control">
+          <view class="logo-upload" bindtap="uploadAction" wx:if="{{logoSrc == ''}}" hover-class="logo-hover">上传</view>
+          <view class="logo-preview" bindtap="uploadAction" wx:else hover-class="logo-hover">
+            <image src="{{logoSrc}}" mode="aspectFit"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="cfg-row">
+        <view class="cfg-main">
+          <text class="cfg-label">团跑积分</text>
+        </view>
+        <input type="digit" focus="{{focus}}" value="{{group_run}}" name="group_run" class="cfg-input" placeholder="请输入团跑积分" placeholder-class="cfg-ph"></input>
+      </view>
+
+      <view class="cfg-row">
+        <view class="cfg-main">
+          <text class="cfg-label">日常打卡积分</text>
+        </view>
+        <input type="digit" focus="{{focus}}" value="{{daily_run}}" name="daily_run" class="cfg-input" placeholder="请输入日常打卡积分" placeholder-class="cfg-ph"></input>
+      </view>
+
+      <view class="cfg-row">
+        <view class="cfg-main">
+          <text class="cfg-label">抽奖规则</text>
+        </view>
+        <radio-group class="cfg-radios" name="rules">
+          <label class="cfg-radio">
+            <radio value="1" checked="{{luck_rule == 1}}" bindtap="radiocon1" color="#0c6246"></radio>随机
+          </label>
+          <label class="cfg-radio">
+            <radio value="2" checked="{{luck_rule == 2}}" bindtap="radiocon2" color="#0c6246"></radio>随量
+          </label>
+        </radio-group>
+      </view>
     </view>
-    <view class="full-btn">
-        <button class="btn btnTwo" form-type="submit" disabled="{{disable}}">保存</button>
+
+    <view class="cfg-action">
+      <button class="cfg-btn" form-type="submit" disabled="{{disable}}" hover-class="cfg-btn-hover">保存配置</button>
     </view>
-</form>
+  </form>
+</view>

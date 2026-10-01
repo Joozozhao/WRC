@@ -1,70 +1,77 @@
-<!--pages/exchange/exchange.wxml-->
-<view class="bg-gray">
-  <view class="vw-wrap im b-weave">
-    <view class="box-part-wrap">
-      <view class="box-part">
-        <view>
-          <view>我的积分</view>
-          <view class="my-points">
-            <navigator url="../checkpoint/checkpoint" hover-class="none">{{score}}</navigator>
-          </view>
-        </view>
-        <view>
-          <view class="my-points" style="font-size: 100rpx;">
-            <navigator url="../energy/energy" hover-class="none">{{energy}}<i class="a-f">朵</i>
-              <image src="../../images/f.svg" class="f-f"></image>
-            </navigator>
-          </view>
+<site-header show-back="{{true}}" back-url="/pages/mydata/mydata"></site-header>
+<view class="prize-page">
+  <view class="prize-hero">
+    <text class="prize-eyebrow">WRC · REWARDS</text>
+    <text class="prize-title">兑换中心</text>
+    <view class="prize-title-line"></view>
+    <text class="prize-intro">用每一步积累，换一份喜欢的奖励</text>
+  </view>
+
+  <view class="balance-row">
+    <navigator class="balance-item" url="../checkpoint/checkpoint" hover-class="none">
+      <text class="balance-label">我的积分</text>
+      <text class="balance-value">{{score}}</text>
+      <text class="balance-link">查看积分记录 ›</text>
+    </navigator>
+    <navigator class="balance-item balance-flower" url="../energy/energy" hover-class="none">
+      <text class="balance-label">我的小花儿</text>
+      <text class="balance-value">{{energy}}<text class="balance-unit" wx:if="{{energy != '--'}}"> 朵</text></text>
+      <text class="balance-link">查看小花儿记录 ›</text>
+    </navigator>
+  </view>
+  <view class="balance-note" wx:if="{{balanceState == 'guest'}}">登录后查看你的积分与小花儿余额</view>
+  <view class="balance-note" wx:if="{{balanceState == 'error'}}">余额暂时无法加载</view>
+
+  <view class="prize-tabs">
+    <view class="prize-tab {{currentTab == 0 ? 'is-active' : ''}}" data-idx="0" bindtap="currentTab">
+      <text>积分兑换</text><view class="tab-mark" wx:if="{{currentTab == 0}}"></view>
+    </view>
+    <view class="prize-tab {{currentTab == 1 ? 'is-active' : ''}}" data-idx="1" bindtap="currentTab">
+      <text>小花儿兑换</text><view class="tab-mark" wx:if="{{currentTab == 1}}"></view>
+    </view>
+  </view>
+
+  <view class="prize-section" wx:if="{{currentTab == 0}}">
+    <view class="section-heading">
+      <text class="section-title">积分好礼</text>
+      <text class="section-note">使用积分兑换</text>
+    </view>
+    <view class="prize-grid" wx:if="{{listState == 'ready' && listData.length}}">
+      <view class="prize-card" wx:for="{{listData}}" wx:for-item="item" wx:key="id" bindtap="toPrize" data-id="{{item.id}}">
+        <view class="prize-image"><image src="{{item.goods_pic}}" mode="aspectFill"></image></view>
+        <view class="prize-copy">
+          <text class="prize-name">{{item.goods_name}}</text>
+          <view class="prize-cost"><image src="../../images/point.png" mode="aspectFit"></image><text>{{item.score}} 积分</text><text class="prize-action">兑换 ›</text></view>
         </view>
       </view>
     </view>
+    <view class="prize-state" wx:if="{{listState == 'loading'}}">正在加载兑换商品…</view>
+    <view class="prize-state" wx:if="{{listState == 'error'}}"><text>商品暂时无法加载</text><text class="retry-action" bindtap="retryPrize">点击重试</text></view>
+    <view class="prize-state" wx:if="{{listState == 'ready' && !listData.length}}">暂无可兑换的积分商品</view>
+    <view class="prize-tail" wx:if="{{listState == 'ready' && listData.length && loadingMore}}">正在加载更多…</view>
+    <view class="prize-tail retry-action" wx:if="{{listState == 'ready' && moreError}}" bindtap="retryMore">加载失败，点击重试</view>
+    <view class="prize-tail" wx:if="{{listState == 'ready' && listData.length && !hasMore}}">已经到底了</view>
   </view>
-  <view class="tab-tit awesome-bg top-bg">
-    <view wx:for="{{navTab}}" wx:key="index" data-idx="{{index}}" bindtap="currentTab" class="sub {{currentTab==index ? 'active' : ''}}"><text>{{item}}</text></view>
-  </view>
-  <view class="{{tab1}}">
-    <view class="vw-wrap list-wrap">
-      <block wx:for="{{listData}}" wx:for-item="item" wx:key="index" wx:if="{{item.total>0&&item.score>0}}">
-        <view class="all-list awesome-bg b-rainbow" bindtap="toPrize" data-id="{{item.id}}">
-          <view class="img">
-            <image src="{{item.goods_pic}}" mode="widthFix" style="height:auto;"></image>
-          </view>
-          <view class="mode-infor">
-            <view class="name ellipsis">{{item.goods_name}}</view>
-            <view class="cost-point">
-              <image src="../../images/point.png" class="point-ico"></image>
-              <text class="points">{{item.score}}</text>
-              <text class="btn">兑换</text>
-            </view>
-            <!-- </navigator> -->
-          </view>
-        </view>
-      </block>
-      <view style="padding: 30rpx; text-align: center;" wx:if="{{listData == ''}}">暂无可兑换奖品</view>
+
+  <view class="prize-section" wx:if="{{currentTab == 1}}">
+    <view class="section-heading">
+      <text class="section-title">小花儿好礼</text>
+      <text class="section-note">超级会员专享兑换资格</text>
     </view>
-  </view>
-  <view class="{{tab2}}">
-    <view class="vw-wrap list-wrap">
-      <block wx:for="{{listData2}}" wx:for-item="item" wx:key="index" wx:if="{{item.total>0&&item.energy>0}}">
-        <view class="all-list awesome-bg b-green" bindtap="toPrize2" data-id="{{item.id}}">
-          <view class="img">
-            <image src="{{item.goods_pic}}" mode="widthFix" style="height:auto;"></image>
-          </view>
-          <view class="mode-infor">
-            <view class="name ellipsis">{{item.goods_name}}</view>
-            <!-- <navigator url="" hover-class="none" "></navigator> -->
-            <view class="cost-point">
-              <image src="../../images/en-ico.svg" class="point-ico"></image>
-              <text class="points">{{item.energy}}</text>
-              <text class="btn">兑换</text>
-            </view>
-            <!-- </navigator> -->
-          </view>
+    <view class="prize-grid" wx:if="{{listState == 'ready' && listData2.length}}">
+      <view class="prize-card" wx:for="{{listData2}}" wx:for-item="item" wx:key="id" bindtap="toPrize2" data-id="{{item.id}}">
+        <view class="prize-image"><image src="{{item.goods_pic}}" mode="aspectFill"></image></view>
+        <view class="prize-copy">
+          <text class="prize-name">{{item.goods_name}}</text>
+          <view class="prize-cost"><image src="../../images/en-ico.svg" mode="aspectFit"></image><text>{{item.energy}} 朵</text><text class="prize-action">兑换 ›</text></view>
         </view>
-      </block>
-      <view style="padding: 30rpx;" wx:if="{{listData2 == ''}}">暂无可兑换奖品</view>
+      </view>
     </view>
-    <!-- <view style="padding: 30rpx;text-align:center;" wx:else>小花儿奖品，仅限 VIP 成员兑换，继续加油～</view> -->
+    <view class="prize-state" wx:if="{{listState == 'loading'}}">正在加载兑换商品…</view>
+    <view class="prize-state" wx:if="{{listState == 'error'}}"><text>商品暂时无法加载</text><text class="retry-action" bindtap="retryPrize">点击重试</text></view>
+    <view class="prize-state" wx:if="{{listState == 'ready' && !listData2.length}}">暂无可兑换的小花儿商品</view>
+    <view class="prize-tail" wx:if="{{listState == 'ready' && listData2.length && loadingMore}}">正在加载更多…</view>
+    <view class="prize-tail retry-action" wx:if="{{listState == 'ready' && moreError}}" bindtap="retryMore">加载失败，点击重试</view>
+    <view class="prize-tail" wx:if="{{listState == 'ready' && listData2.length && !hasMore}}">已经到底了</view>
   </view>
 </view>
-<!-- <view class="modal-login" bindtap="openLogin" wx:if="{{userId <= 0||userId == undefined}}"></view> -->

@@ -1,5 +1,10 @@
 {
+  "navigationStyle": "custom",
+  "navigationBarBackgroundColor": "#fbfcf9",
+  "navigationBarTextStyle": "black",
+  "navigationBarTitleText": "记录跑步",
   "usingComponents": {
-    "picker": "/components/picker/picker"
+    "picker": "/components/picker/picker",
+    "site-header": "../../components/site-header/site-header"
   }
 }

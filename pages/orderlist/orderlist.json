@@ -1,7 +1,7 @@
 {
-  "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#4CB944",
+  "navigationStyle": "custom",
+  "backgroundTextStyle": "dark",
+  "navigationBarBackgroundColor": "#0b503b",
   "navigationBarTitleText": "订单管理",
-  "navigationBarTextStyle":"white"
+  "navigationBarTextStyle": "white"
 }

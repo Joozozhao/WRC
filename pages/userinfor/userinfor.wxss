@@ -1,142 +1,191 @@
 /* pages/userinfor/userinfor.wxss */
-@import "../clockdaily/clockdaily.wxss";
-.page-tips{
-  line-height: 3;
-  font-size: 28rpx;
-  color: #666;
+page {
+  background: #fbfcf9;
+  color: #072f27;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
 }
-.user-infor{
-  padding-top: 40rpx;
-  padding-bottom: 20rpx;
-}
-.user-wrap{
-  display: flex;
-  justify-content: center;
-}
-.edit-but {
-  text-align: center;
-  display: block;
-  width: 30%;
-  padding: 10rpx !important;
-  margin: 0 auto !important;
-}
-.user-pic{
-  position: relative;
-  margin-bottom: 40rpx;
-  display: flex;
-  text-align: center;
-  flex-direction: column;
-  align-items: center;
-}
-.user-pic.add-bd .pic{
-  margin-right: 0;
-  margin-bottom: 10rpx;
-}
- 
-.user-pic .vip{
-  width: 50rpx;
-  height: 50rpx;
- 
-}
-.vw-form{
-  display: flex;
-  line-height: 3;
-}
-.vw-form .fm-tit{
-  width: 28%;
-  font-size: 32rpx;
+.userinfor-page {
+  min-height: 100vh;
+  padding: 180rpx 40rpx 180rpx;
+  box-sizing: border-box;
 }
 
-.vw-form .fm-con{
-  width: 72%;
-  border-bottom: 1px solid #f1f1f170;
-  font-size:28rpx;
+/* Header Avatar Card */
+.profile-header-card {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  background: #fff;
+  border: 1rpx solid #e3ebe4;
+  border-radius: 24rpx;
+  margin-bottom: 36rpx;
+}
+.avatar-wrap {
   position: relative;
+  width: 108rpx;
+  height: 108rpx;
+  flex: none;
 }
-.vw-form .fm-con input{
-  padding-top: 24rpx;
-  font-size: 28rpx;
-  color: #999;
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #e6eee7;
 }
-.vw-form .fm-con radio{
-  color: #333;
+.vip-badge {
+  position: absolute;
+  right: -4rpx;
+  bottom: -4rpx;
+  width: 38rpx;
+  height: 38rpx;
 }
-.sex label{
-  font-size: 32rpx;
-  margin-right: 15rpx;
-  float: left;
+.profile-header-meta {
+  flex: 1;
+  min-width: 0;
+  padding-left: 24rpx;
 }
-checkbox-group label{
-  display: inline-block;
-  width: 25%;
-  font-size: 32rpx;
+.profile-header-nick {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #072f27;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-checkbox-group checkbox .wx-checkbox-input{
-  width: 40rpx;
-  height: 40rpx;
+.profile-header-level {
+  display: block;
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #84918a;
 }
-.other-data{
+.edit-avatar-btn {
+  padding: 10rpx 24rpx;
+  border-radius: 30rpx;
+  background: #f0f5ee;
+  color: #0b503b;
+  font-size: 23rpx;
+  font-weight: 750;
+  flex: none;
+}
+
+/* Section */
+.form-section {
+  margin-bottom: 36rpx;
+}
+.section-title-row {
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
+  align-items: baseline;
+  margin-bottom: 16rpx;
 }
-.other-data .fm-con{
+.section-title {
+  font-size: 27rpx;
+  font-weight: 800;
+  color: #072f27;
+}
+.section-badge {
+  font-size: 21rpx;
+  color: #87938c;
+}
+.section-badge.is-optional {
+  color: #9aa69e;
+}
+.form-card {
+  padding: 0 28rpx;
+  background: #fff;
+  border: 1rpx solid #e3ebe4;
+  border-radius: 24rpx;
+}
+.form-row {
   display: flex;
-  width: 49%;
-  font-size: 28rpx;
-  border-bottom: 1px solid #f1f1f1;
-  line-height: 3;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 104rpx;
+  border-bottom: 1rpx solid #f0f4ef;
 }
-.vw-form .other-data .fm-con input{
-  width: 50%;
-  padding-top: 20rpx;
+.form-row:last-child {
+  border-bottom: none;
 }
-.fm-icon{
-  width: 40rpx;
-  margin :26rpx 10rpx 0 0;
-  float: left;
+.row-label {
+  font-size: 27rpx;
+  font-weight: 750;
+  color: #082f27;
+  width: 170rpx;
+  flex: none;
 }
-.change-only{
-  color: #999;
-  position: absolute;
-  right: 0;
-  top: 5rpx;
+.row-input {
+  flex: 1;
+  text-align: right;
+  font-size: 26rpx;
+  color: #072f27;
 }
-.sub-tit{
-  width: 120rpx;
+.row-placeholder {
+  color: #9aa69e;
 }
-.btn-group{
-  width: 90%;
-  margin: 0 auto;
-  box-sizing: border-box;
-  height: 200rpx;
+.row-picker {
+  flex: 1;
+  text-align: right;
 }
-.btn-group .btn{
-  width: 46%;
-  float: left;
-  margin: 0 2%;
-  line-height: 60rpx;
-  text-align: center;
-  font-size: 32rpx;
-  font-weight: normal;
-  border-radius: 10rpx;
-  background-color: #f1f1f1;
+.picker-value {
+  font-size: 26rpx;
+  color: #072f27;
+}
+.picker-arrow {
+  margin-left: 6rpx;
+  font-size: 20rpx;
+  color: #798782;
 }
 
-.lgo-btn{
-  width: 100%;
-  line-height: 80rpx;
-  box-sizing: border-box;
-  border: 1px solid #e1e1e1;
-  border-radius: 5rpx;
-  margin: 30rpx 0;
-  text-align: center;
-  font-size: 32rpx;
-  color: #666;
+/* Gender Selection */
+.gender-group {
+  display: flex;
+  gap: 16rpx;
 }
-.versionnumber {
+.gender-label {
+  padding: 8rpx 28rpx;
+  border-radius: 24rpx;
+  background: #f0f5ee;
+  color: #64756b;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+.gender-label.is-checked {
+  background: #d9ff3f;
+  color: #062b23;
+  font-weight: 800;
+}
+.hidden-radio {
+  display: none;
+}
+
+/* Bottom Actions */
+.form-bottom-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 50rpx;
+}
+.action-btn {
+  flex: 1;
+  height: 94rpx;
+  line-height: 94rpx;
+  border-radius: 50rpx;
+  font-size: 29rpx;
+  font-weight: 800;
+  border: none;
+}
+.action-btn::after { border: none; }
+.btn-cancel {
+  background: #f0f4ee;
+  color: #68796e;
+}
+.btn-save {
+  background: #d9ff3f;
+  color: #062b23;
+}
+.version-tip {
+  margin-top: 36rpx;
+  color: #a4b0a7;
+  font-size: 20rpx;
   text-align: center;
-  font-size: 80%;
-  color: #dedede;
-  padding-bottom: 100rpx;
 }

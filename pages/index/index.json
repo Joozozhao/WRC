@@ -1,6 +1,7 @@
 {
   "enablePullDownRefresh": true,
   "usingComponents": {
-    "tabbar": "../../components/tabbarComponent/tabbar"
+    "tabbar": "../../components/tabbarComponent/tabbar",
+    "site-header": "../../components/site-header/site-header"
   }
 }

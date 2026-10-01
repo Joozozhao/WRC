@@ -1,46 +1,158 @@
+<site-header show-back="{{true}}" back-url="/pages/mydata/mydata"></site-header>
 <!--pages/record/record.wxml-->
 <wxs src="../../utils/toDecimal2.wxs" module="module1" />
-<block wx:for="{{recordList}}" wx:key="index" wx:for-item="item">
-  <view class="activity">
-    <movable-area>
-      <movable-view 
-        out-of-bounds="true" 
-        direction="horizontal" 
-        x="{{item.xmove}}" 
-        inertia="true" 
-        data-productIndex="{{index}}" 
-        bindtouchstart="handleTouchStart" 
-        bindtouchend="handleTouchEnd" 
-        bindtouchmove='handleTouchMove'
-        bindchange="handleMovableChange">
-        <view class="product-item-wrap">
-          <view class="cover-img" data-id="{{item.id}}" data-url="{{item.sport_img}}" bindtap="preview">
-            <image src="{{item.sport_img}}" mode="aspectFill"></image>
-          </view>
-          <view class="activity-infor">
-            <view class="time">{{item.create_time_str}}</view>
-            <view><text class="distance letter-spacing letter-indent">{{module1.toDecimal2(item.distance)}}</text> km</view>
-            <view>平均配速：{{item.speed}}</view>
-          </view>
-          <view class="state-bg" wx:if="{{item.state == 1}}">
-            <view class="pass" wx:for="{{randomTxt}}" wx:for-item="items" wx:for-index="childindex" wx:if="{{childindex<1}}" wx:key="index">{{randomTxt[index]}}<image src="/images/zan.svg"></image>
+
+<view class="record-page">
+  <!-- Hero Section -->
+  <view class="record-hero">
+    <text class="record-eyebrow">WRC · RUNNING RECORDS</text>
+    <text class="record-title">打卡记录</text>
+    <view class="record-title-line"></view>
+    <text class="record-intro">记录每一步的汗水与坚持，见证奔跑的力量</text>
+    <view class="record-loaded-meta" wx:if="{{listState === 'ready'}}">
+      <text class="meta-dot">●</text>
+      <text>共 {{totalCount || recordList.length}} 条记录</text>
+    </view>
+  </view>
+
+  <!-- Filter Tabs -->
+  <view class="record-tabs">
+    <view class="record-tab {{currentTab === index ? 'is-active' : ''}}" wx:for="{{tabs}}" wx:key="index" data-idx="{{index}}" bindtap="currentTab">
+      <text class="tab-text">{{item}}</text>
+      <view class="tab-mark" wx:if="{{currentTab === index}}"></view>
+    </view>
+  </view>
+
+  <!-- Content Section -->
+  <view class="record-section">
+    <!-- 1. Guest State -->
+    <view class="state-card guest-state" wx:if="{{listState === 'guest'}}">
+      <view class="state-icon-circle">
+        <text class="state-icon">👤</text>
+      </view>
+      <text class="state-title">登录后查看打卡记录</text>
+      <text class="state-copy">登录后可查看自己的日常跑与团跑打卡、审核进度及历史足迹</text>
+      <button class="state-action-btn" bindtap="goLogin">前往登录 →</button>
+    </view>
+
+    <!-- 2. Loading State -->
+    <view class="state-card loading-state" wx:elif="{{listState === 'loading'}}">
+      <view class="loading-spinner"></view>
+      <text class="state-copy">正在加载打卡记录…</text>
+    </view>
+
+    <!-- 3. Error State -->
+    <view class="state-card error-state" wx:elif="{{listState === 'error'}}">
+      <view class="state-icon-circle is-error">
+        <text class="state-icon">⚠️</text>
+      </view>
+      <text class="state-title">打卡记录加载失败</text>
+      <text class="state-copy">网络连接稍有迟疑，请点击下方重试</text>
+      <view class="retry-btn" bindtap="retry">点击重试</view>
+    </view>
+
+    <!-- 4. Ready State -->
+    <block wx:elif="{{listState === 'ready'}}">
+      <!-- Empty State -->
+      <view class="state-card empty-state" wx:if="{{recordList.length === 0}}">
+        <view class="state-icon-circle">
+          <text class="state-icon">👟</text>
+        </view>
+        <text class="state-title">暂无相关打卡记录</text>
+        <text class="state-copy">今天跑过了吗？上传运动凭证，留下你的跑步足迹吧</text>
+        <button class="state-action-btn" bindtap="goClock">去打卡记录跑步 →</button>
+      </view>
+
+      <!-- Record Cards List -->
+      <view class="record-cards-list" wx:else>
+        <view class="record-card" wx:for="{{recordList}}" wx:key="id">
+          <!-- Card Header -->
+          <view class="card-header">
+            <view class="header-left">
+              <text class="type-tag {{item.acty_id == 0 ? 'tag-daily' : 'tag-group'}}">{{item.acty_id == 0 ? '日常跑' : '团跑'}}</text>
+              <text class="record-time">{{item.display_time}}</text>
+            </view>
+            <view class="status-pill {{item.state == 1 ? 'is-passed' : (item.state == 2 ? 'is-refused' : 'is-pending')}}">
+              {{item.state == 1 ? '已通过' : (item.state == 2 ? '已驳回' : '待审核')}}
             </view>
           </view>
-          <view class="state-bg bg2" wx:if="{{item.state == 2}}">
-            <view class="fail">{{item.remark}} <text wx:if="{{item.score>0}}">-{{item.score}}</text></view>
+
+          <!-- Card Body -->
+          <view class="card-body">
+            <!-- Thumbnail with Preview -->
+            <view class="thumb-wrap" data-url="{{item.sport_img}}" bindtap="preview">
+              <image class="record-thumb" src="{{item.sport_img}}" mode="aspectFill" lazy-load="true"></image>
+              <view class="thumb-badge">
+                <text class="thumb-badge-text">预览原图</text>
+              </view>
+            </view>
+
+            <!-- Stats Column -->
+            <view class="stats-col">
+              <view class="stat-main">
+                <text class="dist-num">{{module1.toDecimal2(item.distance)}}</text>
+                <text class="dist-unit">公里</text>
+              </view>
+              <view class="stat-meta-row">
+                <view class="meta-item">
+                  <text class="meta-label">平均配速</text>
+                  <text class="meta-value">{{item.speed || '—'}}</text>
+                </view>
+                <view class="meta-item" wx:if="{{item.duration}}">
+                  <text class="meta-label">用时</text>
+                  <text class="meta-value">{{item.duration}}</text>
+                </view>
+              </view>
+              <view class="stat-sub-row" wx:if="{{item.step_rate > 0 || item.energy}}">
+                <text class="sub-tag" wx:if="{{item.step_rate > 0}}">步频 {{item.step_rate}} spm</text>
+                <text class="sub-tag" wx:if="{{item.energy}}">{{item.energy}} kcal</text>
+              </view>
+            </view>
           </view>
-          <view class="acty-type" style="background:#ffa631;" wx:if="{{item.acty_id==0}}">
-            <view>日常跑</view>
+
+          <!-- Rejection / Remark Alert Box (when state == 2) -->
+          <view class="card-remark-box" wx:if="{{item.state == 2}}">
+            <view class="remark-icon">!</view>
+            <view class="remark-content">
+              <text class="remark-title">审核未通过</text>
+              <text class="remark-desc">{{item.remark || '未达到打卡有效要求，请核对凭证后重新提交'}}</text>
+              <text class="remark-score" wx:if="{{item.score > 0}}">扣除积分：-{{item.score}}</text>
+            </view>
           </view>
-          <view class="acty-type" style="background:#a3d900;" wx:if="{{item.acty_id>0}}">
-            <view>团跑</view>
+
+          <!-- Card Footer -->
+          <view class="card-footer">
+            <view class="footer-note">
+              <block wx:if="{{item.state == 1}}">
+                <text class="note-passed">打卡成功 · 步履不停</text>
+              </block>
+              <block wx:elif="{{item.state == 0}}">
+                <text class="note-pending">打卡凭证审核中，请耐心等待</text>
+              </block>
+              <block wx:elif="{{item.state == 2}}">
+                <text class="note-refused">如有疑问请联系跑团管理员</text>
+              </block>
+            </view>
+            <view class="card-action-del" data-id="{{item.id}}" data-index="{{index}}" bindtap="delCon">
+              <text class="del-icon">🗑</text>
+              <text>删除记录</text>
+            </view>
           </view>
         </view>
-      </movable-view>
-    </movable-area>
-    <view class="delete-btn" data-id="{{item.id}}" data-index="{{index}}" bindtap="delCon">删除</view>
+      </view>
+
+      <!-- Load More / Footer Info -->
+      <view class="list-pagination" wx:if="{{recordList.length > 0}}">
+        <view class="pagination-loading" wx:if="{{loadingMore}}">
+          <text>正在加载更多记录…</text>
+        </view>
+        <view class="pagination-retry" wx:elif="{{moreError}}" bindtap="retryMore">
+          <text>加载失败，点击重试</text>
+        </view>
+        <view class="pagination-end" wx:elif="{{!hasMore}}">
+          <text>— 已显示全部打卡记录 —</text>
+        </view>
+      </view>
+    </block>
   </view>
-</block>
-<!--<view class="noHistory {{noHistory?'show':'hide'}}">
-  <view class="main">暂无任何打卡记录</view>
-</view>-->
+</view>

@@ -1,60 +1,107 @@
-<!--pages/energy/energy.wxml-->
-<view class="bg-gray">
-  <view class="vw-wrap im">
-    <view class="gg">公告：1.成绩数据截止至:{{syncDate}} 2.发现数据异常，可WRC群里反馈～</view>
-    <view class="ml-warp box-part">
-      <view class="ml-but">
-        <view>共</view>
-        <view class="my-points">{{dataTotal}}</view>
-      </view>
-      <view class="ml-but">
-        <view>全程马拉松</view>
-        <view class="my-points">{{wholeTotal}}</view>
-      </view>
-      <view class="ml-but">
-        <view>半程马拉松</view>
-        <view class="my-points">{{halfTotal}}</view>
-      </view>
+<site-header show-back="{{true}}" back-url="/pages/mydata/mydata"></site-header>
+<!-- WRC Marathon Archive: 我的马历 -->
+<view class="results-page">
+  <view class="results-header">
+    <text class="eyebrow">WRC · MARATHON ARCHIVE</text>
+    <text class="page-title">我的马历</text>
+    <text class="page-subtitle">每一次冲线，都是对坚持最好的奖赏</text>
+
+    <view class="notice-bar" wx:if="{{syncDate}}">
+      <text class="notice-tag">同步</text>
+      <text class="notice-text">成绩同步截止至 {{syncDate}} · 如有遗漏可在跑友群反馈</text>
     </view>
-    <!-- 列表 -->
-    <view class="list-container" wx:for-items="{{marathons}}" wx:key="key">
-      <!-- 头部标题区 -->
-      <view class="header">
-        <view class="title">{{item.marathon_name}}</view>
-        <view class="subtitle">{{item.events_type}}</view>
-        <view class="pb-badge" wx:if="{{item.is_pb == 1}}">
-          <text class="stars">★★<text class="pb-text">PB</text>★★</text>
-        </view>
-      </view>
 
-      <!-- 基础成绩信息 -->
-      <view class="info-table">
-        <view class="row">
-          <view class="cell header-cell">比赛时间</view>
-          <view class="cell header-cell">项目</view>
-          <view class="cell header-cell">净成绩</view>
-          <view class="cell header-cell">枪声成绩</view>
-        </view>
-        <view class="row">
-          <view class="cell">{{item.playing_time}}</view>
-          <view class="cell">{{item.project_type}}</view>
-          <view class="cell time-cell">{{item.accurate_score}}</view>
-          <view class="cell time-cell">{{item.gunshot_score}}</view>
-        </view>
+    <!-- 汇总统计卡片 -->
+    <view class="stats-card-grid">
+      <view class="stat-card">
+        <text class="stat-number">{{dataTotal}}</text>
+        <text class="stat-label">完赛总场次</text>
       </view>
-
-      <!-- 分段成绩表格 -->
-      <view class="split-table">
-        <view wx:for="{{item.detail_km}}">
-          <view class="split-row">
-            <view class="split-cell" wx:for="{{item.name}}">{{item}}</view>
-          </view>
-          <view class="split-row">
-            <view class="split-cell time-cell" wx:for="{{item.dis}}">{{item}}</view>
-          </view>
-        </view>
+      <view class="stat-card">
+        <text class="stat-number highlight">{{wholeTotal}}</text>
+        <text class="stat-label">全程马拉松</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-number">{{halfTotal}}</text>
+        <text class="stat-label">半程马拉松</text>
       </view>
     </view>
   </view>
-  <view style="height: 100px;"></view>
+
+  <!-- 赛事列表 -->
+  <view class="race-list" wx:if="{{marathons.length > 0}}">
+    <block wx:for="{{marathons}}" wx:key="index">
+      <view class="race-card">
+        <!-- 头部：赛事名称与标签 -->
+        <view class="race-card-head">
+          <view class="race-title-wrap">
+            <text class="race-title">{{item.marathon_name}}</text>
+            <view class="race-tags">
+              <text class="race-tag" wx:if="{{item.events_type}}">{{item.events_type}}</text>
+              <text class="race-tag-project" wx:if="{{item.project_type}}">{{item.project_type}}</text>
+            </view>
+          </view>
+          <view class="pb-badge" wx:if="{{item.is_pb == 1}}">
+            <text class="pb-star">★</text>
+            <text class="pb-text">PB 个人最佳</text>
+          </view>
+        </view>
+
+        <!-- 比赛日期 -->
+        <view class="race-meta-line" wx:if="{{item.playing_time}}">
+          <text class="race-meta-icon">📅</text>
+          <text class="race-meta-date">比赛日期：{{item.playing_time}}</text>
+        </view>
+
+        <!-- 成绩高亮面板 -->
+        <view class="score-highlight-panel">
+          <view class="score-col primary">
+            <text class="score-value">{{item.accurate_score || "—"}}</text>
+            <text class="score-label">净计时 · 芯片成绩</text>
+          </view>
+          <view class="score-divider"></view>
+          <view class="score-col secondary">
+            <text class="score-value-sub">{{item.gunshot_score || "—"}}</text>
+            <text class="score-label">枪声计时 · 发枪成绩</text>
+          </view>
+        </view>
+
+        <!-- 分段计时表格 -->
+        <view class="split-section" wx:if="{{item.detail_km && item.detail_km.length > 0}}">
+          <view class="split-title">分段成绩记录</view>
+          <view class="split-table-wrap">
+            <block wx:for="{{item.detail_km}}" wx:key="splitIndex" wx:for-item="splitGroup">
+              <scroll-view scroll-x="true" class="split-scroll" enable-flex="true">
+                <view class="split-columns">
+                  <view class="split-col" wx:for="{{splitGroup.name}}" wx:key="*this" wx:for-index="nameIdx">
+                    <text class="split-km">{{item}}</text>
+                    <text class="split-time">{{splitGroup.dis[nameIdx] || "—"}}</text>
+                  </view>
+                </view>
+              </scroll-view>
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 底部状态 -->
+    <view class="list-footer">
+      <text wx:if="{{loading}}">正在加载更多赛事记录…</text>
+      <text wx:elif="{{!hasMore}}">已经到底了 · 共 {{marathons.length}} 场完赛记录</text>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-block" wx:elif="{{loaded && marathons.length === 0}}">
+    <view class="empty-mark">🏅</view>
+    <text class="empty-title">暂无马拉松完赛记录</text>
+    <text class="empty-desc">参加官方认证马拉松赛事并完赛后，成绩将同步展示在此处</text>
+  </view>
+
+  <!-- 加载骨架状态 -->
+  <view class="loading-block" wx:elif="{{loading && !loaded}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">正在读取马历数据…</text>
+  </view>
 </view>

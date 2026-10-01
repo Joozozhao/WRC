@@ -18,8 +18,39 @@
     "bigPackageSizeSupport": false,
     "useIsolateContext": true
   },
-  "condition": {},
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "我的",
+          "pathName": "pages/mydata/mydata",
+          "query": ""
+        },
+        {
+          "name": "首页",
+          "pathName": "pages/index/index",
+          "query": ""
+        },
+        {
+          "name": "TA的主页",
+          "pathName": "pages/othersdata/othersdata",
+          "query": "id=23"
+        },
+        {
+          "name": "团跑",
+          "pathName": "pages/activity/activity",
+          "query": ""
+        },
+        {
+          "name": "挑战",
+          "pathName": "pages/challenge/challenge",
+          "query": ""
+        }
+      ],
+      "current": 0
+    }
+  },
   "description": "Project configuration file, more information: https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
-  "projectname": "WRC%202026",
+  "projectname": "WRC",
   "libVersion": "3.8.8"
 }

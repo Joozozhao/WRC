@@ -1,43 +1,34 @@
-/* pages/memberdata/memberdata.wxss */
-@import "../activitydata/activitydata.wxss";
-.fix-wrap{
-  width: 100%;
-  overflow: hidden;
-  background: #fff;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 3;
-}
-.rank-num{
-  font-size: 28rpx;
-  font-weight: normal;
-}
-.other-infor .total{
-  font-size: 20rpx;
-}
-.other-infor .total .tag{
-  background: #333;
-  font-size: 16rpx;
-  color: #fff;
-  padding: 0 15rpx;
-  border-radius: 20rpx;
-  margin-right: 5rpx;
-}
-.all-item{
-  overflow: hidden;
-  display: flex;
-  padding: 30rpx;
-}
-.all-item text{
-  display: inline-block;
-  font-size: 24rpx;
-  padding: 15rpx 30rpx;
-  border-radius: 50rpx;
-  background: #f0f0f0;
-  margin-right: 10rpx;
-}
-.all-item text.active{
-  background: linear-gradient(to right, #4CB944, #38ef7d);
-  color: #fff;
-}
+page { min-height: 100%; background: #fafbf7; color: #123d2f; }
+.ranking-page { min-height: 100vh; padding: 180rpx 34rpx 52rpx; box-sizing: border-box; background: #fafbf7; }
+.ranking-head { padding-top: 38rpx; }
+.eyebrow { display: block; color: #547767; font-size: 19rpx; font-weight: 750; letter-spacing: 3rpx; }
+.page-title { display: block; margin-top: 17rpx; color: #103d2e; font-size: 58rpx; line-height: 1.2; font-weight: 820; letter-spacing: -2rpx; }
+.page-note { display: block; margin-top: 12rpx; color: #78877e; font-size: 24rpx; line-height: 1.55; }
+.sort-tabs { display: flex; gap: 13rpx; margin-top: 35rpx; padding-bottom: 24rpx; border-bottom: 1rpx solid #dfe7df; }
+.sort-tab { flex: 1; padding: 18rpx 8rpx; border: 1rpx solid #dce5dc; border-radius: 12rpx; color: #50685b; text-align: center; font-size: 25rpx; font-weight: 650; }
+.sort-tab.active { border-color: #d9ff3f; background: #d9ff3f; color: #123d2f; font-weight: 800; }
+.list-heading { display: flex; justify-content: space-between; align-items: center; padding: 27rpx 2rpx 14rpx; color: #8a978f; font-size: 20rpx; letter-spacing: 1rpx; }
+.runner-row { display: flex; align-items: center; min-height: 122rpx; border-bottom: 1rpx solid #e4eae4; }
+.runner-row.is-me { margin: 0 -15rpx; padding: 0 15rpx; border-left: 5rpx solid #b9df23; background: #f0f5df; }
+.runner-rank { flex: none; width: 58rpx; color: #89968e; font-size: 25rpx; font-weight: 700; }
+.runner-rank.top-rank { color: #176044; font-size: 29rpx; font-weight: 850; }
+.runner-avatar { flex: none; width: 76rpx; height: 76rpx; border-radius: 50%; background: #e8eee5; }
+.avatar-placeholder { display: flex; align-items: center; justify-content: center; color: #4d7561; font-size: 25rpx; font-weight: 750; }
+.runner-info { min-width: 0; flex: 1; margin-left: 19rpx; }
+.runner-name-line { display: flex; align-items: center; min-width: 0; }
+.runner-name { overflow: hidden; max-width: 250rpx; color: #183f31; font-size: 27rpx; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+.me-badge { flex: none; margin-left: 9rpx; padding: 3rpx 10rpx; border-radius: 20rpx; background: #d9ff3f; color: #24462e; font-size: 18rpx; font-weight: 750; }
+.sex-icon { flex: none; width: 23rpx; height: 23rpx; margin-left: 8rpx; }
+.runner-meta { display: block; overflow: hidden; margin-top: 9rpx; color: #8a978f; font-size: 20rpx; text-overflow: ellipsis; white-space: nowrap; }
+.runner-result { display: flex; align-items: baseline; flex: none; margin-left: 12rpx; color: #14563d; }
+.distance { font-size: 32rpx; font-weight: 820; font-variant-numeric: tabular-nums; }
+.unit { margin-left: 7rpx; color: #70877a; font-size: 17rpx; font-weight: 700; }
+.state-block { display: flex; flex-direction: column; align-items: center; padding: 105rpx 20rpx 85rpx; text-align: center; }
+.state-mark { display: flex; align-items: center; justify-content: center; width: 76rpx; height: 76rpx; border-radius: 50%; background: #edf2e8; color: #49745c; font-size: 37rpx; font-weight: 750; }
+.loading-mark { width: 48rpx; height: 48rpx; border: 5rpx solid #dce7d7; border-top-color: #3f7758; background: transparent; }
+.state-title { margin-top: 24rpx; color: #284d3c; font-size: 29rpx; font-weight: 750; }
+.state-copy { margin-top: 10rpx; color: #85928a; font-size: 22rpx; line-height: 1.6; }
+.retry-button { margin-top: 27rpx; padding: 15rpx 34rpx; border-radius: 40rpx; background: #d9ff3f; color: #183f31; font-size: 23rpx; font-weight: 750; }
+.list-foot { padding: 29rpx 0; color: #94a097; text-align: center; font-size: 21rpx; }
+.retry-more { color: #276246; }
+.guest-note { margin-top: 30rpx; padding: 20rpx 0; border-top: 1rpx solid #e2e9e1; color: #819087; text-align: center; font-size: 21rpx; }

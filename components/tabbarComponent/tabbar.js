@@ -8,26 +8,25 @@ Component({
     tabbar: {
       type: Object,
       value: {
-        "backgroundColor": "#fff",
-        "color": "#000",
-        "selectedColor": "#FF6D31",
+        "backgroundColor": "#fbfcf9",
+        "color": "#87928c",
+        "selectedColor": "#0b503b",
         "list": [{
-          "pagePath": "pages/index/index",
-          "text": "首页"
+          "pagePath": "/pages/index/index",
+          "text": "首页",
+          "iconPath": "/images/redesign/home.svg"
         }, {
-          "pagePath": "pages/activity/activity",
-          "text": "团跑"
+          "pagePath": "/pages/activity/activity",
+          "text": "团跑",
+          "iconPath": "/images/redesign/groups.svg"
         }, {
-          "pagePath": "/pages/clockdaily/clockdaily",
-          "iconPath": "/components/tabbarComponent/icon/add.png",
-          "isSpecial": true,
-          "text": "打卡"
+          "pagePath": "/pages/challenge/challenge",
+          "text": "挑战",
+          "iconPath": "/images/redesign/trophy.svg"
         }, {
-          "pagePath": "pages/challenge/challenge",
-          "text": "挑战"
-        }, {
-          "pagePath": "pages/mydata/mydata",
-          "text": "我的"
+          "pagePath": "/pages/mydata/mydata",
+          "text": "我的",
+          "iconPath": "/images/redesign/person.svg"
         }]
       }
     }
@@ -37,7 +36,7 @@ Component({
    * 组件的初始数据
    */
   data: {
-    isIphoneX: app.globalData.systemInfo.model.search('iPhone X') != -1 ? true : false
+    isIphoneX: /iPhone (X|1[1-9])/.test((app.globalData.systemInfo && app.globalData.systemInfo.model) || '')
   },
 
   /**

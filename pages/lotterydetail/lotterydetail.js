@@ -33,6 +33,7 @@ Page({
     }
     util.request('acty/getluckdraw', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
+        console.log(res.data)
         that.setData({
           goods_num: res.data.data.goods_num,
           getActy: res.data.data.acty_id,
@@ -49,7 +50,9 @@ Page({
           actyId: actyId,
           userId: userId
         }
+        console.log(data)
         util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res)=>{
+          console.log(res)
           if(res.data.success){
             var allData = res.data.data
             var createTime = allData.start_timestr.substring(0, 16)
@@ -110,6 +113,7 @@ Page({
           id: that.data.getGoods
         }
         util.request('goods/get', 'POST', data, '数据加载中...', (res)=>{
+          console.log(res.data)
           if(res.data.success){
             that.setData({
               imgSrc: res.data.data.goods_pic,
@@ -135,8 +139,10 @@ Page({
         luck_draw_id:that.data.luckId,
         user_id: 0
       }
+      console.log(data)
       util.request('acty/joinLuckDrawList', 'POST', data, '数据加载中 ...', (res)=>{
         if(res.data.success){
+          console.log(res.data)
           var luckData = res.data.data
           that.setData({
             luckList: luckData
@@ -157,13 +163,16 @@ Page({
                 userId: userId,
                 luckId: that.data.luckId
               }
+              console.log(data)
               util.request('user/getusercode','POST',data,'数据加载中 ...',(res)=>{
                 if(res.data.success){
+                  console.log(res.data)
                   var codeList = res.data.data
                   that.setData({
                     codeNum:codeList.code
                   })
                 } else {
+                  console.log(res)
                   wx.showToast({
                     title: res.data.error,
                     icon: 'none',
@@ -204,6 +213,7 @@ Page({
     //     })
     //     wx.getClipboardData({
     //       success: function(res) {
+    //         console.log(res.data) // data
             
     //       }
     //     })

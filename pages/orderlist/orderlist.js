@@ -9,7 +9,7 @@ Page({
     data: {
       orderList: [],
       changeModal: false,
-      noHistory: true,
+      listState: 'loading',
       orderId: 0,
       orstate: 0,
       energy: 0,
@@ -39,6 +39,8 @@ Page({
         }  
       ],
       page: 1,
+      hasMore: true,
+      loadingMore: false,
       sortList:[
         {text: '全部'},
         {text: '待发货'},
@@ -73,39 +75,39 @@ Page({
   initOrder: function(){
     var that = this
     this.setData({
-      page: 1
+      page: 1,
+      listState: 'loading',
+      hasMore: true,
+      loadingMore: false
     })
     var data = {
       name : "", 
       mobile : "", 
-      state : -2, 
-      page: that.data.page++
+      state : -2,
+      page: 1
     }
-    wx.showLoading({
-      title: '加载中',
-      icon: 'loading',
-      mask: true
-    })
+    console.log(data)
     util.request('order/getlist', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
       if(res.data.success){
-        var orderData = res.data.data
+        var orderData = Array.isArray(res.data.data) ? res.data.data : []
+        console.log(orderData)
         that.setData({
           orderList: orderData,
-          noHistory: false
-        })
-        wx.hideLoading({
-          success: (res) => {},
+          listState: 'ready',
+          page: 2,
+          hasMore: orderData.length > 0
         })
       } else {
         that.setData({
-          orderList: '',
-          noHistory: true
-        })
-        wx.hideLoading({
-          success: (res) => {},
+          orderList: [],
+          listState: 'error'
         })
       }
+    }, () => {
+      that.setData({
+        listState: 'error'
+      })
     })
   },
   resetCon: function(e){
@@ -130,6 +132,7 @@ Page({
     // that.setData({
     //   radioItem: that.data.radioItem 
     // })
+    console.log(that.data)
   },
   delCon: function(e){
     var that = this
@@ -150,6 +153,7 @@ Page({
               that.setData({
                 orderList: orderList
               })
+              console.log(res)
               wx.showToast({
                 title: '已删除',
                 icon: 'none',
@@ -167,6 +171,7 @@ Page({
             }
           })
          } else {
+           console.log('用户取消')
          }
        }
     })
@@ -185,6 +190,10 @@ Page({
   },
   onConfirm: function(){
     var that = this
+    if (!this.data.orderId || Number(this.data.stateId) < 0) {
+      wx.showToast({ title: '请选择订单状态', icon: 'none' })
+      return
+    }
     var data = {
       id: that.data.orderId,
       state: that.data.stateId,
@@ -193,13 +202,16 @@ Page({
       userId: that.data.userId,
       orderNum: that.data.orderNum
     }
+    console.log(data)
     util.request('order/updatestate', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
         wx.showToast({
           title: '设置成功',
           icon: 'none',
           duration: 1500
-        })         
+        })
+        that.setData({ changeModal: false, page: 1 })
+        that.initOrder()
       }else{
         wx.showToast({
           title: res.data.error,
@@ -207,12 +219,9 @@ Page({
           duration: 1500
         })  
       }
+    }, () => {
+      wx.showToast({ title: '设置失败，请重试', icon: 'none' })
     })
-    this.setData({
-      changeModal: false,
-      page: 1
-    })
-    this.onLoad()
   },
   /**
    * 页面上拉触底事件的处理函数
@@ -221,12 +230,15 @@ Page({
     this.loadMore()
   },
   loadMore: function(){
+    if (this.data.listState !== 'ready' || this.data.loadingMore || !this.data.hasMore) return
+    this.setData({ loadingMore: true })
     var data = { 
       name : "", 
       mobile : "", 
-      state : -2, 
-      page: this.data.page++
+      state : -2,
+      page: this.data.page
     }
+    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'loading'
@@ -234,20 +246,27 @@ Page({
     util.request('order/getlist', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
       if(res.data.success){
-        var orderData = res.data.data
+        var orderData = Array.isArray(res.data.data) ? res.data.data : []
         var content = that.data.orderList.concat(orderData)
+        console.log(res.data)
         that.setData({
           orderList: content,
-          noHistory: false
+          page: that.data.page + 1,
+          hasMore: orderData.length > 0,
+          loadingMore: false
         })
         wx.hideLoading({
           success: (res) => {},
         })
       }else{
+        that.setData({ loadingMore: false })
         wx.hideLoading({
           success: (res) => {},
         })
       }
+    }, () => {
+      this.setData({ loadingMore: false })
+      wx.hideLoading()
     })
   }
 })

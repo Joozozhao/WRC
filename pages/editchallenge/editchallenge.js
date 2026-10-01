@@ -1,429 +1,235 @@
-// pages/editchallenge/editchallenge.js
-// pages/creat/creat.js
-const util = require('../../utils/util.js')
-var now_time = util.formatTime(new Date())
-let endDate = util.formatTime(new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
-//明天的时间
-var day1 = new Date()
-day1.setTime(day1.getTime()+24*60*60*1000)
-var s1 = day1.getFullYear()+"-"+(day1.getMonth()+1) + "-" +day1.getDate()
-var s2 = (day1.getFullYear()+10)+"-"+(day1.getMonth()+1) + "-" +day1.getDate()
-// 获取应用实例
+const util = require("../../utils/util.js")
 const app = getApp()
+
 Page({
-  /**
-   * 页面的初始数据
-   */
   data: {
-    showView: false,
-    addView: true,
-    startTime: now_time.substring(0,10),
-    // startTime: s1 +' '+ '00:00:00',
-    endTime: endDate.substring(0,10),
-    isPickerRender: false,
+    actyId: 0,
+    actyName: "",
+    actyType: "挑战",
+    startTime: "",
+    endTime: "",
+    distance: "",
+    stype: 0, // 0: 积分, 1: 小花儿
+    score: 0,
+    remark: "",
+    tempFilePaths: "",
+    hasMobile: 0,
+    runCon: true,
+    actyMember: [],
+    avastars: [],
+    runModal: false,
+    totalMan: 0,
+    selectedUserIds: [],
     isPickerShow: false,
-    focus: false,
+    isPickerRender: false,
     pickerConfig: {
       endDate: true,
       column: "first",
       dateLimit: false,
-      // initStartTime: s1 +' '+ '00:00:00',
-      initStartTime: now_time.substring(0,10),
-      initEndTime: '',
-      // limitStartTime: s1 +' '+ '00:00:00',
-      limitStartTime: now_time.substring(0,10),
-      limitEndTime: s2 
-    },
-    actyType: '挑战',
-    formatDate: '',
-    tempFilePaths: '',
-    actyId: '',
-    checkOr: '',
-    hasMobile: 0,
-    sealType: '',
-    showModal: false,
-    remark:'',
-    type: 1,
-    stype: 0,
-    score: 0,
-    runCon: true,
-    avastars: [],
-    actyMember: [],
-    defaultSort: 0,
-    totalMan: 0,
-    totalIn: 0
+      initStartTime: "",
+      initEndTime: ""
+    }
   },
-  pickerShow: function(){
+
+  onLoad(options) {
+    const id = options && options.id ? options.id : 0
+    this.setData({ actyId: id })
+    this.initChallenge(id)
+    this.initActyIn(id)
+  },
+
+  initChallenge(actyId) {
+    util.request("acty/getdetail", "POST", { actyId: actyId }, "加载中...", (res) => {
+      if (res && res.data && res.data.success && res.data.data) {
+        const d = res.data.data
+        const startStr = d.start_timestr ? d.start_timestr.substring(0, 10) : ""
+        const endStr = d.end_timestr ? d.end_timestr.substring(0, 10) : ""
+        const hasMobile = Number(d.has_mobile) === 1 ? 1 : 0
+        const stype = Number(d.stype) === 1 ? 1 : 0
+
+        this.setData({
+          actyName: d.acty_name || "",
+          actyType: d.acty_type || "挑战",
+          startTime: startStr,
+          endTime: endStr,
+          distance: d.distance !== undefined ? d.distance : "",
+          stype: stype,
+          score: d.score !== undefined ? d.score : 0,
+          remark: d.remark || "",
+          tempFilePaths: d.acty_img || "",
+          hasMobile: hasMobile,
+          "pickerConfig.initStartTime": startStr,
+          "pickerConfig.initEndTime": endStr
+        })
+      } else {
+        wx.showToast({ title: (res && res.data && res.data.error) || "获取挑战失败", icon: "none" })
+      }
+    })
+  },
+
+  // 奖励类型切换
+  chooseRewardType(e) {
+    const type = Number(e.currentTarget.dataset.type)
+    this.setData({ stype: type })
+  },
+
+  // 时间选择器
+  pickerShow() {
     this.setData({
       isPickerShow: true,
-      isPickerRender: true,
-      chartHide: true,
-      focus: false
+      isPickerRender: true
     })
   },
-  pickerHide: function() {
-    this.setData({
-      isPickerShow: false,
-      chartHide: false
-    });
+
+  pickerHide() {
+    this.setData({ isPickerShow: false })
   },
-  setPickerTime: function(val) {
-    let data = val.detail;
-    // var startTime = util.dislodgeZero(data.startTime)
-    // var endTime = util.dislodgeZero(data.endTime)
+
+  setPickerTime(e) {
+    const data = e.detail
     this.setData({
-      startTime: data.startTime.substring(0,10),
-      endTime: data.endTime.substring(0,10)
+      startTime: data.startTime ? data.startTime.substring(0, 10) : "",
+      endTime: data.endTime ? data.endTime.substring(0, 10) : ""
     })
   },
-  uploadAction: function(){
-    var that =this;
+
+  // 封面选择与裁剪
+  uploadAction() {
     wx.chooseImage({
       count: 1,
-      sizeType: ['original','compressed'],
-      sourceType: ['album','camera'],
-      success:function(res) {
-        var tempFilePaths = res.tempFilePaths[0]
-        var userId = app.globalData.userId
+      sizeType: ["original", "compressed"],
+      sourceType: ["album", "camera"],
+      success: (res) => {
+        const path = res.tempFilePaths[0]
         wx.navigateTo({
-          url: `../cropper2/cropper?src=${tempFilePaths}`,
-        })
-//         wx.showToast({
-//          icon: "loading",
-//          title: "正在上传"
-//          }),
-//          wx.uploadFile({
-//            filePath: res.tempFilePaths[0],
-//           name: 'file',
-//           url: 'https://applet.51welink.com/sport/acty/uploadimg',
-//           formData: { userId:  userId, fileId:'file' },
-//           success: function(ret){
-//             var obj = JSON.parse(ret.data)
-//             that.setData({
-//               tempFilePaths: obj.data.img,
-//               addView: false,
-//               showView: true
-//             })
-//           },
-//           fail: function(ret){
-//           }
-//         })
-      }
-    })
-  },
-  delete: function(){
-    this.setData({
-      showView: false,
-      addView: true,
-      tempFilePaths: ''
-    })
-  },
-  checkOr: function(){
-    if(this.data.hasMobile == 0){
-      this.setData({
-        checkOr: true,
-        hasMobile: 1
-      })
-    } else {
-      this.setData({
-        checkOr: '',
-        hasMobile: 0
-      })
-    }
-  },
-  choose: function(e){
-    // var stype = e.detail.value
-    this.setData({
-      stype: 0
-    })
-  },
-  choose2: function(e){
-    // var stype = e.detail.value
-    this.setData({
-      stype: 1
-    })
-  },
-  toList: function(){
-    this.setData({
-      runModal: true
-    })
-  },
-  checkboxChange2: function(e){
-    var that = this
-    var avastars = that.data.avastars
-    var indexes = e.detail.value
-    for (var i = 0, lenI = avastars.length; i < lenI; ++i) {
-      avastars[i].checked = false
-      for (var j = 0, lenJ = indexes.length; j < lenJ; ++j) {
-        if (avastars[i].value === indexes[j]) {
-          avastars[i].checked = true
-          break
-        }
-      }
-    } 
-    that.setData({
-      avastars,
-      userid: indexes,
-      totalMan: indexes.length
-    })
-  },
-  onConfirm2: function () {
-    var that = this 
-      that.setState()
-      that.setData({
-        runModal: false
-      })
-  },
-  onCancel2: function(){
-    this.setData({
-      runModal: false
-    })
-  },
-  // signIn: function(){
-  //   var that = this
-  //   var allId = that.data.userid
-  //   var userCount = allId.toString()
-  //   var data = {
-  //     actyId : that.data.actyId,
-  //     userId : userCount,
-  //     distance: that.data.target,
-  //     hasDistance: 0,
-  //     userName: formatDate.userName,
-  //     mobile: formatDate.mobile
-  //   }
-  //   util.request('acty/joinacty', 'POST', data, '数据加载中 ...', (res)=>{
-  //     if(res.data.success){
-  //     that.setData({
-  //       disable: true
-  //     })
-      
-  //       wx.showToast({
-  //         title: '报名成功',
-  //         duration: 1000
-  //       })
-  //       // wx.navigateBack({
-  //       //   delta: 0,
-  //       // })
-  //       wx.redirectTo({
-  //         url: '../activitydetail/activitydetail?id='+that.data.actyId + '&has_name='+that.data.hasName+'&has_mobile='+that.data.hasMobile+'&target='+that.data.target+'&acty_type='+that.data.acty_type
-  //       })
-  //     }else{
-  //       wx.showToast({
-  //         title: res.data.error,
-  //         icon: 'none',
-  //         duration: 1500
-  //       })  
-  //     }
-  //   })
-  // },
-  //人员名单
-  initActyIn: function(){
-    var that = this
-    var data = {
-      actyId: that.data.actyId
-    }
-    util.request('acty/chooseuser', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        that.setData({
-          actyMember: res.data.data,
-          avastars: res.data.data,
-          runCon: true,
-        })
-        var IDs = []
-        for(var i=0;i<res.data.total;i++){
-          var idArr = {}
-          if(res.data.data[i].state==1){
-            idArr = res.data.data[i].id
-            IDs.push(idArr)    
-            that.setData({
-              totalIn: IDs.length
-            })    
-          }
-        }
-        that.setData({
-          userid: IDs.toString()
-        })
-      }else{
-        this.setData({
-          runCon: false
-        })
-        // wx.showToast({
-        //   title: res.data.error,
-        //   icon: 'none',
-        //   duration: 1500
-        // })  
-      }
-    })
-  },
-  //提交参加活动人员
-  setState: function(){
-    var that = this
-    var allId = that.data.userid
-    var userCount = allId.toString()
-    var data = {
-      userId: userCount,
-      actyId: that.data.actyId
-    }
-    util.request('acty/choosejoinacty', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        this.initActyIn()
-        wx.showToast({
-          title: '报名成功',
-          duration: 1000
+          url: "../cropper2/cropper?src=" + encodeURIComponent(path)
         })
       }
     })
   },
-  // getActyRule(){
-  //   var that = this
-  //   var userId = app.globalData.userId
-  //   var data = {
-  //     acty_id: that.data.actyId,
-  //     user_id: 4
-  //   }
-  //   util.request('acty/listRule', 'POST', data, '数据加载中 ...', (res)=>{
-  //     if(res.data.success){
 
-  //     }
-  //   })
-  // },
-  submit: function(e){
-    var that = this
-    var formatDate = e.detail.value
-    var userId = app.globalData.userId    
-    var data = {
-      userId: userId,
-      actyId: that.data.actyId,
-      actyName: formatDate.actyName,
-      actyType: that.data.actyType,
-      startTime: that.data.startTime +' '+'00:00:00',
-      endTime: that.data.endTime +' '+'23:59:59',
-      address: '',
-      region: '',
-      remark: formatDate.remark,
-      distance: formatDate.distance,
-      actyImg: that.data.tempFilePaths,
-      hasMobile: that.data.hasMobile,
-      hasName: 1,
-      stype: that.data.stype,
-      score: formatDate.score,
-      level: 0
-    }
-    if(formatDate.actyName == ''){
-      wx.showToast({
-        title: '名称不能为空!',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    }
-    if(that.data.startTime == ''){
-      wx.showToast({
-        title: '请选择开始时间!',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    }
-    if(that.data.startTime == ''){
-      wx.showToast({
-        title: '请选择结束时间!',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    }
-    if (formatDate.distance == ''){
-      wx.showToast({
-        title: '挑战距离不能为空!',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    }
-    if(that.data.tempFilePaths == ''){
-      wx.showToast({
-        title: '请上传封面!',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    }
-    util.request('acty/save', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        wx.showToast({
-          title: '编辑成功',
-          duration: 1000
-        })
-        setTimeout(function(){
-          wx.switchTab({
-            url: '../challenge/challenge',
+  deleteCover() {
+    this.setData({ tempFilePaths: "" })
+  },
+
+  toggleMobile(e) {
+    const checked = e.detail.value
+    this.setData({ hasMobile: checked ? 1 : 0 })
+  },
+
+  // V挑战成员选择弹窗
+  openMemberModal() {
+    util.request("acty/getactyuser", "POST", {
+      actyId: this.data.actyId,
+      userId: app.globalData.userId || 0,
+      level: "",
+      distance: 1,
+      userName: "",
+      mobile: ""
+    }, "读取成员中...", (res) => {
+      if (res && res.data && res.data.success && Array.isArray(res.data.data)) {
+        const raw = res.data.data
+        const selected = this.data.actyMember.map(m => String(m.id))
+        const list = raw.map(item => {
+          return Object.assign({}, item, {
+            checked: selected.includes(String(item.id))
           })
-        }, 1000)
-      }else{
-        wx.showToast({
-          title: res.data.error,
-          icon: 'none',
-          duration: 1500
-        })  
+        })
+        this.setData({
+          avastars: list,
+          runModal: true,
+          totalMan: selected.length,
+          selectedUserIds: selected
+        })
+      } else {
+        wx.showToast({ title: "暂无报名成员", icon: "none" })
       }
     })
   },
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-    var id = options.id
-    wx.hideShareMenu({})
-    this.setData({
-      actyId: id
-    })
-    this.initActivity(id)
-    this.initActyIn()
-    // this.getActyRule(id)
+
+  closeMemberModal() {
+    this.setData({ runModal: false })
   },
-  initActivity: function(id){
-    var that = this
-    var data = {
-      actyId: id
-    }
-    util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        var startStr = "pickerConfig.initStartTime"
-        var endStr = "pickerConfig.initEndTime"
-        that.setData({
-          sealType: res.data.data.region,
-          actyType: res.data.data.acty_type,
-          actyName: res.data.data.acty_name,
-          startTime: res.data.data.start_timestr.substring(0,10),
-          [startStr]: res.data.data.start_timestr.substring(0,10),
-          endTime: res.data.data.end_timestr.substring(0,10),
-          [endStr]: res.data.data.end_timestr.substring(0,10),
-          distance: res.data.data.distance,
-          tempFilePaths: res.data.data.acty_img,
-          remark: res.data.data.remark,
-          score: res.data.data.snum,
-          stype: res.data.data.stype,
-          addView: false,
-          showView: true,
-          hasMobile: res.data.data.has_mobile,
-          hasName: res.data.data.has_name
+
+  checkboxChangeMember(e) {
+    const values = e.detail.value
+    this.setData({
+      selectedUserIds: values,
+      totalMan: values.length
+    })
+  },
+
+  confirmMembers() {
+    const userIdsStr = this.data.selectedUserIds.join(",")
+    util.request("acty/updatejoinstate", "POST", {
+      userIds: userIdsStr,
+      actyId: this.data.actyId
+    }, "保存中...", () => {
+      this.initActyIn(this.data.actyId)
+      this.setData({ runModal: false })
+      wx.showToast({ title: "已更新挑战成员", icon: "none" })
+    })
+  },
+
+  initActyIn(actyId) {
+    util.request("acty/getclickuser", "POST", { actyId: actyId }, "", (res) => {
+      if (res && res.data && res.data.success && Array.isArray(res.data.data)) {
+        this.setData({
+          actyMember: res.data.data,
+          totalMan: res.data.data.length
         })
-        if(that.data.hasMobile == 1){
-          that.setData({
-            checkOr: true
-          })
-        } else {
-          that.setData({
-            checkOr: ''
-          })
-        }
-      }else{
-        wx.showToast({
-          title: res.data.error,
-          icon: 'none',
-          duration: 1500
-        })  
+      }
+    })
+  },
+
+  submit(e) {
+    const f = e.detail.value
+    const userId = app.globalData.userId || 0
+
+    if (!f.actyName || !f.actyName.trim()) {
+      wx.showToast({ title: "挑战名称不能为空", icon: "none" })
+      return
+    }
+    if (!this.data.startTime || !this.data.endTime) {
+      wx.showToast({ title: "请设置挑战起止日期", icon: "none" })
+      return
+    }
+    if (!f.distance || isNaN(Number(f.distance))) {
+      wx.showToast({ title: "请填写正确的挑战距离", icon: "none" })
+      return
+    }
+    if (!this.data.tempFilePaths) {
+      wx.showToast({ title: "请上传挑战封面", icon: "none" })
+      return
+    }
+
+    const postData = {
+      userId: userId,
+      actyId: this.data.actyId,
+      actyName: f.actyName.trim(),
+      actyType: this.data.actyType,
+      startTime: this.data.startTime + " 00:00:00",
+      endTime: this.data.endTime + " 23:59:59",
+      distance: f.distance,
+      stype: this.data.stype,
+      score: f.score !== undefined ? f.score : this.data.score,
+      remark: f.remark ? f.remark.trim() : "",
+      actyImg: this.data.tempFilePaths,
+      hasMobile: this.data.hasMobile,
+      hasName: 1,
+      region: "",
+      level: 0,
+      address: ""
+    }
+
+    util.request("acty/save", "POST", postData, "正在保存...", (res) => {
+      if (res && res.data && res.data.success) {
+        wx.showToast({ title: "修改成功", icon: "success", duration: 1500 })
+        setTimeout(() => {
+          wx.switchTab({ url: "../challenge/challenge" })
+        }, 1200)
+      } else {
+        wx.showToast({ title: (res && res.data && res.data.error) || "保存失败", icon: "none" })
       }
     })
   }

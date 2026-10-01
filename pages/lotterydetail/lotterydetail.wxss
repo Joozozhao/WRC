@@ -1,83 +1,42 @@
-/* pages/lotterydetail/lottery.wxss */
-@import "../activity/activity.wxss";
-@import "../prizedetails/prizedetails.wxss";
-/* @import "../activitydetail/activitydetail.wxss"; */
-.pro-detail{
-  line-height: 1.5;
-  font-size: 32rpx;
-  color: #999;
-  font-weight: 200;
-}
-.detail-wrap{
-  padding: 20rpx;
-}
-.detail-wrap .number{
-  color: #999;
-}
-.detail-wrap .time{
-  font-size: 24rpx;
-  color: #999;
-}
-.nor-title {
-  font-size: 32rpx;
-  color: #666;
-  font-weight: 700;
-  line-height: 2;
-}
-.hasOrd{
-  margin-bottom: 20rpx;
-  padding: 20rpx;
-}
-.result-con{
-  font-size: 50rpx;
-  padding: 40rpx 0;
-  text-align: center;
-}
-.result-con .result{
-  color: #D1C2E9;
-  font-weight: 700;
-  padding-bottom: 10rpx;
-}
-.result-con .result.fail{
-  color: #999;
-}
-.result-con .prize{
-  font-size: 32rpx;
-  color: #333;
-}
-.person-list{
-  display: flex;
-  flex-wrap: wrap;
-  padding-top: 30rpx;
-  justify-content: center;
-  color: #D1C2E9;
-  font-size: 32rpx;
-}
-.person-list .list-item{
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 28rpx;
-}
-.exchange-list{
-  padding: 20rpx 0;
-}
-.avastar.big{
-  width: 120rpx;
-  height: 120rpx;
-  min-height: 120rpx;
-}
-.prize-code{
-  color: #999;
-  font-size: 28rpx;
-  padding: 10rpx 0;
-}
-.copyNum{
-  display: inline;
-  font-size: 24rpx;
-  padding: 5rpx 20rpx 10rpx 20rpx;
-  border: 1px solid #e1e1e1;
-  border-radius: 5rpx;
-  margin-left: 10rpx;
-}
+/* pages/lotterydetail/lotterydetail.wxss 自包含：不再依赖 activitydetail 旧样式 */
+page { background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
+.luck-page { min-height: 100vh; padding: 180rpx 40rpx calc(60rpx + env(safe-area-inset-bottom)); box-sizing: border-box; }
+.luck-hero { padding: 18rpx 4rpx 35rpx; border-bottom: 1rpx solid #e1e9e3; }
+.luck-eyebrow { display: block; color: #0d6447; font-size: 22rpx; font-weight: 750; letter-spacing: 3rpx; }
+.luck-title { display: block; margin-top: 27rpx; font-size: 72rpx; line-height: 1.15; font-weight: 800; letter-spacing: -2rpx; }
+.luck-title-line { width: 185rpx; height: 7rpx; margin-top: 4rpx; border-radius: 10rpx; background: #d9ff3f; transform: rotate(-2deg); }
+.luck-prize { margin-top: 26rpx; padding: 24rpx; border: 1rpx solid #e3ebe4; border-radius: 22rpx; background: #fff; box-sizing: border-box; }
+.luck-prize-media { display: flex; height: 320rpx; align-items: center; justify-content: center; overflow: hidden; border-radius: 14rpx; background: #eef2ed; }
+.luck-prize-media image { max-width: 100%; max-height: 100%; }
+.luck-prize-info { padding: 20rpx 4rpx 0; }
+.luck-row { display: flex; align-items: baseline; justify-content: space-between; padding: 10rpx 0; }
+.luck-label { flex: none; color: #78867e; font-size: 24rpx; }
+.luck-value { flex: 1; min-width: 0; margin-left: 24rpx; color: #153d31; font-size: 27rpx; font-weight: 650; text-align: right; overflow-wrap: anywhere; }
+.luck-section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 36rpx 4rpx 20rpx; }
+.luck-section-title { color: #092f27; font-size: 34rpx; font-weight: 800; }
+.luck-section-index { color: #8a9b8e; font-size: 21rpx; font-weight: 700; letter-spacing: 1rpx; }
+.luck-acty { display: flex; padding: 22rpx 24rpx; border: 1rpx solid #e3ebe4; border-radius: 22rpx; background: #fff; box-sizing: border-box; }
+.luck-acty-cover { position: relative; overflow: hidden; flex: none; width: 220rpx; height: 220rpx; margin-right: 22rpx; border-radius: 14rpx; background: #eef2ed; }
+.luck-acty-cover image { width: 100%; height: 100%; }
+.luck-acty-mask { position: absolute; z-index: 2; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, .6); }
+.luck-acty-state { position: absolute; bottom: 0; left: 0; width: 100%; height: 50rpx; background: rgba(7, 47, 39, .65); color: #fff; text-align: center; font-size: 22rpx; line-height: 50rpx; }
+.luck-acty-info { flex: 1; min-width: 0; color: #718078; font-size: 23rpx; line-height: 1.6; }
+.luck-acty-title { color: #153d31; font-size: 29rpx; font-weight: 750; line-height: 1.4; }
+.luck-tags { display: flex; flex-wrap: wrap; margin-top: 8rpx; }
+.luck-tag { margin: 0 12rpx 8rpx 0; padding: 3rpx 16rpx; border-radius: 20rpx; background: #edf5dd; color: #0b503b; font-size: 21rpx; font-weight: 700; }
+.luck-tag-org { background: #eef2ed; color: #5c6f62; }
+.luck-meta { display: flex; align-items: center; margin-top: 6rpx; }
+.luck-meta-ico { flex: none; width: 28rpx; height: 28rpx; margin-right: 10rpx; }
+.luck-meta-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.luck-result { margin-top: 26rpx; padding: 40rpx 30rpx; border-radius: 22rpx; background: #0b503b; text-align: center; }
+.luck-result-title { color: #d9ff3f; font-size: 42rpx; font-weight: 800; line-height: 1.3; }
+.luck-result-title.is-fail { color: #cde0d1; font-size: 34rpx; }
+.luck-code { display: flex; align-items: center; justify-content: center; margin-top: 22rpx; color: #d3e2d4; font-size: 26rpx; }
+.luck-code-btn { margin-left: 18rpx; padding: 8rpx 26rpx; border-radius: 30rpx; background: #d9ff3f; color: #0b392b; font-size: 24rpx; font-weight: 800; }
+.luck-card { padding: 26rpx 24rpx; border: 1rpx solid #e3ebe4; border-radius: 22rpx; background: #fff; box-sizing: border-box; }
+.luck-winners { display: flex; flex-wrap: wrap; }
+.luck-winner { display: flex; width: 25%; flex-direction: column; align-items: center; margin-bottom: 20rpx; box-sizing: border-box; }
+.luck-avatar { flex: none; width: 72rpx; height: 72rpx; margin: 8rpx; border-radius: 50%; background: #e1ebe0; }
+.luck-avatar-big { width: 110rpx; height: 110rpx; margin: 0 0 10rpx; }
+.luck-winner-name { max-width: 90%; overflow: hidden; color: #304d3d; font-size: 24rpx; text-overflow: ellipsis; white-space: nowrap; }
+.luck-joined { display: flex; flex-wrap: wrap; }

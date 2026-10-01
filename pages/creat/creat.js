@@ -1,314 +1,229 @@
-// pages/creat/creat.js
+// pages/creat/creat.js — 创建团跑
 const util = require('../../utils/util.js')
-// var now_time = util.formatTime(new Date())
-// let endDate = util.formatTime(new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
-//明天的时间
-var day1 = new Date()
-day1.setTime(day1.getTime()+24*60*60*1000)
-var s1 = day1.getFullYear()+"-"+(day1.getMonth()+1) + "-" +day1.getDate()
-var s2 = (day1.getFullYear()+10)+"-"+(day1.getMonth()+1) + "-" +day1.getDate()
-// 获取应用实例
+
 const app = getApp()
+
+// 默认活动时间：明天 00:00:00 至 23:59:59，可选期限为未来 10 年
+const ONE_DAY_MS = 24 * 60 * 60 * 1000
+const tomorrow = new Date(Date.now() + ONE_DAY_MS)
+const DEFAULT_DAY = tomorrow.getFullYear() + '-' + (tomorrow.getMonth() + 1) + '-' + tomorrow.getDate()
+const LIMIT_DAY = (tomorrow.getFullYear() + 10) + '-' + (tomorrow.getMonth() + 1) + '-' + tomorrow.getDate()
+const DEFAULT_START = DEFAULT_DAY + ' 00:00:00'
+const DEFAULT_END = DEFAULT_DAY + ' 23:59:59'
+
+// 活动地区选项（弹窗内可多选，提交时用英文逗号拼接）
+const SEAL_TYPE_LIST = [
+  { gzkind: '北京', id: 1 },
+  { gzkind: '日照', id: 2 },
+  { gzkind: '其他地区', id: 3 }
+]
+
 Page({
-  /**
-   * 页面的初始数据
-   */
   data: {
-    showView: false,
-    addView: true,
-    startTime: s1 +' '+ '00:00:00',
-    endTime: s1 +' '+ '23:59:59',
+    showView: false,       // 是否展示封面预览（裁剪页上传成功后回写）
+    addView: true,         // 是否展示封面上传入口（裁剪页上传成功后回写）
+    startTime: DEFAULT_START,
+    endTime: DEFAULT_END,
+    startDateDisplay: DEFAULT_DAY,
+    startClockDisplay: '00:00',
+    endDateDisplay: DEFAULT_DAY,
+    endClockDisplay: '23:59',
     isPickerRender: false,
     isPickerShow: false,
     focus: false,
     pickerConfig: {
       endDate: true,
-      column: "second",
+      column: 'second',
       dateLimit: true,
-      initStartTime: s1 +' '+ '00:00:00',
-      initEndTime: s1 +' '+ '23:59:59',
-      limitStartTime: s1 +' '+ '00:00:00',
-      limitEndTime: s2 +' '+ '23:59:59'
+      initStartTime: DEFAULT_START,
+      initEndTime: DEFAULT_END,
+      limitStartTime: DEFAULT_START,
+      limitEndTime: LIMIT_DAY + ' 23:59:59'
     },
     actyType: '团跑',
-    formatDate: '',
-    tempFilePaths: '',
+    tempFilePaths: '',     // 封面图地址（裁剪页上传成功后回写）
     checkOr: '',
     hasMobile: 0,
     sealType: '',
     showModal: false,
-    sealTypeList: [
-      {
-        gzkind: '北京',
-        id: 1,
-        checked: ''
-      },
-      {
-        gzkind: '日照',
-        id: 2,
-        checked: ''
-      },
-      {
-        gzkind: '其他地区',
-        id: 3,
-        checked: ''
-      }
-    ],
+    sealTypeList: SEAL_TYPE_LIST.map(function (item) {
+      return { gzkind: item.gzkind, id: item.id, checked: '' }
+    }),
     stype: 0,
     score: 0,
-    disable: ''
+    disable: false,
+    errorMsg: ''
   },
-  //地区选择
-  pickArea: function(){
-    this.setData({
-      showModal: true
-    })
+
+  // 打开地区选择弹窗
+  pickArea: function () {
+    this.setData({ showModal: true, errorMsg: '' })
   },
+
+  // 地区勾选变化：先清空全部勾选，再按当前选中项回显打勾
   checkboxChange: function (e) {
-    let that = this;
-    let sealTypeList = this.data.sealTypeList;
-    // 若之前已选择公章，将其回显打勾
-    
-    for (let i = 0; i < sealTypeList.length; i++) {
-      sealTypeList[i].checked = false;
-    }
-    let indexes = e.detail.value;
-    for (let i = 0; i < indexes.length; i++) {
-      indexes[i] = parseInt(indexes[i]);
-      // 多选框从1开始，数组下标从0开始，所以需要减1
-      sealTypeList[indexes[i] - 1].checked = true;
-    }
-    // 直接将整个list赋值回去
-    this.setData({
-      sealTypeList: sealTypeList
+    const sealTypeList = this.data.sealTypeList
+    sealTypeList.forEach(function (item) { item.checked = false })
+    const indexes = e.detail.value
+    indexes.forEach(function (val) {
+      // 多选框 value 从 1 开始，数组下标从 0 开始，需要减 1
+      const index = parseInt(val, 10) - 1
+      if (sealTypeList[index]) sealTypeList[index].checked = true
     })
+    this.setData({ sealTypeList: sealTypeList })
   },
-  // 用户点击确定
+
+  // 地区弹窗-确定：把勾选的地区用逗号拼接后回显到表单
   onConfirm: function () {
-    let that = this;
-    let seals = [];
-    let sealTypeList = this.data.sealTypeList;
-    sealTypeList.forEach(function (e) {
-      if (e.checked) {
-        // gzkind是对象的一个属性，表示具体公章类型名的字符串
-        seals.push(e.gzkind);
-      }
-    });
-    // 显示到wxml上
+    const seals = this.data.sealTypeList
+      .filter(function (item) { return item.checked })
+      .map(function (item) { return item.gzkind })
     this.setData({
-      sealType: seals.join(","),
-      showModal: false
+      sealType: seals.join(','),
+      showModal: false,
+      errorMsg: ''
     })
   },
-  // 用户点击取消
+
+  // 地区弹窗-取消：放弃本次勾选，恢复上一次已保存的选择
   onCancel: function () {
-    let that = this;
-    let sealTypeList = this.data.sealTypeList;
-    // 获取上一次选择的用印类型字符串（规定用，隔开）
-    let gzkind = this.data.sealType || "";
-    // 放弃当前的勾选，原来谁checked，谁就checked
-    sealTypeList.forEach(function (e) {
-      e.checked = false;
-    });
-    if (gzkind !== "") {
-      gzkind = gzkind.split(",");
-      for (let i = 0; i < gzkind.length; i++) {
-        for (let j = 0; j < sealTypeList.length; j++) {
-          let e = sealTypeList[j];
-          if (e.gzkind == gzkind[i]) {
-            e.checked = true;
-          }
-        }
-      }
-    }
+    const sealTypeList = this.data.sealTypeList
+    const selected = (this.data.sealType || '').split(',')
+    sealTypeList.forEach(function (item) {
+      item.checked = selected.indexOf(item.gzkind) !== -1
+    })
     this.setData({
       sealTypeList: sealTypeList,
       showModal: false
     })
   },
-  pickerShow: function(){
+
+  // 打开时间选择器
+  pickerShow: function () {
     this.setData({
       isPickerShow: true,
       isPickerRender: true,
-      chartHide: true,
-      focus: false
+      focus: false,
+      errorMsg: ''
     })
   },
-  pickerHide: function() {
-    this.setData({
-      isPickerShow: false,
-      chartHide: false
-    });
+
+  pickerHide: function () {
+    this.setData({ isPickerShow: false })
   },
-  setPickerTime: function(val) {
-    let data = val.detail;
-    var startTime = util.dislodgeZero(data.startTime)
-    var endTime = util.dislodgeZero(data.endTime)
+
+  // 时间选择器确认回调
+  setPickerTime: function (val) {
+    const detail = val.detail
+    const startTime = util.dislodgeZero(detail.startTime)
+    const endTime = util.dislodgeZero(detail.endTime)
     this.setData({
       startTime: startTime,
-      endTime: endTime
+      endTime: endTime,
+      startDateDisplay: startTime.split(' ')[0],
+      startClockDisplay: (startTime.split(' ')[1] || '').substring(0, 5),
+      endDateDisplay: endTime.split(' ')[0],
+      endClockDisplay: (endTime.split(' ')[1] || '').substring(0, 5)
     })
   },
-  uploadAction: function(){
-    var that =this;
+
+  // 选择封面图：跳转裁剪页，上传成功后由裁剪页回写 tempFilePaths/addView/showView
+  uploadAction: function () {
     wx.chooseImage({
       count: 1,
-      sizeType: ['original','compressed'],
-      sourceType: ['album','camera'],
-      success:function(res) {
-        var tempFilePaths = res.tempFilePaths[0]
-        // var userId = app.globalData.userId
-        //  获取裁剪图片资源后，给data添加src属性及其值
+      sizeType: ['original', 'compressed'],
+      sourceType: ['album', 'camera'],
+      success: function (res) {
         wx.navigateTo({
-          url: `../cropper/cropper?src=${tempFilePaths}`,
+          url: '../cropper/cropper?src=' + res.tempFilePaths[0]
         })
-        // wx.showToast({
-        //  icon: "loading",
-        //  title: "正在上传"
-        // }),
-//         wx.uploadFile({
-//           filePath: res.tempFilePaths[0],
-//           name: 'file',
-//           url: 'https://applet.51welink.com/sport/acty/uploadimg',
-//           formData: { userId:  userId, fileId:'file' },
-//           success: function(ret){
-//             var obj = JSON.parse(ret.data)
-//             that.setData({
-//               tempFilePaths: obj.data.img,
-//               addView: false,
-//               showView: true
-//             })
-//           },
-//           fail: function(ret){
-//           }
-//         })
       }
     })
   },
-  delete: function(){
+
+  // 删除封面
+  delete: function () {
     this.setData({
       showView: false,
       addView: true,
-      tempFilePaths: ''
+      tempFilePaths: '',
+      errorMsg: ''
     })
   },
-  checkOr: function(){
-    if(this.data.hasMobile == 0){
-      this.setData({
-        checkOr: true,
-        hasMobile: 1
-      })
+
+  // 切换“报名时填写手机号”
+  checkOr: function () {
+    if (this.data.hasMobile === 0) {
+      this.setData({ checkOr: true, hasMobile: 1 })
     } else {
-      this.setData({
-        checkOr: '',
-        hasMobile: 0
-      })
+      this.setData({ checkOr: '', hasMobile: 0 })
     }
   },
-  submit: function(e){
-    var that = this
-    var formatDate = e.detail.value
-    var userId = app.globalData.userId    
-    var data = {
-      userId: userId,
-      actyName: formatDate.actyName,
-      actyType: that.data.actyType,
-      startTime: that.data.startTime,
-      endTime: that.data.endTime,
-      address: formatDate.address,
-      region: that.data.sealType,
+
+  // 提交创建
+  submit: function (e) {
+    const values = e.detail.value
+    const data = {
+      userId: app.globalData.userId,
+      actyName: values.actyName,
+      actyType: this.data.actyType,
+      startTime: this.data.startTime,
+      endTime: this.data.endTime,
+      address: values.address,
+      region: this.data.sealType,
       remark: '',
-      distance: formatDate.distance,
-      actyImg: that.data.tempFilePaths,
-      hasMobile: that.data.hasMobile,
+      distance: values.distance,
+      actyImg: this.data.tempFilePaths,
+      hasMobile: this.data.hasMobile,
       hasName: 1,
-      stype: that.data.stype,
-      score: that.data.score,
+      stype: this.data.stype,
+      score: this.data.score,
       level: 0
     }
-    if(that.data.sealType == ''){
+
+    // 校验顺序与提示文案保持原逻辑；新增页面内错误提示
+    const rules = [
+      { pass: this.data.sealType !== '', message: '请选择活动地区!' },
+      { pass: values.actyName !== '', message: '名称不能为空!' },
+      { pass: this.data.startTime !== '', message: '请选择开始时间!' },
+      { pass: this.data.endTime !== '', message: '请选择结束时间!' },
+      { pass: values.address !== '', message: '地点不能为空!' },
+      { pass: values.distance !== '', message: '距离不能为空!' },
+      { pass: this.data.tempFilePaths !== '', message: '请上传封面!' }
+    ]
+    const failed = rules.find(function (rule) { return !rule.pass })
+    if (failed) {
+      this.setData({ errorMsg: failed.message })
       wx.showToast({
-        title: '请选择活动地区!',
+        title: failed.message,
         icon: 'none',
         duration: 1500
       })
       return false
     }
-    if(formatDate.actyName == ''){
-      wx.showToast({
-        title: '名称不能为空!',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    }
-    if(that.data.startTime == ''){
-      wx.showToast({
-        title: '请选择开始时间!',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    }
-    if(that.data.startTime == ''){
-      wx.showToast({
-        title: '请选择结束时间!',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    }
-    if(formatDate.address == ''){
-      wx.showToast({
-        title: '地点不能为空!',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    }
-    if (formatDate.distance == ''){
-      wx.showToast({
-        title: '距离不能为空!',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    }
-    if(that.data.tempFilePaths == ''){
-      wx.showToast({
-        title: '请上传封面!',
-        icon: 'none',
-        duration: 1500
-      })
-      return false
-    }
-    util.request('acty/save', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        that.setData({
-          disable: true
-        })
+    this.setData({ errorMsg: '' })
+
+    util.request('acty/save', 'POST', data, '数据加载中 ...', (res) => {
+      if (res.data.success) {
+        this.setData({ disable: true })
         wx.showToast({
           title: '创建成功',
           duration: 1000
         })
         wx.switchTab({
-          url: '../activity/activity',
+          url: '../activity/activity'
         })
-      }else{
+      } else {
         wx.showToast({
           title: res.data.error,
           icon: 'none',
           duration: 1500
-        })  
+        })
       }
     })
   },
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
+
+  onLoad: function () {
     wx.hideShareMenu({})
-  },
-  onShow: function(){
   }
 })

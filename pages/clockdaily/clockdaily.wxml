@@ -1,88 +1,61 @@
-<!--pages/clockin/clockin.wxml-->
-<view class="top-part">
-  <view class="back-btn" bindtap="back"><image src="../../images/arrow-l.png" mode="widthFix"></image></view>
-  <image src="../../images/clock-bg.png" class="bg" mode="widthFix"></image>
-</view>
-<view class="run-date">
-  <form bindsubmit="submit">
-    <view class="form-con clockin">
-    <view class="form-item upload-cover vw-wrap {{addView?'show':'hide'}}" bindtap="uploadAction">
-      <view class="upload-file" style="width: 100%;">
-        <view class="upload-btn"><text class="add">+</text></view>
-        <view class="t-tips">你既然认准一条道路，何必去打听要走多久。</view>
-      </view>
-    </view>
-    <view class="form-item vw-wrap {{showView?'show':'hide'}}" bindtap="uploadAction">
-      <view class="upload-file show-pic">
-        <image 
-        src="{{tempFilePaths}}" 
-        mode="widthFix"
-        class="fixed-wh"
-        >
-        </image>
-        <view class="del" bindtap="delete"><image src="../../images/delete.png"></image></view>
-      </view>
-    </view>
-    <view class="content-wrap">
-      <view class="con-tit">以下字段为必填项</view>
-      <view class="con-all bg-white">
-        <view class="vw-wrap">
-          <image src="../../images/distance.svg" class="icons"></image>
-          <view class="form-item">
-            <label for="" class="title">里程</label>
-            <input type="digit" focus="{{focus}}" value="{{distance}}" name="distance" class="ipt ellipsis" placeholder="跑了有多远无所谓"></input>
-          </view>
-        </view>
-        <view class="vw-wrap">
-          <image src="../../images/speed.svg" class="icons"></image>
-          <view class="form-item">
-          <label for="" class="title">配速</label>
-          <input type="number" focus="{{focus}}" class="ipt {{clas}}" wx:if="{{speed == ''}}" value="快慢不重要" bindtap="pickerSpeed" disabled="disabled"></input>
-          <input type="number" focus="{{focus}}" value="{{speed}}" bindtap="pickerSpeed" name="speed" class="ipt" disabled="disabled" wx:else></input>
-          <picker
-          style='font-size:32rpx;color:#999;letter-spacing:2rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;'
-          bindchange="pickerSpeed"
-          isShowPicker="{{isShow_03}}"
-          bindsure="sureCallBack_03"
-          bindcancle="cancleCallBack_03"
-          scrollType="normal"
-          listData="{{timeArray}}"
-          >
-          </picker>
-        </view>
-        </view>
-        
-      </view>
-    </view>
-    <view class="content-wrap">
-      <view class="con-tit">以下字段为选填项</view>
-      <view class="con-all bg-white">
-        <view class="vw-wrap">
-          <image src="../../images/default.svg" class="icons"></image>
-          <view class="form-item">
-            <label for="" class="title">时长</label>
-            <input type="text" focus="{{focus}}" value="{{time}}" name="time" class="ipt ellipsis" placeholder="时间会给你答案"></input>
-          </view>
-        </view>
-        <view class="vw-wrap">
-          <image src="../../images/default.svg" class="icons"></image>
-          <view class="form-item">
-            <label for="" class="title">热量</label>
-            <input type="digit" focus="{{focus}}" value="{{energy}}" name="energy" class="ipt ellipsis" placeholder="衣带渐宽心欢喜"></input>
-          </view>
-        </view>
-        <view class="vw-wrap">
-          <image src="../../images/default.svg" class="icons"></image>
-          <view class="form-item">
-            <label for="" class="title">时间</label>
-            <input type="text" focus="{{focus}}" value="{{date}}" name="date" class="ipt ellipsis" placeholder="感动大汗淋漓的自己"></input>
-          </view>
-        </view>
-      </view>
-    </view>
+<site-header show-back="{{true}}" back-url="/pages/index/index"></site-header>
+<view class="record-page">
+  <view class="record-hero">
+    <text class="record-eyebrow">WRC · TODAY'S RUN</text>
+    <text class="record-title">记录今天<text class="record-title-break">这一跑。</text></text>
+    <view class="record-title-line"></view>
+    <text class="record-subtitle">上传运动截图，留下今天跑过的每一步。</text>
   </view>
-  <view class="full-btn">
-    <button class="btn green" form-type="submit" disabled="{{disable}}">跑完真开心~</button>
+  <view class="record-guest" wx:if="{{userId <= 0}}">
+    <text class="record-guest-title">先登录，再记录跑步</text>
+    <text class="record-guest-copy">登录后可上传截图并保存运动数据。</text>
+    <button class="record-action" bindtap="goLogin">前往登录 →</button>
   </view>
+  <form wx:else bindsubmit="submit" class="record-form">
+    <view class="record-section-label">01 / 运动凭证 <text class="record-section-require">必填</text></view>
+    <view class="record-upload" wx:if="{{addView}}" bindtap="uploadAction">
+      <text class="record-upload-symbol">＋</text>
+      <text class="record-upload-title">上传运动截图</text>
+      <text class="record-upload-copy">支持相册或拍摄；上传后会尝试识别数据</text>
+    </view>
+    <view class="record-preview" wx:if="{{showView}}">
+      <image class="record-preview-image" src="{{tempFilePaths}}" mode="widthFix" bindtap="uploadAction"></image>
+      <view class="record-preview-actions"><text bindtap="uploadAction">重新选择</text><text catchtap="delete">移除图片</text></view>
+    </view>
+    <view class="record-section-label">02 / 跑步数据 <text class="record-section-require">必填</text></view>
+    <view class="record-fields">
+      <view class="record-row">
+        <view><text class="record-field-name">里程</text><text class="record-field-hint">公里</text></view>
+        <input class="record-input" type="digit" value="{{distance}}" name="distance" placeholder="填写跑步距离" placeholder-class="record-placeholder"></input>
+      </view>
+      <view class="record-row" bindtap="pickerSpeed">
+        <view><text class="record-field-name">配速</text><text class="record-field-hint">每公里</text></view>
+        <text class="record-value {{speed ? '' : 'record-placeholder'}}">{{speed || '选择平均配速'}}</text>
+      </view>
+    </view>
+    <view class="record-section-label">03 / 补充信息 <text class="record-section-require">选填</text></view>
+    <view class="record-fields">
+      <view class="record-row">
+        <text class="record-field-name">时长</text>
+        <input class="record-input" type="text" value="{{time}}" name="time" placeholder="例如 00:45:30" placeholder-class="record-placeholder"></input>
+      </view>
+      <view class="record-row">
+        <text class="record-field-name">热量</text>
+        <input class="record-input" type="digit" value="{{energy}}" name="energy" placeholder="消耗的千卡" placeholder-class="record-placeholder"></input>
+      </view>
+      <view class="record-row">
+        <text class="record-field-name">运动时间</text>
+        <input class="record-input" type="text" value="{{date}}" name="date" placeholder="例如 2026-09-30 07:30" placeholder-class="record-placeholder"></input>
+      </view>
+    </view>
+    <view class="record-note">请核对截图识别结果，再保存这次跑步。</view>
+    <view class="record-submit"><button class="record-action {{disable ? 'is-disabled' : ''}}" form-type="submit" disabled="{{disable}}">{{disable ? '已记录' : '保存这次跑步 →'}}</button></view>
   </form>
+  <picker
+    isShowPicker="{{isShow_03}}"
+    bindsure="sureCallBack_03"
+    bindcancle="cancleCallBack_03"
+    scrollType="normal"
+    listData="{{timeArray}}">
+  </picker>
 </view>

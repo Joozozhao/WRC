@@ -1,25 +1,69 @@
+<site-header show-back="{{true}}" back-url="/pages/activity/activity"></site-header>
 <!--pages/activitylist/activitylist.wxml-->
-<radio-group class="radio-group">
-  <label wx:for="{{activityList}}" wx:key="index" wx:for-item="item" wx:if="{{item.acty_type=='团跑'}}"><!-- 先排除选择挑战活动 -->
-    <view class="activity" id="{{key}}" data-id="{{item.id}}" data-name="{{item.acty_name}}" data-addr="{{item.region}}" data-type="{{item.acty_type}}" data-region="{{item.region}}" wx:if="{{item.acty_state !== 0}}" bindtap="radioChange"><!--  -->
-      <view class="check-radio">
-        <radio value='{{item.id}}' checked="{{item.id == id}}"/>
+<view class="pick-page">
+  <view class="pick-header">
+    <text class="eyebrow">WRC · ACTIVITIES</text>
+    <text class="page-title">选择活动</text>
+    <view class="title-line"></view>
+    <text class="page-subtitle">选择一场进行中的团跑活动，继续后续操作</text>
+  </view>
+
+  <radio-group class="pick-list" wx:if="{{activityList.length > 0}}">
+    <wxs src="../../utils/toPlace.wxs" module="module1" />
+    <label class="pick-label" wx:for="{{activityList}}" wx:key="id" wx:for-item="item"><!-- 仅展示进行中的团跑活动 -->
+      <view class="pick-card {{item.id == actyId ? 'is-active' : ''}}" data-id="{{item.id}}" data-name="{{item.acty_name}}" data-addr="{{item.region}}" data-type="{{item.acty_type}}" data-region="{{item.region}}" bindtap="radioChange" hover-class="card-hover">
+        <view class="pick-cover">
+          <image src="{{item.acty_img}}" mode="aspectFill"></image>
+        </view>
+        <view class="pick-info">
+          <view class="pick-title">{{item.acty_name}}</view>
+          <view class="pick-tags">
+            <block wx:if="{{item.acty_type == '挑战'}}">
+              <text class="tag">{{item.acty_type}}</text><text class="tag region">{{module1.change(item.region)}}</text>
+            </block>
+            <block wx:else>
+              <text class="tag">{{item.acty_type}}</text><text class="tag region">{{item.region}}</text>
+            </block>
+          </view>
+          <view class="pick-meta">
+            <image class="meta-icon" src="/images/time.png" mode="aspectFit"></image>
+            <text class="meta-text">{{item.start_timestr}}-{{item.end_timestr}}</text>
+          </view>
+          <view class="pick-meta">
+            <image class="meta-icon" src="/images/place.png" mode="aspectFit"></image>
+            <text class="meta-text">{{item.address}}</text>
+          </view>
+          <view class="pick-join">已参加 {{item.joins}} 人</view>
+        </view>
+        <view class="pick-radio">
+          <radio value="{{item.id}}" checked="{{item.id == actyId}}" color="#0c6246"></radio>
+        </view>
       </view>
-      <view class="cover-img" data-id="{{item.id}}">
-        <image src="{{item.acty_img}}" mode="aspectFill"></image>
-      </view>
-      <wxs src="../../utils/toPlace.wxs" module="module1" />
-      <view class="activity-infor" data-id="{{item.id}}">
-        <view class="title">{{item.acty_name}}</view>
-        <view wx:if="{{item.acty_type == '挑战'}}"><text class="tag">{{item.acty_type}}</text><text class="tag org">{{module1.change(item.region)}}</text></view>
-        <view wx:else><text class="tag">{{item.acty_type}}</text><text class="tag org">{{item.region}}</text></view>
-        <view class="time"><image src="/images/time.png"></image>{{item.start_timestr}}-{{item.end_timestr}}</view>
-        <view class="address"><image src="/images/place.png"></image>{{item.address}}</view>
-        <view>已参加：{{item.joins}}人</view> 
-      </view>
-    </view>
-  </label>
-</radio-group>
-<view class="full-btn">
-  <button class="btn btnTwo" bindtap="submit">选择活动</button>
+    </label>
+  </radio-group>
+
+  <!-- 空状态 -->
+  <view class="empty-block" wx:elif="{{loadError}}">
+    <view class="empty-mark">↻</view>
+    <text class="empty-title">活动加载失败</text>
+    <text class="empty-desc">请检查网络后重试</text>
+    <button class="pick-more" bindtap="initActy">重新加载</button>
+  </view>
+  <view class="empty-block" wx:elif="{{loaded && activityList.length === 0}}">
+    <view class="empty-mark">🗓</view>
+    <text class="empty-title">暂无可选团跑</text>
+    <text class="empty-desc">{{hasMore ? '当前列表没有可选团跑，可以继续查找' : '新的团跑活动发布后将展示在此处'}}</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-block" wx:elif="{{!loaded}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">正在加载活动列表…</text>
+  </view>
+  <button class="pick-more" wx:if="{{loaded && !loadError && hasMore}}" bindtap="loadMore" disabled="{{loadingMore}}">{{loadingMore ? '正在查找…' : '加载更多活动'}}</button>
+</view>
+
+<!-- 底部操作栏 -->
+<view class="pick-action">
+  <button class="pick-btn" bindtap="submit" hover-class="pick-btn-hover">选择活动</button>
 </view>

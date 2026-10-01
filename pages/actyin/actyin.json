@@ -1,7 +1,12 @@
 {
-  "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#4CB944",
-  "navigationBarTitleText": "参加挑战的人",
-  "navigationBarTextStyle":"white"
+  "navigationStyle": "custom",
+  "backgroundTextStyle": "dark",
+  "navigationBarBackgroundColor": "#fafbf7",
+  "navigationBarTitleText": "报名跑友",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#fafbf7",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "site-header": "../../components/site-header/site-header"
+  }
 }

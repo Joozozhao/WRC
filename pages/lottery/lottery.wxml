@@ -1,66 +1,80 @@
-<!--pages/lottery/lottery.wxml-->
-<form bindsubmit="submit">
-  <view class="form-con">
-    <view class="form-item vw-wrap">
-      <label for="" class="title">选择活动</label>
-      <input type="text" value="{{actyName}}" name="actyName" placeholder="请选择" class="ipt ellipsis" disabled="disabled" bindtap="toChooseActy"></input>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
+<site-header show-back="{{true}}" back-url="/pages/manage/manage"></site-header>
+<!-- WRC Lottery: 发起抽奖 -->
+<view class="edit-page">
+  <form bindsubmit="submit">
+    <view class="edit-header">
+      <text class="eyebrow">WRC · LUCKY DRAW</text>
+      <text class="page-title">发起抽奖</text>
+      <text class="page-subtitle">选择活动与奖品，设置开奖时间</text>
     </view>
-    <view class="form-item vw-wrap">
-      <label for="" class="title">活动地区</label>
-      <view class="ipt" bindtap="pickArea">
-        <view wx:if="{{sealType == ''}}">请选择</view>
-        <input type="text" class="ipt" wx:else class="picker {{clas}}" name="sealType" value="{{sealType}}" disabled="disabled"></input>
-      </view>
-      <!-- 遮罩层 -->
-      <view class="modal-mask" wx:if="{{showModal}}"></view>
-      <!-- 弹出框 -->
-      <view class="modal-dialog" wx:if="{{showModal}}">
-        <view class="modal-content">
-          <checkbox-group data-index="{{index}}" bindchange="checkboxChange" name="sealType">
-            <label class="checkbox" wx:for="{{sealTypeList}}" wx:key="key" wx:for-item="item">
-              <checkbox value="{{item.id}}" checked="{{item.checked}}" color="#2A98BD" />
-              <view class="checked_label" style="color:#37383B">{{item.gzkind}}</view>
-            </label>
-          </checkbox-group>
-        </view>
-        <!-- 操作按钮 -->
-        <view class="modal-footer nopd">
-          <button class="btn btn-cancel" bindtap="onCancel" data-status="cancel">取消</button>
-          <button class="btn btn-confirm" bindtap="onConfirm" data-status="confirm">确定</button>
+
+    <view class="form-card">
+      <view class="card-badge">01 / 抽奖设置</view>
+
+      <view class="form-group" bindtap="toChooseActy">
+        <label class="form-label">选择活动</label>
+        <view class="select-field">
+          <input class="form-input select-input" type="text" value="{{actyName}}" name="actyName" placeholder="请选择活动" placeholder-class="placeholder-text" disabled="disabled" />
+          <text class="select-arrow">›</text>
         </view>
       </view>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
-    </view>
-    <view class="form-item vw-wrap">
-      <label for="" class="title">选择奖品</label>
-      <input type="text" value="{{goodsName}}" name="goodsName" placeholder="请选择" class="ipt ellipsis" disabled="disabled" bindtap="toChoosePrize"></input>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
-    </view>
-    <!-- <view class="form-item vw-wrap">
-      <label for="" class="title">奖品名称</label>
-      <input type="text" value="{{autoName}}" name="autoName" placeholder="请输入" class="ipt" disabled="disabled"></input>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
-    </view> -->
-    <view class="form-item vw-wrap">
-      <label for="" class="title">奖品份数</label>
-      <input type="number" focus="{{focus}}" value="{{actyNum}}" name="actyNum" placeholder="请输入奖品份数" class="ipt"></input>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
-    </view>
-    <view class="form-item vw-wrap">
-      <label for="" class="title">开奖时间</label>
-      <view class="ipt">
-        
-        <picker class='time-picker' mode="multiSelector" bindchange="bindStartMultiPickerChange" bindtap='pickerTap' bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
-          <view style="margin-right:0;" wx:if="{{startDate == ''}}" class="ipt" bindtap='pickerTap'>请选择日期</view>
-          <!-- <input type="text" value="请选择日期" bindtap='pickerTap' disabled="disabled" style="margin-right:0;" wx:if="{{startDate == ''}}" class="ipt"></input> -->
-          <input type="text" value="{{startDate}}"  bindtap='pickerTap' disabled="disabled" style="margin-right:0;" wx:else class="ipt"></input>
+
+      <view class="form-group" bindtap="pickArea">
+        <label class="form-label">活动地区</label>
+        <view class="select-field">
+          <view class="form-input select-input {{sealType == '' ? 'is-placeholder' : ''}}">{{sealType == '' ? '请选择地区' : sealType}}</view>
+          <input type="text" class="hidden-input" name="sealType" value="{{sealType}}" disabled="disabled" />
+          <text class="select-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="form-group" bindtap="toChoosePrize">
+        <label class="form-label">选择奖品</label>
+        <view class="select-field">
+          <input class="form-input select-input" type="text" value="{{goodsName}}" name="goodsName" placeholder="请选择奖品" placeholder-class="placeholder-text" disabled="disabled" />
+          <text class="select-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">奖品份数</label>
+        <input class="form-input" type="number" focus="{{focus}}" value="{{actyNum}}" name="actyNum" placeholder="请输入奖品份数" placeholder-class="placeholder-text" />
+        <text class="field-tip" wx:if="{{total > 0}}">当前奖品库存 {{total}} 份</text>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">开奖时间</label>
+        <picker class="time-picker" mode="multiSelector" bindchange="bindStartMultiPickerChange" bindtap="pickerTap" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
+          <view class="form-input select-field-inner {{startDate == '' ? 'is-placeholder' : ''}}">
+            <block wx:if="{{startDate == ''}}">请选择开奖日期与时间</block>
+            <block wx:else>{{startDate}}</block>
+          </view>
         </picker>
       </view>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
     </view>
-  </view>
-  <view class="full-btn">
-    <button class="btn btnTwo" form-type="submit" disabled="{{disable}}">完成</button>
-  </view>
-</form>
+
+    <!-- 地区选择弹窗（保留在表单内，维持原提交字段） -->
+    <view class="modal-mask" wx:if="{{showModal}}" bindtap="onCancel" data-status="cancel"></view>
+    <view class="area-modal" wx:if="{{showModal}}">
+      <view class="modal-head">
+        <text class="modal-title">选择活动地区</text>
+        <text class="modal-sub">可多选，确定后生效</text>
+      </view>
+      <checkbox-group data-index="{{index}}" bindchange="checkboxChange" name="sealType">
+        <label class="area-row" wx:for="{{sealTypeList}}" wx:key="id" wx:for-item="item">
+          <checkbox value="{{item.id}}" checked="{{item.checked}}" color="#075b40" />
+          <text class="area-name">{{item.gzkind}}</text>
+        </label>
+      </checkbox-group>
+      <view class="modal-foot">
+        <view class="modal-btn cancel-btn" bindtap="onCancel" data-status="cancel">取消</view>
+        <view class="modal-btn confirm-btn" bindtap="onConfirm" data-status="confirm">确定</view>
+      </view>
+    </view>
+
+    <!-- 底部固定操作栏 -->
+    <view class="bottom-action-bar">
+      <button class="primary-submit-btn" form-type="submit" disabled="{{disable}}" hover-class="btn-pressed">发起抽奖</button>
+    </view>
+  </form>
+</view>

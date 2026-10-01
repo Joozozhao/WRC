@@ -5,33 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    hopeList:[
-      {
-        hopePic: '/images/bg.jpg',
-        hopeName: '这里是你的心愿单这里是你的心愿单这里',
-        hopeNum: 0
-      },
-      {
-        hopePic: '/images/logo.png',
-        hopeName: '这里是你的心',
-        hopeNum: 2
-      },
-      {
-        hopePic: '/images/logo.png',
-        hopeName: '这里是你的心这里是你的心这里是你的心这里是你的心这里是你的心这里是你的心这里是你的心这里是你的心这里是你的心',
-        hopeNum: 3
-      },
-      {
-        hopePic: '/images/bg.jpg',
-        hopeName: '这里是你的心愿单这里是你的心愿单这里',
-        hopeNum: 4
-      }
-    ]
-  },
-  toLoad:function(){
-    wx.navigateTo({
-      url: 'url',
-    })
+    hopeList: []
   },
   /**
    * 生命周期函数--监听页面加载

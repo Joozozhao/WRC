@@ -1,143 +1,138 @@
-// pages/memberdata/memberdata.js
-// pages/activitydata/activitydata.js
-var util = require('../../utils/util.js');
-// 获取应用实例
+const util = require('../../utils/util.js')
 const app = getApp()
+const PAGE_SIZE = 30
+
+function hasValue(value) {
+  return value !== undefined && value !== null && value !== ''
+}
+
+function formatDistance(value) {
+  if (!hasValue(value)) return '—'
+  const number = Number(value)
+  if (!Number.isFinite(number)) return '—'
+  return (Math.round(number * 100) / 100).toFixed(2)
+}
+
 Page({
-  /**
-   * 页面的初始数据
-   */
   data: {
+    tabs: [
+      { label: '月跑量', sort: 3, field: 'month_count', countField: 'month_times' },
+      { label: '年跑量', sort: 4, field: 'year_count', countField: 'year_times' },
+      { label: '总跑量', sort: 5, field: 'total', countField: 'sport_times' }
+    ],
+    activeIndex: 0,
     dataList: [],
-    dataListOwn: [],
-    actyId: 0,
     myId: '',
-    imgIcon: ['../../images/one.svg','../../images/two.svg','../../images/three.svg'],
-    btnTab: ['月跑量','年跑量','总跑量'],
-    id: 0,
+    userId: 0,
     page: 1,
-    select: 0,
-    defaultSort: 3
+    pageSize: PAGE_SIZE,
+    loading: false,
+    loadingMore: false,
+    error: false,
+    hasMore: true,
+    loaded: false
   },
-  choose: function(e){
-    var sel = e.currentTarget.dataset.id
-    this.setData({
-      id: sel,
-      select: sel,
-      defaultSort: sel
-    })
-    if(sel==0){
-      this.setData({
-        defaultSort: 3,
-        page: 1
-      })
-      this.initUser()
-    } else if(sel==1){
-      this.setData({
-        defaultSort: 4,
-        page: 1
-      })
-      this.initUser()
-    }else if(sel==2){
-      this.setData({
-        defaultSort: 5,
-        page: 1
-      })
-      this.initUser()
-    }
-  },
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-    this.initUser()
-  },
-  initUser: function(){
-    var that = this
-    var data = {
-      nickName : '', 
-      mobile : '', 
-      openId : '', 
-      sort: that.data.defaultSort,
-      levelId: '',
-      page : that.data.page++,
-      size: 30 //总取人数
-    }
-    var userId = app.globalData.userId
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
-    util.request('user/getuserlist', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        that.setData({
-          dataList: res.data.data,
-          myId: userId
-        })
-        wx.hideLoading({
-          success: (res) => {},
-        })
-      } else {
-        wx.hideLoading({
-          success: (res) => {},
-        })
+
+  onLoad(options) {
+    const userId = app.globalData.userId || 0
+    let activeIndex = 0
+    if (options && options.type) {
+      if (options.type === "year" || options.sort === "4") {
+        activeIndex = 1
+      } else if (options.type === "total" || options.sort === "5") {
+        activeIndex = 2
+      } else if (options.type === "month" || options.sort === "3") {
+        activeIndex = 0
       }
-    })
+    } else if (options && options.tab !== undefined) {
+      const parsed = parseInt(options.tab, 10)
+      if (!isNaN(parsed) && parsed >= 0 && parsed < this.data.tabs.length) {
+        activeIndex = parsed
+      }
+    }
+    this.setData({ userId: userId, myId: userId, activeIndex: activeIndex })
+    this.fetchRanking(true)
   },
-  myData: function(e){
-    var id = e.currentTarget.dataset.id
-    var userId = app.globalData.userId
-    if(id==userId){
-      wx.switchTab({
-        url: '../mydata/mydata'
-      })
-    }else{
-      wx.navigateTo({
-        url: '../othersdata/othersdata?id=' + id
-      })
+
+  onShow() {
+    const userId = app.globalData.userId || 0
+    if (String(userId) !== String(this.data.userId)) {
+      this.requestId = (this.requestId || 0) + 1
+      this.setData({ userId: userId, myId: userId, dataList: [], page: 1, hasMore: true, error: false, loaded: false, loading: false, loadingMore: false })
+      this.fetchRanking(true)
     }
   },
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-    // this.loadMore()
+
+  choose(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    if (index === this.data.activeIndex) return
+    this.requestId = (this.requestId || 0) + 1
+    this.setData({ activeIndex: index, dataList: [], page: 1, hasMore: true, error: false, loaded: false, loading: false, loadingMore: false })
+    this.fetchRanking(true)
   },
-  loadMore: function(){
-    var that = this
-    var data = {
-      nickName : '', 
-      mobile : '', 
-      openId : '', 
-      sort: 0,
-      levelId: '',
-      page : that.data.page++,
-      size: 15
+
+  fetchRanking(reset) {
+    if (this.data.loading || this.data.loadingMore) return
+    const requestId = (this.requestId || 0) + 1
+    this.requestId = requestId
+    const tab = this.data.tabs[this.data.activeIndex]
+    const page = reset ? 1 : this.data.page
+    this.setData({ loading: !!reset, loadingMore: !reset, error: false })
+
+    util.request('user/getuserlist', 'POST', {
+      nickName: '', mobile: '', openId: '', sort: tab.sort, levelId: '',
+      page: page, size: PAGE_SIZE
+    }, '', (res) => {
+      if (requestId !== this.requestId) return
+      const response = res && res.data
+      if (!response || !response.success || !Array.isArray(response.data)) {
+        this.setData({ loading: false, loadingMore: false, error: true, loaded: true })
+        return
+      }
+
+      const rows = response.data.map((item, index) => {
+        const name = hasValue(item.name) ? item.name : item.nick_name
+        return Object.assign({}, item, {
+          displayName: hasValue(name) ? name : '跑者',
+          displayCount: hasValue(item[tab.countField]) ? item[tab.countField] : '—',
+          displayDistance: formatDistance(item[tab.field]),
+          rank: (page - 1) * PAGE_SIZE + index + 1,
+          isMe: Number(this.data.userId) > 0 && String(item.id) === String(this.data.userId)
+        })
+      })
+      const combined = reset ? rows : this.data.dataList.concat(rows)
+      this.setData({
+        dataList: combined,
+        page: page + 1,
+        hasMore: rows.length === PAGE_SIZE,
+        loading: false,
+        loadingMore: false,
+        error: false,
+        loaded: true
+      })
+    }, () => {
+      if (requestId !== this.requestId) return
+      this.setData({ loading: false, loadingMore: false, error: true, loaded: true })
+    })
+  },
+
+  retry() {
+    this.fetchRanking(true)
+  },
+
+  onReachBottom() {
+    if (this.data.hasMore && !this.data.loading && !this.data.loadingMore && !this.data.error) {
+      this.fetchRanking(false)
     }
-    wx.showLoading({
-      title: '加载中',
-      icon: 'loading'
-    })
-    util.request('user/getuserlist', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        var allData = res.data.data
-        var content = that.data.dataList.concat(allData)
-        that.setData({
-          dataList: content
-        })
-        wx.hideLoading({
-          success: (res) => {},
-        })
-      }else{
-        wx.hideLoading({
-          success: (res) => {},
-        })
-          // wx.showToast({
-          //   title: res.data.error,
-          //   icon: 'none',
-          //   duration: 1500
-          // })  
-        }
-    })
+  },
+
+  myData(e) {
+    const id = e.currentTarget.dataset.id
+    if (!hasValue(id)) return
+    if (this.data.userId && String(id) === String(this.data.userId)) {
+      wx.switchTab({ url: '../mydata/mydata' })
+    } else {
+      wx.navigateTo({ url: '../othersdata/othersdata?id=' + id })
+    }
   }
 })

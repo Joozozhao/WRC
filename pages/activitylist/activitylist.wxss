@@ -1,9 +1,266 @@
-/* pages/activitylist/activitylist.wxss */
-@import "../activity/activity.wxss";
-.check-radio{
-  overflow: hidden;
-  margin-right: 10rpx;
+/* WRC Activity Pick: 活动选择列表视觉规范 */
+page {
+  background-color: #fbfcf9;
+  color: #072f27;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
-.radio-group{
-  padding-bottom: 150rpx;
+
+.pick-page {
+  min-height: 100vh;
+  padding: 180rpx 36rpx calc(220rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.pick-header {
+  margin-bottom: 34rpx;
+}
+
+.eyebrow {
+  display: block;
+  color: #0d6447;
+  font-size: 22rpx;
+  font-weight: 750;
+  letter-spacing: 3rpx;
+}
+
+.page-title {
+  display: block;
+  margin-top: 20rpx;
+  color: #072f27;
+  font-size: 56rpx;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -2rpx;
+}
+
+.title-line {
+  width: 140rpx;
+  height: 6rpx;
+  margin-top: 18rpx;
+  border-radius: 8rpx;
+  background: #d9ff3f;
+}
+
+.page-subtitle {
+  display: block;
+  color: #78897e;
+  font-size: 24rpx;
+  margin-top: 18rpx;
+  line-height: 1.4;
+}
+
+.pick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.pick-label {
+  display: block;
+}
+
+.pick-card {
+  display: flex;
+  align-items: flex-start;
+  background: #ffffff;
+  border: 1rpx solid #e3ebe4;
+  border-radius: 24rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+  box-shadow: 0 4rpx 14rpx rgba(7, 47, 39, 0.02);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.pick-card.is-active {
+  border-color: #0c6246;
+  background: #f6faf1;
+}
+
+.card-hover {
+  background: #f0f5ec;
+}
+
+.pick-cover {
+  flex: none;
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  background: #e6eee7;
+}
+
+.pick-cover image {
+  width: 100%;
+  height: 100%;
+}
+
+.pick-info {
+  flex: 1;
+  min-width: 0;
+  margin-left: 20rpx;
+}
+
+.pick-title {
+  color: #072f27;
+  font-size: 30rpx;
+  font-weight: 800;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pick-tags {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-top: 8rpx;
+}
+
+.tag {
+  display: inline-block;
+  background: #d9ff3f;
+  color: #092f24;
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 2rpx 14rpx;
+  border-radius: 20rpx;
+  line-height: 1.6;
+}
+
+.tag.region {
+  background: #f1f6ef;
+  color: #2b5f44;
+}
+
+.pick-meta {
+  display: flex;
+  align-items: center;
+  margin-top: 8rpx;
+}
+
+.meta-icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-right: 8rpx;
+  flex: none;
+}
+
+.meta-text {
+  color: #68786f;
+  font-size: 22rpx;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pick-join {
+  margin-top: 8rpx;
+  color: #7d8b80;
+  font-size: 22rpx;
+}
+
+.pick-radio {
+  flex: none;
+  margin-left: 12rpx;
+  padding-top: 6rpx;
+}
+
+.empty-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-mark {
+  font-size: 72rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #103d2e;
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  color: #7e8d83;
+  margin-top: 12rpx;
+}
+
+.pick-more {
+  width: fit-content;
+  min-height: 72rpx;
+  margin: 28rpx auto 0;
+  padding: 0 36rpx;
+  border: 1rpx solid #cddfd1;
+  border-radius: 40rpx;
+  background: #fff;
+  color: #0b503b;
+  font-size: 24rpx;
+  line-height: 72rpx;
+}
+
+.loading-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+}
+
+.loading-spinner {
+  width: 44rpx;
+  height: 44rpx;
+  border: 4rpx solid #dce8db;
+  border-top-color: #0c6246;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 24rpx;
+  color: #768a7d;
+  margin-top: 18rpx;
+}
+
+/* 底部操作栏（含安全区） */
+.pick-action {
+  position: fixed;
+  z-index: 5;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 18rpx 40rpx calc(18rpx + env(safe-area-inset-bottom));
+  background: #fbfcf9;
+  border-top: 1rpx solid #e0e9e1;
+}
+
+.pick-btn {
+  width: 100%;
+  height: 96rpx;
+  line-height: 96rpx;
+  border-radius: 48rpx;
+  background: #d9ff3f;
+  color: #092f24;
+  font-size: 32rpx;
+  font-weight: 800;
+  text-align: center;
+}
+
+.pick-btn::after {
+  border: none;
+}
+
+.pick-btn-hover {
+  background: #c8f22e;
+  color: #092f24;
 }

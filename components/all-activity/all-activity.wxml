@@ -1,36 +1,96 @@
-<view>
-    <view class="week-data" wx:if="{{activityList.length!=0}}">
-        <view class="vw-wrap ">
-            <view class="challenge data-con bg-white">
-                <view class="acty-tit no-pl">挑战<text class="time-region">{{totalChallenge}}次</text></view>
-                <scroll-view scroll-x style="width:100%;height:180rpx;white-space:nowrap;" bindscrolltolower="onTapChild">
-                    <block wx:for="{{activityList}}" wx:key="index" wx:for-item="item">
-                        <view class="activity" id="{{key}}">
-                            <view class="cover-img" bindtap="getInfor" data-id="{{item.id}}" data-type="{{item.acty_type}}">
-                                <image src="{{item.acty_img}}"></image>
-                            </view>
-                        </view>
-                    </block>
-                </scroll-view>
-            </view>
-        </view>
-    </view>
-    <view class="week-data" wx:if="{{activityList2.length!=0}}">
-    <view class="vw-wrap">
-      <view class="activitys data-con bg-white">
-        <view class="acty-tit no-pl">团跑<text class="time-region">{{totalActy}}次</text></view>
-        <scroll-view scroll-x style="width:100%;height:180rpx;white-space:nowrap;" bindscrolltolower="onTapChild2">
-          <block wx:for="{{activityList2}}" wx:key="index" wx:for-item="item">
-            <view class="activity normal-acty" id="{{key}}">
-              <view class="cover-img" bindtap="getInfor" data-id="{{item.id}}" data-type="{{item.acty_type}}">
-                <image src="{{item.acty_img}}"></image>
-                <image src="../../images/flag.png" mode="widthFix" class="cover-fix"></image>
-                <view class="acty-name">{{item.acty_name}}</view>
-              </view>
-            </view>
-          </block>
-        </scroll-view>
+<view class="all-activity-wrap">
+  <!-- 挑战记录卡片 -->
+  <view class="record-card challenge-record" wx:if="{{activityList.length > 0}}">
+    <view class="record-card-head">
+      <view class="record-head-main">
+        <text class="record-title">挑战</text>
+        <text class="record-kicker">CHALLENGE</text>
+      </view>
+      <view class="record-count-pill" bindtap="toChallengeTab" hover-class="pill-touch" role="button" aria-label="查看全部挑战">
+        <text class="count-number">{{totalChallenge}}</text>
+        <text class="count-unit">次</text>
+        <text class="count-arrow">›</text>
       </view>
     </view>
+    <scroll-view 
+      class="record-scroll" 
+      scroll-x="true" 
+      enable-flex="true" 
+      enhanced="true" 
+      show-scrollbar="false" 
+      bindscrolltolower="onTapChild"
+    >
+      <view class="record-list">
+        <block wx:for="{{activityList}}" wx:key="id" wx:for-item="item">
+          <view 
+            class="record-item challenge-item" 
+            bindtap="getInfor" 
+            data-id="{{item.id}}" 
+            data-type="{{item.acty_type || '挑战'}}" 
+            hover-class="item-touch"
+            role="button"
+            aria-label="{{item.acty_name || '挑战详情'}}"
+          >
+            <image class="item-cover" src="{{item.acty_img}}" mode="aspectFill" lazy-load="true"></image>
+            <view class="item-tag is-challenge">挑战</view>
+            <view class="item-overlay" wx:if="{{item.acty_name}}">
+              <text class="item-name">{{item.acty_name}}</text>
+            </view>
+          </view>
+        </block>
+        <view class="record-more-card more-challenge" bindtap="toChallengeTab" hover-class="item-touch" role="button" aria-label="查看全部挑战">
+          <view class="more-circle">→</view>
+          <text class="more-label">全部挑战</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 团跑记录卡片 -->
+  <view class="record-card run-record" wx:if="{{activityList2.length > 0}}">
+    <view class="record-card-head">
+      <view class="record-head-main">
+        <text class="record-title">团跑</text>
+        <text class="record-kicker">GROUP RUN</text>
+      </view>
+      <view class="record-count-pill" bindtap="toActivityTab" hover-class="pill-touch" role="button" aria-label="查看全部团跑">
+        <text class="count-number">{{totalActy}}</text>
+        <text class="count-unit">次</text>
+        <text class="count-arrow">›</text>
+      </view>
+    </view>
+    <scroll-view 
+      class="record-scroll" 
+      scroll-x="true" 
+      enable-flex="true" 
+      enhanced="true" 
+      show-scrollbar="false" 
+      bindscrolltolower="onTapChild2"
+    >
+      <view class="record-list">
+        <block wx:for="{{activityList2}}" wx:key="id" wx:for-item="item">
+          <view 
+            class="record-item run-item" 
+            bindtap="getInfor" 
+            data-id="{{item.id}}" 
+            data-type="{{item.acty_type || '团跑'}}" 
+            hover-class="item-touch"
+            role="button"
+            aria-label="{{item.acty_name || '团跑详情'}}"
+          >
+            <image class="item-cover" src="{{item.acty_img}}" mode="aspectFill" lazy-load="true"></image>
+            <view class="item-tag is-run">团跑</view>
+            <view class="item-overlay">
+              <text class="item-name">{{item.acty_name}}</text>
+              <text class="item-date" wx:if="{{item.start_timestr}}">{{item.start_timestr}}</text>
+            </view>
+          </view>
+        </block>
+        <view class="record-more-card more-run" bindtap="toActivityTab" hover-class="item-touch" role="button" aria-label="查看全部团跑">
+          <view class="more-circle">→</view>
+          <text class="more-label">全部团跑</text>
+        </view>
+      </view>
+    </scroll-view>
   </view>
 </view>

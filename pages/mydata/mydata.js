@@ -1,761 +1,544 @@
-// pages/activity/activity.js
-const util = require('../../utils/util.js')
-const option = require('../../utils/options.js')
-const currentDate = new Date()
-const currentYear = currentDate.getFullYear()
-const currentMonth = currentDate.getMonth()
-// let chartBar;
-// 获取应用实例
-const app = getApp()
+// pages/mydata/mydata.js
+const util = require("../../utils/util.js");
+const heatmap = require("../../utils/recent-run-heatmap.js");
+const app = getApp();
+
 Page({
   /**
    * 页面的初始数据
    */
   data: {
-    weekChoosed: true,
-    monthChoosed: false,
-    yearChoosed: false,
-    weekShow: true,
-    monthShow: false,
-    yearShow: false,
     tabbar: {},
-    actyId: '',
-    rule_id1: '',
-    rule_id2: '',
-    sex: '',
+    userId: 0,
+    headerImg: "../../images/default.png",
+    userName: "",
+    nickName: "",
+    sex: "",
+    level: "",
     score: 0,
     energy: 0,
-    starTime: '',
-    endTime: '',
-    activityList: [],
+    totalDistance: 0,
+    monthDistance: 0,
+    weekDistance: "0.0",
+    weekLoaded: false,
+    yearDistance: "0.0",
+    yearLoaded: false,
+    statsLoaded: false,
+    duty: "",
+    marathons: [],
     totalChallenge: 0,
-    activityList2: [],
-    headerImg: "../../images/default.png",//用户头像
     totalActy: 0,
+    activityList: [],
+    activityList2: [],
     page: 1,
     page2: 1,
-    haveSuperActy: false,
-    echartShow: false,
-    echartShow2: false,
-    monthWeekCount: '',
-    ecBar: {
-      layzLoad: true,
-      disableTouch: true
-    },
-    ecPie0: {
-      layzLoad: true,
-      disableTouch: true
-    },
-    ecPie00: {
-      layzLoad: true,
-      disableTouch: true
-    },
-    //周数据
-    ecPie1: {
-      layzLoad: true,
-      disableTouch: true
-    },
-    ecPie2: {
-      layzLoad: true,
-      disableTouch: true
-    },
-    passDistance: '',
-    passMonth: '',
-    pasStartDate: '',
-    passEndDate: '',
-    passWeek: '',
-    passDistance2: '',
-    passMonth2: '',
-    pasStartDate2: '',
-    passEndDate2: '',
-    passWeek2: '',
-    monthTotal: '',
-    monthTotal2: '',
-    userMonthTol: '',
-    userMonthTol2: '',
-    swiper: {
-      autoplay: false,
-      interval: 2000,
-      duration: 500,
-      current: 0,
-      circular: false,
-      qualifications: []
-    },
-    swiper2: {
-      autoplay: false,
-      interval: 2000,
-      duration: 500,
-      current: 0,
-      circular: false,
-      qualifications: []
-    },
-    monthDistance: 0,
-    totalDistance: 0,
-    nickName: '',
-    userName: '',
-    marathons: [],
+    recentHeatmap: null,
+    heatmapStatus: "loading",
+    heatmapRangeLabels: ["最近1个月", "最近3个月", "最近6个月", "最近12个月"],
+    heatmapRangeIndex: 2,
+    heatmapRangeValue: heatmap.DEFAULT_RANGE_MONTHS,
+    heatmapCheckinDays: 0,
+    heatmapDaysText: "—",
+    heatmapCellSize: heatmap.HEATMAP_MIN_CELL,
+    heatmapColumnGap: heatmap.HEATMAP_GAP,
+    heatmapColumnStride: heatmap.HEATMAP_MIN_CELL + heatmap.HEATMAP_GAP,
+    heatmapCanvasWidth: heatmap.HEATMAP_VIEWPORT_RPX,
+    heatmapMonthAxisHeight: heatmap.HEATMAP_MONTH_AXIS_HEIGHT,
+    heatmapScrollLeft: 0,
+    // 行 0/2/4 对应周一/周三/周五，与左侧星期轴逐行对齐。
+    heatmapWeekdayRows: ["周一", "", "周三", "", "周五", "", ""]
   },
-  openLogin : function(){
-    var userId = app.globalData.userId
-    if(userId < 1 || userId == undefined){
-    util.showLogin((res)=>{
-      var data = {
-        code: res.code,
-        encryptedData: "",
-        iv: ""
-      }
-      //取用户的openid
-      util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes)=>{
-        var regData = {
-          openId: loginRes.data.data.openid,
-          unionid: loginRes.data.data.unionid
-        }
-        util.request('user/wxregister', 'POST', regData, '', (regRes)=>{
-          app.globalData.userId = regRes.data.UserId
-          app.globalData.openId = regData.openId
-          wx.setStorageSync('userId', regRes.data.UserId)
-          wx.setStorageSync('openId', regData.openId)
-          this.onLoad()
-        })
-      })
-    })
-  }
-  },
-  //初始化用户信息
-  initInfor: function (id) {
-    var that = this
-    var data = {
-      userId: id
-    }
-    util.request('user/getsportinfo', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        var myData = res.data.data
-        that.setData({
-          headerImg: myData.headerImg,
-          userName: myData.userName,
-          nickName: myData.nickName,
-          sex: myData.sex,
-          level: myData.level,
-          score: myData.score,
-          energy: myData.energy,
-          duty: res.data.data.duty,
-          monthDistance: myData.monthDistance,
-          totalDistance: myData.totalDistance
-        })
-        if (res.data.data.duty == '团长,管理员' || res.data.data.duty == '管理员,团长') {
-          that.setData({
-            duty: '管理员/团长',
-          })
-        }
-      }
-    })
-  },
-  checkPoint: function () {
-    wx.navigateTo({
-      url: '../checkpoint/checkpoint'
-    })
-  },
-  checkEnergy: function () {
-    wx.navigateTo({
-      url: '../energy/energy?id=' + this.data.userId,
-    })
-  },
-  editInfor: function () {
-    var openId = app.globalData.openId
-    if(openId==''||openId== undefined){
-      wx.showToast({
-        title: '请先登录小程序！',
-        icon: 'none'
-      })
-      return
-    }
-    wx.navigateTo({
-      url: '../userinfor/userinfor',
-    })
-  },
-  weekClick: function(){
-    this.setData({
-      weekShow: true,
-      weekChoosed: true,
-      monthChoosed: false,
-      monthShow: false,
-      yearChoosed: false,
-      yearShow: false
-    })
-  },
-  monthClick: function(){
-    this.setData({
-      monthShow: true,
-      monthChoosed: true,
-      weekChoosed: false,
-      weekShow: false,
-      yearChoosed: false,
-      yearShow: false
-    })
-  },
-  yearClick: function(){
-    this.setData({
-      yearChoosed: true,
-      yearShow: true,
-      monthShow: false,
-      monthChoosed: false,
-      weekChoosed: false,
-      weekShow: false
-    })
-  },
-  //获取超级V挑战活动ID
-  getChallengeId: function (id) {
-    var that = this
-    var data = {
-      user_id: id
-    }
-    util.request('user/getUserJoinActy', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        that.setData({
-          actyId: res.data.data[`V挑战`],
-        })
-        if (that.data.actyId != undefined) {
-          that.initData()
-          that.initData2()
-          that.setData({
-            haveSuperActy: true
-          })
-        } else {
-          that.setData({
-            haveSuperActy: false
-          })
-        }
-      }
-    })
-  },
-  initData: function () {
-    var that = this
-    var data = {
-      acty_id: that.data.actyId,
-      acty_type: 1,
-      sex: that.data.sex
-    }
-    util.request('acty/getActyRuleByType', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        that.setData({
-          rule_id1: res.data.data.id,
-          passWeek: res.data.data.week,
-        })
-        that.getRule1()
-      } else {
 
-      }
-    })
-  },
-  initData2: function () {
-    var that = this
-    var data = {
-      acty_id: that.data.actyId,
-      acty_type: 2,
-      sex: that.data.sex
-    }
-    util.request('acty/getActyRuleByType', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        that.setData({
-          rule_id2: res.data.data.id,
-          passWeek2: res.data.data.week
-        })
-        that.getRule2()
-      } else {
-
-      }
-    })
-  },
-  getRule1: function () {
-    var that = this
-    var data = {
-      acty_id: that.data.actyId,
-      rule_id: that.data.rule_id1,
-      user_id: parseInt(that.data.userId)
-    }
-    util.request('user/getRuleResult', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        var list = 'swiper.qualifications'
-        that.setData({
-          passDistance: res.data.data.distance,
-          passMonth: res.data.data.month,
-          passEndDate: res.data.data.end_time.substring(0, 7),
-          pasStartDate: res.data.data.start_time.substring(0, 7),
-          monthTotal: res.data.data.month,
-          [list]: res.data.data.finish_month,
-          echartShow: true
-        })
-        var nowDate
-        var nowMonth = currentMonth + 1
-        if (currentMonth < 10) {
-          nowDate = currentYear + '-' + '0' + nowMonth
-        } else {
-          nowDate = currentYear + '-' + nowMonth
-        }
-        var obj = that.data.swiper.qualifications
-        var data = Object.keys(obj)
-        for (var i = 0; i < data.length; i++) {
-          if (data[i] == nowDate) {
-            var cur = 'swiper.current'
-            that.setData({
-              [cur]: i
-            })
+  openLogin: function() {
+    var that = this;
+    wx.getUserProfile({
+      desc: "用于完善跑者会员资料",
+      success: function(infoRes) {
+        var wxUser = infoRes.userInfo || {};
+        wx.login({
+          success: function(loginRes) {
+            if (!loginRes.code) {
+              wx.showToast({ title: "登录失败", icon: "none" });
+              return;
+            }
+            util.request("user/wxlogin", "POST", { code: loginRes.code }, "登录中...", function(res) {
+              if (res.data && res.data.success && res.data.data) {
+                app.globalData.userId = res.data.data.id;
+                app.globalData.openId = res.data.data.open_id;
+                wx.setStorageSync("userId", res.data.data.id);
+                wx.setStorageSync("openId", res.data.data.open_id);
+                that.myLogin(res.data.data.id);
+              } else {
+                util.request("user/wxregister", "POST", {
+                  code: loginRes.code,
+                  nickName: wxUser.nickName || "",
+                  header_url: wxUser.avatarUrl || "",
+                  gender: wxUser.gender || 1
+                }, "注册中...", function(regRes) {
+                  if (regRes.data && regRes.data.success && regRes.data.data) {
+                    var newId = regRes.data.data.id || regRes.data.data.userId;
+                    app.globalData.userId = newId;
+                    wx.setStorageSync("userId", newId);
+                    that.myLogin(newId);
+                  } else {
+                    wx.showToast({ title: "登录或注册失败", icon: "none" });
+                  }
+                });
+              }
+            });
           }
-        }
-      } else {
-
+        });
+      },
+      fail: function() {
+        wx.showToast({ title: "已取消登录", icon: "none" });
       }
-    })
-  },
-  getRule2: function () {
-    var that = this
-    var data = {
-      acty_id: that.data.actyId,
-      rule_id: that.data.rule_id2,
-      user_id: parseInt(that.data.userId)
-    }
-    util.request('user/getRuleResult', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        var list = 'swiper2.qualifications'
-        that.setData({
-          passDistance2: res.data.data.distance,
-          passMonth2: res.data.data.month,
-          passEndDate2: res.data.data.end_time.substring(0, 7),
-          pasStartDate2: res.data.data.start_time.substring(0, 7),
-          monthTotal2: res.data.data.month,
-          [list]: res.data.data.finish_month,
-          echartShow2: true
-        })
-        var nowDate
-        var nowMonth = currentMonth + 1
-        if (nowMonth < 10) {
-          nowDate = currentYear + '-' + '0' + nowMonth
-        } else {
-          nowDate = currentYear + '-' + nowMonth
-        }
-        var obj = that.data.swiper2.qualifications
-        var data = Object.keys(obj)
-        for (var i = 0; i < data.length; i++) {
-          if (data[i] == nowDate) {
-            var cur = 'swiper2.current'
-            that.setData({
-              [cur]: i
-            })
-          }
-        }
-      } else {
-
-      }
-    })
-  },
-  prev: function () {
-    var swiper = this.data.swiper;
-    var current = swiper.current;
-    var arr = Object.keys(swiper.qualifications)
-    swiper.current = current > 0 ? current - 1 : arr.length - 1;
-    this.setData({
-      swiper: swiper
-    })
-  },
-  next: function () {
-    var swiper = this.data.swiper;
-    var current = swiper.current;
-    var arr = Object.keys(swiper.qualifications)
-    swiper.current = current < (arr.length - 1) ? current + 1 : 0;
-    this.setData({
-      swiper: swiper
-    })
-  },
-  prev2: function () {
-    var swiper = this.data.swiper2;
-    var current = swiper.current;
-    var arr = Object.keys(swiper.qualifications)
-    swiper.current = current > 0 ? current - 1 : arr.length - 1;
-    this.setData({
-      swiper2: swiper
-    })
-  },
-  next2: function () {
-    var swiper = this.data.swiper2;
-    var current = swiper.current;
-    var arr = Object.keys(swiper.qualifications)
-    swiper.current = current < (arr.length - 1) ? current + 1 : 0;
-    this.setData({
-      swiper2: swiper
-    })
-  },
-  //挑战
-  initActy: function (id) {
-    var that = this
-    var data = {
-      userId: id,
-      type: '挑战',
-      page: that.data.page++
-    }
-    util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        var allData = res.data.data
-        for (var i = 0; i < allData.length; i++) {
-          var createTime = allData[i].start_timestr.substring(0, 16)
-          var endTime = allData[i].end_timestr.substring(11, 16)
-          allData[i].start_timestr = createTime
-          allData[i].end_timestr = endTime
-        }
-        that.setData({
-          activityList: allData,
-          start_timestr: createTime,
-          end_timestr: endTime,
-          totalChallenge: res.data.total
-        })
-      } else {
-        that.setData({
-          activityList: []
-        })
-        // wx.showToast({
-        //   title: res.data.error,
-        //   icon: 'none',
-        //   duration: 1500
-        // })  
-      }
-    })
-  },
-  //团跑
-  initActy2: function (id) {
-    var that = this
-    var data = {
-      userId: id,
-      type: '团跑',
-      page: that.data.page2++
-    }
-    util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        var allData = res.data.data
-        for (var i = 0; i < allData.length; i++) {
-          var createTime = allData[i].start_timestr.substring(0, 16)
-          var endTime = allData[i].end_timestr.substring(11, 16)
-          allData[i].start_timestr = createTime
-          allData[i].end_timestr = endTime
-        }
-        that.setData({
-          activityList2: allData,
-          start_timestr: createTime,
-          end_timestr: endTime,
-          totalActy: res.data.total
-        })
-      } else {
-        that.setData({
-          activityList2: []
-        })
-        // wx.showToast({
-        //   title: res.data.error,
-        //   icon: 'none',
-        //   duration: 1500
-        // })  
-      }
-    })
-  },
-  //初始化周跑数据
-  initBarData: function (e) {
-    var that = this
-    var weekArr = []
-    if (that.data.userId == undefined) {
-      return
-    }
-    var data = {
-      user_id: that.data.userId
-    }
-    util.request('user/getWeekRuleList', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        that.setData({
-          starTime: res.data.data[0].sport_day.substring(5, 10),
-          endTime: res.data.data[6].sport_day.substring(5, 10),
-        })
-        var allData = res.data.data
-        var max = 0;
-        for (var i = 0; i < allData.length; i++) {
-          var distance = allData[i].sport_total
-          weekArr.push(distance)
-        }
-        max = Math.max.apply(null, weekArr)
-        if (Math.floor(max / 5) != max / 5) {
-          max = Math.ceil(max / 5) * 5
-        }
-        var weekObj = { ...weekArr }
-        //load bar 
-        option.initBar(e.detail.canvas, e.detail.width, e.detail.height, e.detail.dpr, weekObj, max)
-      }
-    })
-  },
-  //初始化月跑数据
-  initMonthData: function (e) {
-    var that = this
-    var monthArr = []
-    if (that.data.userId == undefined) {
-      return
-    }
-    var data = {
-      user_id: that.data.userId
-    }
-    util.request('user/getMonthList', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        var nowDate
-        var nowMonth = currentMonth + 1
-        if (nowMonth < 10) {
-          nowDate = currentYear + '-' + '0' + nowMonth
-        } else {
-          nowDate = currentYear + '-' + nowMonth
-        }
-        var monthData = res.data.data[nowDate]
-        var max = 0;
-        for (var i = 0; i < monthData.length; i++) {
-          var distance = monthData[i].sport_total
-          monthArr.push(distance)
-        }
-        max = Math.max.apply(null, monthArr)
-        if (Math.floor(max / 5) != max / 5) {
-          max = Math.ceil(max / 5) * 5
-        }
-        //load bar 
-        option.initBar2(e.detail.canvas, e.detail.width, e.detail.height, e.detail.dpr, monthArr, max)
-      }
-    })
-  },
-  initYearData: function (e) {
-    var that = this
-    var monthArr = []
-    if (that.data.userId == undefined) {
-      return
-    }
-    var data = {
-      user_id: that.data.userId
-    }
-    util.request('user/getYearMonthList', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        var max = 0;
-        for (var i = 0; i < res.data.data.length; i++) {
-          var distance = res.data.data[i].sport_total
-          if(i == 0) {
-            max = distance
-          }
-          if(max < distance) {
-            max = distance
-          }
-          monthArr.push(distance)
-        }
-        //load bar 
-        option.initBar3(e.detail.canvas, e.detail.width, e.detail.height, e.detail.dpr, monthArr, max)
-      }
-    })
-  },
-  //初始化*资格/*挑战数据
-  initPie0: function (e) {
-    var days = e.target.dataset.days
-    var list = e.target.dataset.list
-    option.initCirle0(e.detail.canvas, e.detail.width, e.detail.height, e.detail.dpr, list, this.data.monthTotal, days)
-  },
-  initPie00: function (e) {
-    var days = e.target.dataset.days
-    var list = e.target.dataset.list
-    option.initCirle0(e.detail.canvas, e.detail.width, e.detail.height, e.detail.dpr, list, this.data.monthTotal2, days)
-  },
-  initPie1: function (e) {
-    var times = e.target.dataset.times
-    option.initCirle(e.detail.canvas, e.detail.width, e.detail.height, e.detail.dpr, times, this.data.passWeek)
-  },
-  initPie2: function (e) {
-    var times = e.target.dataset.times
-    option.initCirle(e.detail.canvas, e.detail.width, e.detail.height, e.detail.dpr, times, this.data.passWeek2)
-  },
-  toDet: function(e){
-    let id = e.detail.id
-    let type = e.detail.type
-    if(type == '挑战'){
-      wx.navigateTo({
-        url: '../challengedetail/challengedetail?id='+id + '&userid=' + this.data.userId
-      })
-    } else {
-      wx.navigateTo({
-        url: '../activitydetail/activitydetail?id='+id + '&userid=' + this.data.userId
-      })
-    }
-  },
-  loadMore: function () {
-    var that = this
-    var data = {
-      userId: that.data.userId,
-      type: '挑战',
-      page: that.data.page++
-    }
-    // wx.showLoading({
-    //   title: '加载中',
-    //   icon: 'loading'
-    // })
-    util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        var allData = res.data.data
-        var content = that.data.activityList.concat(allData)
-        for (var i = 0; i < allData.length; i++) {
-          var createTime = allData[i].start_timestr.substring(0, 16)
-          var endTime = allData[i].end_timestr.substring(11, 16)
-          allData[i].start_timestr = createTime
-          allData[i].end_timestr = endTime
-        }
-        that.setData({
-          activityList: content,
-          start_timestr: createTime,
-          end_timestr: endTime
-        })
-        // wx.hideLoading({
-        //   success: (res) => {},
-        // })
-      } else {
-
-      }
-    })
-  },
-  loadMore2: function () {
-    var that = this
-    var data = {
-      userId: that.data.userId,
-      type: '团跑',
-      page: that.data.page2++
-    }
-    // wx.showLoading({
-    //   title: '加载中',
-    //   icon: 'loading'
-    // })
-    util.request('acty/getacty', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        var allData = res.data.data
-        var content = that.data.activityList2.concat(allData)
-        for (var i = 0; i < allData.length; i++) {
-          var createTime = allData[i].start_timestr.substring(0, 16)
-          var endTime = allData[i].end_timestr.substring(11, 16)
-          allData[i].start_timestr = createTime
-          allData[i].end_timestr = endTime
-        }
-        that.setData({
-          activityList2: content,
-          start_timestr: createTime,
-          end_timestr: endTime
-        })
-      } else {
-
-      }
-    })
-  },
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function () {
-    wx.hideTabBar();
-    app.editTabbar();
-    
-    var userId = app.globalData.userId
-    if (userId <= 0) {
-      this.myLogin(userId);
-    }
-    this.initInfor(userId)
-    this.initActy(userId)
-    this.initActy2(userId)
-    this.getChallengeId(userId)
-    this.initMarathon(userId)
-    this.setData({
-      userId: userId //自己的id
-    })
-  },
-  initMarathon: function(userId) {
-    var that = this
-    var data = { userId: userId}
-    util.request('user/marathonpb', 'POST', data, '拼命加载中 ...', (res) => {
-      that.setData({
-        marathons: res.data.data
-      })
     });
   },
-  myLogin: function(userId) {
-    var that = this
-    if (userId < 1 || userId == undefined) {
-      wx.showModal({
-        content: '请先登录小程序！',
-        success(res) {
-          if (res.confirm) {
-            util.showLogin((res) => {
-              var data = {
-                code: res.code,
-                encryptedData: "",
-                iv: ""
-              }
-              //取用户的openid
-              util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes) => {
-                var regData = {
-                  openId: loginRes.data.data.openid,
-                  unionid: loginRes.data.data.unionid
-                }
-                util.request('user/wxregister', 'POST', regData, '', (regRes) => {
-                  app.globalData.userId = regRes.data.UserId
-                  app.globalData.openId = regData.openId
-                  wx.setStorageSync('userId', regRes.data.UserId)
-                  wx.setStorageSync('openId', regData.openId)
-                  var data = {
-                    id: regRes.data.UserId,
-                    openId: regData.openId
-                  }
-                  wx.showLoading({
-                    title: '加载中',
-                    mask: true
-                  })
-                  util.request('/user/getuserinfo', 'POST', data, '拼命加载中 ...', (res) => {
-                    if (res.data.success) {
-                      that.setData({
-                        avatarUrl: res.data.data.header_url,
-                        nickName: res.data.data.nick_name,
-                        score: res.data.data.score,
-                        level: res.data.data.level,
-                        userId: res.data.data.id,
-                        duty: res.data.data.duty
-                      })
-                      if (res.data.data.duty == '团长,管理员' || res.data.data.duty == '管理员,团长') {
-                        that.setData({
-                          duty: '管理员/团长',
-                        })
-                      }
-                      wx.hideLoading({
-                        success: (res) => {},
-                      })
-                    } else {
-                      app.globalData.userId = 0;
-                      that.setData({
-                        userId: 0
-                      })
-                      wx.clearStorageSync();
-                      wx.hideLoading({
-                        success: (res) => {},
-                      })
-                    }
-                  })
-                })
-              })
-            })
-          } else if (res.cancel) {
-          }
-        }
-      })
+
+  openProfile: function() {
+    var userId = this.data.userId;
+    if (userId > 0) {
+      wx.navigateTo({ url: "../userinfor/userinfor" });
+    } else {
+      this.openLogin();
     }
   },
 
-  // * 添加跳转到马拉松页面
- // 添加缺失的方法
- navigateWithParams: function() {
-  // 获取可能需要的数据参数（如果有）
-  // 注意：这里只是示例，您需要根据实际情况修改
-  const id = 123;
-  const name = "测试数据";
-  
-  // 执行页面跳转
-  wx.navigateTo({
-    url: '/pages/results/results?id=' + id + '&name=' + encodeURIComponent(name)
-  });
-}
+  goActivity: function() {
+    wx.switchTab({ url: "../activity/activity" });
+  },
 
-})
+  goChallenge: function() {
+    wx.switchTab({ url: "../challenge/challenge" });
+  },
+
+  initInfor: function(id) {
+    var that = this;
+    if (!id || id <= 0) return;
+    var data = { userId: id };
+    util.request("user/getsportinfo", "POST", data, "", function(res) {
+      if (res && res.data && res.data.success) {
+        var myData = res.data.data || {};
+        that.setData({
+          headerImg: myData.headerImg || "../../images/default.png",
+          userName: myData.userName || "",
+          nickName: myData.nickName || "",
+          sex: myData.sex || "",
+          level: myData.level || "",
+          score: myData.score || 0,
+          energy: myData.energy || 0,
+          monthDistance: myData.monthDistance || 0,
+          totalDistance: myData.totalDistance || 0,
+          statsLoaded: true
+        });
+      }
+    });
+  },
+
+  checkPoint: function() {
+    wx.navigateTo({ url: "../checkpoint/checkpoint" });
+  },
+
+  checkEnergy: function() {
+    wx.navigateTo({ url: "../energy/energy" });
+  },
+
+  editInfor: function() {
+    var openId = app.globalData.openId;
+    if (!openId) {
+      wx.showToast({ title: "请先登录小程序！", icon: "none" });
+      return;
+    }
+    wx.navigateTo({ url: "../userinfor/userinfor" });
+  },
+
+  toRecord: function() {
+    wx.navigateTo({ url: "../record/record" });
+  },
+
+  toHistory: function() {
+    wx.navigateTo({ url: "../history/history" });
+  },
+
+  toPrize: function() {
+    wx.navigateTo({ url: "../prize/prize" });
+  },
+
+  toManage: function() {
+    wx.navigateTo({ url: "../manage/manage" });
+  },
+
+  getWeekRuns: function(userId) {
+    var that = this;
+    if (!userId || userId <= 0) return;
+    util.request("user/getWeekRuleList", "POST", { user_id: userId }, "", function(res) {
+      if (res && res.data && res.data.success && res.data.data) {
+        var days = res.data.data || [];
+        var runCount = days.filter(function(day) {
+          return Number(day.sport_total) > 0;
+        }).length;
+        var total = 0;
+        days.forEach(function(day) {
+          var val = Number(day.sport_total) || 0;
+          if (val > 0) total += val;
+        });
+        that.setData({
+          weekDistance: (Math.round(total * 10) / 10).toFixed(1),
+          weekLoaded: true
+        });
+      } else {
+        that.setData({
+          weekDistance: "0.0",
+          weekLoaded: true
+        });
+      }
+    }, function() {
+      that.setData({
+        weekDistance: "0.0",
+        weekLoaded: true
+      });
+    });
+  },
+
+  getYearDistance: function(userId) {
+    var that = this;
+    if (!userId || userId <= 0) return;
+    var openId = wx.getStorageSync("openId") || app.globalData.openId || "";
+    var postData = {
+      nickName: "",
+      mobile: "",
+      openId: openId,
+      sort: 4,
+      levelId: "",
+      page: 1,
+      size: 100
+    };
+    util.request("user/getuserlist", "POST", postData, "", function(res) {
+      if (res && res.data && res.data.success && Array.isArray(res.data.data)) {
+        var list = res.data.data;
+        var me = list.find(function(item) {
+          return String(item.id) === String(userId) || (openId && item.open_id === openId);
+        });
+        if (me && me.year_count !== undefined && me.year_count !== null) {
+          var yr = Number(me.year_count) || 0;
+          that.setData({
+            yearDistance: (Math.round(yr * 10) / 10).toFixed(1),
+            yearLoaded: true
+          });
+          return;
+        }
+      }
+      that.setData({
+        yearDistance: "0.0",
+        yearLoaded: true
+      });
+    }, function() {
+      that.setData({
+        yearDistance: "0.0",
+        yearLoaded: true
+      });
+    });
+  },
+
+  initDuty: function(userId) {
+    var that = this;
+    if (!userId || userId <= 0) {
+      this.setData({ duty: "" });
+      return;
+    }
+    util.request("user/get", "POST", { id: userId }, "", function(res) {
+      if (res && res.data && res.data.success && res.data.data) {
+        var d = res.data.data.duty;
+        if (d == "团长,管理员" || d == "管理员,团长") {
+          that.setData({ duty: "管理员/团长" });
+        } else {
+          that.setData({ duty: d || "" });
+        }
+      }
+    });
+  },
+
+  initMarathon: function(userId) {
+    var that = this;
+    if (!userId || userId <= 0) return;
+    util.request("user/marathonpb", "POST", { userId: userId }, "", function(res) {
+      if (res.data && res.data.success) {
+        that.setData({ marathons: res.data.data || [] });
+      }
+    });
+  },
+
+  navigateWithParams: function() {
+    var userId = this.data.userId;
+    if (!userId || userId <= 0) return;
+    wx.navigateTo({ url: "../results/results?id=" + userId });
+  },
+
+  // 挑战记录列表
+  initActy: function(id) {
+    var that = this;
+    if (!id || id <= 0) return;
+    var data = {
+      userId: id,
+      type: "挑战",
+      page: 1
+    };
+    util.request("acty/getacty", "POST", data, "", function(res) {
+      if (res.data && res.data.success) {
+        var allData = res.data.data || [];
+        allData.forEach(function(item) {
+          if (item.start_timestr) item.start_timestr = item.start_timestr.substring(0, 16);
+          if (item.end_timestr) item.end_timestr = item.end_timestr.substring(11, 16);
+        });
+        that.setData({
+          activityList: allData,
+          totalChallenge: res.data.total || allData.length,
+          page: 2
+        });
+      } else {
+        that.setData({ activityList: [] });
+      }
+    });
+  },
+
+  // 团跑记录列表
+  initActy2: function(id) {
+    var that = this;
+    if (!id || id <= 0) return;
+    var data = {
+      userId: id,
+      type: "团跑",
+      page: 1
+    };
+    util.request("acty/getacty", "POST", data, "", function(res) {
+      if (res.data && res.data.success) {
+        var allData = res.data.data || [];
+        allData.forEach(function(item) {
+          if (item.start_timestr) item.start_timestr = item.start_timestr.substring(0, 16);
+          if (item.end_timestr) item.end_timestr = item.end_timestr.substring(11, 16);
+        });
+        that.setData({
+          activityList2: allData,
+          totalActy: res.data.total || allData.length,
+          page2: 2
+        });
+      } else {
+        that.setData({ activityList2: [] });
+      }
+    });
+  },
+
+  loadMore: function() {
+    var that = this;
+    var data = {
+      userId: that.data.userId,
+      type: "挑战",
+      page: that.data.page++
+    };
+    util.request("acty/getacty", "POST", data, "", function(res) {
+      if (res.data && res.data.success) {
+        var allData = res.data.data || [];
+        allData.forEach(function(item) {
+          if (item.start_timestr) item.start_timestr = item.start_timestr.substring(0, 16);
+          if (item.end_timestr) item.end_timestr = item.end_timestr.substring(11, 16);
+        });
+        that.setData({
+          activityList: that.data.activityList.concat(allData),
+          totalChallenge: res.data.total
+        });
+      }
+    });
+  },
+
+  loadMore2: function() {
+    var that = this;
+    var data = {
+      userId: that.data.userId,
+      type: "团跑",
+      page: that.data.page2++
+    };
+    util.request("acty/getacty", "POST", data, "", function(res) {
+      if (res.data && res.data.success) {
+        var allData = res.data.data || [];
+        allData.forEach(function(item) {
+          if (item.start_timestr) item.start_timestr = item.start_timestr.substring(0, 16);
+          if (item.end_timestr) item.end_timestr = item.end_timestr.substring(11, 16);
+        });
+        that.setData({
+          activityList2: that.data.activityList2.concat(allData),
+          totalActy: res.data.total
+        });
+      }
+    });
+  },
+
+  toDet: function(e) {
+    var id = e.detail.id;
+    var type = e.detail.type;
+    if (type == "挑战") {
+      wx.navigateTo({
+        url: "../challengedetail/challengedetail?id=" + id + "&userid=" + this.data.userId
+      });
+    } else {
+      wx.navigateTo({
+        url: "../activitydetail/activitydetail?id=" + id + "&userid=" + this.data.userId
+      });
+    }
+  },
+
+  /** 跑步热力图的编排器（分页全量拉取、用户守卫、竞态防护、月份切换本地重算都在 util 内）。 */
+  getHeatmapController: function() {
+    var that = this;
+    if (!this._heatmapController) {
+      this._heatmapController = heatmap.createHeatmapController({
+        now: function() {
+          return new Date();
+        },
+        monthsBack: heatmap.DEFAULT_RANGE_MONTHS,
+        isCurrentUser: function(requestUserId) {
+          return String(that.data.userId) === String(requestUserId);
+        },
+        fetchRecords: function(requestUserId, page, onSuccess, onFail) {
+          var params = { userId: requestUserId, type: -1, page: page };
+          util.request("user/getsportlist", "POST", params, "", onSuccess, onFail);
+        }
+      });
+    }
+    return this._heatmapController;
+  },
+
+  initHeatmapData: function(userId) {
+    var that = this;
+    this.getHeatmapController().load(userId, {
+      onState: function(state) {
+        that.applyHeatmapState(state);
+      }
+    });
+  },
+
+  /**
+   * 落一次编排器状态：标题天数、下拉选中项、方格几何与滚动位置都在这里同步。
+   * ready 才写真实打卡天数，guest/loading/error 一律显示「—天」。
+   */
+  applyHeatmapState: function(state) {
+    var months = heatmap.normalizeMonths(state && state.monthsBack, heatmap.DEFAULT_RANGE_MONTHS);
+    var index = heatmap.RANGE_OPTIONS.indexOf(months);
+    if (index < 0) index = heatmap.RANGE_OPTIONS.indexOf(heatmap.DEFAULT_RANGE_MONTHS);
+    var ready = !!state && state.status === "ready" && !!state.recentHeatmap;
+    var patch = {
+      heatmapStatus: state ? state.status : "error",
+      recentHeatmap: ready ? state.recentHeatmap : null,
+      heatmapRangeIndex: index,
+      heatmapRangeValue: months,
+      heatmapCheckinDays: ready ? (state.checkinDays || 0) : 0,
+      heatmapDaysText: ready ? String(state.checkinDays || 0) : "—"
+    };
+    if (ready) {
+      var layout = heatmap.computeHeatmapLayout(state.recentHeatmap.weeks.length);
+      patch.heatmapCellSize = layout.cell;
+      patch.heatmapColumnGap = layout.gap;
+      patch.heatmapColumnStride = layout.stride;
+      patch.heatmapCanvasWidth = layout.canvasWidth;
+      patch.heatmapMonthAxisHeight = layout.axisHeight;
+      // 默认滚到最新端：切范围时数值变化会驱动 scroll-view 重新定位到末尾。
+      patch.heatmapScrollLeft = Math.round(layout.scrollRpx * this.getPxPerRpx());
+    }
+    this.setData(patch);
+    // 加载失败时把具体原因打到控制台，便于定位是哪个字段/结构不符合预期。
+    if (state && state.status === "error") {
+      console.warn("[mydata] 热力图加载失败：", state.reason || "unknown");
+    }
+  },
+
+  /** rpx -> px 的换算比例（scroll-left 只认 px）。 */
+  getPxPerRpx: function() {
+    if (!this._pxPerRpx) {
+      var width = 375;
+      try {
+        if (typeof wx.getWindowInfo === "function") {
+          var win = wx.getWindowInfo();
+          if (win && win.windowWidth) width = win.windowWidth;
+        } else if (typeof wx.getSystemInfoSync === "function") {
+          var info = wx.getSystemInfoSync();
+          if (info && info.windowWidth) width = info.windowWidth;
+        }
+      } catch (err) {
+        width = 375;
+      }
+      this._pxPerRpx = width / 750;
+    }
+    return this._pxPerRpx;
+  },
+
+  /** 右上角下拉：切换 1/3/6/12 个月，直接用已加载数据本地重算，不重复拉取分页。 */
+  onHeatmapRangeChange: function(e) {
+    var raw = e && e.detail ? e.detail.value : undefined;
+    var index = Number(raw);
+    if (!(index >= 0 && index < heatmap.RANGE_OPTIONS.length)) {
+      index = this.data.heatmapRangeIndex;
+    }
+    var months = heatmap.RANGE_OPTIONS[index];
+    this.setData({ heatmapRangeIndex: index, heatmapRangeValue: months });
+    this.getHeatmapController().setMonths(months);
+  },
+
+  /** 加载失败时由页面重试：以当前用户重新发起请求。 */
+  retryHeatmap: function() {
+    var userId = this.data.userId || wx.getStorageSync("userId") || app.globalData.userId || 0;
+    if (userId !== this.data.userId) {
+      this.setData({ userId: userId });
+    }
+    this.initHeatmapData(userId);
+  },
+
+  onLoad: function(options) {
+    app.editTabbar();
+  },
+
+  onShow: function() {
+    wx.hideTabBar();
+    var userId = wx.getStorageSync("userId") || app.globalData.userId || 0;
+    if (userId !== this.data.userId) {
+      this.setData({
+        headerImg: "../../images/default.png",
+        userName: "",
+        nickName: "",
+        score: 0,
+        energy: 0,
+        monthDistance: 0,
+        totalDistance: 0,
+        duty: "",
+        marathons: [],
+        activityList: [],
+        activityList2: [],
+        totalChallenge: 0,
+        totalActy: 0
+      });
+    }
+    this.setData({ userId: userId, statsLoaded: false, weekLoaded: false, yearLoaded: false });
+    this.initHeatmapData(userId);
+    if (userId > 0) {
+      this.initInfor(userId);
+      this.getWeekRuns(userId);
+      this.getYearDistance(userId);
+      this.initDuty(userId);
+      this.initMarathon(userId);
+      this.initActy(userId);
+      this.initActy2(userId);
+    }
+  },
+
+  onHide: function() {},
+
+  myLogin: function(userId) {
+    this.setData({ userId: userId, statsLoaded: false, weekLoaded: false });
+    this.initInfor(userId);
+    this.getWeekRuns(userId);
+    this.getYearDistance(userId);
+    this.initDuty(userId);
+    this.initMarathon(userId);
+    this.initHeatmapData(userId);
+    this.initActy(userId);
+    this.initActy2(userId);
+  }
+});

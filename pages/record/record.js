@@ -1,271 +1,308 @@
-// pages/activity/activity.js
+// pages/record/record.js
 const util = require('../../utils/util.js')
-// 获取应用实例
 const app = getApp()
+
+function formatDisplayTime(timeStr, createTimestamp) {
+  if (!timeStr && !createTimestamp) return ''
+  let date
+  if (createTimestamp && !isNaN(Number(createTimestamp))) {
+    date = new Date(Number(createTimestamp))
+  } else if (timeStr) {
+    date = new Date(String(timeStr).replace(/-/g, '/'))
+  }
+  if (!date || isNaN(date.getTime())) {
+    return timeStr || ''
+  }
+  const now = new Date()
+  const nowYear = now.getFullYear()
+  const dYear = date.getFullYear()
+  const nowMonth = now.getMonth()
+  const dMonth = date.getMonth()
+  const nowDate = now.getDate()
+  const dDate = date.getDate()
+
+  const pad = n => (n < 10 ? '0' + n : '' + n)
+  const timePart = pad(date.getHours()) + ':' + pad(date.getMinutes())
+
+  if (nowYear === dYear && nowMonth === dMonth && nowDate === dDate) {
+    return '今天 ' + timePart
+  }
+  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+  if (yesterday.getFullYear() === dYear && yesterday.getMonth() === dMonth && yesterday.getDate() === dDate) {
+    return '昨天 ' + timePart
+  }
+  const dayOfWeek = now.getDay() === 0 ? 7 : now.getDay()
+  const monday = new Date(nowYear, nowMonth, nowDate - dayOfWeek + 1, 0, 0, 0)
+  const sunday = new Date(nowYear, nowMonth, nowDate + (7 - dayOfWeek), 23, 59, 59)
+  if (date >= monday && date <= sunday) {
+    const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+    return '本' + weekDays[date.getDay()] + ' ' + timePart
+  }
+  if (nowYear === dYear) {
+    return pad(dMonth + 1) + '-' + pad(dDate) + ' ' + timePart
+  }
+  return dYear + '-' + pad(dMonth + 1) + '-' + pad(dDate) + ' ' + timePart
+}
+
 Page({
   /**
    * 页面的初始数据
    */
-    data: {
-      recordList: [],
-      recordType: '',
-      noHistory: true,
-      page: 1,
-      randomArr: [
-        '你很有跑步天赋～',
-        '为你点赞～',
-        '挺你～',
-        '优秀～',
-        '真棒～',
-        '自律～',
-        '点赞～',
-        '厉害～',
-        '哇，大神～'
-      ],
-      state: 0,
-    },
-    preview: function(e){
-      var that = this
-      var id = e.currentTarget.dataset.id
-      var url = e.currentTarget.dataset.url
-      var previewImgArr = []
-      //通过循环在数据链里面找到和这个id相同的这一组数据，然后再取出这一组数据当中的图片
-      var data = that.data.recordList
-      for (var i in data) {
-        if (id == data[i].id) {
-        previewImgArr = data[i].sport_img;
-        }
-      }
-      wx.previewImage({
-      current: url, // 当前显示图片的http链接
-      urls: [previewImgArr] // 需要预览的图片http链接列表
-      })
-    },
-    /**
-   * 显示删除按钮
-   */
-  showDeleteButton: function (e) {
-    let productIndex = e.currentTarget.dataset.productindex
-    this.setXmove(productIndex, -60)
-  },
-
-  /**
-   * 隐藏删除按钮
-   */
-  hideDeleteButton: function (e) {
-    let productIndex = e.currentTarget.dataset.productindex
-    this.setXmove(productIndex, 0)
-  },
-
-  /**
-   * 设置movable-view位移
-   */
-  setXmove: function (productIndex, xmove) {
-    let productList = this.data.recordList
-    productList[productIndex].xmove = xmove
-    this.setData({
-      recordList: productList
-    })
-  },
-
-  /**
-   * 处理movable-view移动事件
-   */
-  handleMovableChange: function (e) {
-    if (e.detail.source === 'friction') {
-      if (e.detail.x < -30) {
-        this.showDeleteButton(e)
-      } else {
-        this.hideDeleteButton(e)
-      }
-    } else if (e.detail.source === 'out-of-bounds' && e.detail.x === 0) {
-      this.hideDeleteButton(e)
-    }
-  },
-
-  /**
-   * 处理touchstart事件
-   */
-  handleTouchStart(e) {
-    this.startX = e.touches[0].pageX
-    if(this.data.state==1){
-      let productList = this.data.recordList
-      for(var i=0;i<productList.length;i++){
-        this.setXmove(i,0)
-      }
-    }
-  },
-  handleTouchMove(e) {
-    if(e.changedTouches[0].pageX < this.startX && e.changedTouches[0].pageX - this.startX <= -10) {
-      this.showDeleteButton(e)
-    } else if(e.changedTouches[0].pageX > this.startX && e.changedTouches[0].pageX - this.startX < 10) {
-      this.showDeleteButton(e)
-    } else {
-      this.hideDeleteButton(e)
-    }
-  },
-  /**
-   * 处理touchend事件
-   */
-  handleTouchEnd(e) {
-    if(e.changedTouches[0].pageX < this.startX && e.changedTouches[0].pageX - this.startX <= -10) {
-      this.showDeleteButton(e)
-    } else if(e.changedTouches[0].pageX > this.startX && e.changedTouches[0].pageX - this.startX < 10) {
-      this.showDeleteButton(e)
-    } else {
-      this.hideDeleteButton(e)
-    }
-    this.setData({
-      state: 1
-    })
+  data: {
+    userId: 0,
+    listState: 'loading', // 'loading' | 'guest' | 'error' | 'ready'
+    tabs: ['全部', '日常跑', '团跑'],
+    currentTab: 0,
+    recordList: [],
+    page: 1,
+    totalCount: 0,
+    pageTotal: 1,
+    hasMore: true,
+    loadingMore: false,
+    moreError: false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function () {
-    this.initRecord()
+    wx.hideShareMenu({})
+    const userId = Number(app.globalData.userId) || 0
+    this.setData({
+      userId: userId,
+      listState: userId > 0 ? 'loading' : 'guest'
+    })
+    if (userId > 0) {
+      this.fetchRecords(true)
+    }
   },
-  dedupe: function (array){
-    return Array.from(new Set(array));
-    //这里的 Array.from（）方法是将两类对象转为真正的数组：类似数组的对象和可遍历的对象（包括es6新增的数据结构Set和Map）
-  },
-  initRecord: function(){
-    var userId = app.globalData.userId
-    if(userId == 0){
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function () {
+    const userId = Number(app.globalData.userId) || 0
+    if (userId !== this.data.userId) {
+      this.setData({
+        userId: userId,
+        listState: userId > 0 ? 'loading' : 'guest',
+        recordList: [],
+        totalCount: 0
+      })
+      this._loadedOnce = true
+      if (userId > 0) {
+        this.fetchRecords(true)
+      }
       return
     }
-    var data = { 
-      userId : userId,
-      type: -1,
-      page: this.data.page++
+    if (this._loadedOnce && this.data.userId > 0) {
+      this.fetchRecords(true)
     }
-    util.request('user/getsportlist', 'POST', data, '数据加载中 ...', (res)=>{
-      var that = this 
-      if(res.data.success){
-        var recordData = res.data.data
-        for(var i=0;i<recordData.length;i++){
-          var now = new Date(); //当前日期 
-          var nowDayOfWeek = now.getDay(); //今天本周的第几天 
-          var nowDay = now.getDate(); //当前日 
-          var nowMonth = now.getMonth(); //当前月 
-          var nowYear = now.getYear(); //当前年 
-          nowYear += (nowYear < 2000) ? 1900 : 0; //
-          var weekStartDate = new Date(nowYear, nowMonth, nowDay - (nowDayOfWeek-1)); 
-          var weekEndDate = new Date(nowYear, nowMonth, nowDay + (7 - nowDayOfWeek));
-          var createTime = recordData[i].create_time_str
-          if(new Date(createTime)>weekStartDate&&new Date(createTime)<weekEndDate){
-            var createTime1 = this.getMyDay(new Date(createTime))
-            var createTimeNew = createTime1 + createTime.substring(10)
-            recordData[i].create_time_str = createTimeNew
-          }
-          that.setData({
-            recordList: recordData,
-            noHistory: false
-          })
-          that.randomTxt() 
-        }
-      }
-    })
+    this._loadedOnce = true
   },
-  //随机展示文字
-  randomTxt: function(){
-    var randomArr = this.data.randomArr
-    var recordList = this.data.recordList
-    var randomTxtArr = []
-    for(var i=0;i<recordList.length;i++){
-      randomTxtArr.push(randomArr[Math.floor((Math.random()*recordList.length))])
-      if(randomTxtArr[i] == undefined) {
-        randomTxtArr.splice(i,1);
-        i = i - 1; // i - 1 ,因为空元素在数组下标 2 位置，删除空之后，后面的元素要向前补位
-      }
-    }
+
+  /**
+   * 切换 Tab
+   */
+  currentTab: function (e) {
+    const idx = Number(e.currentTarget.dataset.idx)
+    if (idx === this.data.currentTab) return
     this.setData({
-      randomTxt: randomTxtArr
+      currentTab: idx,
+      recordList: [],
+      page: 1,
+      totalCount: 0,
+      hasMore: true
+    })
+    if (this.data.userId > 0) {
+      this.fetchRecords(true)
+    }
+  },
+
+  /**
+   * 获取打卡记录
+   */
+  fetchRecords: function (reset) {
+    if (!this.data.userId || (this.data.loadingMore && !reset)) return
+    if (!reset && !this.data.hasMore) return
+
+    const requestedPage = reset ? 1 : this.data.page
+    const requestId = (this._requestId || 0) + 1
+    this._requestId = requestId
+
+    // Tab 映射为服务端过滤参数: 0 -> 全部(-1), 1 -> 日常跑(0), 2 -> 团跑(1)
+    const tab = this.data.currentTab
+    const requestedType = tab === 1 ? 0 : (tab === 2 ? 1 : -1)
+
+    this.setData({
+      listState: reset ? 'loading' : this.data.listState,
+      loadingMore: true,
+      moreError: false
+    })
+
+    const params = {
+      userId: this.data.userId,
+      type: requestedType,
+      page: requestedPage
+    }
+
+    util.request('user/getsportlist', 'POST', params, '数据加载中 ...', (res) => {
+      if (requestId !== this._requestId) return
+      const response = res && res.data
+      if (!response || !response.success || !Array.isArray(response.data)) {
+        this.setData({
+          listState: reset ? 'error' : 'ready',
+          loadingMore: false,
+          moreError: !reset
+        })
+        if (this._refreshing) {
+          this._refreshing = false
+          wx.stopPullDownRefresh()
+        }
+        return
+      }
+
+      const received = response.data.map((item) => {
+        return Object.assign({}, item, {
+          display_time: formatDisplayTime(item.create_time_str, item.create_time),
+          duration: item.duration && item.duration !== 'undefined' ? item.duration : '',
+          energy: item.energy && item.energy !== 'undefined' ? item.energy : ''
+        })
+      })
+
+      const recordList = reset ? received : this.data.recordList.concat(received)
+      const pageTotal = Number(response.page_total) || 1
+      const totalCount = Number(response.total) || recordList.length
+      const hasMore = requestedPage < pageTotal && received.length > 0
+
+      this.setData({
+        recordList: recordList,
+        listState: 'ready',
+        page: requestedPage + 1,
+        pageTotal: pageTotal,
+        totalCount: totalCount,
+        hasMore: hasMore,
+        loadingMore: false,
+        moreError: false
+      })
+
+      if (this._refreshing) {
+        this._refreshing = false
+        wx.stopPullDownRefresh()
+      }
+    }, () => {
+      if (requestId !== this._requestId) return
+      this.setData({
+        listState: reset ? 'error' : 'ready',
+        loadingMore: false,
+        moreError: !reset
+      })
+      if (this._refreshing) {
+        this._refreshing = false
+        wx.stopPullDownRefresh()
+      }
     })
   },
-  //本周判断
-  getMyDay : function (date){
-    var week;
-    if(date.getDay()==0) week="本周日"
-    if(date.getDay()==1) week="本周一"
-    if(date.getDay()==2) week="本周二"
-    if(date.getDay()==3) week="本周三"
-    if(date.getDay()==4) week="本周四"
-    if(date.getDay()==5) week="本周五"
-    if(date.getDay()==6) week="本周六"
-    return week;
-    },
-  delCon: function(e){
-    var that = this
-    wx.showModal({   
-      title: '是否确定删除内容？',
+
+  /**
+   * 图片预览
+   */
+  preview: function (e) {
+    const url = e.currentTarget.dataset.url
+    if (!url) return
+    wx.previewImage({
+      current: url,
+      urls: [url]
+    })
+  },
+
+  /**
+   * 删除打卡记录
+   */
+  delCon: function (e) {
+    const that = this
+    const id = e.currentTarget.dataset.id
+    const idx = e.currentTarget.dataset.index
+    wx.showModal({
+      title: '删除打卡记录',
+      content: '确定要删除这条打卡记录吗？删除后不可恢复。',
+      confirmColor: '#cf3a3a',
+      cancelColor: '#7a8980',
       success: function (res) {
-        if (res.confirm) {             //点击确定后
-          var id = e.currentTarget.dataset.id
-          var idx = e.currentTarget.dataset.index
-          var data = {
-            id: id
-          }
-          util.request('acty/delSport', 'POST', data, '数据加载中 ...', (res)=>{
-            if(res.data.success){
-              var recordList = that.data.recordList
-              recordList.splice(idx, 1)
+        if (res.confirm) {
+          const data = { id: id }
+          util.request('acty/delSport', 'POST', data, '正在删除 ...', (delRes) => {
+            if (delRes.data && delRes.data.success) {
+              const list = that.data.recordList.slice()
+              list.splice(idx, 1)
               that.setData({
-                recordList
+                recordList: list,
+                totalCount: Math.max(0, that.data.totalCount - 1)
               })
               wx.showToast({
                 title: '已删除',
                 icon: 'none',
                 duration: 1500
-              })         
-            }else{
+              })
+            } else {
               wx.showToast({
-                title: res.data.error,
+                title: (delRes.data && delRes.data.error) || '删除失败',
                 icon: 'none',
                 duration: 1500
-              })  
+              })
             }
           })
-         } else {
-         }
-       }
+        }
+      }
     })
   },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh: function () {
+    if (!this.data.userId) {
+      wx.stopPullDownRefresh()
+      return
+    }
+    this._refreshing = true
+    this.fetchRecords(true)
+  },
+
   /**
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    this.loadMore()
-  },
-  loadMore: function(){
-    var userId = app.globalData.userId
-    var data = { 
-      userId : userId,
-      type: -1, 
-      page: this.data.page++
+    if (this.data.listState === 'ready') {
+      this.fetchRecords(false)
     }
-    wx.showLoading({
-      title: '加载中',
-      icon: 'loading'
-    })
-    util.request('user/getsportlist', 'POST', data, '数据加载中 ...', (res)=>{
-      var that = this
-      if(res.data.success){
-        var recordData = res.data.data
-        var content = that.data.recordList.concat(recordData)
-        that.setData({
-          recordList: content,
-          noHistory: false
-        })
-        wx.hideLoading({
-          success: (res) => {},
-        })
-      } else {
-        wx.hideLoading({
-          success: (res) => {},
-        })
-      }
-    })
+  },
+
+  /**
+   * 重试刷新
+   */
+  retry: function () {
+    this.fetchRecords(true)
+  },
+
+  /**
+   * 加载更多重试
+   */
+  retryMore: function () {
+    this.fetchRecords(false)
+  },
+
+  /**
+   * 前往登录
+   */
+  goLogin: function () {
+    wx.switchTab({ url: '../mydata/mydata' })
+  },
+
+  /**
+   * 前往打卡
+   */
+  goClock: function () {
+    wx.navigateTo({ url: '../clockdaily/clockdaily' })
   }
 })

@@ -1,20 +1,31 @@
+<site-header show-back="{{true}}" back-url="/pages/manage/manage"></site-header>
 <!--pages/prizelist/prizelist.wxml-->
-<radio-group class="radio-group">
-  <label wx:for="{{listData}}" wx:key="index" wx:for-item="item">
-    <view class="activity" id="{{key}}" data-id="{{item.id}}" data-name="{{item.goods_name}}" data-total="{{item.total}}" bindtap="radioChange" wx:if="{{item.state == 0}}">
-      <view class="check-radio">
-        <radio value="{{item.id}}" checked="{{item.id == id}}"/>
+<view class="pick-page">
+  <view class="pick-hero">
+    <text class="pick-eyebrow">WRC · PRIZES</text>
+    <text class="pick-title">奖品列表</text>
+    <view class="pick-title-line"></view>
+    <text class="pick-intro">选择一个奖品用于发起抽奖</text>
+  </view>
+
+  <radio-group class="pick-group">
+    <label wx:for="{{listData}}" wx:key="index" wx:for-item="item">
+      <view class="pick-item {{item.id == id ? 'is-checked' : ''}}" id="{{key}}" data-id="{{item.id}}" data-name="{{item.goods_name}}" data-total="{{item.total}}" bindtap="radioChange" wx:if="{{item.state == 0}}">
+        <view class="pick-radio">
+          <radio value="{{item.id}}" checked="{{item.id == id}}" color="#0b503b"/>
+        </view>
+        <view class="pick-cover" data-id="{{item.id}}">
+          <image src="{{item.goods_pic}}" mode="aspectFill"></image>
+        </view>
+        <view class="pick-info" data-id="{{item.id}}">
+          <view class="pick-name">{{item.goods_name}}</view>
+          <view class="pick-stock">库存：{{item.total}}</view>
+        </view>
       </view>
-      <view class="cover-img" data-id="{{item.id}}">
-        <image src="{{item.goods_pic}}" mode="widthFix" style="height:auto;"></image>
-      </view>
-      <view class="activity-infor" data-id="{{item.id}}">
-        <view class="title">{{item.goods_name}}</view>
-        <view>库存：{{item.total}}</view><!-- 原始 -->
-      </view>
-    </view>
-  </label>
-</radio-group>
-<view class="full-btn">
-  <button class="btn btnTwo" bindtap="submit">选择奖品</button>
+    </label>
+  </radio-group>
+  <view class="pick-empty" wx:if="{{listData && !listData.length}}">暂无可用奖品</view>
+</view>
+<view class="pick-footer">
+  <button class="pick-submit" bindtap="submit">选择奖品</button>
 </view>

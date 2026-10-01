@@ -5,8 +5,8 @@ let endDate = util.formatTime(new Date(new Date().getTime() + 24 * 60 * 60 * 100
 //明天的时间
 var day1 = new Date()
 day1.setTime(day1.getTime()+24*60*60*1000)
-var s1 = day1.getFullYear()+"-"+(day1.getMonth()+1) + "-" +day1.getDate()
-var s2 = (day1.getFullYear()+10)+"-"+(day1.getMonth()+1) + "-" +day1.getDate()
+var s1 = util.formatDate(day1)
+var s2 = (day1.getFullYear() + 10) + s1.substring(4)
 
 // 获取应用实例
 const app = getApp()
@@ -64,6 +64,7 @@ Page({
     });
   },
   setPickerTime: function(val) {
+    console.log(val);
     let data = val.detail;
     // var startTime = util.dislodgeZero(data.startTime)
     // var endTime = util.dislodgeZero(data.endTime)
@@ -81,6 +82,7 @@ Page({
       success:function(res) {
         var tempFilePaths = res.tempFilePaths[0]
         var userId = app.globalData.userId
+        console.log(tempFilePaths)
         wx.navigateTo({
           url: `../cropper2/cropper?src=${tempFilePaths}`,
         })
@@ -94,6 +96,7 @@ Page({
 //           url: 'https://applet.51welink.com/sport/acty/uploadimg',
 //           formData: { userId:  userId, fileId:'file' },
 //           success: function(ret){
+//             console.log(ret);
 //             var obj = JSON.parse(ret.data)
 //             that.setData({
 //               tempFilePaths: obj.data.img,
@@ -102,6 +105,7 @@ Page({
 //             })
 //           },
 //           fail: function(ret){
+//             console.log(ret)
 //           }
 //         })
       }
@@ -173,6 +177,7 @@ Page({
       score: formatDate.score,
       level: 0
     }
+    console.log(data)
     if(formatDate.actyName == ''){
       wx.showToast({
         title: '名称不能为空!',
@@ -189,7 +194,7 @@ Page({
       })
       return false
     }
-    if(that.data.startTime == ''){
+    if(that.data.endTime == ''){
       wx.showToast({
         title: '请选择结束时间!',
         icon: 'none',
@@ -214,6 +219,7 @@ Page({
       return false
     }
     util.request('acty/save', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
       if(res.data.success){
         that.setData({
           disable: true

@@ -1,122 +1,151 @@
-<!--pages/challengedetail/challengedetail.wxml-->
-<view class="my-img" wx:if="{{userid != userId&&userid!=undefined}}">
-  <view class="img-wrap">
-    <image src="{{header_url}}" mode="widthFix"></image>
+<!-- pages/challengedetail/challengedetail.wxml -->
+<site-header show-back="{{true}}" back-url="/pages/challenge/challenge" bindprofiletap="openMyPage"></site-header>
+<view class="detail-page">
+  <view class="detail-feedback" wx:if="{{detailLoading}}">
+    <text class="detail-feedback-title">正在加载挑战</text>
+    <text class="detail-feedback-copy">请稍候…</text>
   </view>
-</view>
-<view class="challenge-img">
-  <view class="back-btn" bindtap="back">
-    <image src="../../images/arrow-l.png" mode="widthFix"></image>
-  </view>
-  <image src="{{actyImg}}" mode="widthFix" style="width: 100%;" class="challenge-cover"></image>
-</view>
-<view class="challenge cont">
-
-  <view class="acty-infors" wx:if="{{actyState == 2}}">
-    <view><text class="acty-state">火热进行中</text> 剩余{{days+1}}天</view>
-    <view class="flex-con"><text class="acty-name">{{actyName}}</text><text class="num">{{actyInList.length}}人参与</text>
-    </view>
-  </view>
-  <view class="acty-infors" wx:else>
-    <view><text class="acty-state">挑战结束</text> <text class="num">结束日期：{{endTime}}</text></view>
-    <view class="flex-con"><text class="acty-name">{{actyName}}</text></view>
+  <view class="detail-feedback" wx:elif="{{detailError}}">
+    <text class="detail-feedback-title">挑战暂时无法显示</text>
+    <text class="detail-feedback-copy">{{detailError}}</text>
+    <text class="detail-feedback-action" bindtap="retryLoad" wx:if="{{actyId}}">重新加载 →</text>
   </view>
 
-  <view wx:if="{{acty_type!='V挑战'}}">
-    <view wx:if="{{actyInfor}}">
-      <view class="acty-infor">
-        <view class="title">挑战公里数</view>
-        <view class="my-dis">
-          <view class="dis">{{distance}}</view>
-          <view>KM</view>
-        </view>
-        <view class="sub-tit" bindtap="changeIpt" wx:if="{{actyState == 2&&hasClickon==0}}">挑战更高目标</view>
-      </view>
+  <view wx:elif="{{detailLoaded}}">
+    <view class="detail-cover">
+      <image wx:if="{{actyImg}}" src="{{actyImg}}" mode="aspectFill"></image>
+      <view class="detail-cover-fallback" wx:else>WRC · CHALLENGE YOURSELF</view>
+      <text class="detail-cover-state {{isEnded ? 'is-ended' : ''}}">{{statusText}}</text>
     </view>
-    <view wx:else>
-      <view class="normal-wrap circle-wrap  awesome-bg b-rainbow" wx:if="{{actyState !== 0}}">
-        <view class="circle-con">
-          <circle draw='circwewle1' per='{{per}}' r='180' />
-          <view class='circleTxt' wx:if="{{finalDis>0}}">剩余{{finalDis}}KM </view>
-          <view class='circleTxt' wx:else="">已完成</view>
-          <!-- <view class="circleTxt edit-dis" bindtap="changeIpt" >编辑</view> -->
-          <!-- wx:if="{{userid == userId}}" -->
-        </view>
-        <view class="content">挑战公里数：{{target}}KM</view>
-      </view>
-    </view>
-  </view>
-  <view class="acty-infor show-time awesome-bg b-rainbow">
-    <view>
-      <view class="time-tit">开始时间：</view>
-      <view class="letter-spacing">{{startTime}}</view>
-    </view>
-    <view>
-      <view class="time-tit">结束时间：</view>
-      <view class="letter-spacing">{{endTime}}</view>
-    </view>
-  </view>
-  <view wx:if="{{score>0}}">
-    <view class="acty-infor awesome-bg b-rainbow">
-      <view class="title">完成挑战额外奖励</view>
-      <view class="score-con">
-        <text class="my-score">{{score}}</text><text wx:if="{{stype == 0}}">积分</text><text wx:if="{{stype == 1}}">小花儿</text>
-      </view>
-    </view>
-  </view>
-  <view style="display: flex;justify-content: center;" wx:if="{{acty_type!='V挑战'}}">
-    <view class="normal-wrap circle-wrap  awesome-bg b-rainbow" wx:if="{{hasClickon==1&&per == 100}}">
-      <view class="icon-state">
-        <image src="../../images/jiangbei.svg" mode="widthFix" style="height:auto;"></image>
-      </view>
-      <view class="content">恭喜您，挑战成功！</view>
-    </view>
-    <view class="normal-wrap circle-wrap  awesome-bg b-rainbow" wx:if="{{actyState == 0&&hasClickon==1&&per<100}}">
-      <view class="icon-state">
-        <image src="../../images/shibai.svg" mode="widthFix" style="height:auto;"></image>
-      </view>
-      <view class="content">很遗憾，挑战失败！</view>
-    </view>
-  </view>
 
-  <view class="rules normal-wrap" wx:if="{{remark}}">
-    <view class="rules-con">
-      <view>
-        <rich-text nodes="{{remark}}"></rich-text>
+    <view class="detail-hero">
+      <view class="detail-hero-top">
+        <text class="detail-eyebrow">WRC · CHALLENGE YOURSELF</text>
+      </view>
+      <text class="detail-title">{{actyName || '未命名挑战'}}</text>
+      <view class="detail-title-line"></view>
+      <view class="detail-hero-meta">
+        <text wx:if="{{daysText}}">距离结束还有 {{daysText}} 天</text>
+        <text wx:elif="{{isEnded && endTime}}">结束于 {{endTime}}</text>
+        <text wx:else>挑战时间见下方</text>
+        <text>{{participantCountText}} 人参与</text>
+      </view>
+      <view class="detail-join-state">
+        <image wx:if="{{viewingOther && header_url}}" src="{{header_url}}" mode="aspectFill"></image>
+        <text wx:if="{{hasClickon == 1}}">{{viewingOther ? 'TA已参加挑战' : '你已参加挑战'}}</text>
+        <text wx:elif="{{hasClickon == 0}}">{{viewingOther ? 'TA尚未参加' : userId > 0 ? '尚未参加挑战' : '登录后可参与挑战'}}</text>
+        <text wx:else>参与状态暂不可用</text>
+        <text class="detail-view-mine" wx:if="{{viewingOther}}" bindtap="viewMine">查看我的挑战 →</text>
       </view>
     </view>
-  </view>
-  <view class="actyin-list normal-wrap awesome-bg b-rainbow" bindtap="toList" wx:if="{{actyInList.length > 0}}">
-    <view class="acty-ava">
-      <block wx:for="{{actyInList}}" wx:key="index" wx:if="{{index<5}}">
-        <view class="image">
-          <image src="{{item.header_url}}"></image>
+
+    <view class="detail-section" wx:if="{{acty_type != 'V挑战'}}">
+      <view class="detail-section-head">
+        <text>{{hasClickon == 1 ? (viewingOther ? 'TA的挑战进度' : '我的挑战进度') : '挑战目标'}}</text>
+        <text class="detail-section-note">距离 · KM</text>
+      </view>
+      <view wx:if="{{hasClickon == 1}}">
+        <view wx:if="{{progressAvailable}}">
+          <view class="detail-progress-number">
+            <text class="detail-progress-current">{{hasDistance}}</text>
+            <text class="detail-progress-target">/ {{target}} 公里</text>
+          </view>
+          <view class="detail-progress-track"><view class="detail-progress-fill" style="width: {{per}}%;"></view></view>
+          <view class="detail-progress-foot">
+            <text>已完成 {{per}}%</text>
+            <text>{{finalDis > 0 ? '还差 ' + finalDis + ' 公里' : '已达到目标'}}</text>
+          </view>
         </view>
-      </block>
+        <view class="detail-muted" wx:else>进度数据暂不可用，请稍后再查看。</view>
+      </view>
+      <view wx:else>
+        <view class="detail-goal-number">
+          <text>{{distance !== null ? distance : '—'}}</text>
+          <text class="detail-goal-unit">公里</text>
+        </view>
+        <view class="detail-muted" wx:if="{{minimumDistance !== null}}">最低挑战公里数 {{minimumDistance}} 公里</view>
+        <view class="detail-muted" wx:else>挑战目标暂未提供</view>
+        <view class="detail-goal-edit" bindtap="changeIpt" wx:if="{{canEditGoal}}">挑战更高目标 →</view>
+      </view>
     </view>
-    <view class="acty-in">
-      <view>{{actyInList.length}}人</view>
-      <view>参加挑战</view>
+
+    <view class="detail-result detail-result-success" wx:if="{{isSuccess}}">
+      <text>目标达成</text>
+      <text>恭喜{{viewingOther ? 'TA' : '你'}}，挑战成功！</text>
     </view>
-  </view>
-  <view class="full-btn" wx:if="{{actyState !==0&&acty_type!='V挑战'}}">
-    <button class="btn btnTwo" wx:if="{{btnOpacity}}" bindtap="actyIn">{{btnTxt}}</button>
+    <view class="detail-result" wx:elif="{{isFailure}}">
+      <text>本次挑战已结束</text>
+      <text>距离目标还差 {{finalDis}} 公里</text>
+    </view>
+
+    <view class="detail-section">
+      <view class="detail-section-head"><text>挑战时间</text></view>
+      <view class="detail-time-row"><text>开始时间</text><text>{{startTime || '暂未提供'}}</text></view>
+      <view class="detail-time-row"><text>结束时间</text><text>{{endTime || '暂未提供'}}</text></view>
+    </view>
+
+    <view class="detail-section" wx:if="{{score !== null}}">
+      <view class="detail-section-head"><text>完成挑战额外奖励</text></view>
+      <view class="detail-reward"><text>{{score}}</text><text>{{rewardUnit}}</text></view>
+    </view>
+
+    <view class="detail-section">
+      <view class="detail-section-head"><text>挑战规则</text></view>
+      <rich-text class="detail-rules" nodes="{{remark}}" wx:if="{{remark}}"></rich-text>
+      <view class="detail-muted" wx:else>暂无挑战规则</view>
+    </view>
+
+    <view class="detail-section">
+      <view class="detail-section-head detail-section-link" bindtap="toList">
+        <text>参赛人员</text><text>查看全部 →</text>
+      </view>
+      <view class="detail-people-summary">{{participantCountText}} 人参加挑战</view>
+      <view class="detail-avatars" wx:if="{{actyInList.length > 0}}">
+        <block wx:for="{{actyInList}}" wx:key="index">
+          <view class="detail-avatar" wx:if="{{index < 5}}">
+            <image wx:if="{{item.header_url}}" src="{{item.header_url}}" mode="aspectFill"></image>
+            <text wx:else>跑</text>
+          </view>
+        </block>
+      </view>
+      <view class="detail-muted" wx:elif="{{participantsLoading}}">正在加载参赛人员…</view>
+      <view class="detail-muted" wx:elif="{{participantsError}}">参赛人员暂时无法加载 <text class="detail-inline-action" bindtap="loadParticipants">重试 →</text></view>
+      <view class="detail-muted" wx:else>暂无参赛人员</view>
+    </view>
+
+    <view class="detail-section detail-lottery-section">
+      <view class="detail-section-head"><text>关联抽奖</text></view>
+      <view class="detail-lottery-list" wx:if="{{ltyList.length > 0}}">
+        <view class="detail-lottery-item" wx:for="{{ltyList}}" wx:key="id" data-id="{{item.id}}" bindtap="toLty">
+          <image wx:if="{{item.goods_pic}}" src="{{item.goods_pic}}" mode="aspectFill"></image>
+          <view class="detail-lottery-placeholder" wx:else>奖品</view>
+          <view class="detail-lottery-copy">
+            <text>{{item.address || '查看抽奖详情'}}</text>
+            <text wx:if="{{item.goods_num !== undefined && item.goods_num !== null}}">奖品数量 {{item.goods_num}}</text>
+          </view>
+          <text class="detail-lottery-arrow">→</text>
+        </view>
+      </view>
+      <view class="detail-muted" wx:elif="{{lotteryLoading}}">正在加载抽奖信息…</view>
+      <view class="detail-muted" wx:elif="{{lotteryError}}">抽奖信息暂时无法加载 <text class="detail-inline-action" bindtap="loadLottery">重试 →</text></view>
+      <view class="detail-muted" wx:else>当前挑战暂无关联抽奖</view>
+    </view>
   </view>
 </view>
-<!-- 遮罩层 -->
-<view class="modal-mask" wx:if="{{changeModal}}"></view>
-<!-- 弹出框 -->
-<view class="modal-dialog" wx:if="{{changeModal}}">
+
+<view class="detail-action" wx:if="{{detailLoaded && canJoin && !changeModal}}">
+  <button bindtap="actyIn">{{userId > 0 ? '参与挑战' : '登录后参与挑战'}} <text>→</text></button>
+</view>
+
+<view class="modal-mask" wx:if="{{changeModal}}" bindtap="onCancel"></view>
+<view class="detail-modal" wx:if="{{changeModal}}">
   <form bindsubmit="onConfirm">
-    <view class="modal-content">
-      <input type="number" placeholder="请输入挑战公里数" min="{{distance}}" value="{{newDistance}}" name="newDistance" class="new-data"></input>
-    </view>
-    <!-- 操作按钮 -->
-    <view class="modal-footer nopd none">
-      <button class="btn btn-cancel" bindtap="onCancel" data-status="cancel">取消</button>
-      <button class="btn btn-confirm" form-type="submit" data-status="confirm">确定</button>
+    <text class="detail-modal-title">设定挑战目标</text>
+    <text class="detail-modal-hint">不能低于当前的 {{distance}} 公里</text>
+    <input class="detail-modal-input" type="number" name="newDistance" value="{{distance}}" placeholder="输入整数公里数"></input>
+    <view class="detail-modal-actions">
+      <button bindtap="onCancel">取消</button>
+      <button form-type="submit">确定</button>
     </view>
   </form>
 </view>
-<!-- <view class="modal-login" bindtap="openLogin" wx:if="{{userId <= 0||userId == undefined}}"></view> -->
-<view style="height: 170rpx;"></view>

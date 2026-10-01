@@ -1,31 +1,351 @@
-/* pages/actyin/actyin.wxss */
-@import "../member/member";
-@import "../userlist/userlist";
-
-.sel-tit.sort image {
-  width: 26rpx;
-  height: 26rpx;
-  margin-left: 10rpx;
+/* WRC Participants: 挑战报名跑友视觉规范 */
+page {
+  background-color: #fafbf7;
+  color: #103d2e;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
 
-.progress-con {
-  min-width: 25vw;
-  margin-left: auto;
-  text-align: center;
+.actyin-page {
+  min-height: 100vh;
+  padding: 160rpx 36rpx 80rpx;
+  box-sizing: border-box;
+}
+
+/* 页面头部 */
+.actyin-header {
+  margin-bottom: 28rpx;
+}
+
+.eyebrow {
+  display: block;
+  color: #547767;
+  font-size: 20rpx;
+  font-weight: 750;
+  letter-spacing: 3rpx;
+  margin-bottom: 12rpx;
+}
+
+.page-title {
+  display: block;
+  color: #073329;
+  font-size: 54rpx;
+  font-weight: 850;
+  line-height: 1.15;
+  letter-spacing: -1.5rpx;
+}
+
+.page-subtitle {
+  display: block;
+  color: #7d8b82;
   font-size: 24rpx;
-  color: #000;
+  margin-top: 10rpx;
+  line-height: 1.4;
 }
 
-.progress {
-  width: 80%;
-  margin-left: 10%;
-  margin-top: 50px;
+/* 筛选与排序控制条 */
+.filter-sort-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+  gap: 16rpx;
 }
-.tag{
-  background: #333;
+
+.level-tabs {
+  display: flex;
+  gap: 12rpx;
+  flex: 1;
+}
+
+.level-tab {
+  padding: 10rpx 20rpx;
+  background: #ffffff;
+  border: 1rpx solid #dfe7df;
+  border-radius: 999rpx;
+  color: #4b6656;
+  font-size: 23rpx;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.level-tab.active {
+  background: #d9ff3f;
+  border-color: #bcd930;
+  color: #123d2f;
+  font-weight: 800;
+}
+
+.sort-btn {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  background: #f1f6ed;
+  border: 1rpx solid #dbe6d7;
+  border-radius: 999rpx;
+  padding: 10rpx 20rpx;
+  flex: none;
+}
+
+.sort-text {
+  font-size: 22rpx;
+  color: #27523f;
+  font-weight: 700;
+}
+
+.sort-arrow {
+  font-size: 24rpx;
+  color: #0c6246;
+  font-weight: 800;
+}
+
+.btn-hover {
+  opacity: 0.7;
+}
+
+/* 跑友列表卡片 */
+.member-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.member-card {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1rpx solid #e3ebe4;
+  border-radius: 24rpx;
+  padding: 22rpx 20rpx;
+  box-sizing: border-box;
+  transition: background 0.15s ease;
+}
+
+.card-hover {
+  background: #f8faf6;
+}
+
+.rank-index {
+  width: 48rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #92a297;
+  font-variant-numeric: tabular-nums;
+  flex: none;
+  text-align: center;
+}
+
+.rank-index.top {
+  color: #0c6246;
+  font-weight: 850;
+  font-size: 28rpx;
+}
+
+.member-avatar {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  border: 2rpx solid #e5eee4;
+  background: #e9f0e8;
+  flex: none;
+  margin-left: 8rpx;
+}
+
+.member-info {
+  flex: 1;
+  min-width: 0;
+  margin-left: 18rpx;
+  padding-right: 12rpx;
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.member-name {
+  font-size: 29rpx;
+  font-weight: 800;
+  color: #083427;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180rpx;
+}
+
+.level-badge {
+  font-size: 18rpx;
+  font-weight: 800;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+  line-height: 1.2;
+  flex: none;
+}
+
+.level-badge.vip {
+  background: #fdf3d6;
+  color: #a46d0a;
+  border: 1rpx solid #f2db9d;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 6rpx;
+}
+
+.member-sex-tag {
+  font-size: 18rpx;
+  font-weight: 700;
+  padding: 2rpx 8rpx;
+  border-radius: 6rpx;
+  line-height: 1.2;
+  flex: none;
+}
+
+.member-sex-tag.male {
+  background: #e8f3fe;
+  color: #1a73e8;
+}
+
+.member-sex-tag.female {
+  background: #fdecf2;
+  color: #e5427b;
+}
+
+.member-id {
+  font-size: 20rpx;
+  color: #8fa094;
+}
+
+.member-status-tag {
+  background: #eef7eb;
+  color: #0b6338;
+  font-size: 18rpx;
+  font-weight: 700;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+}
+
+/* 进度与公里数 */
+.progress-col {
+  width: 240rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: none;
+}
+
+.distance-numbers {
+  display: flex;
+  align-items: baseline;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.dist-finish {
+  font-size: 27rpx;
+  font-weight: 800;
+  color: #073a2c;
+}
+
+.dist-sep {
+  font-size: 22rpx;
+  color: #a4b2a8;
+  margin: 0 4rpx;
+}
+
+.dist-target {
+  font-size: 22rpx;
+  color: #7d8e82;
+}
+
+.dist-unit {
   font-size: 16rpx;
-  color: #fff;
-  padding: 0 15rpx;
-  border-radius: 20rpx;
-  margin-right: 5rpx;
+  font-weight: 700;
+  color: #92a297;
+  margin-left: 4rpx;
+}
+
+.progress-track {
+  width: 100%;
+  height: 10rpx;
+  background: #ebf1ea;
+  border-radius: 8rpx;
+  margin-top: 10rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #0c6246;
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.progress-fill.completed {
+  background: #50cf64;
+}
+
+.percent-label {
+  font-size: 18rpx;
+  color: #8fa094;
+  margin-top: 6rpx;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 空状态与加载状态 */
+.empty-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-mark {
+  font-size: 72rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #103d2e;
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  color: #7e8d83;
+  margin-top: 12rpx;
+  line-height: 1.55;
+  max-width: 480rpx;
+}
+
+.loading-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+}
+
+.loading-spinner {
+  width: 44rpx;
+  height: 44rpx;
+  border: 4rpx solid #dce8db;
+  border-top-color: #0c6246;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 24rpx;
+  color: #768a7d;
+  margin-top: 18rpx;
 }

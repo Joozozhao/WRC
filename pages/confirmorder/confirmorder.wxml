@@ -1,72 +1,111 @@
+<site-header show-back="{{true}}" back-url="/pages/prize/prize"></site-header>
 <!--pages/confirmorder/confirmorder.wxml-->
-<form bindsubmit="submit">
-<view class="pg-wrap">
-  <view class="awesome-bg b-green g address">
-    <view class="choose-address">收货地址<view class="wechat-btn" bindtap="addAddr"><image src="../../images/weixin.png" mode="widthFix" style="height:auto;"></image>选择微信地址</view></view>
-    <view class="default-address {{defaultAddressView?'show':'hide'}}" bindtap="chooseAddress">
-      <view class="add-details">
-        <view>请选择收货地址</view>
-        <image class="arrow" src="../../images/arrow-r-gray.png"></image>
+<view class="co-page">
+  <form bindsubmit="submit" class="co-form">
+    <view class="co-head">
+      <text class="co-kicker">WRC · CHECKOUT</text>
+      <text class="co-head-label">确认订单 / 兑换</text>
+    </view>
+
+    <view class="co-section">
+      <view class="co-section-heading">
+        <text class="co-section-title">收货地址</text>
+        <text class="co-section-index">01 / ADDRESS</text>
+      </view>
+      <view class="co-address-card" bindtap="chooseAddress">
+        <block wx:if="{{addressView}}">
+          <view class="co-address-top">
+            <text class="co-address-name">{{addrInfo.userName}}</text>
+            <text class="co-address-tel">{{addrInfo.telNumber}}</text>
+          </view>
+          <text class="co-address-detail">{{addrInfo.address}}</text>
+          <text class="co-address-change">点击更换地址</text>
+        </block>
+        <view class="co-address-empty" wx:else>
+          <text class="co-address-placeholder">请选择收货地址</text>
+          <text class="co-address-arrow">›</text>
+        </view>
+      </view>
+      <button class="co-wechat-btn" bindtap="addAddr">
+        <image class="co-wechat-icon" src="../../images/weixin.png" mode="aspectFit"></image>
+        <text>使用微信地址</text>
+      </button>
+    </view>
+
+    <view class="co-section">
+      <view class="co-section-heading">
+        <text class="co-section-title">兑换码</text>
+        <text class="co-section-index">02 / CODE</text>
+      </view>
+      <view class="co-code-card">
+        <input type="text" value="{{code}}" name="code" placeholder="兑换码" placeholder-class="co-input-placeholder" class="co-code-input"></input>
+        <text class="co-code-tips">*可使用抽奖兑换码兑换奖品</text>
       </view>
     </view>
-    <view class="delivery-address {{addressView?'show':'hide'}}" bindtap="chooseAddress">
-      <view class="user-infor">
-        <text>{{addrInfo.userName}}</text><text class="number">{{addrInfo.telNumber}}</text>
+
+    <view class="co-section">
+      <view class="co-section-heading">
+        <text class="co-section-title">兑换商品</text>
+        <text class="co-section-index">03 / PRIZE</text>
       </view>
-      <view class="add-details">
-        <view><image src="../../images/address.png" mode="widthFix" style="height:auto;" class="address-icon"></image>{{addrInfo.address}}</view>
-        <image class="arrow" src="../../images/arrow-r-gray.png" mode="aspectFill"></image>
+      <view class="co-product-card">
+        <view class="co-product-img">
+          <image src="{{imgSrc}}" mode="aspectFill"></image>
+        </view>
+        <view class="co-product-info">
+          <text class="co-product-name">{{goodName}}</text>
+          <text class="co-product-spec">{{typeOne}} {{typeTwo}}</text>
+          <text class="co-product-cost" wx:if="{{goods_type==0}}">{{points}}积分</text>
+          <text class="co-product-cost" wx:if="{{goods_type==1}}">{{energy}}小花儿</text>
+        </view>
       </view>
     </view>
-  </view>
-  <view class="awesome-bg b-green address code-change">
-    <input type="text" value="{{code}}" name="code" placeholder="兑换码" class="id-ipt"></input>    
-    <view class="small-tips">*可使用抽奖兑换码兑换奖品</view>
-  </view>
-  <view class="awesome-bg b-green g confirm-product">
-    <view class="product-img"><image src="{{imgSrc}}"></image></view>
-    <view class="product-infor">
-      <view class="name ellipsis">{{goodName}}</view>
-      <view><text>{{typeOne}} {{typeTwo}}</text></view>
-      <view><text wx:if="{{goods_type==0}}">{{points}}积分</text><text wx:if="{{goods_type==1}}">{{energy}}小花儿</text></view>
+
+    <view class="co-section">
+      <view class="co-section-heading">
+        <text class="co-section-title">兑换说明</text>
+        <text class="co-section-index">04 / NOTES</text>
+      </view>
+      <view class="co-tips-card">
+        <text class="co-tips-title">积分兑换特别说明</text>
+        <text class="co-tips-item">1.请于提交订单前仔细核查以上收件信息(含姓名、电话、收件地址)，以上信息-经确认提交，将无法变更。如因收件信息填写错误造成的无法配送、错误配送等，您须自行承担相应损失。</text>
+        <text class="co-tips-item">2.积分-经兑换，将不予退还。所兑换的物品(礼品、 商品或其他服务等)，如无质 量问题不接受退换货处理。</text>
+        <text class="co-tips-item">3.以会员积分所兑换的任何物品(包括但不限于商品/礼品/其他服务等)以及任何会员权益项目，均不另行提供发票。</text>
+        <text class="co-tips-item">4.兑换物品的配送范围仅限于中国大陆地区(不包括中国香港、中国澳门、中国台湾地区)。</text>
+        <text class="co-tips-item">5.兑换物品将于订单成功提交后15个工作日内快递发出。如有合理原因或其他特殊情况导致无法按照前述承诺时间发货的，将在公告中另行进行统一通知。</text>
+      </view>
     </view>
-  </view>
-  <view class="bg-white special-tips">
-    <view class="title">积分兑换特别说明</view>
-    <view>
-      <view>1.请于提交订单前仔细核查以上收件信息(含姓名、电话、收件地址)，以上信息-经确认提交，将无法变更。如因收件信息填写错误造成的无法配送、错误配送等，您须自行承担相应损失。</view>
-      <view>2.积分-经兑换，将不予退还。所兑换的物品(礼品、 商品或其他服务等)，如无质 量问题不接受退换货处理。</view>
-      <view>3.以会员积分所兑换的任何物品(包括但不限于商品/礼品/其他服务等)以及任何会员权益项目，均不另行提供发票。</view>
-      <view>4.兑换物品的配送范围仅限于中国大陆地区(不包括中国香港、中国澳门、中国台湾地区)。</view>
-      <view>5.兑换物品将于订单成功提交后15个工作日内快递发出。如有合理原因或其他特殊情况导致无法按照前述承诺时间发货的，将在公告中另行进行统一通知。</view>
+
+    <view class="co-bar">
+      <view class="co-bar-total">
+        <text class="co-bar-label">总共</text>
+        <text class="co-bar-value" wx:if="{{goods_type==0}}">{{points}} 积分</text>
+        <text class="co-bar-value" wx:if="{{goods_type==1}}">{{energy}} 小花儿</text>
+      </view>
+      <button class="co-bar-button" form-type="submit">提交</button>
     </view>
-  </view>
-</view>
-<view class="btm-btn rht">
-  <view class="point">总共：<text class="red" wx:if="{{goods_type==0}}">{{points}}</text> <text wx:if="{{goods_type==0}}">积分</text><text class="red" wx:if="{{goods_type==1}}">{{energy}}</text><text wx:if="{{goods_type==1}}">小花儿</text></view>
-  <button class="btn btnOne" form-type="submit" >提交</button>
-</view>
-</form>
-<view class="pop-up {{editTrue?'isRuleShow':'isRuleHide'}}">
-  <view class="content">
-    <view class="status-icon"><image src="../../images/jifen.png" mode="widthFix" style="height:auto;"></image></view>
-    <view>您将消耗<text wx:if="{{goods_type==0}}">{{points}}积分</text><text wx:if="{{goods_type==1}}">{{energy}}小花儿</text>兑换</view>
-    <view class="prize-name">{{goodName}}</view>
-    <view class="btn white-btn" bindtap="confirmIt">确认兑换</view>
-    <view class="btn" bindtap="prizeBtn">再去看看</view>
-    <view class="btn" bindtap="backBtn">返回</view>
-  </view>
-</view>
-<view class="pop-up {{confirmTrue?'isRuleShow':'isRuleHide'}}">
-  <view class="content">
-    <view class="status-icon"><image src="../../images/jifen.png" mode="widthFix" style="height:auto;"></image></view>
-    <view class="prize-name">恭喜您 兑换成功</view>
-    <view class="btn white-btn" bindtap="toIndex">尽享WR陪伴</view>
-  </view>
-  <!-- <view class="content">
-    <view class="status-icon"><image src="../../images/cancle.png" mode="widthFix"></image></view>
-    <view class="prize-name">很遗憾 您的积分小花儿不足</view>
-    <view style="font-size:28rpx;margin-bottom:40rpx;">欢迎关注更多会员礼遇</view>
-    <navigator url="/pages/exchange/exchange" hover-class="none"><view class="btn white-btn">查看更多</view></navigator>
-  </view> -->
+  </form>
+
+  <block wx:if="{{editTrue}}">
+    <view class="co-modal-mask"></view>
+    <view class="co-modal-dialog">
+      <text class="co-modal-kicker">CONFIRM EXCHANGE</text>
+      <text class="co-modal-title">确认兑换</text>
+      <view class="co-modal-copy">您将消耗<text class="co-modal-strong" wx:if="{{goods_type==0}}">{{points}}积分</text><text class="co-modal-strong" wx:if="{{goods_type==1}}">{{energy}}小花儿</text>兑换</view>
+      <text class="co-modal-prize">{{goodName}}</text>
+      <button class="co-modal-primary" bindtap="confirmIt">确认兑换</button>
+      <button class="co-modal-ghost" bindtap="prizeBtn">再去看看</button>
+      <button class="co-modal-text" bindtap="backBtn">返回</button>
+    </view>
+  </block>
+
+  <block wx:if="{{confirmTrue}}">
+    <view class="co-modal-mask"></view>
+    <view class="co-modal-dialog">
+      <text class="co-modal-kicker">EXCHANGE SUCCESS</text>
+      <text class="co-modal-title">恭喜您 兑换成功</text>
+      <text class="co-modal-copy-plain">订单已提交，可在订单管理中查看进度</text>
+      <button class="co-modal-primary" bindtap="toIndex">尽享WR陪伴</button>
+    </view>
+  </block>
 </view>

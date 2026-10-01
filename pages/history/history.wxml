@@ -1,88 +1,66 @@
-<!--pages/history/history.wxml-->
-<view class="bg-gray  b-weave">
-  <view class="vw-wrap">
-    <view class="box-part-wrap">
-      <view class="box-part">
-        <view class="my-point">
-          <view>获得奖品数量</view>
-          <view class="my-points">{{total}}</view>
-        </view>
-      </view>
-    </view>
+<site-header show-back="{{true}}" back-url="/pages/mydata/mydata"></site-header>
+<view class="history-page">
+  <view class="history-hero">
+    <text class="history-eyebrow">WRC · REWARDS</text>
+    <text class="history-title">兑换记录</text>
+    <view class="history-title-line"></view>
+    <text class="history-intro">每一份兑换，都记录着一路的坚持</text>
+    <view class="loaded-count" wx:if="{{listState == 'ready'}}">已加载 {{orderInfo.length}} 条记录</view>
   </view>
-  <view class="tab-tit awesome-bg top-bg">
-    <view wx:for="{{navTab}}" wx:key="index" data-idx="{{index}}" bindtap="currentTab"
-      class="sub {{currentTab==index ? 'active' : ''}}"><text>{{item}}</text></view>
-  </view>
-  <view class="vw-wrap bg-white {{tab1}}">
-    <view wx:if="{{orderInfo.length>0}}">
-      <block wx:for="{{orderInfo}}" wx:key="index">
-        <view class="exchange-history" data-id="{{item.id}}" data-type="{{item.energy}}" bindtap="toDetail">
-          <view class="bg-white order-infor">
-            <view>{{item.last_time}}</view>
-            <view class="status" wx:if="{{item.state == 0}}">未发货</view>
-            <view class="status" wx:if="{{item.state == 1}}">已发货</view>
-            <view class="status" wx:if="{{item.state == 2}}">已签收</view>
-            <view class="status" wx:if="{{item.state == 3}}">已退回</view>
-          </view>
-          <view class=" awesome-bg b-weave  confirm-product">
-            <view class="product-img">
-              <image src="{{item.goods_pic}}"></image>
-            </view>
-            <view class="product-infor">
-              <view class="name ellipsis">{{item.goods_name}}</view>
-              <view class="add-num">
-                <view>规格：<text>{{item.goods_tag}} {{item.tag_desc}}</text></view>
-                <view class="num">x{{item.goods_num}}</view>
-              </view>
-              <view>{{item.score}}<text wx:if="{{item.score>0}}">积分</text><text wx:if="{{item.energy>0}}">小花儿</text>
-              </view>
-            </view>
-            <image class="arrow" src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image>
-          </view>
-        </view>
-      </block>
-    </view>
-    <view class="vw-wrap bg-white" wx:else>
-      <view class="bg-white deduct-points">
-        <view class="lg-txt"> </view>
 
-      </view>
+  <view class="history-tabs">
+    <view class="history-tab {{currentTab == 0 ? 'is-active' : ''}}" data-idx="0" bindtap="currentTab">
+      <text>积分兑换</text><view class="tab-mark" wx:if="{{currentTab == 0}}"></view>
+    </view>
+    <view class="history-tab {{currentTab == 1 ? 'is-active' : ''}}" data-idx="1" bindtap="currentTab">
+      <text>小花儿兑换</text><view class="tab-mark" wx:if="{{currentTab == 1}}"></view>
     </view>
   </view>
-  <view class="vw-wrap bg-white {{tab2}}">
-    <view wx:if="{{orderInfo.length>0}}">
-      <block wx:for="{{orderInfo}}" wx:key="index">
-        <view class="exchange-history" data-id="{{item.id}}" data-type="{{item.energy}}" bindtap="toDetail">
-          <view class="bg-white order-infor">
-            <view>{{item.last_time}}</view>
-            <view class="status" wx:if="{{item.state == 0}}">未发货</view>
-            <view class="status" wx:if="{{item.state == 1}}">已发货</view>
-            <view class="status" wx:if="{{item.state == 2}}">已签收</view>
-            <view class="status" wx:if="{{item.state == 3}}">已退回</view>
-          </view>
-          <view class="awesome-bg b-weave  confirm-product">
-            <view class="product-img">
-              <image src="{{item.goods_pic}}"></image>
-            </view>
-            <view class="product-infor">
-              <view class="name ellipsis">{{item.goods_name}}</view>
-              <view class="add-num">
-                <view>规格：<text>{{item.goods_tag}} {{item.tag_desc}}</text></view>
-                <view class="num">x{{item.goods_num}}</view>
-              </view>
-              <view>{{item.energy}}<text wx:if="{{item.score>0}}">积分</text><text wx:if="{{item.energy>0}}">小花儿</text>
-              </view>
-            </view>
-            <image class="arrow" src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image>
-          </view>
-        </view>
-      </block>
+
+  <view class="history-section">
+    <view class="section-heading">
+      <text class="section-title">{{currentTab == 0 ? '积分好礼' : '小花儿好礼'}}</text>
+      <text class="section-note">点击记录查看订单详情</text>
     </view>
-    <view class="vw-wrap bg-white" wx:else>
-      <view class="bg-white deduct-points">
-        <view class="lg-txt"></view>
+
+    <view class="history-state" wx:if="{{listState == 'guest'}}">
+      <text class="state-title">登录后查看兑换记录</text>
+      <text class="state-copy">兑换订单会保存在你的账户中</text>
+    </view>
+    <view class="history-state" wx:if="{{listState == 'loading'}}">正在加载兑换记录…</view>
+    <view class="history-state" wx:if="{{listState == 'error'}}">
+      <text class="state-title">记录暂时无法加载</text>
+      <text class="retry-action" bindtap="retry">点击重试</text>
+    </view>
+    <view class="history-state" wx:if="{{listState == 'ready' && !orderInfo.length}}">这里还没有兑换记录</view>
+
+    <view class="order-list" wx:if="{{listState == 'ready' && orderInfo.length}}">
+      <view class="order-card" wx:for="{{orderInfo}}" wx:for-item="item" wx:key="id"
+        data-id="{{item.id}}" data-type="{{currentTab}}" bindtap="toDetail">
+        <view class="order-meta">
+          <text class="order-time">{{item.last_time}}</text>
+          <text class="order-status" wx:if="{{item.state == 0}}">待发货</text>
+          <text class="order-status is-shipped" wx:if="{{item.state == 1}}">已发货</text>
+          <text class="order-status is-done" wx:if="{{item.state == 2}}">已签收</text>
+          <text class="order-status is-returned" wx:if="{{item.state == 3}}">已退回</text>
+        </view>
+        <view class="product-row">
+          <image class="product-image" src="{{item.goods_pic}}" mode="aspectFill"></image>
+          <view class="product-info">
+            <text class="product-name">{{item.goods_name || '兑换商品'}}</text>
+            <text class="product-spec" wx:if="{{item.goods_tag || item.tag_desc}}">规格：{{item.goods_tag}} {{item.tag_desc}}</text>
+            <view class="product-bottom">
+              <text class="product-quantity">数量 ×{{item.goods_num != null ? item.goods_num : '—'}}</text>
+              <text class="product-cost" wx:if="{{currentTab == 0}}">{{item.score != null ? item.score : '—'}} 积分</text>
+              <text class="product-cost" wx:else>{{item.energy != null ? item.energy : '—'}} 小花儿</text>
+            </view>
+          </view>
+          <text class="order-arrow">›</text>
+        </view>
       </view>
     </view>
+    <view class="history-tail" wx:if="{{listState == 'ready' && orderInfo.length && loadingMore}}">正在加载更多…</view>
+    <view class="history-tail retry-action" wx:if="{{listState == 'ready' && moreError}}" bindtap="retryMore">加载失败，点击重试</view>
+    <view class="history-tail" wx:if="{{listState == 'ready' && orderInfo.length && !hasMore}}">已经到底了</view>
   </view>
 </view>

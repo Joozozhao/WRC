@@ -1,12 +1,13 @@
 {
   "usingComponents": {
-    "ec-canvas": "../../components/ec-canvas/ec-canvas",
     "tabbar": "../../components/tabbarComponent/tabbar",
-    "all-activity": "../../components/all-activity/all-activity"
+    "all-activity": "../../components/all-activity/all-activity",
+    "site-header": "../../components/site-header/site-header"
   },
-  "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#FF6B35",
-  "navigationBarTitleText": "我的主页",
-  "navigationBarTextStyle":"white"
+  "navigationStyle": "custom",
+  "backgroundTextStyle": "dark",
+  "navigationBarBackgroundColor": "#fbfcf9",
+  "navigationBarTitleText": "我的",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#fbfcf9"
 }

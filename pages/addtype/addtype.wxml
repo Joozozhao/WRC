@@ -1,29 +1,27 @@
+<site-header show-back="{{true}}" back-url="/pages/manage/manage"></site-header>
 <!--pages/addtype/addtype.wxml-->
-<view class="nav-mb">
-  <!-- <view class="vw-wrap">
-    <button class="add-type" data-index="{{index}}" bindtap='addNew'>添加规格</button>
-  </view> -->
+<view class="spec-page">
+  <view class="spec-hero">
+    <text class="spec-eyebrow">WRC · PRIZE SPEC</text>
+    <text class="spec-title">添加规格</text>
+    <view class="spec-title-line"></view>
+    <text class="spec-intro">奖品名称：{{goods_name}}</text>
+  </view>
   <form bindsubmit="submit">
-    <view class="good-name">奖品名称：{{goods_name}}</view>
-    <view class="default-tit">编辑规格</view>
-    <block wx:for="{{typeInfor}}" wx:key="index">    
-      <view class="type-con old">
-        <view class="new-type"><input type="text" value="{{item.tagName}}" name="Type_Name" data-index="{{index}}" name="Type_Name{{index}}" placeholder="规格"></input>
-          <view class="new-btn" data-index="{{index}}" data-childindex="{{childindex}}" bindtap='addItem'>+</view>
-        </view>
-        <view class="contact-type" wx:for="{{item.goodsStorageList}}" wx:for-item="items" wx:for-index="childindex" wx:key="childindex">
-          <input type="text" class="desc" name="Name{{index}}{{childindex}}" placeholder="名称" value="{{items.tag_desc}}" data-index="{{index}}" data-childindex="{{childindex}}" bindblur="saveIpt"></input>
-          <input type="number" class="stock" name="Total{{index}}{{childindex}}" placeholder="库存" value="{{items.stock}}" data-index="{{index}}" data-childindex="{{childindex}}" bindblur="saveIpt"></input>
-          <view class="del-btn new-btn" bindtap="del" data-id="{{items.id}}" data-index="{{index}}" data-childindex="{{childindex}}">删除</view>
-        </view>
+    <view class="spec-card" wx:for="{{typeInfor}}" wx:key="index">
+      <view class="spec-head">
+        <input type="text" class="spec-name-ipt" value="{{item.tagName}}" data-index="{{index}}" name="Type_Name{{index}}" placeholder="规格名称，如 颜色" placeholder-class="spec-ph"></input>
+        <view class="spec-add" data-index="{{index}}" data-childindex="{{childindex}}" bindtap='addItem'>+</view>
       </view>
-    </block>
-    <view class="vw-wrap">
-      <view class="act-btn add-con" bindtap="addTag" wx:if="{{addShow}}">新增规格</view>
+      <view class="spec-row" wx:for="{{item.goodsStorageList}}" wx:for-item="items" wx:for-index="childindex" wx:key="childindex">
+        <input type="text" class="spec-ipt spec-ipt-desc" name="Name{{index}}{{childindex}}" placeholder="名称" placeholder-class="spec-ph" value="{{items.tag_desc}}" data-index="{{index}}" data-childindex="{{childindex}}" bindblur="saveIpt"></input>
+        <input type="number" class="spec-ipt spec-ipt-stock" name="Total{{index}}{{childindex}}" placeholder="库存" placeholder-class="spec-ph" value="{{items.stock}}" data-index="{{index}}" data-childindex="{{childindex}}" bindblur="saveIpt"></input>
+        <view class="spec-del" bindtap="del" data-id="{{items.id}}" data-index="{{index}}" data-childindex="{{childindex}}">删除</view>
+      </view>
     </view>
-    <!-- <view class="act-btn del-con" bindtap="delType" wx:if="{{delShow}}">删除规格</view> -->
-    <view class="full-btn">
-      <button class="btn btnTwo" form-type="submit" disabled="{{disable}}">完成</button>
+    <view class="spec-addtag" bindtap="addTag" wx:if="{{addShow}}">+ 新增规格</view>
+    <view class="spec-footer">
+      <button class="spec-submit" form-type="submit" disabled="{{disable}}">完成</button>
     </view>
   </form>
 </view>

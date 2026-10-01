@@ -2,7 +2,7 @@
   "description": "Project configuration file, more information: https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
   "setting": {
     "urlCheck": false,
-    "es6": true,
+    "es6": false,
     "enhance": true,
     "postcss": true,
     "preloadBackgroundData": false,
@@ -36,7 +36,7 @@
     "showES6CompileOption": false,
     "useCompilerPlugins": false,
     "useStaticServer": true,
-    "condition": false,
+    "condition": true,
     "ignoreUploadUnusedFiles": true,
     "compileWorklet": false,
     "localPlugins": false,
@@ -45,35 +45,107 @@
   },
   "compileType": "miniprogram",
   "simulatorType": "wechat",
-  "simulatorPluginLibVersion": {},
+  "simulatorPluginLibVersion": {
+    "wxext14566970e7e9f62": "2.27.3"
+  },
   "condition": {
-    "search": {
-      "list": []
-    },
-    "conversation": {
-      "list": []
-    },
-    "game": {
-      "list": []
-    },
-    "plugin": {
-      "list": []
-    },
-    "gamePlugin": {
-      "list": []
-    },
     "miniprogram": {
-      "list": []
+      "list": [
+        {
+          "name": "我的",
+          "pathName": "pages/mydata/mydata",
+          "query": ""
+        },
+        {
+          "name": "首页",
+          "pathName": "pages/index/index",
+          "query": ""
+        },
+        {
+          "name": "团跑",
+          "pathName": "pages/activity/activity",
+          "query": ""
+        },
+        {
+          "name": "挑战",
+          "pathName": "pages/challenge/challenge",
+          "query": ""
+        },
+        {
+          "name": "记录跑步",
+          "pathName": "pages/clockdaily/clockdaily",
+          "query": ""
+        },
+        {
+          "name": "排行榜-月榜",
+          "pathName": "pages/memberdata/memberdata",
+          "query": "type=month"
+        },
+        {
+          "name": "排行榜-年榜",
+          "pathName": "pages/memberdata/memberdata",
+          "query": "type=year"
+        },
+        {
+          "name": "我的马历",
+          "pathName": "pages/results/results",
+          "query": ""
+        },
+        {
+          "name": "报名跑友",
+          "pathName": "pages/actyin/actyin",
+          "query": "id=1"
+        }
+      ],
+      "current": 0
     }
   },
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
   },
-  "libVersion": "3.4.8",
+  "libVersion": "3.8.8",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "docs"
+      },
+      {
+        "type": "folder",
+        "value": "node_modules"
+      },
+      {
+        "type": "folder",
+        "value": "miniprogram_npm"
+      },
+      {
+        "type": "folder",
+        "value": "lotties"
+      },
+      {
+        "type": "folder",
+        "value": "miniapp"
+      },
+      {
+        "type": "file",
+        "value": "design-qa.md"
+      },
+      {
+        "type": "file",
+        "value": "package.json"
+      },
+      {
+        "type": "file",
+        "value": "package-lock.json"
+      },
+      {
+        "type": "folder",
+        "value": "tests"
+      }
+    ],
     "include": []
   },
-  "appid": "wx9f847057b5ec1ddd"
+  "appid": "wx9f847057b5ec1ddd",
+  "projectArchitecture": "multiPlatform"
 }

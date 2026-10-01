@@ -1,21 +1,90 @@
+<site-header show-back="{{true}}" back-url="/pages/mydata/mydata"></site-header>
 <!--pages/manage/manage.wxml-->
-<view class="vw-wrap">
-  <view class="meun-item awesome-bg b-purple" bindtap="creatNew">创建团跑<image src="/images/arrow-r-gray.png" class="add-arrow"></image>
+<view class="admin-page">
+  <view class="admin-hero">
+    <text class="admin-eyebrow">WRC · ADMIN</text>
+    <text class="admin-title">跑团管理</text>
+    <view class="admin-title-line"></view>
+    <text class="admin-intro">活动、奖品、打卡与团员的一站式管理入口</text>
   </view>
-  <view class="meun-item awesome-bg b-green" bindtap="creatChallenge">创建挑战<image src="/images/arrow-r-gray.png" class="add-arrow"></image>
+
+  <view class="admin-section">
+    <text class="admin-section-label">活动</text>
+    <view class="admin-menu">
+      <view class="admin-item" bindtap="creatNew" hover-class="admin-item-hover">
+        <view class="admin-item-main">
+          <text class="admin-item-name">创建团跑</text>
+          <text class="admin-item-desc">发布新的团跑活动</text>
+        </view>
+        <image class="admin-item-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+      </view>
+      <view class="admin-item" bindtap="creatChallenge" hover-class="admin-item-hover">
+        <view class="admin-item-main">
+          <text class="admin-item-name">创建挑战</text>
+          <text class="admin-item-desc">发起新的里程挑战</text>
+        </view>
+        <image class="admin-item-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+      </view>
+    </view>
   </view>
-  <view class="meun-item awesome-bg b-purple" bindtap="toLottery">抽奖管理<image src="/images/arrow-r-gray.png" class="add-arrow"></image>
+
+  <view class="admin-section">
+    <text class="admin-section-label">运营</text>
+    <view class="admin-menu">
+      <view class="admin-item" bindtap="toLottery" hover-class="admin-item-hover">
+        <view class="admin-item-main">
+          <text class="admin-item-name">抽奖管理</text>
+          <text class="admin-item-desc">创建抽奖与查看中奖名单</text>
+        </view>
+        <image class="admin-item-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+      </view>
+      <view class="admin-item" bindtap="toPrize" hover-class="admin-item-hover">
+        <view class="admin-item-main">
+          <text class="admin-item-name">奖品管理</text>
+          <text class="admin-item-desc">奖品上架、库存与兑换设置</text>
+        </view>
+        <image class="admin-item-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+      </view>
+      <view class="admin-item" bindtap="toRecord" hover-class="admin-item-hover">
+        <view class="admin-item-main">
+          <text class="admin-item-name">打卡管理</text>
+          <text class="admin-item-desc">审核团员打卡凭证</text>
+        </view>
+        <image class="admin-item-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+      </view>
+    </view>
   </view>
-  <view class="meun-item awesome-bg b-purple" bindtap="toPrize">奖品管理<image src="/images/arrow-r-gray.png" class="add-arrow"></image>
+
+  <view class="admin-section">
+    <text class="admin-section-label">成员与订单</text>
+    <view class="admin-menu">
+      <view class="admin-item" bindtap="toUser" hover-class="admin-item-hover">
+        <view class="admin-item-main">
+          <text class="admin-item-name">会员管理</text>
+          <text class="admin-item-desc">团员信息与角色权限</text>
+        </view>
+        <image class="admin-item-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+      </view>
+      <view class="admin-item" bindtap="toOrder" hover-class="admin-item-hover">
+        <view class="admin-item-main">
+          <text class="admin-item-name">订单管理</text>
+          <text class="admin-item-desc">兑换订单确认与发货</text>
+        </view>
+        <image class="admin-item-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+      </view>
+    </view>
   </view>
-  <view class="meun-item awesome-bg b-rainbow" bindtap="toRecord">打卡管理<image src="/images/arrow-r-gray.png" class="add-arrow"></image>
-  </view>
-  <view class="meun-item awesome-bg b-purple" bindtap="toUser">会员管理<image src="/images/arrow-r-gray.png" class="add-arrow"></image>
-  </view>
-  <view class="meun-item awesome-bg b-purple" bindtap="toOrder">订单管理<image src="/images/arrow-r-gray.png" class="add-arrow"></image>
-  </view>
-  <view class="meun-item awesome-bg b-purple" bindtap="toNews">资讯管理<image src="/images/arrow-r-gray.png" class="add-arrow"></image>
-  </view>
-  <view class="meun-item awesome-bg b-purple" bindtap="admin">跑团配置<image src="/images/arrow-r-gray.png" class="add-arrow"></image>
+
+  <view class="admin-section">
+    <text class="admin-section-label">配置</text>
+    <view class="admin-menu">
+      <view class="admin-item" bindtap="admin" hover-class="admin-item-hover">
+        <view class="admin-item-main">
+          <text class="admin-item-name">跑团配置</text>
+          <text class="admin-item-desc">跑团基础信息与参数设置</text>
+        </view>
+        <image class="admin-item-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+      </view>
+    </view>
   </view>
 </view>

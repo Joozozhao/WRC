@@ -24,6 +24,7 @@ Page({
     var userId = app.globalData.userId
     if(userId < 1 || userId == undefined){
     util.showLogin((res)=>{
+      console.log(res)
       var data = {
         code: res.code,
         encryptedData: "",
@@ -31,8 +32,12 @@ Page({
       }
       //取用户的openid
       util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes)=>{
+        console.log(loginRes)
         var regData = {
           openId: loginRes.data.data.openid,
+          imgUrl: res.userInfo.avatarUrl,
+          nickName: res.userInfo.nickName,
+          sex: res.userInfo.gender,
           unionid: loginRes.data.data.unionid
         }
         util.request('user/wxregister', 'POST', regData, '', (regRes)=>{
@@ -61,7 +66,8 @@ Page({
     var has_name = options.has_name
     var has_mobile = options.has_mobile
     var acty_type = options.acty_type
-    var target = options.target
+    var targetNum = Math.round(parseFloat(options.target))
+    var target = isNaN(targetNum) ? 0 : targetNum
     var userId = app.globalData.userId
     this.setData({
       actyId: id,
@@ -87,6 +93,7 @@ Page({
           userName: res.data.data.name,
           sex: res.data.data.sex
         })
+        console.log(res.data.data)
       }
     })
   },
@@ -102,7 +109,7 @@ Page({
       })
       return false
     }
-    if(that.data.hasMobile == 1 && formatDate.moblie == '') {
+    if(that.data.hasMobile == 1 && formatDate.mobile == '') {
       wx.showToast({
         title: '电话号码不能为空!',
         icon: 'none',
@@ -127,8 +134,10 @@ Page({
         userName: formatDate.userName,
         mobile: formatDate.mobile
       }
+      console.log(data)
       util.request('acty/joinacty', 'POST', data, '数据加载中 ...', (res)=>{
         if(res.data.success){
+        console.log(res)
         that.setData({
           disable: true
         })
@@ -159,6 +168,14 @@ Page({
         })
         return false
       }
+      if(!/^\d+$/.test(String(formatDate.target).trim())){
+        wx.showToast({
+          title: '挑战公里数需为整数!',
+          icon: 'none',
+          duration: 1500
+        })
+        return false
+      }
       if(parseInt(formatDate.target)>0 && parseInt(formatDate.target) < parseInt(that.data.distance)){
         wx.showToast({
           title: '挑战公里数不能小于原目标!',
@@ -170,13 +187,14 @@ Page({
       var data = {
         actyId : that.data.actyId,
         userId : userId,
-        distance: formatDate.target,
+        distance: parseInt(formatDate.target, 10),
         hasDistance: 0,
         userName: formatDate.userName,
         mobile: formatDate.mobile
       }
       util.request('acty/joinacty', 'POST', data, '数据加载中 ...', (res)=>{
         if(res.data.success){
+        console.log(res)
           wx.showToast({
             title: '报名成功',
             duration: 1000

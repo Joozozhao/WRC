@@ -1,96 +1,169 @@
+<site-header show-back="{{true}}" back-url="/pages/manage/manage"></site-header>
 <!--pages/userlist/userlist.wxml-->
-<view class="vw-wrap fixed-head">
-  <view class="selected-con"> 
-    <view class="sel-item">
-      <view bindtap="clickLevel"><view class="sel-tit">类型<image src="{{iconState?'/images/arrow-r.svg':'/images/arrow-d.svg'}}"></image></view></view>
-    </view>
-    <view class="sel-item">
-      <view bindtap="clickSort"><view class="sel-tit">默认排序<image src="{{iconState2?'/images/arrow-r.svg':'/images/arrow-d.svg'}}"></image></view></view>
-    </view>
-    <!-- <view class="sel-tit sel-btn" bindtap="selBtn">筛选</view> -->
+<view class="ul-page">
+  <view class="ul-header">
+    <text class="eyebrow">WRC · MEMBERS</text>
+    <text class="page-title">成员管理</text>
+    <view class="title-line"></view>
+    <text class="page-subtitle">共 {{userList.length}} 位团员 · 点击头像查看联系方式与装备数据</text>
   </view>
-  <view class="item-pop {{selAll?'show':'hide'}}" bindtap="close">
-    <view class="all-item">
-      <text class="{{id==index ? 'active' : ''}}" wx:for="{{selList}}" wx:key="index" data-id="{{index}}" data-txt="{{item.text}}" catchtap="choose">{{item.text}}</text>
-    </view>
-  </view>
-  <view class="item-pop {{sortAll?'show':'hide'}}" bindtap="close">
-    <view class="all-item">
-      <text class="{{id==index ? 'active' : ''}}" wx:for="{{sortList}}" wx:key="index" data-id="{{index}}" data-txt="{{item.text}}" catchtap="choose2">{{item.text}}</text>
-    </view>
-  </view>
-</view>
-<view class="vw-wrap">
-  <view style="padding-top: 100rpx;"></view> 
-  <view wx:for="{{userList}}" wx:key="index"> 
-    <view class="user-infor">
-      <view class="user-num">{{index+1}}</view>
-      <view data-id="{{item.id}}" bindtap="details">
-        <view class="user-pic {{item.level == 'VIP'?'add-bd':''}}" wx:if="{{item.level == 'VIP'}}">
-          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
-          <image src="../../images/vip_1.svg" mode="cover" class="vip"></image>
-        </view>
-        <view class="user-pic {{item.level == '普通'?'add-bd1':''}}" wx:if="{{item.level == '普通'}}">
-          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
-          <image src="../../images/normal.svg" mode="cover" class="vip"></image>
-        </view>
-        <view class="user-pic {{item.level == '非会员'?'add-bd2':''}}" wx:if="{{item.level == '非会员'}}">
-          <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
-          <image src="../../images/none.svg" mode="cover" class="vip"></image>
-        </view>
+
+  <!-- 筛选栏（吸顶） -->
+  <view class="filter-zone">
+    <view class="filter-bar">
+      <view class="filter-trigger {{selAll ? 'is-open' : ''}}" bindtap="clickLevel" hover-class="filter-hover">
+        <text class="filter-label">类型</text>
+        <image class="filter-arrow" src="{{iconState ? '/images/arrow-r.svg' : '/images/arrow-d.svg'}}" mode="aspectFit"></image>
       </view>
-      <view>
-        <view class="infor">
-          <view class="user-name" wx:if="{{item.name !== ''}}">{{item.name}}</view>
-          <view class="user-name" wx:else>{{item.nick_name}}</view>
-          <!-- <view class="sex" wx:if="{{item.sex == 0}}"><image src="../../images/man.svg"></image></view> -->
-          <view class="sex" wx:if="{{item.sex == 1}}"><image src="../../images/man.svg"></image></view>
-          <view class="sex" wx:if="{{item.sex == 2}}"><image src="../../images/woman.svg"></image></view>
-          <view class="user-name" style="margin-top:6rpx;"><text class="tag" wx:if="{{item.duty=='团长'}}">团长</text><text class="tag" wx:if="{{item.duty=='管理员'}}">管理员</text><text class="tag" wx:if="{{item.duty=='管理员,团长'||item.duty=='团长,管理员'}}">管理员/团长</text></view>
-          <view class="user-id">ID{{item.id}}</view>
-        </view>
-        <view class="order-con">{{item.score}}积分/{{item.energy}}小花儿 连续打卡{{item.serial_day}}天</view>
+      <view class="filter-trigger {{sortAll ? 'is-open' : ''}}" bindtap="clickSort" hover-class="filter-hover">
+        <text class="filter-label">默认排序</text>
+        <image class="filter-arrow" src="{{iconState2 ? '/images/arrow-r.svg' : '/images/arrow-d.svg'}}" mode="aspectFit"></image>
       </view>
-      <view class="act-btn"><text class="btn gray" data-userid="{{item.id}}" data-duty="{{item.duty}}"  data-level="{{item.level}}" bindtap="setInfor">设置</text></view>
     </view>
-    <view class="member-infor {{item.id==userid?'':'hidden'}}">
-      <view class="bg-white">
-        <view class="base-con"><view>手机号：{{item.mobile}}</view><view>生日：{{item.birthday}}</view></view>
-        <view class="con-t">装备数据</view>
-        <view class="dress-data">
-          <text>上衣：{{item.jacket}}</text><text>裤子：{{item.trousers}}</text>
-          <text>头围：{{item.head_size}}</text><text>手长：{{item.hand_size}}</text>
-          <text>鞋号：{{item.shoe_size}}</text>
-        </view>
-        <!-- <view class="close-btn" bindtap="close">关闭</view> -->
+
+    <!-- 类型筛选面板 -->
+    <view class="filter-pop {{selAll ? 'show' : 'hide'}}">
+      <view class="filter-panel">
+        <text class="filter-option {{id == index ? 'active' : ''}}" wx:for="{{selList}}" wx:key="index" data-id="{{index}}" data-txt="{{item.text}}" catchtap="choose">{{item.text}}</text>
+      </view>
+    </view>
+
+    <!-- 排序筛选面板 -->
+    <view class="filter-pop {{sortAll ? 'show' : 'hide'}}">
+      <view class="filter-panel">
+        <text class="filter-option {{id == index ? 'active' : ''}}" wx:for="{{sortList}}" wx:key="index" data-id="{{index}}" data-txt="{{item.text}}" catchtap="choose2">{{item.text}}</text>
       </view>
     </view>
   </view>
+
+  <!-- 筛选遮罩 -->
+  <view class="filter-mask {{selAll || sortAll ? 'show' : 'hide'}}" bindtap="close"></view>
+
+  <!-- 成员列表 -->
+  <view class="member-list" wx:if="{{userList.length > 0}}">
+    <view class="member-block" wx:for="{{userList}}" wx:key="id">
+      <view class="member-card">
+        <view class="member-index">{{index + 1}}</view>
+
+        <view class="member-avatar-wrap" data-id="{{item.id}}" bindtap="details" hover-class="avatar-hover">
+          <view class="user-pic vip" wx:if="{{item.level == 'VIP'}}">
+            <image src="{{item.header_url}}" mode="aspectFill" class="pic"></image>
+            <image src="../../images/vip_1.svg" mode="aspectFit" class="badge"></image>
+          </view>
+          <view class="user-pic normal" wx:if="{{item.level == '普通'}}">
+            <image src="{{item.header_url}}" mode="aspectFill" class="pic"></image>
+            <image src="../../images/normal.svg" mode="aspectFit" class="badge"></image>
+          </view>
+          <view class="user-pic guest" wx:if="{{item.level == '非会员'}}">
+            <image src="{{item.header_url}}" mode="aspectFill" class="pic"></image>
+            <image src="../../images/none.svg" mode="aspectFit" class="badge"></image>
+          </view>
+        </view>
+
+        <view class="member-info">
+          <view class="name-row">
+            <text class="member-name" wx:if="{{item.name !== ''}}">{{item.name}}</text>
+            <text class="member-name" wx:else>{{item.nick_name}}</text>
+            <image class="sex-icon" wx:if="{{item.sex == 1}}" src="../../images/man.svg" mode="aspectFit"></image>
+            <image class="sex-icon" wx:elif="{{item.sex == 2}}" src="../../images/woman.svg" mode="aspectFit"></image>
+            <text class="duty-tag" wx:if="{{item.duty == '团长'}}">团长</text>
+            <text class="duty-tag" wx:if="{{item.duty == '管理员'}}">管理员</text>
+            <text class="duty-tag" wx:if="{{item.duty == '管理员,团长' || item.duty == '团长,管理员'}}">管理员/团长</text>
+          </view>
+          <view class="member-id">ID {{item.id}}</view>
+          <view class="member-stats">{{item.score}} 积分 · {{item.energy}} 小花儿 · 连续打卡 {{item.serial_day}} 天</view>
+        </view>
+
+        <view class="member-ops">
+          <text class="op-set" data-userid="{{item.id}}" data-duty="{{item.duty}}" data-level="{{item.level}}" bindtap="setInfor" hover-class="op-hover">设置</text>
+        </view>
+      </view>
+
+      <!-- 展开的成员详情 -->
+      <view class="member-detail {{item.id == userid ? '' : 'hidden'}}">
+        <view class="detail-grid">
+          <view class="detail-item">
+            <text class="detail-label">手机号</text>
+            <text class="detail-value">{{item.mobile || '未填写'}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">生日</text>
+            <text class="detail-value">{{item.birthday || '未填写'}}</text>
+          </view>
+        </view>
+        <view class="detail-subtitle">装备数据</view>
+        <view class="detail-grid">
+          <view class="detail-item">
+            <text class="detail-label">上衣</text>
+            <text class="detail-value">{{item.jacket || '—'}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">裤子</text>
+            <text class="detail-value">{{item.trousers || '—'}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">头围</text>
+            <text class="detail-value">{{item.head_size || '—'}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">手长</text>
+            <text class="detail-value">{{item.hand_size || '—'}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">鞋号</text>
+            <text class="detail-value">{{item.shoe_size || '—'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-block" wx:elif="{{loaded && userList.length === 0}}">
+    <view class="empty-mark">👥</view>
+    <text class="empty-title">暂无成员</text>
+    <text class="empty-desc">当前筛选条件下没有团员</text>
+  </view>
+
   <!-- 遮罩层 -->
-  <view class="modal-mask" wx:if="{{changeModal}}"></view>
-  <!-- 弹出框 -->
-  <view class="modal-dialog" wx:if="{{changeModal}}">
+  <view class="ul-mask" wx:if="{{changeModal}}" bindtap="onCancel"></view>
+
+  <!-- 成员设置弹窗 -->
+  <view class="ul-modal" wx:if="{{changeModal}}">
     <form bindsubmit="onConfirm">
-      <view class="form-con">
-        <!-- <view class="fm-tit">头衔：</view> -->
-        <checkbox-group class="radio-group" name="duty" bindchange="setDuty">
-          <label for=""><view style="display:inline-block;margin:0 0 20rpx 0;"><checkbox value="管理员"  checked="" />管理员师傅</view></label>
-          <label for=""><view style="display:inline-block;margin:0 0 20rpx 0;"><checkbox value="团长"  checked="" />团长哥哥</view></label>
+      <view class="modal-title">成员设置</view>
+
+      <view class="modal-section">
+        <view class="modal-label">职务</view>
+        <checkbox-group class="modal-options" name="duty" bindchange="setDuty">
+          <label class="modal-option">
+            <checkbox value="管理员" checked="" color="#0c6246"></checkbox>管理员
+          </label>
+          <label class="modal-option">
+            <checkbox value="团长" checked="" color="#0c6246"></checkbox>团长
+          </label>
         </checkbox-group>
       </view>
-      <view class="form-con">
-        <view class="fm-tit">级别：</view>
-        <radio-group class="radio-group" name="level" bindchange="setLevel">
-          <label for=""><view style="display:inline-block;"><radio value="VIP"  checked="{{level === 'VIP' ? 'true' : ''}}" />超级会员</view></label>
-          <label for=""><view style="display:inline-block;"><radio value="普通"  checked="{{level === '普通' ? 'true' : ''}}" />普通会员</view></label>
-          <label for=""><view style="display:inline-block;"><radio value="非会员"  checked="{{level === '非会员' ? 'true' : ''}}" />不是会员</view></label>
+
+      <view class="modal-section">
+        <view class="modal-label">级别</view>
+        <radio-group class="modal-options" name="level" bindchange="setLevel">
+          <label class="modal-option">
+            <radio value="VIP" checked="{{level === 'VIP' ? 'true' : ''}}" color="#0c6246"></radio>超级会员
+          </label>
+          <label class="modal-option">
+            <radio value="普通" checked="{{level === '普通' ? 'true' : ''}}" color="#0c6246"></radio>普通会员
+          </label>
+          <label class="modal-option">
+            <radio value="非会员" checked="{{level === '非会员' ? 'true' : ''}}" color="#0c6246"></radio>非会员
+          </label>
         </radio-group>
       </view>
-      <!-- 操作按钮 -->
-      <view class="modal-footer nopd none">
-        <button class="btn btn-cancel" bindtap="onCancel" data-status="cancel">取消</button>
-      <button class="btn btn-confirm" form-type="submit" data-status="confirm">确定</button>
-    </view>
+
+      <view class="modal-footer">
+        <button class="modal-btn cancel" bindtap="onCancel" data-status="cancel" hover-class="cancel-hover">取消</button>
+        <button class="modal-btn confirm" form-type="submit" data-status="confirm" hover-class="confirm-hover">确定</button>
+      </view>
     </form>
   </view>
 </view>

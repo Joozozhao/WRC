@@ -1,69 +1,87 @@
+<site-header show-back="{{true}}" back-url="/pages/manage/manage"></site-header>
 <!--pages/orderlist/orderlist.wxml-->
-<view class="vw-wrap">
-<!--筛选不显示
-  <view class="item-pop">
-    <view class="all-item">
-      <text class="{{stateId==index ? 'active' : ''}}" wx:for="{{sortList}}" wx:key="index" data-id="{{index}}" data-txt="{{item.text}}" bindtap="choose2">{{item.text}}</text>
-    </view>
+<view class="orders-page">
+  <view class="orders-head">
+    <text class="orders-kicker">WRC · ORDERS</text>
+    <text class="orders-head-label">订单管理 / 兑换订单</text>
   </view>
-  <view style="padding-top: 100rpx;"></view>
--->
-  <block wx:for="{{orderList}}" wx:key="index" wx:for-item="item">
-    <view class="activity awesome-bg b-purple">
-      <view class="cover-img" data-id="{{item.id}}" data-type="{{item.goods_type}}" bindtap="toDetail">
-        <image src="{{item.goods_pic}}" mode="widthFix" style="height:auto;"></image>
+
+  <view class="orders-loading" wx:if="{{listState == 'loading'}}">
+    <view class="orders-skeleton-card" wx:for="{{[1, 2, 3]}}" wx:key="*this">
+      <view class="orders-skeleton-media"></view>
+      <view class="orders-skeleton-lines">
+        <view class="orders-skeleton-line orders-skeleton-line-long"></view>
+        <view class="orders-skeleton-line"></view>
+        <view class="orders-skeleton-line"></view>
       </view>
-      <view class="activity-infor" data-id="{{item.id}}">
-      <view data-id="{{item.id}}" data-type="{{item.goods_type}}" bindtap="toDetail">
-        <view class="avastar">
-          <image src="{{item.header_url}}" mode="widthFix"></image>
-          <view wx:if="{{item.user_name!==''}}">{{item.user_name}} ID{{item.user_id}}</view>
-          <view wx:else>{{item.nick_name}} ID{{item.user_id}}</view>
+    </view>
+    <text class="orders-state-tip">正在加载订单…</text>
+  </view>
+
+  <view class="orders-error" wx:elif="{{listState == 'error'}}">
+    <text class="orders-kicker">WRC · ORDERS</text>
+    <text class="orders-error-title">订单暂时无法显示</text>
+    <text class="orders-error-copy">数据加载失败，请检查网络后重试。</text>
+    <button class="orders-retry-button" bindtap="initOrder">重新加载</button>
+  </view>
+
+  <block wx:if="{{listState == 'ready'}}">
+    <view class="orders-empty" wx:if="{{orderList.length == 0}}">
+      <text class="orders-empty-title">暂无订单</text>
+      <text class="orders-empty-copy">还没有兑换订单，可前往奖品中心看看。</text>
+    </view>
+
+    <view class="order-card" wx:for="{{orderList}}" wx:key="index" wx:for-item="item">
+      <view class="order-card-main" data-id="{{item.id}}" data-type="{{item.goods_type}}" bindtap="toDetail">
+        <view class="order-cover">
+          <image src="{{item.goods_pic}}" mode="aspectFill"></image>
         </view>
-        <view>消耗：<text wx:if="{{item.score>0}}">{{item.score}}积分</text><text wx:if="{{item.energy>0}}">{{item.energy}}小花儿</text></view>
-        <view>订单：{{item.order_num}}</view>
-        <view>时间：{{item.create_timestr}}</view>
-        <view>规格：{{item.goods_tag}}-{{item.tag_desc}}</view>
-        <view>地址：{{item.address}} {{item.name}} {{item.mobile}}</view>
-      </view>
-      <view class="order-state">
-          <text class="state b-purple" wx:if="{{item.state == 0}}">待发货</text>
-          <text class="state b-yellow" wx:if="{{item.state == 1}}">已发货</text>
-          <text class="state b-rainbow" wx:if="{{item.state == 2}}">已签收</text>
-          <text class="state b-green" wx:if="{{item.state == 3}}">已退单</text>
-      </view>
-        <view class="act-btn top">
-          <text class="btn" bindtap="resetCon" data-id="{{item.id}}" data-energy="{{item.energy}}" data-score="{{item.score}}" data-userid="{{item.user_id}}" data-num="{{item.order_num}}" wx:if="{{item.state == 0||item.state == 1}}">设置</text>
-          <text class="btn" bindtap="delCon" data-id="{{item.id}}" data-idx="{{index}}" wx:if="{{item.state == 3}}">删除</text>
+        <view class="order-main-info">
+          <view class="order-user">
+            <image class="order-avatar" src="{{item.header_url}}" mode="aspectFill"></image>
+            <text class="order-user-name" wx:if="{{item.user_name !== ''}}">{{item.user_name}} · ID{{item.user_id}}</text>
+            <text class="order-user-name" wx:else>{{item.nick_name}} · ID{{item.user_id}}</text>
+          </view>
+          <view class="order-cost">消耗：<text class="order-cost-value" wx:if="{{item.score > 0}}">{{item.score}}积分</text><text class="order-cost-value" wx:if="{{item.energy > 0}}">{{item.energy}}小花儿</text></view>
+          <text class="order-spec">规格：{{item.goods_tag}}-{{item.tag_desc}}</text>
         </view>
       </view>
-      
+      <view class="order-meta" data-id="{{item.id}}" data-type="{{item.goods_type}}" bindtap="toDetail">
+        <text class="order-meta-line">订单：{{item.order_num}}</text>
+        <text class="order-meta-line">时间：{{item.create_timestr}}</text>
+        <text class="order-meta-line">地址：{{item.address}} {{item.name}} {{item.mobile}}</text>
+      </view>
+      <view class="order-card-foot">
+        <text class="order-state is-pending" wx:if="{{item.state == 0}}">待发货</text>
+        <text class="order-state is-shipped" wx:if="{{item.state == 1}}">已发货</text>
+        <text class="order-state is-done" wx:if="{{item.state == 2}}">已签收</text>
+        <text class="order-state is-returned" wx:if="{{item.state == 3}}">已退单</text>
+        <view class="order-actions">
+          <button class="order-action-btn" bindtap="resetCon" data-id="{{item.id}}" data-state="{{item.state}}" data-energy="{{item.energy}}" data-score="{{item.score}}" data-userid="{{item.user_id}}" data-num="{{item.order_num}}" wx:if="{{item.state == 0 || item.state == 1}}">设置状态</button>
+          <button class="order-action-btn is-danger" bindtap="delCon" data-id="{{item.id}}" data-index="{{index}}" wx:if="{{item.state == 3}}">删除</button>
+        </view>
+      </view>
+    </view>
+    <view class="orders-pagination" wx:if="{{orderList.length > 0 && (loadingMore || !hasMore)}}">{{loadingMore ? '正在加载更多订单…' : '— 已显示全部订单 —'}}</view>
+  </block>
+
+  <block wx:if="{{changeModal}}">
+    <view class="state-modal-mask" bindtap="onCancel"></view>
+    <view class="state-modal-dialog">
+      <form bindsubmit="onConfirm">
+        <text class="state-modal-title">设置订单状态</text>
+        <text class="state-modal-order">订单号 {{orderNum}}</text>
+        <radio-group class="state-options" name="stateId" bindchange="setState">
+          <label class="state-option {{stateId == item.value ? 'is-checked' : ''}}" wx:for="{{radioItem}}" wx:key="index">
+            <radio value="{{item.value}}" checked="{{stateId == item.value}}" color="#0b503b" class="state-radio" />
+            <text>{{item.name}}</text>
+          </label>
+        </radio-group>
+        <view class="state-modal-footer">
+          <button class="state-btn state-btn-cancel" bindtap="onCancel" data-status="cancel">取消</button>
+          <button class="state-btn state-btn-confirm" form-type="submit" data-status="confirm">确定</button>
+        </view>
+      </form>
     </view>
   </block>
-</view>
-<!-- 遮罩层 -->
-<view class="modal-mask" wx:if="{{changeModal}}"></view>
-<!-- 弹出框 -->
-<view class="modal-dialog" wx:if="{{changeModal}}" style="top: 50%;">
-  <form bindsubmit="onConfirm">
-    <view class="modal-content">
-      <view class="form-con">
-        <view class="fm-tit">状态：</view>
-        <radio-group class="radio-group" name="stateId" data-val="{{item.value}}" bindchange="setState">
-          <label for="" wx:for="{{radioItem}}" wx:key="index" style="display:block;margin:0 0 20rpx 0; width: 100%;">
-            <view>
-              <radio value="{{item.value}}"  checked="{{item.checked}}" />{{item.name}}</view>
-            </label>
-        </radio-group>
-      </view>
-    </view>
-    <!-- 操作按钮 -->
-    <view class="modal-footer nopd none">
-      <button class="btn btn-cancel" bindtap="onCancel" data-status="cancel">取消</button>
-      <button class="btn btn-confirm" form-type="submit" data-status="confirm">确定</button>
-    </view>
-  </form>
-</view>
-<view class="noHistory {{noHistory?'show':'hide'}}">
-  <view class="main">暂无订单</view>
 </view>

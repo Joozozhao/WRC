@@ -8,7 +8,7 @@ Page({
    */
   data: {
     activityList: [],
-    avastars: '',
+    avastars: [],
     memberList: [],
     actyId: 0,
     actyIn: 0,
@@ -24,7 +24,7 @@ Page({
     has_mobile: '',
     signOpacity: 1,
     clockOpacity: 1,
-    ltyList: '',
+    ltyList: [],
     distance: 0,
     acty_name: '',
     nickName: '',
@@ -38,7 +38,16 @@ Page({
     showBtn: false,
     myAddress: '',
     showSign: false,
-    signTrue: true
+    signTrue: true,
+    loading: true,
+    loadError: false,
+    statsLoaded: false,
+    memberLoaded: false,
+    dataList: [],
+    actyMember: []
+  },
+  openMyPage: function () {
+    wx.switchTab({ url: '../mydata/mydata' })
   },
   toactyData: function(){
     wx.navigateTo({
@@ -47,55 +56,78 @@ Page({
   },
   initLimit: function(){
     var userId = app.globalData.userId
+    if (!userId || userId <= 0) return
     var data = { 
       id : userId
     }
     util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
-      var that = this
-      if(res.data.success){
-        that.setData({
-          myAddress: res.data.data.address
+      if(res.data && res.data.success){
+        this.setData({
+          myAddress: (res.data.data && res.data.data.address) || ''
         })
       }
     })
   },
   //去报名
   signIn: function(){
-    var adrr = this.data.region
-    var myadrr = this.data.myAddress
-    if(myadrr!=''&&adrr.indexOf(myadrr) > -1){
+    if (this.data.loading || this.data.loadError || this.data.state === '已结束' || !this.data.signTrue) return
+    var userId = app.globalData.userId
+    if (!userId || userId <= 0) {
+      this.openLogin()
+      return
+    }
+    var adrr = this.data.region || ''
+    var myadrr = this.data.myAddress || ''
+    if (myadrr && adrr.indexOf(myadrr) > -1) {
       wx.navigateTo({
-        url: '../signin/signin?id='+this.data.actyId + '&has_name='+this.data.has_name+'&has_mobile='+this.data.has_mobile+'&target=0'+'&acty_type=' + this.data.acty_type
+        url: '../signin/signin?id=' + this.data.actyId + '&has_name=' + this.data.has_name + '&has_mobile=' + this.data.has_mobile + '&target=0&acty_type=' + encodeURIComponent(this.data.acty_type || '团跑')
       })
     } else {
       wx.showToast({
-        title: '地区暂不支持',
+        title: myadrr ? '地区暂不支持' : '请先完善所在地区',
         icon: 'none'
       })
     }
   },
-  dateDiff:function (date1, date2){
-		date1 = date1.replace("年","-").replace("月","-").replace("日",""); 
-		date2 = date2.replace("年","-").replace("月","-").replace("日","");  
-	    date1 = new Date(date1.replace(/-/g, "/"));
-   		date2 = new Date(date2.replace(/-/g, "/"));  
-   		if(Date.parse(date2) - Date.parse(date1) >= 0){
-   			return true;
-   		}
-   		return false;
-	},
-  goheight:function (e) {
-    var width = wx.getSystemInfoSync().windowWidth
-    //获取可使用窗口宽度
-    var imgheight = e.detail.height
-    //获取图片实际高度
-    var imgwidth = e.detail.width
-    //获取图片实际宽度
-    var height = width * imgheight / imgwidth +"px"
-    //计算等比swiper高度
-    this.setData({
-      height: height
+  openLogin: function () {
+    util.showLogin((profile) => {
+      if (!profile || !profile.code || !profile.userInfo) return
+      util.request('user/wxlogin', 'POST', { code: profile.code, encryptedData: '', iv: '' }, '登录中...', (loginRes) => {
+        var loginData = loginRes.data && loginRes.data.data
+        if (!loginData || !loginData.openid) {
+          wx.showToast({ title: '登录失败，请稍后重试', icon: 'none' })
+          return
+        }
+        var regData = {
+          openId: loginData.openid,
+          imgUrl: profile.userInfo.avatarUrl,
+          nickName: profile.userInfo.nickName,
+          sex: profile.userInfo.gender,
+          unionid: loginData.unionid
+        }
+        util.request('user/wxregister', 'POST', regData, '', (regRes) => {
+          var newUserId = Number(regRes.data && regRes.data.UserId)
+          if (!(newUserId > 0)) {
+            wx.showToast({ title: '登录失败，请稍后重试', icon: 'none' })
+            return
+          }
+          app.globalData.userId = newUserId
+          app.globalData.openId = regData.openId
+          wx.setStorageSync('userId', newUserId)
+          wx.setStorageSync('openId', regData.openId)
+          this.setData({ userId: newUserId, nickName: regData.nickName || '' })
+          this.initLimit()
+          this.initActyDetail(this.data.actyId)
+          wx.showToast({ title: '登录成功，请继续报名', icon: 'none' })
+        })
+      })
     })
+  },
+  retryLoad: function () {
+    this.initActyDetail(this.data.actyId)
+    this.getactyimgs()
+    this.initActyIn()
+    this.initLimit()
   },
   /**
    * 生命周期函数--监听页面加载
@@ -109,14 +141,13 @@ Page({
       userId: userId,
       userid: userid
     })
-    var data = { id : userId }
-    util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        this.setData({
-          nickName : res.data.data.nick_name
-        })
-      }
-    })
+    if (userId && userId > 0) {
+      util.request('user/get', 'POST', { id: userId }, '数据加载中 ...', (res)=>{
+        if(res.data && res.data.success && res.data.data){
+          this.setData({ nickName: res.data.data.nick_name || '' })
+        }
+      })
+    }
     this.initActyIn()
     this.getactyimgs()
     this.initLimit()
@@ -127,15 +158,19 @@ Page({
       actyId: that.data.actyId
     }
     util.request('acty/getactyimgs', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
+      if(res.data && res.data.success){
         that.setData({
-          actyImg:res.data.data
+          actyImg: Array.isArray(res.data.data) ? res.data.data : []
         })
       }
     })
   },
   
   initActyDetail: function(id){
+    if (!id) {
+      this.setData({ loading: false, loadError: true })
+      return
+    }
     var that = this
     var userId = app.globalData.userId
     // 获取活动详情
@@ -150,62 +185,36 @@ Page({
         userId: that.data.userid
       }
     }
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
+    this.setData({ loading: true, loadError: false })
+    this.setData({ statsLoaded: false, memberLoaded: false })
     util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
+      if(res.data && res.data.success && res.data.data){
         var allData = res.data.data
-        var createTime = allData.start_timestr.substring(0, 16)
-        var endTime = allData.end_timestr.substring(11, 16)
+        var createTime = (allData.start_timestr || '').substring(0, 16)
+        var endTime = (allData.end_timestr || '').substring(11, 16)
         var state = allData.acty_state
-        var createTime1 = util.dislodgeZero(createTime)
-        var endTime1 = util.dislodgeZero(endTime)
-        allData.start_timestr = createTime1 
-        allData.end_timestr = endTime1 
+        var createTime1 = createTime ? util.dislodgeZero(createTime) : ''
+        var endTime1 = endTime ? util.dislodgeZero(endTime) : ''
         this.setData({
-          acty_img: allData.acty_img,
-          state: state,
-          acty_name: allData.acty_name,
-          region: allData.region,
-          acty_type: allData.acty_type,
+          acty_img: allData.acty_img || '',
+          state: state == 0 ? '已结束' : state,
+          acty_name: allData.acty_name || '',
+          region: allData.region || '',
+          acty_type: allData.acty_type || '团跑',
           start_time: createTime1,
           end_time: endTime1,
-          address: allData.address,
+          address: allData.address || '',
           total_num: allData.serial_num,
-          distance: allData.distance,
+          distance: allData.distance == null ? '—' : allData.distance,
           has_clickon: allData.has_clickon,
           has_sign: allData.has_sign,
           has_name: allData.has_name,
           has_mobile: allData.has_mobile,
-          acty_level: allData.level //level=0  非聚跑，level=1 聚跑
+          acty_level: allData.level, //level=0 非聚跑，level=1 聚跑
+          signTrue: allData.has_clickon != 1,
+          loading: false
         })
-        var now_time = util.formatTime(new Date()).substring(0, 16)
-        var timeRange=this.dateDiff(that.data.start_time,now_time)
-        if(!timeRange){
-          this.setData({
-            showSign: false
-          })
-        } else {
-          this.setData({
-            showSign: true
-          })
-        }
-        wx.setNavigationBarTitle({
-          title: this.data.acty_name
-        })
-        if( this.data.state == 0){
-          this.setData({
-            state: '已结束'
-          })
-        }
-        if(allData.has_clickon == 1){
-          that.setData({
-            signTrue: false,
-            clickOn: 1
-          })
-        }
+        if (this.data.acty_name) wx.setNavigationBarTitle({ title: this.data.acty_name })
         if(allData.has_sign == 1){
           that.setData({
             signIn: 1,
@@ -218,30 +227,26 @@ Page({
             showBtn: false       
           })
         }
-        wx.hideLoading({
-          success: (res) => {},
-        })
       }else{
-        wx.hideLoading({
-          success: (res) => {},
-        })
+        this.setData({ loading: false, loadError: true })
         wx.showToast({
-          title: res.data.error,
+          title: (res.data && res.data.error) || '活动加载失败',
           icon: 'none',
           duration: 1500
         })
       }
-    })
+    }, () => this.setData({ loading: false, loadError: true }))
     // 获取活动数据
     var data = {
       id: id
     }
     util.request('acty/getsport', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
+      if(res.data && res.data.success && res.data.data){
         that.setData({
-          allDistance: res.data.data.total,
-          allNum: res.data.data.number,
-          dataList: res.data.data.user_list
+          allDistance: res.data.data.total == null ? 0 : res.data.data.total,
+          allNum: res.data.data.number == null ? 0 : res.data.data.number,
+          dataList: Array.isArray(res.data.data.user_list) ? res.data.data.user_list : [],
+          statsLoaded: res.data.data.total != null && res.data.data.number != null
         })
       }else{
       }
@@ -267,11 +272,12 @@ Page({
       } 
     }
     util.request('acty/getactyuser', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        var dataAll = res.data.data
+      if(res.data && res.data.success){
+        var dataAll = Array.isArray(res.data.data) ? res.data.data : []
         this.setData({
           avastars: dataAll, 
-          actyIn: dataAll.length
+          actyIn: dataAll.length,
+          memberLoaded: Array.isArray(res.data.data)
         })
       }else{
         
@@ -282,9 +288,9 @@ Page({
       actyId : id
     }
     util.request('acty/getluckdrawlist', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
+      if(res.data && res.data.success){
         this.setData({
-          ltyList: res.data.data
+          ltyList: Array.isArray(res.data.data) ? res.data.data : []
         })
       }else{
       
@@ -293,20 +299,12 @@ Page({
   },
   // 图片预览
   preview: function(e){
-    var that = this
-    var id = e.currentTarget.dataset.id
     var url = e.currentTarget.dataset.url
-    var previewImgArr = []
-    //通过循环在数据链里面找到和这个id相同的这一组数据，然后再取出这一组数据当中的图片
-    var data = that.data.actyImg
-    for (var i in data) {
-      if (id == data[i].id) {
-      previewImgArr = data[i].img_url;
-      }
-    }
+    var previewImgArr = (this.data.actyImg || []).map(item => item.img_url).filter(Boolean)
+    if (!url || !previewImgArr.length) return
     wx.previewImage({
-    current: url, // 当前显示图片的http链接
-    urls: [previewImgArr] // 需要预览的图片http链接列表
+    current: url,
+    urls: previewImgArr
     })
   },
   toLty: function(e){
@@ -325,6 +323,16 @@ Page({
       url: '../together/together?id='+this.data.actyId
     })    
   },
+  toUserDetail: function(e){
+    const id = e.currentTarget.dataset.userid
+    if (!id) return
+    const userId = app.globalData.userId
+    if (userId && String(id) === String(userId)) {
+      wx.switchTab({ url: '../mydata/mydata' })
+    } else {
+      wx.navigateTo({ url: '../othersdata/othersdata?id=' + id })
+    }
+  },
   //选中人数
   initActyIn: function(){
     var that = this
@@ -332,8 +340,8 @@ Page({
       actyId: that.data.actyId
     }
     util.request('acty/getclickuser', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        var allDta = res.data.data
+      if(res.data && res.data.success){
+        var allDta = Array.isArray(res.data.data) ? res.data.data : []
         this.setData({
           actyMember: allDta,
           picShow: true,
@@ -371,10 +379,11 @@ Page({
   onShareAppMessage: function (res) {
     if (res.from === 'button') {
       // 来自页面内转发按钮
+      console.log(res.target)
     }
     return {
-        title: this.data.nickName + '邀请你参加#' + this.data.acty_name + '#，快来参加攒积分了～',
-        // path: '/pages/activitydetail/activitydetail' + this.data.actyId
+        title: (this.data.nickName ? this.data.nickName + '邀请你参加' : '一起参加') + '#' + (this.data.acty_name || '团跑') + '#',
+        path: '/pages/activitydetail/activitydetail?id=' + this.data.actyId
     }
   }
 })

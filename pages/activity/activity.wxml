@@ -1,30 +1,40 @@
-<!--pages/activity/activity.wxml-->
-<view class="nav-mb">
-  <block wx:for="{{activityList}}" wx:key="index" wx:for-item="item">
-    <view class="activity" id="{{key}}">
-      <view class="cover-img" bindtap="toDet" data-id="{{item.id}}" data-name="{{item.acty_name}}">
-        <image src="{{item.acty_img}}" mode="aspectFill"></image>
-        <image src="../../images/flag.png" mode="widthFix" class="cover-fix"></image>
-        <view class="vw-cover" wx:if="{{item.acty_state == 0}}">
-          <view class="state">{{acty_state}}</view>
+<site-header bindprofiletap="openMyPage"></site-header>
+<view class="run-page">
+  <view class="run-hero">
+    <text class="run-eyebrow">WRC · RUN TOGETHER</text>
+    <text class="run-title">一起跑，<text class="run-title-break">跑更远。</text></text>
+    <view class="run-title-line"></view>
+    <text class="run-intro">找一场附近的团跑，把今天的路跑成大家的故事。</text>
+  </view>
+  <view class="run-section-head">
+    <view><text class="run-section-title">团跑活动</text><text class="run-section-note">按时间发现每一次相聚</text></view>
+    <text class="run-create" wx:if="{{duty == '管理员'||duty == '管理员/团长'}}" bindtap="creatNew">＋ 发起团跑</text>
+  </view>
+  <view class="run-list" wx:if="{{activityList.length}}">
+    <view class="run-card" wx:for="{{activityList}}" wx:key="id">
+      <view class="run-card-main" bindtap="toDet" data-id="{{item.id}}">
+        <image class="run-poster" src="{{item.acty_img}}" mode="aspectFill"></image>
+        <view class="run-card-copy">
+          <text class="run-card-region">{{item.region || '团跑活动'}} · ID {{item.id}}</text>
+          <text class="run-card-title">{{item.acty_name}}</text>
+          <text class="run-card-meta">{{item.start_timestr}} — {{item.end_timestr}}</text>
+          <text class="run-card-meta">{{item.address || '地点待公布'}}</text>
+            <view class="run-card-foot"><text wx:if="{{item.joins >= 0}}">{{item.joins}} 人参与</text><text class="run-card-arrow">查看详情 →</text></view>
         </view>
+        <text class="run-state {{item.acty_state == 0 ? 'is-ended' : ''}}">{{item.acty_state == 0 ? '已结束' : '查看活动'}}</text>
       </view>
-      <view class="activity-infor" bindtap="toDet" data-id="{{item.id}}">
-        <view class="title">{{item.acty_name}}</view>
-        <view><text class="tag org">ID:{{item.id}}</text><text class="tag org">{{item.region}}</text></view>
-        <view class="time letter-spacing">
-          Time：{{item.start_timestr}}-{{item.end_timestr}}
-        </view>
-        <view class="address">
-          Add：{{item.address}}
-        </view>
-        <view>人数：{{item.joins}}人</view>
+      <view class="run-admin" wx:if="{{duty == '管理员'||duty == '管理员/团长'}}">
+        <text bindtap="editCon" data-id="{{item.id}}">编辑</text>
+        <text bindtap="delCon" data-index="{{index}}" data-id="{{item.id}}">删除</text>
       </view>
-      <view class="act-btn" wx:if="{{duty == '管理员'||duty == '管理员/团长'}}"><text class="btn edit" bindtap="editCon"
-          data-id="{{item.id}}">Edit</text><text class="btn del" bindtap="delCon" data-index="{{index}}"
-          data-id="{{item.id}}">DEL</text></view>
     </view>
-  </block>
+  </view>
+  <view class="run-empty" wx:elif="{{!loading}}">
+    <text class="run-empty-symbol">↗</text>
+    <text class="run-empty-title">{{loadError ? '暂时无法加载团跑' : '下一场团跑，正在路上'}}</text>
+    <text class="run-empty-copy">{{loadError ? '请检查网络后重试。' : '目前还没有可展示的团跑活动。'}}</text>
+    <text class="run-empty-action" bindtap="retryLoad">重新加载 →</text>
+  </view>
+  <view class="run-tail" wx:if="{{activityList.length && !hasMore}}">已经看到全部团跑</view>
 </view>
-<view style="height: 170rpx;"></view>
 <tabbar tabbar="{{tabbar}}"></tabbar>

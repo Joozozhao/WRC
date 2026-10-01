@@ -1,63 +1,90 @@
-<!--pages/lotterydetail/lottery.wxml-->
-<view class="bg-white pro-detail awesome-bg b-purple">
-  <image src="{{imgSrc}}" mode="widthFix" style="width:50%;height:auto; margin-left: 25%;"></image>
-  <view class="detail-wrap">
-    <view>奖品名称：{{goodName}}</view>
-    <view>奖品数量：{{goods_num}} 份</view>
-    <view>开奖时间：{{luckTime}}</view>
-    <!-- <view class="time">{{luckTime}} 自动开奖</view> -->
+<site-header show-back="{{true}}" back-url="/pages/manage/manage"></site-header>
+<!--pages/lotterydetail/lotterydetail.wxml-->
+<view class="luck-page">
+  <view class="luck-hero">
+    <text class="luck-eyebrow">WRC · LUCKY DRAW</text>
+    <text class="luck-title">抽奖详情</text>
+    <view class="luck-title-line"></view>
   </view>
 
-</view>
-<view class="activity bg-blcak">
-  <view class="cover-img">
-    <image src="{{acty_img}}" mode="aspectFill"></image>
-    <view class="vw-cover" wx:if="{{state == '已结束'}}">
-      <view class="state">{{state}}</view>
+  <view class="luck-prize">
+    <view class="luck-prize-media">
+      <image src="{{imgSrc}}" mode="aspectFit"></image>
+    </view>
+    <view class="luck-prize-info">
+      <view class="luck-row"><text class="luck-label">奖品名称</text><text class="luck-value">{{goodName}}</text></view>
+      <view class="luck-row"><text class="luck-label">奖品数量</text><text class="luck-value">{{goods_num}} 份</text></view>
+      <view class="luck-row"><text class="luck-label">开奖时间</text><text class="luck-value">{{luckTime}}</text></view>
     </view>
   </view>
-  <!-- <wxs src="../../utils/toPlace.wxs" module="module1" /> -->
-  <view class="activity-infor">
-    <view class="title">{{acty_name}}</view>
-    <view><text class="tag">{{acty_type}}</text><text class="tag org">{{addr}}</text></view>
-    <view class="time">
-      <image src="/images/time.png"></image>{{start_time}}-{{end_time}}
-    </view>
-    <view class="address">
-      <image src="/images/place.png"></image>{{address}}
-    </view>
+
+  <view class="luck-section-head">
+    <text class="luck-section-title">关联活动</text>
+    <text class="luck-section-index">01 / ACTIVITY</text>
   </view>
-</view>
-<view class="bg-white hasOrd" wx:if="{{luckState == 1&&joinState==1}}">
-  <view class="result-con" wx:if="{{lucky}}">
-    <view class="result">恭喜您！已经中奖</view>
-    <!-- <view class="prize">{{goodName}}</view> -->
-    <view class="prize-code">兑换码 {{codeNum}}<view class="copyNum awesome-bg b-purple" bindtap="textPaste">去兑换</view>
+  <view class="luck-acty">
+    <view class="luck-acty-cover">
+      <image src="{{acty_img}}" mode="aspectFill"></image>
+      <view class="luck-acty-mask" wx:if="{{state == '已结束'}}">
+        <view class="luck-acty-state">{{state}}</view>
+      </view>
     </view>
-  </view>
-  <view class="result-con" wx:else>
-    <view class="result fail">很遗憾，您未中奖</view>
-  </view>
-</view>
-<view class="bg-white hasOrd" wx:if="{{luckState == 1}}">
-  <view wx:if="{{luckState==1&&luckList.length>0}}">
-    <view class="nor-title awesome-bg b-tapered">中奖名单</view>
-    <view class="person-list">
-      <block wx:for="{{luckList}}" wx:key="index" wx:if="{{item.state==1}}">
-        <view class="list-item">
-          <image src="{{item.header_url}}" class="avastar big"></image>
-          <view wx:if="{{item.name==''}}">{{item.nick_name}}</view>
-          <view wx:else>{{item.name}}</view>
-        </view>
-      </block>
+    <view class="luck-acty-info">
+      <view class="luck-acty-title">{{acty_name}}</view>
+      <view class="luck-tags"><text class="luck-tag">{{acty_type}}</text><text class="luck-tag luck-tag-org">{{addr}}</text></view>
+      <view class="luck-meta">
+        <image src="/images/time.png" class="luck-meta-ico"></image>
+        <text class="luck-meta-text">{{start_time}}-{{end_time}}</text>
+      </view>
+      <view class="luck-meta">
+        <image src="/images/place.png" class="luck-meta-ico"></image>
+        <text class="luck-meta-text">{{address}}</text>
+      </view>
     </view>
   </view>
-</view>
-<view class="bg-white exchange-list" wx:if="{{luckList.length>0}}">
-  <view class="tit awesome-bg b-tapered">{{luckList.length}}人已参与抽奖活动</view>
-  <view class="user-list">
-    <block wx:for="{{luckList}}" wx:key="index">
-      <image src="{{item.header_url}}" class="avastar"></image>
+
+  <view class="luck-result" wx:if="{{luckState == 1&&joinState==1}}">
+    <block wx:if="{{lucky}}">
+      <view class="luck-result-title">恭喜您！已经中奖</view>
+      <view class="luck-code">
+        <text>兑换码 {{codeNum}}</text>
+        <view class="luck-code-btn" bindtap="textPaste">去兑换</view>
+      </view>
     </block>
+    <view class="luck-result-title is-fail" wx:else>很遗憾，您未中奖</view>
   </view>
+
+  <block wx:if="{{luckState == 1}}">
+    <block wx:if="{{luckList.length>0}}">
+      <view class="luck-section-head">
+        <text class="luck-section-title">中奖名单</text>
+        <text class="luck-section-index">02 / WINNERS</text>
+      </view>
+      <view class="luck-card">
+        <view class="luck-winners">
+          <block wx:for="{{luckList}}" wx:key="index" wx:if="{{item.state==1}}">
+            <view class="luck-winner">
+              <image src="{{item.header_url}}" class="luck-avatar luck-avatar-big"></image>
+              <view class="luck-winner-name" wx:if="{{item.name==''}}">{{item.nick_name}}</view>
+              <view class="luck-winner-name" wx:else>{{item.name}}</view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <block wx:if="{{luckList.length>0}}">
+    <view class="luck-section-head">
+      <text class="luck-section-title">{{luckList.length}}人已参与抽奖活动</text>
+      <text class="luck-section-index">03 / JOINED</text>
+    </view>
+    <view class="luck-card">
+      <view class="luck-joined">
+        <block wx:for="{{luckList}}" wx:key="index">
+          <image src="{{item.header_url}}" class="luck-avatar"></image>
+        </block>
+      </view>
+    </view>
+  </block>
 </view>

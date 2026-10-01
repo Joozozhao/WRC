@@ -1,155 +1,136 @@
 // pages/history/history.js
 const util = require('../../utils/util.js')
-// 获取应用实例
 const app = getApp()
+
 Page({
-  /**
-   * 页面的初始数据
-   */
   data: {
-    // haveOrder: true,
-    orderInfo: [],
-    state: '',
-    navTab: ['积分奖品','小花儿兑换奖品'],
+    navTab: ['积分兑换', '小花儿兑换'],
     currentTab: 0,
-    total: 0,
-    tab1:'tabshow',
-    tab2:'tabhide',
-    noRec:'tabshow',
+    orderInfo: [],
+    userId: 0,
+    listState: 'loading',
     page: 1,
-    type: 0
+    hasMore: true,
+    loadingMore: false,
+    moreError: false
   },
-  currentTab: function(e){
-    if (this.data.currentTab == e.currentTarget.dataset.idx) {
+
+  onLoad: function () {
+    wx.hideShareMenu({})
+    const userId = Number(app.globalData.userId) || 0
+    this.setData({ userId, listState: userId > 0 ? 'loading' : 'guest' })
+    if (userId > 0) this.fetchOrders(true)
+  },
+
+  onShow: function () {
+    const userId = Number(app.globalData.userId) || 0
+    if (userId !== this.data.userId) {
+      this.setData({ userId, listState: userId > 0 ? 'loading' : 'guest', orderInfo: [] })
+      this._loadedOnce = true
+      if (userId > 0) this.fetchOrders(true)
       return
     }
+    if (this._loadedOnce) this.fetchOrders(true)
+    this._loadedOnce = true
+  },
+
+  currentTab: function (e) {
+    const tab = Number(e.currentTarget.dataset.idx)
+    if (tab === this.data.currentTab) return
+    this.setData({ currentTab: tab })
+    if (this.data.userId > 0) this.fetchOrders(true)
+  },
+
+  toDetail: function (e) {
+    const id = e.currentTarget.dataset.id
+    const type = e.currentTarget.dataset.type
+    wx.navigateTo({ url: '../orderdetail/orderdetail?id=' + id + '&type=' + type })
+  },
+
+  formatOrder: function (order) {
+    const value = order && order.last_time
+    return Object.assign({}, order, {
+      last_time: value ? String(value).substring(0, 19).replace('T', ' ') : '时间暂缺'
+    })
+  },
+
+  fetchOrders: function (reset) {
+    if (!this.data.userId || (this.data.loadingMore && !reset)) return
+    if (!reset && !this.data.hasMore) return
+    const requestedPage = reset ? 1 : this.data.page
+    const requestId = (this._requestId || 0) + 1
+    this._requestId = requestId
+    const requestedType = this.data.currentTab
     this.setData({
-      currentTab: e.currentTarget.dataset.idx,
-      page: 1,
-      orderInfo: []
+      listState: reset ? 'loading' : this.data.listState,
+      loadingMore: true,
+      moreError: false
     })
-    if (e.currentTarget.dataset.idx==0)
-    {
-      this.setData({ tab1: "tabshow" });
-      this.setData({ tab2: "tabhide" });
-    } else if (e.currentTarget.dataset.idx == 1)
-    {
-      this.setData({ tab1: "tabhide" });
-      this.setData({ tab2: "tabshow" });
-    }
-    this.initOrder()
-  },
-  toDetail: function(e){
-    var id = e.currentTarget.dataset.id
-    var type = e.currentTarget.dataset.type
-    wx.navigateTo({
-      url: '../orderdetail/orderdetail?id=' + id +'&type=' + type,
-    })
-  },
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-    wx.hideShareMenu({})
-    // this.initOrder()
-  },
-  initOrder: function(){
-    var that = this
-    var userId = app.globalData.userId
-    var data = {
-      userId: userId,
-      page: that.data.page++,
-      type: that.data.currentTab
-    }
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
-    util.request('order/list', 'POST', data, '数据加载中...', (res)=>{
-      if(res.data.success){
-        var orderData = res.data.data
-        for(var i=0; i<orderData.length;i++){
-          var createTime = orderData[i].last_time.substring(0, 19)
-          orderData[i].last_time = createTime
+    util.request('order/list', 'POST', {
+      userId: this.data.userId,
+      page: requestedPage,
+      type: requestedType
+    }, '数据加载中...', (res) => {
+      if (requestId !== this._requestId) return
+      const response = res && res.data
+      if (!response || !response.success || !Array.isArray(response.data)) {
+        this.setData({
+          listState: reset ? 'error' : 'ready',
+          loadingMore: false,
+          moreError: !reset
+        })
+        if (this._refreshing) {
+          this._refreshing = false
+          wx.stopPullDownRefresh()
         }
-        that.setData({
-          total: orderData.length,
-          orderInfo: orderData,
-          last_time: createTime,
-          noHistory: false
-        })
-        wx.hideLoading({
-          success: (res) => {},
-        })
-      }else{
-        wx.hideLoading({
-          success: (res) => {},
-        })
-        wx.showToast({
-          title: res.data.error,
-          icon: 'none',
-          duration: 1500
-        })
+        return
+      }
+      const received = response.data.map(item => this.formatOrder(item))
+      const orderInfo = reset ? received : this.data.orderInfo.concat(received)
+      this.setData({
+        orderInfo,
+        listState: 'ready',
+        page: requestedPage + 1,
+        hasMore: received.length > 0,
+        loadingMore: false,
+        moreError: false
+      })
+      if (this._refreshing) {
+        this._refreshing = false
+        wx.stopPullDownRefresh()
+      }
+    }, () => {
+      if (requestId !== this._requestId) return
+      this.setData({
+        listState: reset ? 'error' : 'ready',
+        loadingMore: false,
+        moreError: !reset
+      })
+      if (this._refreshing) {
+        this._refreshing = false
+        wx.stopPullDownRefresh()
       }
     })
   },
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-    this.setData({
-      page: 1
-    })
-    this.initOrder()
+
+  retry: function () {
+    this.fetchOrders(true)
   },
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
+
+  retryMore: function () {
+    this.fetchOrders(false)
+  },
+
   onPullDownRefresh: function () {
-    this.loadMore()
-  },
-  loadMore: function(){
-    var that = this
-    var userId = app.globalData.userId
-    that.setData({
-      page: 1
-    })
-    var data = {
-      userId: userId,
-      page: that.data.page++
+    if (!this.data.userId) {
+      wx.stopPullDownRefresh()
+      return
     }
-    wx.showLoading({
-      title: '加载中',
-      icon: 'loading'
-    })
-    util.request('order/list', 'POST', data, '数据加载中...', (res)=>{
-      if(res.data.success){
-        var orderData = res.data.data
-        var content = that.data.orderInfo.concat(orderData)
-        for(var i=0; i<orderData.length;i++){
-          var createTime = orderData[i].last_time.substring(0, 19)
-          orderData[i].last_time = createTime
-        }
-        that.setData({
-          total: orderData.length,
-          orderInfo: content,
-          last_time: createTime,
-          noHistory: false
-        })
-        wx.hideLoading({
-          success: (res) => {},
-        })
-      }else{
-        wx.hideLoading({
-          success: (res) => {},
-        })
-        // wx.showToast({
-        //   title: res.data.error,
-        //   icon: 'none',
-        //   duration: 1500
-        // })
-      }
-      
-    })
+    this._refreshing = true
+    this.fetchOrders(true)
+  },
+
+  onReachBottom: function () {
+    if (this.data.listState === 'ready') this.fetchOrders(false)
   }
 })

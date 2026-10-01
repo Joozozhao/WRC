@@ -253,8 +253,8 @@ Page({
       var startDate = monthDay + " " + hours + ":" + minute;
     }
     if(hours==0){
-      var startDate = monthDay + " " + '0'+ hours + ":" + minute+'0';
-    } 
+      var startDate = monthDay + " " + '0' + hours + ":" + (minute == 0 ? '00' : minute);
+    }
     that.setData({
       startDate: startDate
     })
@@ -353,7 +353,8 @@ Page({
       num: formatData.actyNum,
       startTime: year + '-' + that.data.startDate + ':00',
     }
-    if(formatData.actyName == ''){
+    console.log(data)
+    if(String(that.data.actyName || '') == ''){
       wx.showToast({
         title: '请选择活动!',
         icon: 'none',
@@ -361,7 +362,7 @@ Page({
       })
       return false
     }
-    if(formatData.goodsName == ''){
+    if(String(that.data.goodsName || '') == ''){
       wx.showToast({
         title: '请选择奖品!',
         icon: 'none',
@@ -377,6 +378,15 @@ Page({
       })
       return false
     }
+    if(!/^\d+$/.test(String(formatData.actyNum).trim()) || parseInt(formatData.actyNum, 10) <= 0){
+      wx.showToast({
+        title: '奖品份数需为正整数!',
+        icon: 'none',
+        duration: 1500
+      })
+      return false
+    }
+    console.log(that.data.total)
     if(Number(formatData.actyNum) > Number(that.data.total)){
       wx.showToast({
         title: '库存不足!',
@@ -402,12 +412,14 @@ Page({
       return false
     }
     util.request('user/createluckdraw', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res.data)
       if(res.data.success){
         that.setData({
           luckId:res.data.luckId,
           disable: true
         })
         var luckId = that.data.luckId
+        console.log(luckId)
          wx.navigateTo({
            url: '../lotterydetail/lotterydetail?id=' + that.data.luckId,
          })
@@ -439,5 +451,6 @@ Page({
       total: total,
       sealType: addr
     })
+    console.log(this.data);
   }
 })

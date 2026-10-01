@@ -1,149 +1,205 @@
-<!--pages/editchallenge/editchallenge.wxml-->
-<!--pages/creat/creat.wxml-->
-<form bindsubmit="submit">
-  <view class="form-con">
-    <view class="form-item upload-cover">
-      <!-- <label for="" class="title">活动封面</label> -->
-      <view class="add-pic {{addView?'show':'hide'}}" bindtap="uploadAction">
-        <view class="bg-wrap"></view>
-        <image src="../../images/loadimg.svg"></image>
+<site-header show-back="{{true}}" back-url="/pages/challenge/challenge"></site-header>
+<!-- WRC Edit Challenge: 编辑挑战 -->
+<view class="edit-page">
+  <form bindsubmit="submit">
+    <view class="edit-header">
+      <text class="eyebrow">WRC · CHALLENGE MANAGEMENT</text>
+      <text class="page-title">编辑挑战</text>
+      <text class="page-subtitle">修改挑战目标、起止日期、奖励与规则说明</text>
+    </view>
+
+    <!-- 01 挑战基本信息 -->
+    <view class="form-card">
+      <view class="card-badge">01 / 基础信息</view>
+
+      <view class="form-group">
+        <label class="form-label">挑战名称</label>
+        <input
+          class="form-input"
+          name="actyName"
+          value="{{actyName}}"
+          placeholder="例如：2026年10月月度里程挑战"
+          placeholder-class="placeholder-text" />
       </view>
-      <view class="show-pic {{showView?'show':'hide'}}" bindtap="uploadAction">
-        <image src="{{tempFilePaths}}" mode="widthFix" style="height:auto;"></image>
-        <view class="del" bindtap="delete"><image src="../../images/delete.png"></image></view>
+
+      <view class="form-group">
+        <label class="form-label">挑战类型</label>
+        <view class="form-input is-disabled">{{actyType}}</view>
       </view>
-    </view>
-    <view class="form-item vw-wrap">
-      <label for="" class="title">活动名称</label>
-      <input type="text" focus="{{focus}}" value="{{actyName}}" name="actyName" placeholder="请输入活动名称" class="ipt ellipsis"></input>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
-    </view>
-    <view class="form-item vw-wrap">
-      <label for="" class="title">开始时间</label>
-      <view class="ipt">
-        <input type="text" value="{{startTime}}" class="ipt" style="margin-right:0;" disabled="disabled" bindtap="pickerShow" wx:if="{{startTime}}"></input>
-      </view>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
-    </view>
-    <view class="form-item vw-wrap">
-      <label for="" class="title">结束时间</label>
-      <view class="ipt">
-        <input type="text" value="{{endTime}}" class="ipt" style="margin-right:0;" disabled="disabled" bindtap="pickerShow" wx:if="{{endTime}}"></input>
-      </view>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
-    </view>
-    <view class="form-item vw-wrap">
-      <label for="" class="title">挑战距离</label>
-      <input type="digit" focus="{{focus}}" value="{{distance}}" name="distance" class="ipt" placeholder="请输入挑战距离"></input>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix" style="height:auto;"></image></view>
-    </view>
-    <view class="form-item vw-wrap">
-      <label for="" class="title">挑战奖励</label>
-      <view class="fm-con">
-        <radio-group name="stype" class="type-con" style="display:flex;">
-          <label for="">
-            <view style="display:inline-block;margin-right:20rpx;" bindtap="choose">
-              <radio value="0"  checked="{{stype === 0 ? 'true' : ''}}" disabled="disabled" />积分
-            </view>
-          </label>
-          <label for="">
-            <view style="display:inline-block;margin-right:20rpx;" bindtap="choose2">
-              <radio value="1"  checked="{{stype === 1 ? 'true' : ''}}" disabled="disabled" />小花儿
-            </view>
-            
-          </label><input type="digit" name="score" value="{{score}}" disabled="disabled" />
-        </radio-group>
-      </view>
-      <!-- <input type="digit" value="{{distance}}" name="distance" class="ipt" placeholder="请输入挑战距离"></input>
-      <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view> -->
-    </view>
-    <view class="form-item vw-wrap" style="display:block;">
-      <label for="" class="title">挑战说明</label>
-      <textarea name="remark" focus="{{focus}}" maxlength="-1" class="ipt" placeholder="请输入挑战说明" style="display:block;width:100%;height:300rpx;line-height:1;overflow-y:scroll;padding:0;margin:0;text-align:left;" value="{{remark}}"></textarea>
-    </view>
-    <view wx:if="{{actyType!=='V挑战'}}">
-      <view class="sub-tit vw-wrap">报名填写项</view>
-      <view class="form-item vw-wrap">
-        <label for="" class="title">姓名</label>
-        <view class="ipt no-mr"><switch name="switch" checked="true" disabled style="zoom: 0.8;"/></view>
-      </view>
-      <view class="form-item vw-wrap">
-        <label for="" class="title">电话号码</label>
-        <view class="ipt no-mr" bindtap="checkOr"><switch name="switch" checked="{{checkOr}}" style="zoom: 0.8;"/></view>
-      </view>
-    </view>
-    <view class="vw-wrap" wx:if="{{actyType=='V挑战'}}">
-      <view wx:if="{{runCon}}">
-        <view class="infor-con" wx:if="{{actyMember.length==0}}">
-          <view class="total" bindtap="toList">
-            <view><text class="green">选择成员</text></view>
-            <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+
+      <view class="form-group" bindtap="pickerShow">
+        <label class="form-label">挑战起止日期</label>
+        <view class="time-display-box">
+          <view class="time-item">
+            <text class="time-sub">开始日期</text>
+            <text class="time-val"><block wx:if="{{startTime}}">{{startTime}}</block><block wx:else>点击选择开始日期</block></text>
           </view>
-        </view>
-        <view class="infor-con" wx:if="{{actyMember.length>0}}">
-          <view class="list" style="max-width: 260rpx;height: 60rpx;overflow: hidden;">
-            <block wx:for="{{actyMember}}" wx:key="index" wx:for-item="item" wx:if="{{item.state==1}}">
-              <view class="item"><image src="{{item.header_url}}"></image></view>
-            </block>
-          </view>
-          <view class="total" bindtap="toList">
-            <view><text class="green">{{totalIn}}人</text></view>
-            <view class="add-arrow"><image src="../../images/arrow-r-gray.png" mode="widthFix"></image></view>
+          <text class="time-arrow">→</text>
+          <view class="time-item">
+            <text class="time-sub">结束日期</text>
+            <text class="time-val"><block wx:if="{{endTime}}">{{endTime}}</block><block wx:else>点击选择结束日期</block></text>
           </view>
         </view>
       </view>
+
+      <view class="form-group">
+        <label class="form-label">挑战目标距离 (公里)</label>
+        <input
+          class="form-input"
+          type="digit"
+          name="distance"
+          value="{{distance}}"
+          placeholder="例如：100"
+          placeholder-class="placeholder-text" />
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">挑战说明与规则</label>
+        <textarea
+          class="form-textarea"
+          name="remark"
+          value="{{remark}}"
+          placeholder="请输入本次挑战的规则、达标条件或鼓励寄语"
+          placeholder-class="placeholder-text"
+          maxlength="-1" />
+      </view>
+    </view>
+
+    <!-- 02 挑战封面图片 -->
+    <view class="form-card">
+      <view class="card-badge">02 / 封面图片</view>
+
+      <view class="cover-uploader" wx:if="{{!tempFilePaths}}" bindtap="uploadAction">
+        <view class="uploader-icon">🎯</view>
+        <text class="uploader-title">点击上传挑战封面</text>
+        <text class="uploader-sub">建议使用 300 × 240 等比例跑步插画或海报</text>
+      </view>
+
+      <view class="cover-preview-box" wx:else>
+        <image class="cover-image" src="{{tempFilePaths}}" mode="aspectFill" bindtap="uploadAction"></image>
+        <view class="cover-actions">
+          <view class="cover-btn change-btn" bindtap="uploadAction">重新选择</view>
+          <view class="cover-btn delete-btn" bindtap="deleteCover">删除</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 03 挑战奖励设置 -->
+    <view class="form-card">
+      <view class="card-badge">03 / 达标奖励</view>
+
+      <view class="form-group">
+        <label class="form-label">奖励类型</label>
+        <view class="chip-group">
+          <view
+            class="chip {{stype === 0 ? 'active' : ''}}"
+            data-type="0"
+            bindtap="chooseRewardType">
+            积分
+          </view>
+          <view
+            class="chip {{stype === 1 ? 'active' : ''}}"
+            data-type="1"
+            bindtap="chooseRewardType">
+            小花儿
+          </view>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <label class="form-label">奖励分值 / 数量</label>
+        <input
+          class="form-input"
+          type="digit"
+          name="score"
+          value="{{score}}"
+          placeholder="例如：50"
+          placeholder-class="placeholder-text" />
+      </view>
+    </view>
+
+    <!-- 04 参与设置 -->
+    <view class="form-card" wx:if="{{actyType !== 'V挑战'}}">
+      <view class="card-badge">04 / 报名填写项</view>
+
+      <view class="switch-row">
+        <view class="switch-info">
+          <text class="switch-title">跑友真实姓名</text>
+          <text class="switch-sub">系统默认必需项</text>
+        </view>
+        <switch checked="{{true}}" disabled color="#075b40" />
+      </view>
+
+      <view class="switch-row border-top">
+        <view class="switch-info">
+          <text class="switch-title">联系手机号码</text>
+          <text class="switch-sub">开启后，跑友加入挑战需提供联系电话</text>
+        </view>
+        <switch checked="{{hasMobile === 1}}" bindchange="toggleMobile" color="#075b40" />
+      </view>
+    </view>
+
+    <!-- V挑战专属成员设置 -->
+    <view class="form-card" wx:if="{{actyType === 'V挑战'}}">
+      <view class="card-badge">04 / V挑战限定成员</view>
+      <view class="group-members-section">
+        <view class="group-members-head" bindtap="openMemberModal">
+          <text class="section-title">限定参赛跑友 ({{actyMember.length}}人)</text>
+          <text class="section-link">选择成员 →</text>
+        </view>
+        <view class="member-avatar-row" wx:if="{{actyMember.length > 0}}" bindtap="openMemberModal">
+          <image
+            wx:for="{{actyMember}}"
+            wx:key="id"
+            wx:if="{{index < 8}}"
+            class="stacked-avatar"
+            src="{{item.header_url || '/images/default.png'}}"
+            mode="aspectFill">
+          </image>
+          <view class="more-count" wx:if="{{actyMember.length > 8}}">+{{actyMember.length - 8}}</view>
+        </view>
+        <view class="member-empty-tip" wx:else bindtap="openMemberModal">点击指定参与此项V挑战的跑友</view>
+      </view>
+    </view>
+
+    <!-- 底部操作栏 -->
+    <view class="bottom-action-bar">
+      <button class="primary-submit-btn" form-type="submit" hover-class="btn-pressed">保存挑战修改</button>
+    </view>
+  </form>
+
+  <!-- 成员选择弹窗 -->
+  <view class="modal-mask" wx:if="{{runModal}}" bindtap="closeMemberModal"></view>
+  <view class="member-modal" wx:if="{{runModal}}">
+    <view class="modal-head">
+      <text class="modal-title">指定V挑战参赛成员</text>
+      <text class="modal-count">已选 {{totalMan}} 人</text>
+    </view>
+    <scroll-view scroll-y="true" class="modal-scroll">
+      <checkbox-group bindchange="checkboxChangeMember">
+        <label class="member-picker-row" wx:for="{{avastars}}" wx:key="id">
+          <checkbox value="{{item.id}}" checked="{{item.checked}}" color="#075b40" />
+          <image class="picker-avatar" src="{{item.header_url || '/images/default.png'}}" mode="aspectFill"></image>
+          <view class="picker-name-col">
+            <text class="picker-name">{{item.user_name || item.nick_name || '跑友'}}</text>
+            <text class="picker-meta">ID {{item.id}} · {{item.address || '跑团成员'}}</text>
+          </view>
+        </label>
+      </checkbox-group>
+    </scroll-view>
+    <view class="modal-foot">
+      <view class="modal-btn cancel-btn" bindtap="closeMemberModal">取消</view>
+      <view class="modal-btn confirm-btn" bindtap="confirmMembers">确定选择 ({{totalMan}})</view>
     </view>
   </view>
-  <!-- 遮罩层 -->
-  <view class="modal-mask" wx:if="{{runModal}}"></view>
-      <!-- 弹出框 -->
-      <view class="modal-dialog" style="width:90%;" wx:if="{{runModal}}">
-        <view class="modal-content">
-          <scroll-view scroll-y="true" style="height:70vh">
-            <checkbox-group class="radio-group" data-index="index" bindchange="checkboxChange2" name="actyType">
-              <label wx:for="{{avastars}}" wx:key="index" wx:for-item="item">
-                <view class="member"> 
-                  <view class="check-radio" wx:if="{{item.state==1}}">
-                    <checkbox value="{{item.id}}" checked="true"/>
-                  </view>
-                  <view class="check-radio" wx:if="{{item.state!==1}}">
-                    <checkbox value="{{item.id}}" checked=""/>
-                  </view>
-                  <view class="user-infor">
-                    <view class="user-pic">
-                      <image src="{{item.header_url}}" mode="widthFix" class="pic"></image>
-                    </view>
-                    <view class="other-infor">
-                      <view class="infor">
-                        <view class="nick-name" wx:if="{{item.name!==''}}">{{item.name}}</view>
-                        <view class="nick-name" wx:else>{{item.nick_name}}</view>
-                        <view class="sex" wx:if="{{item.sex == 1}}"><image src="../../images/man.svg"></image></view>
-                        <view class="sex" wx:if="{{item.sex == 2}}"><image src="../../images/woman.svg"></image></view>
-                        <view wx:if="{{item.level == 'VIP'}}"><image src="../../images/superVIP.svg" mode="widthFix" class="level"></image></view>
-                        <view wx:if="{{item.level == '普通'}}"><image src="../../images/normalVIP.svg" mode="widthFix" class="level"></image></view>
-                        <view class="my-area" style="background:#f36838;" wx:if="{{item.address=='北京'}}">{{item.address}}</view>
-                        <view class="my-area" style="background:#4CB944;" wx:if="{{item.address=='日照'}}">{{item.address}}</view>
-                        <view class="my-area" style="background:#bacac6;" wx:if="{{item.address=='其他地区'}}">{{item.address}}</view>
-                      </view>
-                      <view class="total">
-                        <text class="tag">ID{{item.id}}</text>
-                      </view>
-                    </view>
-                  </view>
-                </view>
-              </label>
-            </checkbox-group>
-          </scroll-view>
-        </view>
-        <!-- 操作按钮 -->
-        <view class="modal-footer nopd">
-          <button class="btn btn-cancel" bindtap="onCancel2" data-status="cancel">取消</button>
-          <button class="btn btn-confirm" bindtap="onConfirm2">确定<text wx:if="{{totalMan>0}}">({{totalMan}})</text></button>
-        </view>
-      </view>
-  <view class="full-btn">
-    <button class="btn btnTwo" form-type="submit">完成</button>
-  </view>
-</form>
-<time-picker pickerShow="{{isPickerShow}}" id="picker" wx:if="{{isPickerRender}}" bind:hidePicker="pickerHide" bind:setPickerTime="setPickerTime"
-  config="{{pickerConfig}}"></time-picker>
+</view>
+
+<!-- 日期选择器 -->
+<time-picker
+  pickerShow="{{isPickerShow}}"
+  id="picker"
+  wx:if="{{isPickerRender}}"
+  bind:hidePicker="pickerHide"
+  bind:setPickerTime="setPickerTime"
+  config="{{pickerConfig}}">
+</time-picker>

@@ -10,7 +10,13 @@ Page({
     tabbar: {},
     activityList: [],
     duty: '',
-    page: 1
+    page: 1,
+    loading: true,
+    hasMore: true,
+    loadError: false
+  },
+  openMyPage: function () {
+    wx.switchTab({ url: '../mydata/mydata' })
   },
   creatNew: function () {
     wx.navigateTo({
@@ -47,6 +53,7 @@ Page({
               that.setData({
                 activityList: activityList
               })
+              console.log(res)
               wx.showToast({
                 title: '已删除',
                 icon: 'none',
@@ -64,6 +71,7 @@ Page({
             }
           })
          } else {
+           console.log('用户取消')
          }
        }
     })
@@ -77,11 +85,16 @@ Page({
   },
   initLimit: function(){
     var userId = app.globalData.userId
+    if (!userId || userId <= 0) {
+      this.setData({ duty: '' })
+      return
+    }
     var data = { 
       id : userId
     }
     util.request('user/get', 'POST', data, '数据加载中 ...', (res)=>{
       var that = this
+      console.log(res)
       if(res.data.success){
         if(res.data.data.duty=='团长,管理员'||res.data.data.duty=='管理员,团长'){
           that.setData({
@@ -98,57 +111,44 @@ Page({
   initActy: function(){
     var that = this
     var data = {
-      page: that.data.page++,
+      page: 1,
       type: '团跑'
     }
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
+    this.setData({ page: 1, loading: true, loadError: false })
     util.request('acty/getactylist', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data.success){
-        var allData = res.data.data
-        for(var i=0; i<allData.length;i++){
-          var createTime = allData[i].start_timestr.substring(0, 16)
-          var endTime = allData[i].end_timestr.substring(11, 16)
-          var createTime1 = util.dislodgeZero(createTime)
-          var endTime1 = util.dislodgeZero(endTime)
-          allData[i].start_timestr = createTime1 
-          allData[i].end_timestr = endTime1
-          if(allData[i].acty_state == 0){
-            that.setData({
-              acty_state: '已结束'
-            })
-          }
-        }
+      if(res.data && res.data.success){
+        var allData = that.formatActivity(res.data.data || [])
         that.setData({
           activityList: allData,
-          start_timestr: createTime1,
-          end_timestr: endTime1
+          page: 2,
+          loading: false,
+          hasMore: allData.length > 0,
+          loadError: false
         })
-        wx.hideLoading({
-          success: (res) => {},
-        })
-    }else{
-      wx.hideLoading({
-        success: (res) => {},
-      })
-        // wx.showToast({
-        //   title: res.data.error,
-        //   icon: 'none',
-        //   duration: 1500
-        // })  
+      } else {
+        that.setData({ activityList: [], loading: false, hasMore: false, loadError: true })
       }
     })
+  },
+  formatActivity: function(list) {
+    return list.map(function(item) {
+      var start = item.start_timestr || ''
+      var end = item.end_timestr || ''
+      return Object.assign({}, item, {
+        start_timestr: start ? util.dislodgeZero(start.substring(0, 16)) : '时间待公布',
+        end_timestr: end ? util.dislodgeZero(end.substring(11, 16)) : ''
+      })
+    })
+  },
+  retryLoad: function() {
+    this.initActy()
   },
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
     wx.hideTabBar();
-    this.setData({
-      page: 1
-    })
+    this.initLimit()
     this.initActy()
   },
   /**
@@ -158,44 +158,24 @@ Page({
     this.loadMore()
   },
   loadMore: function () {
+    if (this.data.loading || !this.data.hasMore) return
     var that = this
     var data = {
-      page: that.data.page ++,
+      page: that.data.page,
       type: '团跑'
     }
-    wx.showLoading({
-      title: '加载中',
-      icon: 'none'
-    })
+    this.setData({ loading: true })
     util.request('acty/getactylist', 'POST', data, '数据加载中...', (res)=>{
-      if(res.data.success){
-        var allData = res.data.data
-        var content = this.data.activityList.concat(allData)
-        for(var i=0; i<allData.length;i++){
-          var createTime = allData[i].start_timestr.substring(0, 16)
-          var endTime = allData[i].end_timestr.substring(11, 16)
-          var createTime1 = util.dislodgeZero(createTime)
-          var endTime1 = util.dislodgeZero(endTime)
-          allData[i].start_timestr = createTime1 
-          allData[i].end_timestr = endTime1
-          if(allData[i].acty_state == 0){
-            that.setData({
-              acty_state: '已结束'
-            })
-          }
-        }
+      if(res.data && res.data.success){
+        var allData = that.formatActivity(res.data.data || [])
         that.setData({
-          activityList: content,
-          start_timestr: createTime1,
-          end_timestr: endTime1
-        })
-        wx.hideLoading({
-          success: (res) => {},
+          activityList: that.data.activityList.concat(allData),
+          page: that.data.page + 1,
+          hasMore: allData.length > 0,
+          loading: false
         })
       }else{
-      wx.hideLoading({
-        success: (res) => {},
-      })
+        that.setData({ loading: false })
       }
     })
   }

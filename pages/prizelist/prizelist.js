@@ -22,6 +22,7 @@ Page({
     var total = e.currentTarget.dataset.total
     var that = this
     that.setData({
+      id: goodsId,
       goodsId: goodsId,
       goodsName: name,
       total: total
@@ -52,6 +53,7 @@ Page({
       total: total,
       addr: addr
     })
+    console.log(this.data);
     this.getPrize() 
   },
   getPrize: function(){
@@ -62,6 +64,7 @@ Page({
     }
     util.request('goods/searchlist', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
+        console.log(res.data)
         that.setData({
           listData: res.data.data
         })
@@ -86,12 +89,14 @@ Page({
       gn : '',
       page: that.data.page++
     }
+    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'loading'
     })
     util.request('goods/searchlist', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
+        console.log(res.data)
         var allData = res.data.data
         var content = that.data.listData.concat(allData)
         that.setData({

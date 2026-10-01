@@ -1,8 +1,11 @@
 {
-  "navigationStyle": "default",
+  "navigationStyle": "custom",
   "backgroundTextStyle":"dark",
-  "backgroundColor": "#00b8a9",
-  "navigationBarBackgroundColor": "#00b8a9",
+  "backgroundColor": "#fbfcf9",
+  "navigationBarBackgroundColor": "#fbfcf9",
   "navigationBarTitleText": "团跑详情",
-  "navigationBarTextStyle":"white"
+  "navigationBarTextStyle":"black",
+  "usingComponents": {
+    "site-header": "../../components/site-header/site-header"
+  }
 }

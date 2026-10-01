@@ -1,165 +1,164 @@
-<!--index.wxml-->
-<view class="top-part">
-  <!--开发位置-->
-  <block wx:if="{{systemInfo.platform == 'devtools'}}">
-    <image src="{{logoSrc}}" class="logo"></image>
-    <view class="userinfo-avatar">
-      <view bindtap="openLogin" wx:if="{{userId==''}}">
-        <image src="{{avatarUrl}}" mode="widthFix"></image>
-      </view>
-      <view bindtap="toUserCenter" wx:else>
-        <image src="{{avatarUrl}}" mode="widthFix"></image>
-      </view>
+<!-- WRC member home: selected training dashboard direction. -->
+<site-header avatar="{{avatarUrl}}" bindprofiletap="handleProfileTap"></site-header>
+<view class="home-root">
+  <view class="home-hero">
+    <image class="home-watermark" src="/images/redesign/wr-mark.png" mode="aspectFit"></image>
+    <text class="home-eyebrow">WRC · {{todayLabel}}</text>
+    <view class="home-hero-title"><view>今天，</view><view>跑得怎么样？</view></view>
+    <view class="home-hero-underline"></view>
+    <text class="home-hero-intro">跑步，只不过是一场自己与自己的较量</text>
+    <view class="home-cta" bindtap="toClockIn" hover-class="home-cta-pressed" role="button" aria-label="记录跑步">
+      <image class="home-cta-runner" src="/images/redesign/runner.png" mode="aspectFit"></image>
+      <view class="home-cta-rule"></view>
+      <text class="home-cta-label">记录跑步</text>
+      <image class="home-cta-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
     </view>
-  </block>
-  <!--苹果位置-->
-  <block wx:if="{{systemInfo.platform == 'ios'}}">
-    <image src="{{logoSrc}}" class="logo"></image>
-    <view class="userinfo-avatar">
-      <view bindtap="openLogin" wx:if="{{userId==''}}">
-        <image src="{{avatarUrl}}" mode="widthFix"></image>
-      </view>
-      <view bindtap="toUserCenter" wx:else>
-        <image src="{{avatarUrl}}" mode="widthFix"></image>
-      </view>
-    </view>
-  </block>
-  <!--安卓位置-->
-  <block wx:if="{{systemInfo.platform == 'android'}}">
-    <image src="{{logoSrc}}" class="logo" style="margin: 20rpx auto 0;"></image>
-    <view class="userinfo-avatar" style="top: 60rpx; height: 60rpx; width: 60rpx;">
-      <view bindtap="openLogin" wx:if="{{userId==''}}">
-        <image src="{{avatarUrl}}" mode="widthFix"></image>
-      </view>
-      <view bindtap="toUserCenter" wx:else>
-        <image src="{{avatarUrl}}" mode="widthFix"></image>
-      </view>
-    </view>
-  </block>
+  </view>
 
-</view>
-<scroll-view scroll-y style="height:60%;">
-  <view class="scroll-view-item nav-mb">
-    <view class="swiper">
-      <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" style="height:{{height}}" circular="true">
-        <block wx:for="{{challenge}}" wx:key="index" wx:if="{{index<4}}">
-          <swiper-item>
-            <navigator hover-class="none" url="../challengedetail/challengedetail?id={{item.id}}">
-              <image src="{{item.acty_img}}" mode="widthFix" style="width:100%;height:auto;" bindload='goheight' />
-            </navigator>
-          </swiper-item>
+  <view class="home-section home-month-card">
+    <view class="home-section-head">
+      <view class="home-month-title-left">
+        <text class="home-month-main-title">本周目标跑量</text>
+      </view>
+      <view class="home-month-head-right">
+        <text class="home-month-sub">{{currentMonthNum}}月</text>
+      </view>
+    </view>
+
+    <view class="home-month-summary">
+      <view class="home-month-distance">
+        <text class="home-month-number">{{userId > 0 && monthSummaryLoaded ? weekDistance : "—"}}</text>
+        <text class="home-month-unit">/ {{userId > 0 ? (monthGoalStatus === "ready" ? weekTargetFormatted : (monthGoalStatus === "error" ? "待确认" : "—")) : "19.25"}} 公里</text>
+      </view>
+      <text class="home-month-percent">{{userId > 0 && monthSummaryLoaded && monthGoalStatus === "ready" ? weekPercent + "%" : "—"}}</text>
+    </view>
+
+    <view class="home-month-progress" aria-label="{{userId > 0 && monthSummaryLoaded && monthGoalStatus === 'ready' ? '本周跑量已达目标的' + weekPercent + '%' : '本周跑量暂不可用'}}">
+      <view class="home-month-progress-fill" style="width: {{weekProgressWidth}};"></view>
+    </view>
+
+    <view class="home-month-caption-wrap" bindtap="{{(monthSummaryError || monthGoalStatus === 'error') ? 'retryMonthSummary' : ''}}">
+      <text class="home-month-caption {{(monthSummaryError || monthGoalStatus === 'error') ? 'is-error' : ''}}">{{userId <= 0 ? "登录后查看本周跑量 · 折算本周目标 19.25 公里" : (monthSummaryError ? "跑量数据加载失败，点击重试" : (monthGoalStatus === "error" ? "目标确认失败，点击重试" : (monthSummaryLoading || monthGoalStatus === "loading" ? "正在同步本周目标与跑量…" : (weekGoalCaption || "本周跑量记录"))))}}</text>
+      <image wx:if="{{userId > 0 && (monthSummaryError || monthGoalStatus === 'error')}}" class="home-caption-retry-icon" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+    </view>
+
+    <view class="home-metrics">
+      <view class="home-metric-item">
+        <text class="home-metric-number">{{userId > 0 && monthSummaryLoaded ? monthRunDays : "—"}}</text>
+        <text class="home-metric-label">本月打卡 · 天</text>
+      </view>
+      <view class="home-metric-item">
+        <text class="home-metric-number" style="color: {{userId > 0 && serialDay !== null ? (serialDayColor || '#28a745') : '#9aa69e'}};">{{userId > 0 && serialDay !== null ? serialDay : "—"}}</text>
+        <text class="home-metric-label">连续打卡 · 天</text>
+      </view>
+      <view class="home-metric-item">
+        <text class="home-metric-number">{{userId > 0 && (yearLoaded || statsLoaded) ? yearDistance : "—"}}</text>
+        <text class="home-metric-label">今年跑量 · 公里</text>
+      </view>
+    </view>
+
+    <view class="home-month-calendar">
+      <view class="home-heatmap-weekdays">
+        <text wx:for="{{['一', '二', '三', '四', '五', '六', '日']}}" wx:key="*this">{{item}}</text>
+      </view>
+      <view class="home-heatmap-grid" wx:if="{{!monthSummaryError}}">
+        <block wx:for="{{homeHeatmap.days}}" wx:key="index">
+          <view wx:if="{{item.isEmpty}}" class="home-heatmap-cell is-empty"></view>
+          <view
+            wx:else
+            class="home-heatmap-cell level-{{item.level}} {{item.isFuture ? 'is-future' : ''}} {{item.isToday ? 'is-today' : ''}}"
+            aria-label="{{item.dateLabel}}，{{item.distance > 0 ? item.displayKm + '公里' : '未打卡'}}">
+            <text class="cell-day-num" wx:if="{{item.distance <= 0}}">{{item.day}}</text>
+            <view class="cell-run {{item.displayKm >= 100 ? 'is-condensed' : ''}}" wx:if="{{item.distance > 0}}">
+              <text class="cell-run-value">{{item.displayKm}}</text><text class="cell-run-unit">km</text>
+            </view>
+          </view>
         </block>
-      </swiper>
-    </view>
-    <view class="vw-wrap margin-b">
-      <view class="infor-con">
-        <view class="list">
-          <block wx:for="{{userList}}" wx:key="index" wx:for-item="item" wx:if="{{index<11}}">
-            <view class="item">
-              <image src="{{item.header_url}}"></image>
-            </view>
-          </block>
-        </view>
-        <view class="total awesome-bg b-tapered" bindtap="toList">
-          <view>{{actyIn}}<text class="gray">人使用</text></view>
-          <view class="add-arrow">
-            <image src="../../images/arrow-r-gray.png" mode="widthFix"></image>
-          </view>
-        </view>
       </view>
-      <view class="horizontal">
-        <wxs src="../../utils/toDecimal2.wxs" module="module1" />
-        <scroll-view scroll-x style="width:100%;white-space:nowrap;">
-          <view class="member-item awesome-bg b-rainbow" wx:for="{{recordList}}" wx:key="index" data-img="{{item.sport_img}}" data-distance="{{item.distance}}" data-speed="{{item.speed}}" bindtap="popShow" wx:if="{{item.state!==2}}">
-            <view class="user-item">
-              <image src="{{item.header_url}}"></image><text class="nick-name ellipsis" wx:if="{{item.name}}">{{item.name}}</text><text class="nick-name ellipsis" wx:else>{{item.nick_name}}</text>
-            </view>
-            <view class="rd-distance"><text class="distance letter-spacing">{{module1.toDecimal2(item.distance)}}</text> KM</view>
-            <view class="rd-speed">平均配速 {{item.speed}}</view>
-          </view>
-        </scroll-view>
+      <view class="home-calendar-error-wrap" wx:else bindtap="retryMonthSummary">
+        <text class="home-calendar-error-text">日历跑量加载失败，点击重新加载</text>
       </view>
-      <!--打卡提醒 打卡提醒-->
-      <view class="daily-record">
-        <view class="record">
-          <view class="b"><text class="days"><text class="days txt">连续打卡</text>{{serialDay}}<text class="days txt">天</text></text></view>
-          <view class="more">做一个自由又自律的人，靠势必实现的决心认真地活着。</view>
-        </view>
-        <view class="tips">{{myTip}}</view>
-      </view>
-
-    </view>
-    <view class="vw-wrap">
-      <view class="news-con">
-        <view class="con-item" bindtap="toActy" wx:if="{{acty_name !== ''}}">
-          <image src="{{acty_img}}" mode="aspectFill"></image>
-          <view class="bg-wrap ellipsis">{{acty_name}}</view>
-          <image src="../../images/flag.png" mode="widthFix" class="cover-fix"></image>
-        </view>
-        <view class="con-item" bindtap="toNews">
-          <image src="{{img_url}}" mode="aspectFill"></image>
-          <view class="bg-wrap ellipsis">{{title}}</view>
-        </view>
-      </view>
-    </view>
-    <view class="grid-menu">
-      <view class="flex-wrap">
-        <view class="flex-item demo-text-3" bindtap="toRecord">
-          <view class="icon-circle">
-            <image src="../../images/i-1.svg" mode="widthFix"></image>
-          </view>
-          <text>打卡记录</text>
-        </view>
-        <view class="flex-item demo-text-5" bindtap="toPrize">
-          <view class="icon-circle">
-            <image src="../../images/i-2.svg" mode="widthFix"></image>
-          </view>
-          <text>兑换好礼</text>
-        </view>
-        <view class="flex-item demo-text-2" bindtap="toHistory">
-          <view class="icon-circle">
-            <image src="../../images/i-3.svg" mode="widthFix"></image>
-          </view>
-          <text>我的兑换</text>
-        </view>
-        <view class="flex-item demo-text-6">
-          <navigator url="/pages/news/news" hover-class="none">
-            <view class="icon-circle">
-              <image src="../../images/i-4.svg" mode="widthFix"></image>
-            </view>
-            <text>跑团介绍</text>
-          </navigator>
-        </view>
-        <view class="flex-item demo-text-2" bindtap="toManage" wx:if="{{duty == '管理员'||duty == '管理员/团长'}}">
-          <view class="icon-circle">
-            <image src="../../images/i-5.svg" mode="widthFix"></image>
-          </view>
-          <text>Admin</text>
-        </view>
-        <!--<view class="flex-item demo-text-2" bindtap="toHope" wx:if="{{duty == '管理员'||duty == '管理员/团长'}}">
-          <view class="icon-circle"><image src="../../images/i-2.svg" mode="widthFix"></image></view>
-          <text>心愿墙</text>
-        </view>-->
-      </view>
-    </view>
-    <view class="vw-wrap" style="margin-bottom: 120px;">
-
     </view>
   </view>
-</scroll-view>
-<tabbar tabbar="{{tabbar}}"></tabbar>
-<!-- 遮罩层 -->
-<view class="modal-mask" bindtap="popHide" wx:if="{{personalInfor}}"></view>
-<!-- 弹出框 -->
-<view class="modal-dialog" wx:if="{{personalInfor}}" style="padding: 0;">
-  <view class="modal-content" style="max-height:65vh;overflow-y:scroll;">
-    <view class="per-infor">
-      <image src="{{personalImg}}" mode="widthFix"></image>
+
+  <view class="home-section home-challenge">
+    <view class="home-section-head" bindtap="toChallengeList">
+      <text>当前挑战</text>
+      <view class="home-section-link">查看挑战<image src="/images/redesign/chevron.svg" mode="aspectFit"></image></view>
+    </view>
+    <view class="home-challenge-content" bindtap="toChallengeCard">
+      <view class="home-challenge-ring">
+        <image class="home-challenge-ring-art" src="{{challengeRingAsset}}" mode="aspectFit"></image>
+        <view class="home-challenge-ring-inner">
+          <image src="/images/redesign/runner.png" mode="aspectFit"></image>
+          <text>{{challengeProgressAvailable ? challengePercent : '—'}}<text class="home-challenge-ring-unit">%</text></text>
+        </view>
+      </view>
+      <view class="home-challenge-main">
+        <view class="home-challenge-name">{{challengeItem ? challengeItem.acty_name : '跑向下一个目标'}}</view>
+        <view class="home-challenge-sub">{{challengeItem ? challengeDistanceLabel : (userId > 0 ? '看看正在进行的挑战' : '登录后查看参与进度')}}</view>
+        <view class="home-challenge-progress"><view style="width: {{challengeProgressWidth}};"></view></view>
+      </view>
+      <view class="home-challenge-remaining">
+        <text class="home-challenge-remaining-number">{{challengeRemaining !== null ? challengeRemaining : '—'}}</text>
+        <text>公里</text>
+        <text>{{challengeRemainingLabel || '距离目标'}}</text>
+      </view>
     </view>
   </view>
-  <!-- 操作按钮 -->
-  <view class="modal-footer">
-    <button class="btn btn-cancel white" bindtap="popHide">真棒啊，我也要去跑步了～ Go Go Go</button>
-    <view style="clear: both;"></view>
+
+  <view class="home-friends home-section">
+    <view class="home-friends-heading">
+      <view class="home-friends-head-left">
+        <text class="home-friends-title">跑友动态</text>
+        <text class="home-friends-count" wx:if="{{recordList.length > 0}}">{{recordList.length}} 条最新打卡</text>
+      </view>
+      <view class="home-rank-entry" bindtap="toList" hover-class="home-rank-entry-active" role="button" aria-label="查看跑友排行榜">
+        <image class="home-rank-trophy" src="/images/redesign/trophy.svg" mode="aspectFit"></image>
+        <text class="home-rank-title">排行榜</text>
+        <view class="home-rank-entry-divider"></view>
+        <view class="home-rank-entry-tabs">
+          <text class="home-rank-tab-btn" data-type="month" catchtap="toRankingByType">月榜</text>
+          <text class="home-rank-tab-dot">·</text>
+          <text class="home-rank-tab-btn" data-type="year" catchtap="toRankingByType">年榜</text>
+        </view>
+        <image class="home-rank-entry-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+      </view>
+    </view>
+    <view class="home-friends-list" wx:if="{{recordList.length > 0}}">
+      <block wx:for="{{recordList}}" wx:key="id">
+        <view class="home-friend-card" data-img="{{item.sport_img}}" bindtap="popShow" hover-class="home-friend-card-active" role="button" aria-label="查看跑友跑步凭证">
+          <view class="home-friend-card-head">
+            <view class="home-friend-person">
+              <image class="home-friend-avatar" src="{{item.displayAvatar || item.header_url || '/images/default.png'}}" mode="aspectFill"></image>
+              <view class="home-friend-identity">
+                <text class="home-friend-name">{{item.displayName || item.name || item.nick_name || '跑友'}}</text>
+                <text class="home-friend-date">{{item.displayDate || '今日打卡'}}</text>
+              </view>
+            </view>
+            <view class="home-friend-badge">本月打卡 {{item.monthCheckInTimes || 1}} 次</view>
+          </view>
+          <view class="home-friend-card-body">
+            <view class="home-friend-metrics">
+              <view class="home-friend-metric-col">
+                <text class="metric-val-big">{{item.displayDistance || item.distance}}</text>
+                <text class="metric-lbl">跑步里程 (公里)</text>
+              </view>
+              <view class="metric-divider"></view>
+              <view class="home-friend-metric-col">
+                <text class="metric-val-med">{{item.displaySpeed || item.speed || '—'}}</text>
+                <text class="metric-lbl">平均配速</text>
+              </view>
+            </view>
+            <view class="home-friend-proof-wrap" wx:if="{{item.sport_img}}">
+              <image class="home-friend-proof-img" src="{{item.sport_img}}" mode="aspectFill"></image>
+              <view class="home-friend-proof-tag">轨迹凭证</view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class="home-friends-empty" wx:else>{{recordLoading ? '正在加载跑友动态…' : (recordError ? '动态暂时无法加载，下拉页面重试' : '暂时还没有跑友动态')}}</view>
   </view>
 </view>
+<tabbar tabbar="{{tabbar}}"></tabbar>

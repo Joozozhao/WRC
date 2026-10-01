@@ -11,11 +11,15 @@ Page({
     btnTab2: ['日常跑', '团跑'],
     // currentTab: 0,
     recordList: [],
+    listState: 'loading',
+    pendingCount: 0,
     stateIcon: true,
     changeModal: false,
     recordType: '',
     noHistory: true,
     page: 1,
+    hasMore: true,
+    loadingMore: false,
     rcdId: 0,
     score: '',
     reason: '',
@@ -30,6 +34,13 @@ Page({
     area: '',
     actType: -1
   },
+
+  // 列表请求版本号：每次 initRecord（首屏/切换筛选）自增，旧请求返回时版本不匹配则丢弃
+  _reqSeq: 0,
+  // 上拉加载进行中标记（并发 guard）
+  _loadingMore: false,
+  // 是否还有下一页（终页 guard）
+  _hasMore: true,
 
   clickArea: function () {
     var that = this
@@ -146,34 +157,55 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function () {
+    this._reqSeq = 0
+    this._loadingMore = false
+    this._hasMore = true
     this.initRecord()
     this.getH()
   },
   initRecord: function () {
     // var userId = app.globalData.userId
     var that = this
+    // 新一次首屏/筛选请求：版本号自增，之前所有在途请求作废
+    var seq = (that._reqSeq || 0) + 1
+    that._reqSeq = seq
+    that._loadingMore = false
+    that._hasMore = true
     that.setData({
-      page: 1
+      page: 1,
+      hasMore: true,
+      loadingMore: false,
+      listState: 'loading'
     })
     var data = {
       userId: 0,
       actyId: 0,
       address: that.data.area,
       actyIds: that.data.actType,
-      page: that.data.page++
+      page: 1
     }
+    console.log(data)
     wx.showLoading({
       title: '加载中',
       icon: 'loading',
       mask: true
     })
     util.request('acty/getsports', 'POST', data, '数据加载中 ...', (res) => {
-      var that = this
+      // 版本不匹配说明已切换筛选，丢弃旧结果
+      if (seq !== that._reqSeq) return
       if (res.data.success) {
-        var recordData = res.data.data
+        var recordData = Array.isArray(res.data.data) ? res.data.data : []
+        console.log(recordData)
+        // 首屏返回空页即视为没有更多，避免无意义上拉
+        that._hasMore = recordData.length > 0
         that.setData({
           recordList: recordData,
-          noHistory: false
+          noHistory: false,
+          listState: 'ready',
+          hasMore: that._hasMore,
+          // 请求成功后才推进页码
+          page: 2,
+          pendingCount: recordData.filter(item => Number(item.state) === 0).length
         })
         wx.hideLoading({
           success: (res) => { },
@@ -184,7 +216,9 @@ Page({
           success: (res) => { },
         })
         that.setData({
-          recordList: []
+          recordList: [],
+          listState: 'error',
+          pendingCount: 0
         })
         wx.showToast({
           title: res.data.error,
@@ -192,35 +226,40 @@ Page({
           duration: 1500
         })
       }
+    }, () => {
+      if (seq !== that._reqSeq) return
+      wx.hideLoading()
+      that.setData({ listState: 'error', pendingCount: 0 })
     })
 
   },
   pass: function (e) {
     var id = e.currentTarget.dataset.id
-    var Index = e.currentTarget.dataset.index
     var that = this
     var userId = app.globalData.userId
-    var recordList = that.data.recordList;
+    var seq = that._reqSeq
     var data = {
       id: id,
       userId: userId,
       state: 1,
       deductFraction: 0
     }
+    console.log(data)
     util.request('acty/setsportstate', 'POST', data, '数据加载中 ...', (res) => {
+      // 筛选已切换则丢弃，避免污染新列表
+      if (seq !== that._reqSeq) return
       if (res.data.success) {
-        for (let i in recordList) {
-          //遍历列表数据      
-          if (i == Index) {
-            //根据下标找到目标,改变状态  
-            if (recordList[i].state == 0) {
-              recordList[i].state = parseInt(recordList[i].state) + 1
-            }
+        console.log(res)
+        // 按 id 定位，避免并发分页后下标错位
+        var recordList = that.data.recordList.map(function (item) {
+          if (String(item.id) === String(id) && Number(item.state) === 0) {
+            return Object.assign({}, item, { state: 1 })
           }
-        }
-        //数组重新赋值
-        this.setData({
-          recordList: recordList
+          return item
+        })
+        that.setData({
+          recordList: recordList,
+          pendingCount: recordList.filter(item => Number(item.state) === 0).length
         })
         wx.showToast({
           title: '审核通过',
@@ -239,40 +278,37 @@ Page({
   allPass: function () {
     var that = this
     var userId = app.globalData.userId
-    var recordList = that.data.recordList;
-    var ids = []
-    for (var i = 0; i < recordList.length; i++) {
-      var state = recordList[i].state
-      ids.push(recordList[i].id)
-      var data = {
-        id: ids.toString(),
-        userId: userId,
-        state: 1,
-        deductFraction: 0
-      }
-      util.request('acty/setsportstate', 'POST', data, '数据加载中 ...', (res) => {
-        if (res.data.success) {
-          if (state == 0) {
-            state = 1
-            //数组重新赋值
-            this.setData({
-              recordList: recordList
-            })
+    // 仅针对本次请求发出的待审核 id
+    var ids = that.data.recordList.filter(item => Number(item.state) === 0).map(item => item.id)
+    if (!ids.length) return
+    var seq = that._reqSeq
+    var idSet = {}
+    ids.forEach(function (id) { idSet[String(id)] = true })
+    util.request('acty/setsportstate', 'POST', {
+      id: ids.join(','),
+      userId: userId,
+      state: 1,
+      deductFraction: 0
+    }, '数据加载中 ...', (res) => {
+      // 筛选已切换：新页面与本批无关，直接丢弃
+      if (seq !== that._reqSeq) return
+      if (res.data.success) {
+        // 只把本次发出的 id 置为已通过，期间分页新加载的待审核记录仍保持 pending
+        var recordList = that.data.recordList.map(function (item) {
+          if (Number(item.state) === 0 && idSet[String(item.id)]) {
+            return Object.assign({}, item, { state: 1 })
           }
-          wx.showToast({
-            title: '一键审核完成',
-            icon: 'none',
-            duration: 1500
-          })
-        } else {
-          wx.showToast({
-            title: res.data.error,
-            icon: 'none',
-            duration: 1500
-          })
-        }
-      })
-    }
+          return item
+        })
+        that.setData({
+          recordList: recordList,
+          pendingCount: recordList.filter(item => Number(item.state) === 0).length
+        })
+        wx.showToast({ title: '待审核记录已通过', icon: 'none' })
+      } else {
+        wx.showToast({ title: res.data.error, icon: 'none' })
+      }
+    })
   },
   refuseCon: function (e) {
     var that = this
@@ -314,6 +350,7 @@ Page({
       deductFraction: formatDate.score,
       desc: formatDate.reason
     }
+    console.log(data)
     util.request('acty/setsportstate', 'POST', data, '数据加载中 ...', (res) => {
       if (res.data.success) {
         wx.showToast({
@@ -321,6 +358,8 @@ Page({
           icon: 'none',
           duration: 1500
         })
+        that.setData({ changeModal: false, page: 1 })
+        that.initRecord()
       } else {
         wx.showToast({
           title: res.data.error,
@@ -329,11 +368,6 @@ Page({
         })
       }
     })
-    this.setData({
-      changeModal: false,
-      page: 1
-    })
-    this.onLoad()
   },
   /**
    * 页面上拉触底事件的处理函数
@@ -342,34 +376,82 @@ Page({
     this.loadMore()
   },
   loadMore: function () {
+    var that = this
+    // 并发 guard：加载中不重复发请求
+    if (that._loadingMore) return
+    // 终页 guard：没有下一页时不再请求
+    if (!that._hasMore) return
+    if (that.data.listState !== 'ready') return
+    // 本次分页沿用当前筛选版本；期间若切换筛选，initRecord 会自增版本号使结果作废
+    var seq = that._reqSeq
+    var page = that.data.page
     var data = {
       userId: 0,
       actyId: 0,
-      address: this.data.area,
-      actyIds: this.data.actType,
-      page: this.data.page++
+      address: that.data.area,
+      actyIds: that.data.actType,
+      page: page
     }
+    console.log(data)
+    that._loadingMore = true
+    that.setData({ loadingMore: true })
     wx.showLoading({
       title: '加载中',
       icon: 'loading'
     })
     util.request('acty/getsports', 'POST', data, '数据加载中 ...', (res) => {
-      var that = this
+      if (seq !== that._reqSeq) {
+        // 筛选已切换，本次结果作废；不修改任何状态，
+        // 否则会清掉新筛选分页请求的 _loadingMore guard 导致重复发请求
+        return
+      }
       if (res.data.success) {
-        var recordData = res.data.data
-        var content = that.data.recordList.concat(recordData)
+        var recordData = Array.isArray(res.data.data) ? res.data.data : []
+        // 按 id 去重，避免重复分页数据串入
+        var seen = {}
+        var content = that.data.recordList.concat(recordData).filter(function (item) {
+          var key = String(item.id)
+          if (seen[key]) return false
+          seen[key] = true
+          return true
+        })
+        var hasMore = recordData.length > 0
+        that._loadingMore = false
+        that._hasMore = hasMore
         that.setData({
           recordList: content,
-          noHistory: false
+          noHistory: false,
+          hasMore: hasMore,
+          // 成功后才推进页码；空页则停在当前页
+          page: hasMore ? page + 1 : page,
+          loadingMore: false,
+          pendingCount: content.filter(item => Number(item.state) === 0).length
         })
         wx.hideLoading({
           success: (res) => { },
         })
       } else {
+        // 业务失败：页码不推进，允许重试
+        that._loadingMore = false
+        that.setData({ loadingMore: false })
         wx.hideLoading({
           success: (res) => { },
         })
+        wx.showToast({
+          title: res.data.error || '加载失败',
+          icon: 'none',
+          duration: 1500
+        })
       }
+    }, () => {
+      // 网络失败：恢复状态，页码不推进，允许重试
+      if (seq !== that._reqSeq) {
+        // 过期回调直接返回，不得清掉新请求的 guard
+        return
+      }
+      that._loadingMore = false
+      that.setData({ loadingMore: false })
+      wx.hideLoading()
     })
   }
 })

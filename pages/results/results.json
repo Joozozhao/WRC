@@ -1,7 +1,9 @@
 {
-  "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#a81b1f",
+  "navigationStyle": "custom",
+  "backgroundTextStyle": "dark",
+  "navigationBarBackgroundColor": "#fafbf7",
   "navigationBarTitleText": "我的马历",
-  "navigationBarTextStyle":"white"
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#fafbf7",
+  "enablePullDownRefresh": true
 }

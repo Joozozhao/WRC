@@ -1,4 +1,8 @@
 // app.js
+
+// 若使用 Lottie 动画，可以在此处引入 JSON（需要包装为 module.exports 的 JS 文件）
+// const homeLottie = require('./lotties/home.js');
+
 App({
   onLaunch() {
     //隐藏系统tabbar
@@ -26,7 +30,6 @@ App({
     //隐藏系统tabbar
     // wx.hideTabBar();
   },
- 
   getSystemInfo: function () {
     let t = this;
     wx.getSystemInfo({
@@ -55,34 +58,29 @@ App({
     systemInfo: null,//客户端设备信息
     userInfo: null,
     tabBar: {
-      "backgroundColor": "#fff",
-      "color": "#000",
-      "selectedColor": "#4CB944", //仅此一个地儿 控制当前位置的颜色
+      "backgroundColor": "#fbfcf9",
+      "color": "#87928c",
+      "selectedColor": "#0b503b",
       "list": [
         {
           "pagePath": "/pages/index/index",
-          "iconPath": "/components/tabbarComponent/icon/Homepage.png",
-          "selectedIconPath": "/components/tabbarComponent/icon/Homepage-current.png",
+          "iconPath": "/images/redesign/home.svg",
+          // "lottieData": homeLottie,
           "text": "首页"
         },{
           "pagePath": "/pages/activity/activity",
-          "iconPath": "/components/tabbarComponent/icon/Group-run.png",
-          "selectedIconPath": "/components/tabbarComponent/icon/Group-run-current.png",
+          "iconPath": "/images/redesign/groups.svg",
+          // "lottieData": require('./lotties/groups.js'),
           "text": "团跑"
         },{
-          "pagePath": "/pages/clockdaily/clockdaily",
-          "iconPath": "/components/tabbarComponent/icon/add.png",
-          "isSpecial": true,
-          // "text": "打卡"
-        },{
           "pagePath": "/pages/challenge/challenge",
-          "iconPath": "/components/tabbarComponent/icon/challenge.png",
-          "selectedIconPath": "/components/tabbarComponent/icon/Challenge-current.png",
+          "iconPath": "/images/redesign/trophy.svg",
+          // "lottieData": require('./lotties/trophy.js'),
           "text": "挑战"
         },{
           "pagePath": "/pages/mydata/mydata",
-          "iconPath": "/components/tabbarComponent/icon/user.png",
-          "selectedIconPath": "/components/tabbarComponent/icon/User-current.png",
+          "iconPath": "/images/redesign/person.svg",
+          // "lottieData": require('./lotties/person.js'),
           "text": "我的"
         }
       ]

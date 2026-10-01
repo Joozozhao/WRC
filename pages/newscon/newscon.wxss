@@ -1,7 +1,0 @@
-/* pages/toNews/toNews.wxss */
-@import "../address/address.wxss";
-.creat-time{
-  font-size: 24rpx;
-  color: #999;
-  padding-top: 10rpx;
-}

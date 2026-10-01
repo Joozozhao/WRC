@@ -1,7 +1,8 @@
 {
-  "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#4CB944",
+  "navigationStyle": "custom",
+  "backgroundTextStyle": "dark",
+  "backgroundColor": "#fbfcf9",
+  "navigationBarBackgroundColor": "#fbfcf9",
   "navigationBarTitleText": "成员管理",
-  "navigationBarTextStyle":"white"
+  "navigationBarTextStyle": "black"
 }

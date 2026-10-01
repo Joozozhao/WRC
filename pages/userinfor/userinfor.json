@@ -1,7 +1,8 @@
 {
-  "navigationStyle": "default",
-  "backgroundTextStyle":"light",
-  "navigationBarBackgroundColor": "#4CB944",
-  "navigationBarTitleText": "我的...",
-  "navigationBarTextStyle":"white"
+  "navigationStyle": "custom",
+  "backgroundTextStyle": "dark",
+  "backgroundColor": "#fbfcf9",
+  "navigationBarBackgroundColor": "#fbfcf9",
+  "navigationBarTitleText": "个人资料",
+  "navigationBarTextStyle": "black"
 }

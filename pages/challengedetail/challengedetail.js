@@ -1,322 +1,343 @@
 // pages/challengedetail/challengedetail.js
 const util = require('../../utils/util.js')
-// 获取应用实例
 const app = getApp()
+
+function numberOrNull(value) {
+  if (value === undefined || value === null || value === '' || typeof value === 'boolean') return null
+  const number = Number(value)
+  return isFinite(number) ? number : null
+}
+
+function shortTime(value) {
+  return typeof value === 'string' && value ? value.slice(0, 16) : ''
+}
+
 Page({
-  /**
-   * 页面的初始数据
-   */
   data: {
+    actyId: '',
     actyImg: '',
-    per: 0,
-    has_name: 0,
-    has_mobile: 0,
-    actyInfor: true,
-    btnTxt: '参与挑战',
-    btnOpacity: true,
-    hasDistance: 0,
-    distance: 0,
-    target: 0,
-    finalDis: 0,
-    changeModal: false,
-    newDistance: '',
+    actyName: '',
     acty_type: '',
+    actyState: null,
+    statusText: '',
+    daysText: '',
+    isEnded: false,
+    hasClickon: null,
+    viewingOther: false,
+    userId: 0,
+    userid: undefined,
     nickName: '',
     header_url: '',
-    userId: 0,
-    animation: ''
+    has_name: 0,
+    has_mobile: 0,
+    distance: null,
+    minimumDistance: null,
+    target: null,
+    hasDistance: null,
+    finalDis: null,
+    per: 0,
+    progressAvailable: false,
+    isSuccess: false,
+    isFailure: false,
+    canJoin: false,
+    canEditGoal: false,
+    joins: null,
+    participantCountText: '—',
+    actyInList: [],
+    participantsLoading: false,
+    participantsError: false,
+    ltyList: [],
+    lotteryLoading: false,
+    lotteryError: false,
+    startTime: '',
+    endTime: '',
+    remark: '',
+    score: null,
+    rewardUnit: '',
+    changeModal: false,
+    detailLoading: true,
+    detailLoaded: false,
+    detailError: ''
   },
 
-  openLogin: function () {
-    var userId = app.globalData.userId
-    if (userId < 1 || userId == undefined) {
-      util.showLogin((res) => {
-        var data = {
-          code: res.code,
-          encryptedData: "",
-          iv: ""
-        }
-        //取用户的openid
-        util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes) => {
-          var regData = {
-            openId: loginRes.data.data.openid,
-            unionid: loginRes.data.data.unionid
-          }
-          util.request('user/wxregister', 'POST', regData, '', (regRes) => {
-            app.globalData.userId = regRes.data.UserId
-            app.globalData.openId = regData.openId
-            wx.setStorageSync('userId', regRes.data.UserId)
-            wx.setStorageSync('openId', regData.openId)
-            wx.switchTab({
-              url: '../index/index',
-            })
-          })
-        })
-      })
-      // wx.showToast({
-      //   title: 'error',
-      //   icon: 'none',
-      //   duration: 1500
-      // })  
-    }
+  openMyPage: function () {
+    wx.switchTab({ url: '../mydata/mydata' })
   },
-  toList: function () {
-    wx.navigateTo({
-      url: '../actyin/actyin?id=' + this.data.actyId
-    })
-  },
-  /**
-   * 生命周期函数--监听页面加载
-   */
+
   onLoad: function (options) {
-    var id = options.id
-    var userid = options.userid
-    var has_name = options.has_name
-    var has_mobile = options.has_mobile
-    var target = options.target
-    var acty_type = options.acty_type
-    var userId = app.globalData.userId
+    const userId = app.globalData.userId || 0
+    const userid = options.userid
     this.setData({
-      actyId: id,
-      has_name: has_name,
-      has_mobile: has_mobile,
-      acty_type: acty_type,
-      target: target,
+      actyId: options.id || '',
+      userid: userid,
       userId: userId,
-      userid: userid
+      viewingOther: userid !== undefined && userid !== '' && String(userid) !== String(userId),
+      has_name: options.has_name || 0,
+      has_mobile: options.has_mobile || 0,
+      acty_type: options.acty_type || ''
     })
-    var data = {
-      id: userId
-    }
-    util.request('user/get', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        this.setData({
-          nickName: res.data.data.nick_name
-        })
-      }
-    })
-    if (userid != undefined) {
-      var data = {
-        id: userid
-      }
-      util.request('user/get', 'POST', data, '数据加载中 ...', (res) => {
-        if (res.data.success) {
-          this.setData({
-            header_url: res.data.data.header_url,
-          })
-        }
+    this.loadViewerProfile()
+    if (userid !== undefined && userid !== '' && String(userid) !== String(userId)) {
+      util.request('user/get', 'POST', { id: userid }, '', (res) => {
+        const profile = res.data && res.data.success && res.data.data
+        if (profile) this.setData({ header_url: profile.header_url || '' })
       })
     }
   },
-  //返回上一页
+
+  onShow: function () {
+    this.setData({ userId: app.globalData.userId || 0 })
+    this.initChallenge(this.data.actyId)
+  },
+
+  loadViewerProfile: function () {
+    const userId = app.globalData.userId
+    if (!(numberOrNull(userId) > 0)) return
+    util.request('user/get', 'POST', { id: userId }, '', (res) => {
+      const profile = res.data && res.data.success && res.data.data
+      if (profile) this.setData({ nickName: profile.nick_name || '' })
+    })
+  },
+
   back: function () {
     wx.navigateBack({
-      delta: 0,
+      delta: 1,
+      fail: function () { wx.switchTab({ url: '/pages/challenge/challenge' }) }
     })
   },
-  initChallenge: function (id) {
-    var that = this
-    var userId = app.globalData.userId
-    if (that.data.userid == undefined) {
-      var data = {
-        actyId: id,
-        userId: userId
-      }
-    } else {
-      var data = {
-        actyId: id,
-        userId: that.data.userid
-      }
+
+  viewMine: function () {
+    if (!this.data.actyId) return
+    wx.navigateTo({ url: '../challengedetail/challengedetail?id=' + encodeURIComponent(this.data.actyId) })
+  },
+
+  initChallenge: function (id, afterLoaded) {
+    if (!id) {
+      this.setData({ detailLoading: false, detailLoaded: false, detailError: '缺少挑战编号' })
+      return
     }
-    util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        var challengeData = res.data.data
-        that.setData({
-          actyImg: challengeData.acty_img,
-          days: challengeData.days,
-          actyName: challengeData.acty_name,
-          joins: challengeData.joins,
-          startTime: challengeData.start_timestr.substring(0, 16),
-          endTime: challengeData.end_timestr.substring(0, 16),
-          distance: challengeData.distance,
-          hasDistance: challengeData.hasDistance,
-          target: challengeData.target,
-          remark: challengeData.remark,
-          actyState: challengeData.acty_state,
-          hasClickon: challengeData.has_clickon,
-          has_name: challengeData.has_name,
-          has_mobile: challengeData.has_mobile,
-          acty_type: challengeData.acty_type,
-          score: challengeData.snum,
-          stype: challengeData.stype
-        })
-        if (that.data.target >= that.data.hasDistance) {
-          var per = this.GetPercent(challengeData.hasDistance, that.data.target)
-          // var num = new Number(per)
-          that.setData({
-            finalDis: challengeData.resDistance,
-            // per: num.toFixed() //四舍五入取整
-            per: parseInt(per)
-          })
-        } else {
-          that.setData({
-            finalDis: 0,
-            per: 100
-          })
-        }
-        wx.setNavigationBarTitle({
-          title: that.data.actyName
-        })
-        if (that.data.hasClickon == 1) {
-          that.setData({
-            actyInfor: false,
-            btnTxt: '已参加挑战',
-            btnOpacity: false
-          })
+    const viewedUserId = this.data.userid !== undefined && this.data.userid !== ''
+      ? this.data.userid : (app.globalData.userId || 0)
+    this.setData({
+      detailLoading: true,
+      detailLoaded: false,
+      detailError: '',
+      actyInList: [],
+      ltyList: [],
+      participantsError: false,
+      lotteryError: false
+    })
+    util.request('acty/getdetail', 'POST', { actyId: id, userId: viewedUserId }, '数据加载中 ...', (res) => {
+      const detail = res.data && res.data.success && res.data.data
+      if (!detail) {
+        this.setData({ detailLoading: false, detailError: (res.data && res.data.error) || '挑战详情暂时无法加载' })
+        return
+      }
+
+      const state = numberOrNull(detail.acty_state)
+      const days = numberOrNull(detail.days)
+      const joined = numberOrNull(detail.has_clickon)
+      const minimum = numberOrNull(detail.distance)
+      const target = numberOrNull(detail.target)
+      const covered = numberOrNull(detail.hasDistance)
+      const remaining = numberOrNull(detail.resDistance)
+      const joins = numberOrNull(detail.joins)
+      const score = numberOrNull(detail.snum)
+      const isEnded = state === 0 || (days !== null && days < 0)
+      const isChallenge = typeof detail.acty_type === 'string' && detail.acty_type !== '' && detail.acty_type !== 'V挑战'
+      const progressAvailable = joined === 1 && target !== null && target > 0 && covered !== null && covered >= 0
+      const per = progressAvailable ? this.GetPercent(covered, target) : 0
+      const canJoin = isChallenge && !this.data.viewingOther && !isEnded && state !== null && state > 0 && joined === 0 && minimum !== null && minimum > 0
+      const canEditGoal = canJoin && state === 2
+      let statusText = '活动状态待确认'
+      if (isEnded) statusText = '已结束'
+      else if (state === 2) statusText = '进行中'
+      else if (state === 1) statusText = '即将开始'
+      else if (state !== null && state > 0) statusText = '可参与'
+
+      this.setData({
+        actyImg: typeof detail.acty_img === 'string' ? detail.acty_img : '',
+        actyName: detail.acty_name || '',
+        acty_type: detail.acty_type || '',
+        actyState: state,
+        statusText: statusText,
+        daysText: !isEnded && days !== null && days >= 0 ? String(Math.floor(days) + 1) : '',
+        isEnded: isEnded,
+        hasClickon: joined,
+        minimumDistance: minimum !== null && minimum > 0 ? Math.ceil(minimum) : null,
+        distance: minimum !== null && minimum > 0 ? Math.ceil(minimum) : null,
+        target: target !== null && target > 0 ? Math.round(target) : null,
+        hasDistance: covered !== null && covered >= 0 ? covered : null,
+        finalDis: progressAvailable ? Math.max(0, Math.round(remaining !== null ? remaining : target - covered)) : null,
+        per: per,
+        progressAvailable: progressAvailable,
+        isSuccess: progressAvailable && per >= 100,
+        isFailure: progressAvailable && isEnded && per < 100,
+        canJoin: canJoin,
+        canEditGoal: canEditGoal,
+        joins: joins !== null && joins >= 0 ? joins : null,
+        participantCountText: joins !== null && joins >= 0 ? String(joins) : '—',
+        has_name: detail.has_name === undefined || detail.has_name === null ? 0 : detail.has_name,
+        has_mobile: detail.has_mobile === undefined || detail.has_mobile === null ? 0 : detail.has_mobile,
+        startTime: shortTime(detail.start_timestr),
+        endTime: shortTime(detail.end_timestr),
+        remark: typeof detail.remark === 'string' ? detail.remark : '',
+        score: score !== null && score > 0 ? score : null,
+        rewardUnit: Number(detail.stype) === 0 ? '积分' : Number(detail.stype) === 1 ? '小花儿' : '',
+        detailLoading: false,
+        detailLoaded: true,
+        detailError: ''
+      }, () => {
+        if (detail.acty_name) wx.setNavigationBarTitle({ title: detail.acty_name })
+        this.loadParticipants()
+        this.loadLottery()
+        if (typeof afterLoaded === 'function') afterLoaded(this.data.canJoin)
+      })
+    }, () => {
+      this.setData({ detailLoading: false, detailError: '网络错误，请稍后重试' })
+    })
+  },
+
+  retryLoad: function () { this.initChallenge(this.data.actyId) },
+
+  loadParticipants: function () {
+    const viewedUserId = this.data.userid !== undefined && this.data.userid !== ''
+      ? this.data.userid : (app.globalData.userId || 0)
+    const data = {
+      actyId: this.data.actyId,
+      userId: viewedUserId,
+      userName: '',
+      mobile: '',
+      level: '',
+      distance: 1
+    }
+    this.setData({ participantsLoading: true, participantsError: false })
+    util.request('acty/getactyuser', 'POST', data, '', (res) => {
+      const valid = !!(res.data && res.data.success && Array.isArray(res.data.data))
+      const list = valid ? res.data.data : []
+      this.setData({
+        actyInList: list,
+        participantCountText: this.data.joins !== null ? String(this.data.joins) : valid ? String(list.length) : '—',
+        participantsLoading: false,
+        participantsError: !valid
+      })
+    }, () => this.setData({ participantsLoading: false, participantsError: true }))
+  },
+
+  loadLottery: function () {
+    this.setData({ lotteryLoading: true, lotteryError: false })
+    util.request('acty/getluckdrawlist', 'POST', { actyId: this.data.actyId }, '', (res) => {
+      this.setData({
+        ltyList: res.data && res.data.success && Array.isArray(res.data.data) ? res.data.data : [],
+        lotteryLoading: false,
+        lotteryError: !(res.data && res.data.success)
+      })
+    }, () => this.setData({ lotteryLoading: false, lotteryError: true }))
+  },
+
+  toList: function () {
+    if (this.data.actyId) wx.navigateTo({ url: '../actyin/actyin?id=' + encodeURIComponent(this.data.actyId) })
+  },
+
+  toLty: function (e) {
+    const id = e.currentTarget.dataset.id
+    if (id !== undefined && id !== null && id !== '') {
+      wx.navigateTo({ url: '../lotterydetail/lotterydetail?id=' + encodeURIComponent(id) })
+    }
+  },
+
+  GetPercent: function (num, total) {
+    const covered = numberOrNull(num)
+    const target = numberOrNull(total)
+    if (covered === null || target === null || target <= 0) return 0
+    return Math.min(100, Math.max(0, Math.round(covered / target * 10000) / 100))
+  },
+
+  changeIpt: function () {
+    if (this.data.canEditGoal) this.setData({ changeModal: true })
+  },
+
+  onConfirm: function (e) {
+    if (!this.data.canEditGoal) return
+    const raw = String((e.detail.value && e.detail.value.newDistance) || '').trim()
+    const value = /^\d+$/.test(raw) ? numberOrNull(raw) : null
+    if (value === null || value <= 0) {
+      wx.showToast({ title: '目标需为整数公里数', icon: 'none' })
+      return
+    }
+    if (this.data.distance !== null && value < this.data.distance) {
+      wx.showToast({ title: '目标不能低于当前挑战公里数', icon: 'none' })
+      return
+    }
+    this.setData({ distance: value, changeModal: false })
+  },
+
+  onCancel: function () { this.setData({ changeModal: false }) },
+
+  openLogin: function (continueToJoin) {
+    if (numberOrNull(app.globalData.userId) > 0) return
+    util.showLogin((res) => {
+      util.request('user/wxlogin', 'POST', { code: res.code, encryptedData: '', iv: '' }, '登录中...', (loginRes) => {
+        const loginData = loginRes.data && loginRes.data.data
+        if (!loginData || !loginData.openid || !res.userInfo) {
+          wx.showToast({ title: '登录失败，请稍后重试', icon: 'none' })
           return
         }
-      } else {
-        wx.showToast({
-          title: res.data.error,
-          icon: 'none',
-          duration: 1500
+        const regData = {
+          openId: loginData.openid,
+          imgUrl: res.userInfo.avatarUrl,
+          nickName: res.userInfo.nickName,
+          sex: res.userInfo.gender,
+          unionid: loginData.unionid
+        }
+        util.request('user/wxregister', 'POST', regData, '', (regRes) => {
+          const newUserId = numberOrNull(regRes.data && regRes.data.UserId)
+          if (!(newUserId > 0)) {
+            wx.showToast({ title: '登录失败，请稍后重试', icon: 'none' })
+            return
+          }
+          app.globalData.userId = newUserId
+          app.globalData.openId = regData.openId
+          wx.setStorageSync('userId', newUserId)
+          wx.setStorageSync('openId', regData.openId)
+          this.setData({ userId: newUserId, nickName: regData.nickName || '' })
+          this.initChallenge(this.data.actyId, (canJoin) => {
+            if (continueToJoin && canJoin) this.goSignIn()
+          })
         })
-      }
+      })
     })
-    if (that.data.userid == undefined) {
-      var data = {
-        actyId: id,
-        userId: userId,
-        userName: '',
-        mobile: '',
-        level: '',
-        distance: 1
-      }
-    } else {
-      var data = {
-        actyId: id,
-        userId: that.data.userid,
-        userName: '',
-        mobile: '',
-        level: '',
-        distance: 1
-      }
-    }
-    util.request('acty/getactyuser', 'POST', data, '数据加载中 ...', (res) => {
-      if (res.data.success) {
-        var dataAll = res.data.data
-        this.setData({
-          actyInList: dataAll
-        })
-      } else {
-        // wx.showToast({
-        //   title: res.data.error,
-        //   icon: 'none',
-        //   duration: 1500
-        // })
-      }
-    })
-    //获取关联抽奖
-    // var data = {
-    //   actyId : id
-    // }
-    // util.request('acty/getluckdrawlist', 'POST', data, '数据加载中 ...', (res)=>{
-    //   if(res.data.success){
-    //     this.setData({
-    //       ltyList: res.data.data
-    //     })
-    //   }else{
-    //     // wx.showToast({
-    //     //   title: res.data.error,
-    //     //   icon: 'none',
-    //     //   duration: 1500
-    //     // })
-    //   }
-    // })
   },
-  toLty: function (e) {
-    var id = e.currentTarget.dataset.id
+
+  goSignIn: function () {
+    if (!this.data.canJoin || !(numberOrNull(app.globalData.userId) > 0)) return
+    const data = this.data
     wx.navigateTo({
-      url: '../lotterydetail/lotterydetail?id=' + id
+      url: '../signin/signin?id=' + encodeURIComponent(data.actyId) +
+        '&has_name=' + encodeURIComponent(data.has_name) +
+        '&has_mobile=' + encodeURIComponent(data.has_mobile) +
+        '&target=' + encodeURIComponent(data.distance) +
+        '&acty_type=' + encodeURIComponent(data.acty_type)
     })
   },
-  //百分比计算
-  GetPercent: function (num, total) {
-    num = parseFloat(num);
-    total = parseFloat(total);
-    if (isNaN(num) || isNaN(total)) {
-      return 0;
-    }
-    return total <= 0 ? "0%" : (Math.round(num / total * 10000) / 100.00);
-  },
-  changeIpt: function () {
-    var that = this
-    that.setData({
-      changeModal: true
-    })
-  },
-  onConfirm: function (e) {
-    var that = this
-    var formData = e.detail.value
-    var newDistance = formData.newDistance
-    if (newDistance < that.data.distance) {
-      wx.showToast({
-        title: '请输入正确挑战公里数',
-        icon: 'none',
-        duration: 1500
-      })
-    } else {
-      that.setData({
-        distance: newDistance,
-        changeModal: false
-      })
-    }
-  },
-  onCancel: function () {
-    var that = this
-    that.setData({
-      changeModal: false
-    })
-  },
-  // 参与挑战
+
   actyIn: function () {
-    var that = this
-    var userId = app.globalData.userId
-    if (that.data.hasClickon == 0 && userId > 0) {
-      wx.navigateTo({
-        url: '../signin/signin?id=' + that.data.actyId + '&has_name=' + that.data.has_name + '&has_mobile=' + that.data.has_mobile + '&target=' + that.data.distance + '&acty_type=' + that.data.acty_type
-      })
-    } else {
-      wx.showToast({
-        title: '请先登录小程序！',
-        icon: 'none',
-        duration: 1000
-      })
-      setTimeout(function () {
-        wx.switchTab({
-          url: '../index/index',
-        })
-      }, 1000)
+    if (!this.data.canJoin) return
+    if (!(numberOrNull(app.globalData.userId) > 0)) {
+      this.openLogin(true)
+      return
     }
+    this.goSignIn()
   },
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-    // wx.hideHomeButton()
-    var id = this.data.actyId;
-    this.initChallenge(id)
-  },
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function (res) {
-    if (res.from === 'button') {
-      // 来自页面内转发按钮
+
+  onShareAppMessage: function () {
+    const title = (this.data.nickName ? this.data.nickName + '邀请你参加' : '微跑团邀请你参加') +
+      '挑战#' + (this.data.actyName || '跑步挑战') + '#，喊你快来挑战～'
+    const share = {
+      title: title,
+      path: '/pages/challengedetail/challengedetail?id=' + encodeURIComponent(this.data.actyId)
     }
-    return {
-      title: this.data.nickName + '发起了一个挑战活动#' + this.data.actyName + '#，喊你快来挑战～',
-      imageUrl: this.data.actyImg, // 添加此行，将actyImg设置为分享图片
-    }
+    if (this.data.actyImg) share.imageUrl = this.data.actyImg
+    return share
   }
 })

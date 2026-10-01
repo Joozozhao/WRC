@@ -28,9 +28,10 @@ Page({
     subscribe: false
   },
   back: function(){
-    wx.navigateBack({
-      delta: 0,
-    })
+    wx.switchTab({ url: '../index/index' })
+  },
+  goLogin: function() {
+    wx.switchTab({ url: '../mydata/mydata' })
   },
   uploadAction:function(){ 
     var that = this
@@ -54,6 +55,7 @@ Page({
       success:function(res) {
         var tempFilePaths = res.tempFilePaths
         var userId = app.globalData.userId
+        console.log(tempFilePaths)
         wx.showToast({
          icon: "loading",
          title: "正在上传"
@@ -64,8 +66,11 @@ Page({
           url: 'https://applet.51welink.com/sport/user/uploadimg',
           formData: { userId:  userId, fileId:'file' },
           success: function(ret){
+            console.log(ret);
             var obj = JSON.parse(ret.data)
+            console.log(obj)
             var speedData = obj.data.speed
+            console.log(speedData)
             if(speedData!=undefined){
               var speed = speedData;//.replace(/[^0-9]/ig,"")
               if(speed.substring(0, 1)==0){
@@ -92,6 +97,7 @@ Page({
                   date: obj.data.date
                 })
               }
+              console.log(obj.data.date)
             }
             that.setData({
               tempFilePaths: obj.data.img,
@@ -100,6 +106,7 @@ Page({
             })
           },
           fail: function(ret){
+            console.log(ret)
           }
         })
       }
@@ -124,6 +131,7 @@ Page({
       isShow_03: false,
       speed: parseFloat(e.detail.choosedData[0]) + '′' + parseFloat(e.detail.choosedData[1]) + '″'
     })
+    console.log(e.detail)
   },
   cancleCallBack_03 () {
     this.setData({
@@ -133,34 +141,23 @@ Page({
   initDay: function(){
     var that = this
     var userId = app.globalData.userId
-    if(userId == 0){
-      return
-    }
+    if(!userId || userId <= 0) return
     var data = {
       userId : userId
     }
+    console.log(data)
     util.request('user/getserialday', 'POST', data, '数据加载中 ...', (res)=>{
-      that.setData({
-        clockTimes: res.data.data.clockTimes
-      })
+      if (res.data && res.data.success && res.data.data) {
+        that.setData({ clockTimes: res.data.data.clockTimes || 0 })
+      }
     })
   },
   submit: function(e){
-    //if(app.globalData.)
-    wx.requestSubscribeMessage({
-      tmplIds: ['atI2vNoA9gxEHR7iiJ8SXNC5-To5F3nz1GdAiJ9jKT8','WFf_l_J8AUitCUTw6x0dztYEz5P_zB5CN6MKUtARrVA','qxTeZfuzyqFwoPYMJ-C8wIfRJaladzRyVDA4CRr2b7c','DidkgePsPJU2N2xnJMEVEhmGu7jwQuXeHnW5T3c3J5E'],
-      success (res) { 
-        var data={
-          userId:res.data.data.id
-        }
-        util.request('user/setSubscribe', 'POST', data, '数据加载中 ...', (res)=>{
-        })
-      }
-    })
     var that = this
     var formatDate = e.detail.value
     var userId = app.globalData.userId
-    if(userId == 0){
+    if (!userId || userId <= 0) {
+      wx.showToast({ title: '请先登录小程序！', icon: 'none' })
       return
     }
     var data = {
@@ -170,13 +167,14 @@ Page({
       distance: formatDate.distance,
       speed: that.data.speed,
       remark: '',
-      sportTime: that.data.date,
-      duration: that.data.time,
-      energy: that.data.energy,
+      sportTime: formatDate.date || that.data.date,
+      duration: formatDate.time || that.data.time,
+      energy: formatDate.energy || that.data.energy,
       steps: that.data.steps,
       stepRate: that.data.steps_frequency,
       stride: that.data.stride
     }
+    console.log(data)
     if(that.data.tempFilePaths == ''){
       wx.showToast({
         title: '请上传图片!',
@@ -185,7 +183,7 @@ Page({
       })
       return false
     }
-    if(formatDate.distance == ''){
+    if(!formatDate.distance || Number(formatDate.distance) <= 0){
       wx.showToast({
         title: '距离不能为空!',
         icon: 'none',
@@ -201,8 +199,25 @@ Page({
       })
       return false
     }
+    var tmplIds = [
+      'atI2vNoA9gxEHR7iiJ8SXNC5-To5F3nz1GdAiJ9jKT8',
+      'WFf_l_J8AUitCUTw6x0dztYEz5P_zB5CN6MKUtARrVA',
+      'qxTeZfuzyqFwoPYMJ-C8wIfRJaladzRyVDA4CRr2b7c',
+      'DidkgePsPJU2N2xnJMEVEhmGu7jwQuXeHnW5T3c3J5E'
+    ]
+    wx.requestSubscribeMessage({
+      tmplIds: tmplIds,
+      success: function(result) {
+        if (tmplIds.some(function(id) { return result[id] === 'accept' })) {
+          util.request('user/setSubscribe', 'POST', { userId: userId }, '', function() {})
+        }
+      }
+    })
     util.request('user/uploadsport', 'POST', data, '数据加载中 ...', (res)=>{
+      console.log(res)
       if(res.data.success){
+        console.log(formatDate.distance)
+        console.log(that.data.clockTimes)
         that.setData({
           disable: true
         })
@@ -228,7 +243,7 @@ Page({
             url: '../index/index',
           })
         }, 1500)
-        
+
       }else{
         wx.showToast({
           title: res.data.error,
@@ -240,6 +255,7 @@ Page({
   },
   myLogin: function(userId) {
     var that = this
+    console.log("----"+userId)
     if (userId < 1 || userId == undefined) {
       wx.showModal({
         content: '请先登录小程序！',
@@ -255,6 +271,9 @@ Page({
               util.request('user/wxlogin', 'POST', data, '登录中...', (loginRes) => {
                 var regData = {
                   openId: loginRes.data.data.openid,
+                  imgUrl: res.userInfo.avatarUrl,
+                  nickName: res.userInfo.nickName,
+                  sex: res.userInfo.gender,
                   unionid: loginRes.data.data.unionid
                 }
                 util.request('user/wxregister', 'POST', regData, '', (regRes) => {
@@ -303,6 +322,7 @@ Page({
               })
             })
           } else if (res.cancel) {
+            console.log('用户点击取消')
           }
         }
       })
@@ -312,12 +332,14 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    wx.hideShareMenu({}) //此页面禁止转发
+    if (wx.canIUse && wx.canIUse('hideShareMenu')) {
+      wx.hideShareMenu({ fail: function() {} })
+    }
     var userId = app.globalData.userId
-    this.myLogin(userId)
     this.setData({
-      userId: userId
+      userId: userId || 0
     })
+    if (!userId || userId <= 0) return
     var data = {
       id: userId
     }
@@ -327,7 +349,7 @@ Page({
         that.setData({
           subscribe: res.data.data.subscribe
         })
-        
+
       }
     })
     this.initDay()

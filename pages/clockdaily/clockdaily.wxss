@@ -1,111 +1,34 @@
-/* pages/clockdaily/clockdaily.wxss */
-@import '../creat/creat.wxss';
-.top-part {
-  width: 100%;
-  position: relative !important;
-  z-index: 1;
-}
-.top-part .bg {
-  width: 100%;
-}
-.run-date {
-  width: 100%;
-  position: absolute;
-  top: 414rpx;
-  left: 0;
-  z-index: 999;
-}
-.back-btn{
-  position: absolute;
-  left: 18rpx;
-  top: 6.5vh;
-  z-index: 4;
-}
-.back-btn image{
-  width: 50rpx;
-}
-.clockin{
-  padding-bottom: 150rpx;
-}
-.clockin .upload-file{
-  background: rgba(255, 255, 255, 0.6);
-  text-align: center;
-  border: 10rpx solid #e7ccb4;
-  margin: 0 auto;
-  box-sizing: border-box;
-}
-.show{
-  display: flex;
-  align-items: center;
-}
-.clockin .upload-file.show-pic{
-  display: inline-block;
-}
-.content-wrap .con-tit{
-  font-size: 24rpx;
-  color: #666;
-  padding: 30rpx 0 20rpx 30rpx;
-  
-}
-.con-all .vw-wrap:last-child .form-item{
-  border: none;
-}
-.con-all .title{
-  width: 40%;
-}
-.con-all .icons{
-  width: 50rpx;
-  height: 50rpx;
-  margin: 25rpx 20rpx 0 0;
-  float: left;
-}
-.form-item2 .title{
-  width: 80%;
-}
-.t-tips{
-  font-size: 30rpx;
-  color: #333;
-}
-.ruler-txt{
-  font-size: 28rpx;
-  color: #38ef7d;
-}
-.ruler-txt .content{
-  font-size: 24rpx;
-  text-align: justify;
-  margin-top: 10rpx;
-}
-.none-must{
-  font-size: 26rpx;
-  color: #999;
-  /* margin-left: 6rpx; */
-}
-.page-tips{
-  font-size: 26rpx;
-  line-height: 40rpx;
-  background: #FFF9E7;
-  color: #9E7C5E;
-  padding: 10rpx 30rpx;
-  margin-bottom: 30rpx;
-}
-.red-mark{
-  color: red;
-}
-.show-pic {
-  height: 700rpx;
-  overflow-y: scroll;
-}
-.show-pic .fixed-wh{
-  width: 100%;
-  margin: 0 auto;
-}
-.upload-btn{
-  margin: 50rpx auto 0;
-}
-.upload-btn .add{
-  color: #e7ccb4;
-  font-size: 160rpx;
-}
-.form-item.show{
-  border: none;
-}
+page { background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
+.record-page { min-height: 100vh; padding: 180rpx 40rpx 190rpx; box-sizing: border-box; }
+.record-hero { padding: 53rpx 4rpx 44rpx; }
+.record-eyebrow { display: block; color: #0d6447; font-size: 22rpx; font-weight: 750; letter-spacing: 3rpx; }
+.record-title { display: block; margin-top: 25rpx; font-size: 79rpx; line-height: 1.13; font-weight: 800; letter-spacing: -3rpx; }
+.record-title-break { display: block; }
+.record-title-line { width: 180rpx; height: 7rpx; margin-top: 3rpx; border-radius: 10rpx; background: #d9ff3f; transform: rotate(-2deg); }
+.record-subtitle { display: block; margin-top: 22rpx; color: #7a8980; font-size: 25rpx; line-height: 1.55; }
+.record-section-label { display: flex; justify-content: space-between; align-items: center; margin: 22rpx 0 15rpx; color: #0a3c2d; font-size: 26rpx; font-weight: 800; }
+.record-section-require { color: #819087; font-size: 21rpx; font-weight: 500; }
+.record-upload { display: flex; min-height: 275rpx; flex-direction: column; justify-content: center; align-items: center; border: 2rpx dashed #b5cbb8; border-radius: 22rpx; background: #f1f7ef; }
+.record-upload-symbol { display: flex; width: 74rpx; height: 74rpx; align-items: center; justify-content: center; border-radius: 50%; background: #d9ff3f; color: #073329; font-size: 45rpx; }
+.record-upload-title { margin-top: 16rpx; color: #0b503b; font-size: 29rpx; font-weight: 800; }
+.record-upload-copy { margin-top: 7rpx; color: #819087; font-size: 21rpx; text-align: center; }
+.record-preview { overflow: hidden; border: 1rpx solid #e1e9e3; border-radius: 22rpx; background: #fff; }
+.record-preview-image { width: 100%; max-height: 600rpx; }
+.record-preview-actions { display: flex; justify-content: flex-end; gap: 30rpx; padding: 19rpx 24rpx; color: #0b593e; font-size: 23rpx; }
+.record-fields { padding: 0 22rpx; border: 1rpx solid #e1e9e3; border-radius: 22rpx; background: #fff; }
+.record-row { display: flex; align-items: center; justify-content: space-between; min-height: 108rpx; border-bottom: 1rpx solid #e8eee9; }
+.record-row:last-child { border-bottom: 0; }
+.record-field-name { color: #0a3c2d; font-size: 27rpx; font-weight: 700; }
+.record-field-hint { margin-left: 10rpx; color: #8b978e; font-size: 20rpx; }
+.record-input { width: 53%; color: #0a3c2d; text-align: right; font-size: 25rpx; }
+.record-value { color: #0a3c2d; font-size: 25rpx; }
+.record-placeholder { color: #9aa69e; }
+.record-note { margin: 22rpx 3rpx 0; color: #819087; font-size: 22rpx; line-height: 1.5; }
+.record-submit { position: fixed; right: 0; bottom: 0; left: 0; padding: 17rpx 40rpx 50rpx; border-top: 1rpx solid #e1e9e3; background: #fbfcf9; z-index: 5; }
+.record-action { height: 92rpx; border-radius: 52rpx; background: #d9ff3f; color: #073329; font-size: 29rpx; line-height: 92rpx; font-weight: 800; }
+.record-action::after { border: 0; }
+.record-action.is-disabled { background: #e4eae1; color: #829087; }
+.record-guest { padding: 36rpx 28rpx; border: 1rpx solid #e1e9e3; border-radius: 22rpx; background: #fff; }
+.record-guest-title { display: block; font-size: 32rpx; font-weight: 800; }
+.record-guest-copy { display: block; margin: 11rpx 0 30rpx; color: #819087; font-size: 24rpx; }
+.record-guest .record-action { margin: 0; }

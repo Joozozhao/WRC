@@ -20,6 +20,7 @@ Page({
     })
   },
   formSubmit(e) {
+    console.log('昵称：', e.detail.value.nickname)
     var that = this
     //上传本地图片
     wx.uploadFile({
@@ -38,6 +39,7 @@ Page({
           name: e.detail.value.nickname
         }
         util.request('user/updatewxuser', 'POST', data, '数据加载中 ...', (res) => {
+          console.log(res);
           if (res.data.success) {
             wx.navigateBack({
               delta: 1
