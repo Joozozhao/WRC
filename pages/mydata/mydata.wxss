@@ -5,21 +5,14 @@ page {
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
 }
 
-.profile-page { display: flex; flex-direction: column; height: 100vh; background: #fbfcf9; }
-.profile-scroll { flex: 1; min-height: 0; }
-/* 紧凑资料区，让本月跑量与跑步足迹热力图在首屏相邻呈现。 */
-.profile-shell { padding: 32rpx 40rpx 0; }
-.profile-hero { padding: 8rpx 0 22rpx; }
-.profile-eyebrow {
-  display: block;
-  color: #0d6447;
-  font-size: 20rpx;
-  font-weight: 700;
-  letter-spacing: 3rpx;
-}
-.profile-title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16rpx; margin-top: 10rpx; }
-.profile-title { color: #072f27; font-size: 52rpx; font-weight: 800; line-height: 1.25; letter-spacing: -1rpx; }
-.profile-intro { color: #667970; font-size: 23rpx; line-height: 1.6; }
+.profile-page { min-height: 100vh; padding: 42rpx 40rpx 205rpx; box-sizing: border-box; background: #fbfcf9; }
+.profile-hero { padding: 18rpx 4rpx 42rpx; border-bottom: 1rpx solid #e1e9e3; }
+.profile-eyebrow { display: block; color: #0d6447; font-size: 22rpx; font-weight: 750; letter-spacing: 3rpx; }
+.profile-title { display: block; margin-top: 28rpx; color: #072f27; font-size: 79rpx; line-height: 1.13; font-weight: 800; letter-spacing: -3rpx; }
+.profile-title-break { display: block; }
+.profile-title-line { width: 188rpx; height: 7rpx; margin-top: 3rpx; border-radius: 10rpx; background: #d9ff3f; transform: rotate(-2deg); }
+.profile-intro { display: block; margin-top: 24rpx; color: #7a8980; font-size: 26rpx; line-height: 1.6; }
+.profile-shell { padding: 0; }
 .profile-person {
   display: flex;
   align-items: center;
@@ -84,45 +77,57 @@ page {
 .profile-asset-buttons {
   display: flex;
   align-items: center;
-  gap: 12rpx;
+  gap: 14rpx;
   flex: none;
   margin-left: 16rpx;
 }
 .profile-asset-btn {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-width: 104rpx;
-  height: 76rpx;
-  padding: 0 16rpx;
+  height: 64rpx;
+  padding: 0 18rpx 0 16rpx;
   background: #ffffff;
-  border: 1rpx solid #e1e9e3;
-  border-radius: 18rpx;
-  box-shadow: 0 2rpx 8rpx rgba(7, 47, 39, 0.04);
+  border: 1rpx solid #dfe9e1;
+  border-radius: 999rpx;
+  box-shadow: 0 3rpx 10rpx rgba(7, 47, 39, 0.04);
   box-sizing: border-box;
-  transition: background 0.15s ease, transform 0.1s ease;
+  transition: background 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
 }
 .profile-asset-btn-hover {
-  background: #f4f8f4;
-  transform: scale(0.97);
+  background: #f3f7f2;
+  border-color: #bcd5c2;
+  transform: scale(0.96);
+}
+.profile-asset-btn-icon {
+  width: 26rpx;
+  height: 26rpx;
+  flex: none;
+  margin-right: 8rpx;
 }
 .profile-asset-btn-num {
-  font-size: 27rpx;
-  font-weight: 800;
-  color: #072f27;
+  font-size: 26rpx;
+  font-weight: 850;
+  color: #062f25;
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
 .profile-asset-btn-label {
-  font-size: 19rpx;
-  font-weight: 500;
-  color: #6d8276;
+  font-size: 21rpx;
+  font-weight: 600;
+  color: #557262;
   line-height: 1.1;
-  margin-top: 4rpx;
+  margin-left: 6rpx;
+}
+.profile-asset-btn-arrow {
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #0c6246;
+  line-height: 1.1;
+  margin-left: 8rpx;
+  opacity: 0.7;
 }
 
-.profile-content { padding: 12rpx 40rpx 0; }
+.profile-content { padding: 12rpx 0 0; }
 .profile-summary {
   overflow: hidden;
   position: relative;
@@ -236,6 +241,7 @@ page {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  gap: 16rpx;
   padding: 44rpx 4rpx 20rpx;
 }
 .profile-section-title {
@@ -247,25 +253,61 @@ page {
   margin-left: 14rpx;
   color: #667970;
   font-size: 22rpx;
+  font-weight: 200;
+}
+.profile-section-left { display: flex; flex: 1; min-width: 0; flex-direction: column; }
+.profile-section-left .profile-section-note { margin: 5rpx 0 0; }
+.profile-section-link {
+  display: flex;
+  align-items: center;
+  flex: none;
+  min-height: 88rpx;
+  color: #0b503b;
+  font-size: 23rpx;
+  font-weight: 200;
 }
 
-.profile-services-grid { display: flex; flex-wrap: wrap; gap: 16rpx; }
+/* 常用服务：一体化白卡分组列表，3/4 项都自然平铺，辅助小字 200 字重。 */
+.profile-services-card {
+  overflow: hidden;
+  border: 1rpx solid #e1e9e3;
+  border-radius: 24rpx;
+  background: #fff;
+  box-shadow: 0 4rpx 14rpx rgba(7, 47, 39, 0.02);
+}
 .profile-service-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc((100% - 16rpx) / 2);
   min-height: 104rpx;
-  padding: 0 24rpx;
-  border: 1rpx solid #e1e9e3;
-  border-radius: 20rpx;
-  background: #fff;
+  padding: 0 32rpx;
+  border-top: 1rpx solid #f0f4f0;
   box-sizing: border-box;
+}
+.profile-service-row:first-child { border-top: none; }
+.profile-service-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.profile-service-name {
   color: #072f27;
-  font-size: 27rpx;
+  font-size: 28rpx;
   font-weight: 700;
 }
-.profile-service-arrow { color: #0b503b; font-size: 28rpx; }
+.profile-service-desc {
+  margin-top: 6rpx;
+  color: #73877b;
+  font-size: 22rpx;
+  font-weight: 200;
+}
+.profile-service-arrow {
+  flex: none;
+  margin-left: 16rpx;
+  color: #0b503b;
+  font-size: 28rpx;
+  font-weight: 300;
+}
 .profile-touch { opacity: .72; }
 .profile-section-heading-copy { display: flex; flex-direction: column; }
 .profile-section-heading-copy .profile-section-note { margin: 5rpx 0 0; }
@@ -378,48 +420,71 @@ page {
 .profile-heatmap-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 240rpx; color: #667970; font-size: 24rpx; line-height: 1.6; text-align: center; }
 .profile-heatmap-retry { display: flex; align-items: center; justify-content: center; min-height: 88rpx; margin-top: 10rpx; padding: 0 24rpx; color: #0b503b; font-size: 25rpx; font-weight: 100; }
 
+/* 马拉松成绩：一体化白卡，类型药丸 + 日期在上，名称最多两行，右侧大号成绩。 */
+.profile-races-card {
+  overflow: hidden;
+  border: 1rpx solid #e1e9e3;
+  border-radius: 24rpx;
+  background: #fff;
+  box-shadow: 0 4rpx 14rpx rgba(7, 47, 39, 0.02);
+}
 .profile-race {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 142rpx;
-  padding: 18rpx 0;
-  border-bottom: 1rpx solid #e1e9e3;
+  min-height: 132rpx;
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid #f0f4f0;
   box-sizing: border-box;
 }
+.profile-race:first-child { border-top: none; }
 .profile-race-info { display: flex; flex: 1; min-width: 0; flex-direction: column; }
-.profile-race-type { color: #3b7855; font-size: 20rpx; font-weight: 700; }
-.profile-race-name {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  margin-top: 7rpx;
-  color: #113d30;
-  font-size: 27rpx;
-  font-weight: 700;
+.profile-race-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8rpx 14rpx; }
+.profile-race-type {
+  max-width: 100%;
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+  background: #eaf3ed;
+  color: #2e6949;
+  font-size: 20rpx;
+  font-weight: 200;
+  line-height: 1.4;
+  box-sizing: border-box;
+  word-break: break-all;
 }
-.profile-race-date { margin-top: 6rpx; color: #718175; font-size: 21rpx; }
+.profile-race-date { flex: none; color: #718175; font-size: 21rpx; font-weight: 200; }
+.profile-race-name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin-top: 8rpx;
+  color: #113d30;
+  font-size: 26rpx;
+  font-weight: 700;
+  line-height: 1.35;
+  word-break: break-all;
+}
+.profile-race-score-wrap { flex: none; margin-left: 20rpx; text-align: right; }
 .profile-race-score {
-  flex: none;
-  margin-left: 16rpx;
+  display: block;
   color: #0b503b;
-  font-size: 28rpx;
+  font-size: 32rpx;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
-.profile-race-more {
-  min-height: 78rpx;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  color: #135f42;
-  font-size: 23rpx;
-  font-weight: 700;
+.profile-race-score-label {
+  display: block;
+  margin-top: 4rpx;
+  color: #8a9b90;
+  font-size: 19rpx;
+  font-weight: 200;
 }
 
 .profile-activity-head {
-  padding: 42rpx 40rpx 4rpx;
+  padding: 42rpx 4rpx 4rpx;
   box-sizing: border-box;
 }
 
-.profile-bottom-space { height: 230rpx; }
+.profile-bottom-space { height: env(safe-area-inset-bottom); }

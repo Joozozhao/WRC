@@ -7,10 +7,10 @@
     <view class="home-hero-title"><view>今天，</view><view>跑得怎么样？</view></view>
     <view class="home-hero-underline"></view>
     <text class="home-hero-intro">跑步，只不过是一场自己与自己的较量</text>
-    <view class="home-cta" bindtap="toClockIn" hover-class="home-cta-pressed" role="button" aria-label="记录跑步">
+    <view class="home-cta" bindtap="toClockIn" hover-class="home-cta-pressed" role="button" aria-label="跑步打卡">
       <image class="home-cta-runner" src="/images/redesign/runner.png" mode="aspectFit"></image>
       <view class="home-cta-rule"></view>
-      <text class="home-cta-label">记录跑步</text>
+      <text class="home-cta-label">跑步打卡</text>
       <image class="home-cta-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
     </view>
   </view>
@@ -21,6 +21,10 @@
         <text class="home-month-main-title">本周目标跑量</text>
       </view>
       <view class="home-month-head-right">
+        <view class="home-calendar-entry" bindtap="toggleCalendar" role="button" aria-label="{{calendarExpanded ? '收起跑量日历' : '展开跑量日历'}}">
+          <text class="home-calendar-entry-label">跑量日历</text>
+          <image class="home-calendar-entry-arrow {{calendarExpanded ? 'is-expanded' : ''}}" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+        </view>
         <text class="home-month-sub">{{currentMonthNum}}月</text>
       </view>
     </view>
@@ -57,7 +61,7 @@
       </view>
     </view>
 
-    <view class="home-month-calendar">
+    <view class="home-month-calendar" wx:if="{{calendarExpanded}}">
       <view class="home-heatmap-weekdays">
         <text wx:for="{{['一', '二', '三', '四', '五', '六', '日']}}" wx:key="*this">{{item}}</text>
       </view>
@@ -66,7 +70,7 @@
           <view wx:if="{{item.isEmpty}}" class="home-heatmap-cell is-empty"></view>
           <view
             wx:else
-            class="home-heatmap-cell level-{{item.level}} {{item.isFuture ? 'is-future' : ''}} {{item.isToday ? 'is-today' : ''}}"
+            class="home-heatmap-cell level-{{item.level}} {{item.isOtherMonth ? 'is-other-month' : ''}} {{item.isFuture ? 'is-future' : ''}} {{item.isToday ? 'is-today' : ''}}"
             aria-label="{{item.dateLabel}}，{{item.distance > 0 ? item.displayKm + '公里' : '未打卡'}}">
             <text class="cell-day-num" wx:if="{{item.distance <= 0}}">{{item.day}}</text>
             <view class="cell-run {{item.displayKm >= 100 ? 'is-condensed' : ''}}" wx:if="{{item.distance > 0}}">

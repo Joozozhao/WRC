@@ -69,7 +69,7 @@
           <view wx:if="{{item.isEmpty}}" class="day-cell is-empty"></view>
           <view
             wx:else
-            class="day-cell level-{{item.level}} {{item.isFuture ? 'is-future' : ''}} {{item.isToday ? 'is-today' : ''}}">
+            class="day-cell level-{{item.level}} {{item.isOtherMonth ? 'is-other-month' : ''}} {{item.isFuture ? 'is-future' : ''}} {{item.isToday ? 'is-today' : ''}}">
             <text class="cell-day-text" wx:if="{{item.distance <= 0}}">{{item.day}}</text>
             <view class="cell-run-wrap" wx:if="{{item.distance > 0}}">
               <text class="cell-run-km">{{item.displayKm}}</text>

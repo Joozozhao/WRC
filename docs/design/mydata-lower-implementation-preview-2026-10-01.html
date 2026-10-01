@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WRC 我的 · 下半页设计预览</title><style>
+/* 我的：沿用 WRC 暖白、松绿与荧光黄绿的视觉语言 */
+.phone {
+  background: #fbfcf9;
+  color: #072f27;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+}
+
+.profile-page { min-height: 100vh; padding: calc(42 * var(--rpx)) calc(40 * var(--rpx)) calc(205 * var(--rpx)); box-sizing: border-box; background: #fbfcf9; }
+.profile-hero { padding: calc(18 * var(--rpx)) calc(4 * var(--rpx)) calc(42 * var(--rpx)); border-bottom: calc(1 * var(--rpx)) solid #e1e9e3; }
+.profile-eyebrow { display: block; color: #0d6447; font-size: calc(22 * var(--rpx)); font-weight: 750; letter-spacing: calc(3 * var(--rpx)); }
+.profile-title { display: block; margin-top: calc(28 * var(--rpx)); color: #072f27; font-size: calc(79 * var(--rpx)); line-height: 1.13; font-weight: 800; letter-spacing: calc(-3 * var(--rpx)); }
+.profile-title-break { display: block; }
+.profile-title-line { width: calc(188 * var(--rpx)); height: calc(7 * var(--rpx)); margin-top: calc(3 * var(--rpx)); border-radius: calc(10 * var(--rpx)); background: #d9ff3f; transform: rotate(-2deg); }
+.profile-intro { display: block; margin-top: calc(24 * var(--rpx)); color: #7a8980; font-size: calc(26 * var(--rpx)); line-height: 1.6; }
+.profile-shell { padding: 0; }
+.profile-person {
+  display: flex;
+  align-items: center;
+  min-height: calc(124 * var(--rpx));
+  padding: calc(18 * var(--rpx)) 0 calc(24 * var(--rpx));
+  box-sizing: border-box;
+}
+.profile-avatar-wrap {
+  position: relative;
+  width: calc(80 * var(--rpx));
+  height: calc(80 * var(--rpx));
+  flex: none;
+}
+.profile-avatar {
+  width: calc(80 * var(--rpx));
+  height: calc(80 * var(--rpx));
+  border-radius: 50%;
+  background: #e5ece6;
+  display: block;
+}
+.profile-vip-badge {
+  position: absolute;
+  right: calc(-4 * var(--rpx));
+  bottom: calc(-4 * var(--rpx));
+  width: calc(32 * var(--rpx));
+  height: calc(32 * var(--rpx));
+}
+.profile-person-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-left: calc(22 * var(--rpx));
+}
+.profile-name-row {
+  display: flex;
+  align-items: center;
+  gap: calc(12 * var(--rpx));
+}
+.profile-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #072f27;
+  font-size: calc(32 * var(--rpx));
+  font-weight: 800;
+}
+.profile-duty-tag {
+  padding: calc(2 * var(--rpx)) calc(12 * var(--rpx));
+  border-radius: calc(12 * var(--rpx));
+  background: #d9ff3f;
+  color: #062b23;
+  font-size: calc(20 * var(--rpx));
+  font-weight: 750;
+  line-height: 1.3;
+}
+.profile-sub {
+  margin-top: calc(7 * var(--rpx));
+  color: #667970;
+  font-size: calc(23 * var(--rpx));
+}
+.profile-asset-buttons {
+  display: flex;
+  align-items: center;
+  gap: calc(14 * var(--rpx));
+  flex: none;
+  margin-left: calc(16 * var(--rpx));
+}
+.profile-asset-btn {
+  display: flex;
+  align-items: center;
+  height: calc(64 * var(--rpx));
+  padding: 0 calc(18 * var(--rpx)) 0 calc(16 * var(--rpx));
+  background: #ffffff;
+  border: calc(1 * var(--rpx)) solid #dfe9e1;
+  border-radius: calc(999 * var(--rpx));
+  box-shadow: 0 calc(3 * var(--rpx)) calc(10 * var(--rpx)) rgba(7, 47, 39, 0.04);
+  box-sizing: border-box;
+  transition: background 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
+}
+.profile-asset-btn-hover {
+  background: #f3f7f2;
+  border-color: #bcd5c2;
+  transform: scale(0.96);
+}
+.profile-asset-btn-icon {
+  width: calc(26 * var(--rpx));
+  height: calc(26 * var(--rpx));
+  flex: none;
+  margin-right: calc(8 * var(--rpx));
+}
+.profile-asset-btn-num {
+  font-size: calc(26 * var(--rpx));
+  font-weight: 850;
+  color: #062f25;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.profile-asset-btn-label {
+  font-size: calc(21 * var(--rpx));
+  font-weight: 600;
+  color: #557262;
+  line-height: 1.1;
+  margin-left: calc(6 * var(--rpx));
+}
+.profile-asset-btn-arrow {
+  font-size: calc(20 * var(--rpx));
+  font-weight: 700;
+  color: #0c6246;
+  line-height: 1.1;
+  margin-left: calc(8 * var(--rpx));
+  opacity: 0.7;
+}
+
+.profile-content { padding: calc(12 * var(--rpx)) 0 0; }
+.profile-summary {
+  overflow: hidden;
+  position: relative;
+  padding: calc(33 * var(--rpx)) calc(34 * var(--rpx)) calc(30 * var(--rpx));
+  border-radius: calc(28 * var(--rpx));
+  background: #072f27;
+  color: #fff;
+}
+.profile-summary-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  color: #e7f0e8;
+  font-size: calc(27 * var(--rpx));
+  font-weight: 700;
+}
+.profile-summary-period {
+  color: #a3baa9;
+  font-size: calc(17 * var(--rpx));
+  font-weight: 650;
+  letter-spacing: calc(1.5 * var(--rpx));
+}
+.profile-summary-main {
+  display: flex;
+  align-items: baseline;
+  margin-top: calc(18 * var(--rpx));
+}
+.profile-summary-number {
+  color: #fff;
+  font-size: calc(82 * var(--rpx));
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: calc(-2 * var(--rpx));
+  font-variant-numeric: tabular-nums;
+}
+.profile-summary-unit {
+  margin-left: calc(10 * var(--rpx));
+  color: #b7cebe;
+  font-size: calc(26 * var(--rpx));
+  font-weight: 600;
+}
+.profile-summary-accent {
+  width: calc(140 * var(--rpx));
+  height: calc(6 * var(--rpx));
+  margin-top: calc(22 * var(--rpx));
+  border-radius: calc(8 * var(--rpx));
+  background: #d9ff3f;
+}
+.profile-summary-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: calc(28 * var(--rpx));
+  padding-top: calc(24 * var(--rpx));
+  border-top: calc(1 * var(--rpx)) solid rgba(255, 255, 255, 0.12);
+}
+.profile-summary-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.profile-summary-stat:last-child { text-align: right; }
+.profile-summary-stat:nth-child(2) { text-align: center; }
+.profile-stat-value {
+  color: #fff;
+  font-size: calc(34 * var(--rpx));
+  font-weight: 800;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.profile-stat-value.profile-stat-total { color: #d9ff3f; }
+.profile-stat-label {
+  margin-top: calc(7 * var(--rpx));
+  color: #9cb5a3;
+  font-size: calc(19 * var(--rpx));
+}
+
+.profile-guest {
+  margin-top: calc(36 * var(--rpx));
+}
+.profile-login {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(98 * var(--rpx));
+  padding: 0 calc(34 * var(--rpx));
+  border-radius: calc(26 * var(--rpx));
+  background: #d9ff3f;
+  color: #072f27;
+  font-size: calc(30 * var(--rpx));
+  font-weight: 800;
+  box-sizing: border-box;
+}
+.profile-guest-head { margin-top: calc(44 * var(--rpx)); }
+.profile-guide-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: calc(108 * var(--rpx));
+  border-bottom: calc(1 * var(--rpx)) solid #e1e9e3;
+  color: #072f27;
+  font-size: calc(30 * var(--rpx));
+  font-weight: 750;
+}
+.profile-guide-desc {
+  color: #4e765f;
+  font-size: calc(23 * var(--rpx));
+  font-weight: 600;
+}
+
+.profile-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: calc(16 * var(--rpx));
+  padding: calc(44 * var(--rpx)) calc(4 * var(--rpx)) calc(20 * var(--rpx));
+}
+.profile-section-title {
+  color: #072f27;
+  font-size: calc(34 * var(--rpx));
+  font-weight: 800;
+}
+.profile-section-note {
+  margin-left: calc(14 * var(--rpx));
+  color: #667970;
+  font-size: calc(22 * var(--rpx));
+  font-weight: 200;
+}
+.profile-section-left { display: flex; flex: 1; min-width: 0; flex-direction: column; }
+.profile-section-left .profile-section-note { margin: calc(5 * var(--rpx)) 0 0; }
+.profile-section-link {
+  display: flex;
+  align-items: center;
+  flex: none;
+  min-height: calc(88 * var(--rpx));
+  color: #0b503b;
+  font-size: calc(23 * var(--rpx));
+  font-weight: 200;
+}
+
+/* 常用服务：一体化白卡分组列表，3/4 项都自然平铺，辅助小字 200 字重。 */
+.profile-services-card {
+  overflow: hidden;
+  border: calc(1 * var(--rpx)) solid #e1e9e3;
+  border-radius: calc(24 * var(--rpx));
+  background: #fff;
+  box-shadow: 0 calc(4 * var(--rpx)) calc(14 * var(--rpx)) rgba(7, 47, 39, 0.02);
+}
+.profile-service-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: calc(104 * var(--rpx));
+  padding: 0 calc(32 * var(--rpx));
+  border-top: calc(1 * var(--rpx)) solid #f0f4f0;
+  box-sizing: border-box;
+}
+.profile-service-row:first-child { border-top: none; }
+.profile-service-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.profile-service-name {
+  color: #072f27;
+  font-size: calc(28 * var(--rpx));
+  font-weight: 700;
+}
+.profile-service-desc {
+  margin-top: calc(6 * var(--rpx));
+  color: #73877b;
+  font-size: calc(22 * var(--rpx));
+  font-weight: 200;
+}
+.profile-service-arrow {
+  flex: none;
+  margin-left: calc(16 * var(--rpx));
+  color: #0b503b;
+  font-size: calc(28 * var(--rpx));
+  font-weight: 300;
+}
+.profile-touch { opacity: .72; }
+.profile-section-heading-copy { display: flex; flex-direction: column; }
+.profile-section-heading-copy .profile-section-note { margin: calc(5 * var(--rpx)) 0 0; }
+
+/* 跑步热力图：月份轴 + 固定星期轴 + 横向滚动的周列方格，格内不绘制日期与公里数。 */
+.profile-heatmap-section {
+  margin-top: calc(18 * var(--rpx));
+  padding: calc(26 * var(--rpx));
+  border: calc(1 * var(--rpx)) solid #e1e9e3;
+  border-radius: calc(24 * var(--rpx));
+  background: #fff;
+  box-sizing: border-box;
+  font-weight: 100;
+}
+.profile-heatmap-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: calc(16 * var(--rpx));
+  margin-bottom: calc(8 * var(--rpx));
+}
+/* 标题可换行，天数用更大字号强调；右侧 picker 不被压缩。 */
+.profile-heatmap-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: #072f27;
+  font-size: calc(27 * var(--rpx));
+  font-weight: 300;
+  line-height: 1.4;
+}
+.profile-heatmap-days {
+  color: #0b503b;
+  font-size: calc(38 * var(--rpx));
+  font-weight: 300;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.profile-heatmap-picker { flex: none; }
+/* calc(48 * var(--rpx)) 透明触控区向上留白；底部补偿标题与范围字号的行框差。 */
+.profile-heatmap-picker-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  min-height: calc(48 * var(--rpx));
+  padding: 0 0 calc(3 * var(--rpx)) calc(12 * var(--rpx));
+  background: transparent;
+  color: #1d5b45;
+  font-size: calc(24 * var(--rpx));
+  font-weight: 100;
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+.profile-heatmap-caret {
+  width: 0;
+  height: 0;
+  margin-left: calc(6 * var(--rpx));
+  margin-bottom: calc(13 * var(--rpx));
+  border-left: calc(6 * var(--rpx)) solid transparent;
+  border-right: calc(6 * var(--rpx)) solid transparent;
+  border-top: calc(7 * var(--rpx)) solid #4d7a63;
+}
+.profile-heatmap-body { display: flex; align-items: flex-start; }
+.profile-heatmap-weekdays { flex: none; width: calc(56 * var(--rpx)); margin-right: calc(8 * var(--rpx)); display: flex; flex-direction: column; }
+.profile-heatmap-weekday {
+  display: flex;
+  align-items: center;
+  color: #6f8478;
+  font-size: calc(17 * var(--rpx));
+  font-weight: 100;
+  line-height: 1;
+}
+.profile-heatmap-weekday:last-child { margin-bottom: 0 !important; }
+.profile-heatmap-scroll { flex: 1; min-width: 0; }
+.profile-heatmap-canvas { display: block; }
+/* 月份轴：按列绝对定位（left = index * stride），首月被后月替换时也不会错位。 */
+.profile-heatmap-months { position: relative; }
+.profile-heatmap-month {
+  position: absolute;
+  bottom: 0;
+  box-sizing: border-box;
+  color: #7c8f84;
+  font-size: calc(18 * var(--rpx));
+  line-height: 1;
+  white-space: nowrap;
+  overflow: visible;
+}
+.profile-heatmap-grid { display: flex; align-items: flex-start; }
+.profile-heatmap-week { flex: none; display: flex; flex-direction: column; }
+.profile-heatmap-week:last-child { margin-right: 0 !important; }
+.profile-heatmap-day { border-radius: calc(4 * var(--rpx)); box-sizing: border-box; }
+.profile-heatmap-day:last-child { margin-bottom: 0 !important; }
+.profile-heatmap-day.is-padding { visibility: hidden; }
+.level-0 { background: #edf2ec; }
+.level-1 { background: #cfe7b4; }
+.level-2 { background: #94c86c; }
+.level-3 { background: #4f9455; }
+.level-4 { background: #125c3f; }
+.profile-heatmap-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(16 * var(--rpx));
+  margin-top: calc(20 * var(--rpx));
+  padding-top: calc(18 * var(--rpx));
+  border-top: calc(1 * var(--rpx)) solid #eef3ee;
+}
+.profile-heatmap-hint { color: #8a9b90; font-size: calc(19 * var(--rpx)); }
+.profile-heatmap-legend { display: flex; align-items: center; gap: calc(6 * var(--rpx)); color: #667970; font-size: calc(19 * var(--rpx)); }
+.profile-heatmap-swatch { width: calc(18 * var(--rpx)); height: calc(18 * var(--rpx)); border-radius: calc(4 * var(--rpx)); }
+.profile-heatmap-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(240 * var(--rpx)); color: #667970; font-size: calc(24 * var(--rpx)); line-height: 1.6; text-align: center; }
+.profile-heatmap-retry { display: flex; align-items: center; justify-content: center; min-height: calc(88 * var(--rpx)); margin-top: calc(10 * var(--rpx)); padding: 0 calc(24 * var(--rpx)); color: #0b503b; font-size: calc(25 * var(--rpx)); font-weight: 100; }
+
+/* 马拉松成绩：一体化白卡，类型药丸 + 日期在上，名称最多两行，右侧大号成绩。 */
+.profile-races-card {
+  overflow: hidden;
+  border: calc(1 * var(--rpx)) solid #e1e9e3;
+  border-radius: calc(24 * var(--rpx));
+  background: #fff;
+  box-shadow: 0 calc(4 * var(--rpx)) calc(14 * var(--rpx)) rgba(7, 47, 39, 0.02);
+}
+.profile-race {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: calc(132 * var(--rpx));
+  padding: calc(24 * var(--rpx)) calc(32 * var(--rpx));
+  border-top: calc(1 * var(--rpx)) solid #f0f4f0;
+  box-sizing: border-box;
+}
+.profile-race:first-child { border-top: none; }
+.profile-race-info { display: flex; flex: 1; min-width: 0; flex-direction: column; }
+.profile-race-meta { display: flex; flex-wrap: wrap; align-items: center; gap: calc(8 * var(--rpx)) calc(14 * var(--rpx)); }
+.profile-race-type {
+  max-width: 100%;
+  padding: calc(2 * var(--rpx)) calc(12 * var(--rpx));
+  border-radius: calc(8 * var(--rpx));
+  background: #eaf3ed;
+  color: #2e6949;
+  font-size: calc(20 * var(--rpx));
+  font-weight: 200;
+  line-height: 1.4;
+  box-sizing: border-box;
+  word-break: break-all;
+}
+.profile-race-date { flex: none; color: #718175; font-size: calc(21 * var(--rpx)); font-weight: 200; }
+.profile-race-name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin-top: calc(8 * var(--rpx));
+  color: #113d30;
+  font-size: calc(26 * var(--rpx));
+  font-weight: 700;
+  line-height: 1.35;
+  word-break: break-all;
+}
+.profile-race-score-wrap { flex: none; margin-left: calc(20 * var(--rpx)); text-align: right; }
+.profile-race-score {
+  display: block;
+  color: #0b503b;
+  font-size: calc(32 * var(--rpx));
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.profile-race-score-label {
+  display: block;
+  margin-top: calc(4 * var(--rpx));
+  color: #8a9b90;
+  font-size: calc(19 * var(--rpx));
+  font-weight: 200;
+}
+
+.profile-activity-head {
+  padding: calc(42 * var(--rpx)) calc(4 * var(--rpx)) calc(4 * var(--rpx));
+  box-sizing: border-box;
+}
+
+.profile-bottom-space { height: env(safe-area-inset-bottom); }
+
+/* components/all-activity/all-activity.wxss */
+.all-activity-wrap {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.record-card {
+  background: #ffffff;
+  border: calc(1 * var(--rpx)) solid #e3ebe4;
+  border-radius: calc(24 * var(--rpx));
+  padding: calc(26 * var(--rpx)) calc(24 * var(--rpx)) calc(28 * var(--rpx));
+  margin-top: calc(22 * var(--rpx));
+  box-sizing: border-box;
+  box-shadow: 0 calc(4 * var(--rpx)) calc(14 * var(--rpx)) rgba(7, 47, 39, 0.02);
+}
+
+.record-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: calc(22 * var(--rpx));
+  padding: 0 calc(6 * var(--rpx));
+}
+
+.record-head-main {
+  display: flex;
+  align-items: baseline;
+  gap: calc(14 * var(--rpx));
+}
+
+.record-title {
+  font-size: calc(32 * var(--rpx));
+  font-weight: 800;
+  color: #072f27;
+  line-height: 1;
+}
+
+.record-kicker {
+  font-size: calc(18 * var(--rpx));
+  font-weight: 200;
+  color: #84918a;
+  letter-spacing: calc(1.5 * var(--rpx));
+}
+
+.record-count-pill {
+  display: flex;
+  align-items: baseline;
+  padding: calc(6 * var(--rpx)) calc(18 * var(--rpx));
+  border-radius: calc(24 * var(--rpx));
+  background: #f0f5ee;
+  color: #0b503b;
+  font-size: calc(22 * var(--rpx));
+  font-weight: 700;
+  gap: calc(4 * var(--rpx));
+}
+
+.count-number {
+  font-size: calc(26 * var(--rpx));
+  font-weight: 800;
+  color: #072f27;
+  font-variant-numeric: tabular-nums;
+}
+
+.count-unit {
+  font-size: calc(20 * var(--rpx));
+  color: #64786d;
+  font-weight: 200;
+}
+
+.count-arrow {
+  font-size: calc(24 * var(--rpx));
+  color: #0b503b;
+  margin-left: calc(2 * var(--rpx));
+}
+
+.pill-touch {
+  opacity: 0.7;
+}
+
+.record-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.record-list {
+  display: flex;
+  align-items: stretch;
+  gap: calc(18 * var(--rpx));
+  padding-bottom: calc(4 * var(--rpx));
+  box-sizing: border-box;
+}
+
+.record-item {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  border-radius: calc(18 * var(--rpx));
+  overflow: hidden;
+  background: #ffffff;
+  border: calc(1 * var(--rpx)) solid rgba(7, 47, 39, 0.06);
+  box-sizing: border-box;
+}
+
+/* 挑战尺寸 (海报 16:9 + 底部信息带) */
+.challenge-item {
+  width: calc(300 * var(--rpx));
+}
+
+/* 团跑尺寸 (摄影画幅) */
+.run-item {
+  width: calc(280 * var(--rpx));
+}
+
+.item-img-wrap {
+  position: relative;
+  width: 100%;
+  background: #e6ede7;
+}
+
+.challenge-item .item-img-wrap { height: calc(168 * var(--rpx)); }
+.run-item .item-img-wrap { height: calc(186 * var(--rpx)); }
+
+.item-cover {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.item-cover-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #547262;
+  font-size: calc(24 * var(--rpx));
+  font-weight: 200;
+}
+
+/* 海报下方纯白信息带：不再用深色遮罩压图，活动图完整露出。 */
+.item-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  padding: calc(14 * var(--rpx)) calc(16 * var(--rpx)) calc(16 * var(--rpx));
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.item-name {
+  color: #072f27;
+  font-size: calc(23 * var(--rpx));
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.item-date {
+  color: #718175;
+  font-size: calc(19 * var(--rpx));
+  font-weight: 200;
+  margin-top: calc(5 * var(--rpx));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+.record-more-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: calc(140 * var(--rpx));
+  flex: none;
+  border-radius: calc(18 * var(--rpx));
+  background: #f4f8f4;
+  border: calc(1 * var(--rpx)) dashed #d0dcd2;
+  box-sizing: border-box;
+  min-height: calc(252 * var(--rpx));
+}
+
+.more-challenge {
+  min-height: calc(252 * var(--rpx));
+}
+
+.more-run {
+  min-height: calc(270 * var(--rpx));
+}
+
+.more-circle {
+  width: calc(48 * var(--rpx));
+  height: calc(48 * var(--rpx));
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0b503b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(26 * var(--rpx));
+  font-weight: 800;
+  box-shadow: 0 calc(2 * var(--rpx)) calc(6 * var(--rpx)) rgba(0, 0, 0, 0.06);
+}
+
+.more-label {
+  margin-top: calc(10 * var(--rpx));
+  font-size: calc(20 * var(--rpx));
+  font-weight: 200;
+  color: #547262;
+}
+
+.item-touch {
+  opacity: 0.86;
+  transform: scale(0.98);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+*{box-sizing:border-box}body{margin:0;background:#eaf0eb;color:#072f27;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}.preview{padding:28px 16px 40px;display:flex;flex-direction:column;align-items:center;gap:18px}.preview-heading{max-width:560px;text-align:center}.preview-heading h1{margin:0 0 10px;font-size:22px}.preview-heading p{font-size:13px;line-height:1.7;margin:0;color:#557262}.controls{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;align-items:center}.controls button,.controls select{border:1px solid #c8d8cc;background:#fff;color:#072f27;border-radius:12px;padding:11px 14px;font:inherit;font-size:13px}.controls button[aria-pressed="true"]{background:#072f27;color:#d9ff3f}.phone{--phone-width:375px;--rpx:calc(var(--phone-width) / 750);width:min(var(--phone-width),100%);height:760px;max-height:82vh;background:#fbfcf9;border:1px solid #c8d8cc;border-radius:28px;overflow:hidden;position:relative;box-shadow:0 14px 44px #072f2710}.phone-header{height:58px;padding:20px 20px 0;display:flex;justify-content:space-between;font-size:13px;font-weight:700}.preview-body{height:calc(100% - 116px);overflow-y:auto;overflow-x:hidden}.profile-page{min-height:0;padding-top:0;padding-bottom:24px}.profile-service-row,.profile-race{width:100%;text-align:left;font-family:inherit;background:transparent;border-left:0;border-right:0;border-bottom:0}.profile-race-info,.profile-race-score-wrap{display:block}.record-scroll{overflow-x:auto;scrollbar-width:none}.record-scroll::-webkit-scrollbar{display:none}.record-list{width:max-content}.record-item,.record-more-card{padding:0;font-family:inherit;text-align:left;cursor:pointer}.item-img-wrap,.item-cover{display:block}.item-cover{object-fit:contain}.item-info{display:flex}.record-count-pill{font-family:inherit;border:0;cursor:pointer}.profile-section-link{border:0;background:transparent;padding:0;font-family:inherit;cursor:pointer}.phone button:active{opacity:.72}.phone button:focus-visible{outline:2px solid #0b503b;outline-offset:3px}.phone-footer{position:absolute;bottom:0;left:0;right:0;height:58px;background:#fbfcf9;border-top:1px solid #e1e9e3;display:flex;justify-content:space-around;align-items:center;font-size:12px;color:#667970}.phone-footer strong{color:#072f27;padding-bottom:5px;border-bottom:3px solid #d9ff3f}.phone.is-member .admin-only{display:none}.toast{position:absolute;bottom:74px;left:20px;right:20px;border-radius:14px;padding:12px;background:#072f27;color:white;font-size:12px;text-align:center;line-height:1.6;z-index:5}.toast[hidden]{display:none}@media(max-width:390px){.preview{padding-left:0;padding-right:0}.phone{border-radius:18px;--phone-width:320px}.preview-heading{padding:0 16px}}
+</style></head><body><main class="preview"><header class="preview-heading"><h1>我的 · 下半页</h1><p>常用服务 → 马拉松成绩 → 参与记录<br>预览使用示例成绩、次数与海报；小程序继续展示接口数据。</p></header><div class="controls"><button id="admin" type="button" aria-pressed="true">管理员 · 4项服务</button><button id="member" type="button" aria-pressed="false">普通跑友 · 3项服务</button><label>宽度 <select id="width"><option value="320">320</option><option value="375" selected>375</option><option value="430">430</option></select></label></div><article class="phone" id="phone"><div class="phone-header"><span>WRC</span><span>我的跑步</span></div><div class="preview-body"><div class="profile-page"><section class="profile-services"><div class="profile-section-head"><span class="profile-section-title">常用服务</span><span class="profile-section-note">记录 · 兑换 · 管理</span></div><div class="profile-services-card"><button class="profile-service-row " type="button"><span class="profile-service-main"><span class="profile-service-name">打卡记录</span><span class="profile-service-desc">日常跑步轨迹与凭证</span></span><span class="profile-service-arrow">→</span></button><button class="profile-service-row " type="button"><span class="profile-service-main"><span class="profile-service-name">我的兑换</span><span class="profile-service-desc">历史兑换记录与物流</span></span><span class="profile-service-arrow">→</span></button><button class="profile-service-row " type="button"><span class="profile-service-main"><span class="profile-service-name">兑换好礼</span><span class="profile-service-desc">用积分与小花兑换跑团福利</span></span><span class="profile-service-arrow">→</span></button><button class="profile-service-row admin-only" type="button"><span class="profile-service-main"><span class="profile-service-name">跑团管理</span><span class="profile-service-desc">审核打卡与活动发布</span></span><span class="profile-service-arrow">→</span></button></div></section><section class="profile-races"><div class="profile-section-head"><div class="profile-section-left"><span class="profile-section-title">马拉松成绩</span><span class="profile-section-note">你的高光时刻</span></div><button class="profile-section-link" type="button">查看全部成绩 →</button></div><div class="profile-races-card"><button class="profile-race" type="button"><span class="profile-race-info"><span class="profile-race-meta"><span class="profile-race-type">城市路跑赛事 · 半程</span><span class="profile-race-date">2026-03-15</span></span><span class="profile-race-name">春日城市半程马拉松暨全民健身城市路跑嘉年华</span></span><span class="profile-race-score-wrap"><span class="profile-race-score">01:56:12</span><span class="profile-race-score-label">净成绩</span></span></button><button class="profile-race" type="button"><span class="profile-race-info"><span class="profile-race-meta"><span class="profile-race-type">城市路跑赛事 · 全程</span><span class="profile-race-date">2026-09-20</span></span><span class="profile-race-name">金秋城市马拉松</span></span><span class="profile-race-score-wrap"><span class="profile-race-score">03:58:42</span><span class="profile-race-score-label">净成绩</span></span></button></div></section><div class="profile-section-head profile-activity-head"><div class="profile-section-heading-copy"><span class="profile-section-title">参与记录</span><span class="profile-section-note">每一次挑战与团聚</span></div></div><div class="all-activity-wrap"><section class="record-card"><div class="record-card-head"><div class="record-head-main"><span class="record-title">挑战</span><span class="record-kicker">CHALLENGE</span></div><button class="record-count-pill" type="button"><span class="count-number">12</span><span class="count-unit">次</span><span class="count-arrow">›</span></button></div><div class="record-scroll"><div class="record-list"><button class="record-item challenge-item" type="button"><span class="item-img-wrap"><img class="item-cover" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20450%20600%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%230b503b%22/%3E%3Crect%20x%3D%2225%22%20y%3D%2225%22%20width%3D%22400%22%20height%3D%22550%22%20rx%3D%2212%22%20fill%3D%22none%22%20stroke%3D%22%23d9ff3f%22%20stroke-width%3D%223%22/%3E%3Ccircle%20cx%3D%22225.0%22%20cy%3D%22192.0%22%20r%3D%2267.5%22%20fill%3D%22%23d9ff3f%22/%3E%3Cpath%20d%3D%22M171.0%20180.0l36.0%2048.0%2072.0%20-78.0%22%20fill%3D%22none%22%20stroke%3D%22%23072f27%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2265%25%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22sans-serif%22%20font-size%3D%2233.75%22%3E%E5%8D%81%E6%9C%88%E9%87%8C%E7%A8%8B%E6%8C%91%E6%88%98%3C/text%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2280%25%22%20text-anchor%3D%22middle%22%20fill%3D%22%23d9ff3f%22%20font-family%3D%22sans-serif%22%20font-size%3D%2222.5%22%3EWRC%20%C2%B7%20%E7%A4%BA%E4%BE%8B%E6%B5%B7%E6%8A%A5%3C/text%3E%3C/svg%3E" alt="十月里程挑战示例海报，完整显示"/></span><span class="item-info"><span class="item-name">十月里程挑战</span><span class="item-date">2026-10-01 00:00</span></span></button><button class="record-item challenge-item" type="button"><span class="item-img-wrap"><img class="item-cover" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20450%20600%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23164e3f%22/%3E%3Crect%20x%3D%2225%22%20y%3D%2225%22%20width%3D%22400%22%20height%3D%22550%22%20rx%3D%2212%22%20fill%3D%22none%22%20stroke%3D%22%23d9ff3f%22%20stroke-width%3D%223%22/%3E%3Ccircle%20cx%3D%22225.0%22%20cy%3D%22192.0%22%20r%3D%2267.5%22%20fill%3D%22%23d9ff3f%22/%3E%3Cpath%20d%3D%22M171.0%20180.0l36.0%2048.0%2072.0%20-78.0%22%20fill%3D%22none%22%20stroke%3D%22%23072f27%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2265%25%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22sans-serif%22%20font-size%3D%2233.75%22%3E%E4%B9%9D%E6%9C%88%E9%87%8C%E7%A8%8B%E6%8C%91%E6%88%98%3C/text%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2280%25%22%20text-anchor%3D%22middle%22%20fill%3D%22%23d9ff3f%22%20font-family%3D%22sans-serif%22%20font-size%3D%2222.5%22%3EWRC%20%C2%B7%20%E7%A4%BA%E4%BE%8B%E6%B5%B7%E6%8A%A5%3C/text%3E%3C/svg%3E" alt="九月里程挑战示例海报，完整显示"/></span><span class="item-info"><span class="item-name">九月里程挑战</span><span class="item-date">2026-09-01 00:00</span></span></button><button class="record-more-card more-challenge" type="button"><span class="more-circle">→</span><span class="more-label">全部挑战</span></button></div></div></section><section class="record-card"><div class="record-card-head"><div class="record-head-main"><span class="record-title">团跑</span><span class="record-kicker">GROUP RUN</span></div><button class="record-count-pill" type="button"><span class="count-number">26</span><span class="count-unit">次</span><span class="count-arrow">›</span></button></div><div class="record-scroll"><div class="record-list"><button class="record-item run-item" type="button"><span class="item-img-wrap"><img class="item-cover" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20900%20360%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%230d6447%22/%3E%3Crect%20x%3D%2225%22%20y%3D%2225%22%20width%3D%22850%22%20height%3D%22310%22%20rx%3D%2212%22%20fill%3D%22none%22%20stroke%3D%22%23d9ff3f%22%20stroke-width%3D%223%22/%3E%3Ccircle%20cx%3D%22450.0%22%20cy%3D%22115.2%22%20r%3D%2254.0%22%20fill%3D%22%23d9ff3f%22/%3E%3Cpath%20d%3D%22M342.0%20108.0l72.0%2028.8%20144.0%20-46.800000000000004%22%20fill%3D%22none%22%20stroke%3D%22%23072f27%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2265%25%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22sans-serif%22%20font-size%3D%2227.0%22%3E%E5%91%A8%E6%9C%AB%E4%B8%80%E8%B5%B7%E8%B7%91%3C/text%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2280%25%22%20text-anchor%3D%22middle%22%20fill%3D%22%23d9ff3f%22%20font-family%3D%22sans-serif%22%20font-size%3D%2218.0%22%3EWRC%20%C2%B7%20%E7%A4%BA%E4%BE%8B%E6%B5%B7%E6%8A%A5%3C/text%3E%3C/svg%3E" alt="周末一起跑示例海报，完整显示"/></span><span class="item-info"><span class="item-name">周末一起跑</span><span class="item-date">2026-09-27 07:00</span></span></button><button class="record-item run-item" type="button"><span class="item-img-wrap"><img class="item-cover" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20900%20360%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23164e3f%22/%3E%3Crect%20x%3D%2225%22%20y%3D%2225%22%20width%3D%22850%22%20height%3D%22310%22%20rx%3D%2212%22%20fill%3D%22none%22%20stroke%3D%22%23d9ff3f%22%20stroke-width%3D%223%22/%3E%3Ccircle%20cx%3D%22450.0%22%20cy%3D%22115.2%22%20r%3D%2254.0%22%20fill%3D%22%23d9ff3f%22/%3E%3Cpath%20d%3D%22M342.0%20108.0l72.0%2028.8%20144.0%20-46.800000000000004%22%20fill%3D%22none%22%20stroke%3D%22%23072f27%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2265%25%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22sans-serif%22%20font-size%3D%2227.0%22%3E%E5%9F%8E%E5%B8%82%E5%85%AC%E5%9B%AD%E6%99%A8%E8%B7%91%3C/text%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2280%25%22%20text-anchor%3D%22middle%22%20fill%3D%22%23d9ff3f%22%20font-family%3D%22sans-serif%22%20font-size%3D%2218.0%22%3EWRC%20%C2%B7%20%E7%A4%BA%E4%BE%8B%E6%B5%B7%E6%8A%A5%3C/text%3E%3C/svg%3E" alt="城市公园晨跑示例海报，完整显示"/></span><span class="item-info"><span class="item-name">城市公园晨跑</span><span class="item-date">2026-09-20 07:00</span></span></button><button class="record-more-card more-run" type="button"><span class="more-circle">→</span><span class="more-label">全部团跑</span></button></div></div></section></div></div></div><nav class="phone-footer" aria-label="底部导航预览"><span>首页</span><span>团跑</span><span>挑战</span><strong>我的</strong></nav><div class="toast" id="toast" role="status" hidden>这里是设计预览，请在小程序中使用正式入口。</div></article></main><script>
+const phone=document.getElementById('phone'),admin=document.getElementById('admin'),member=document.getElementById('member');function setRole(isMember){phone.classList.toggle('is-member',isMember);admin.setAttribute('aria-pressed',String(!isMember));member.setAttribute('aria-pressed',String(isMember));}admin.onclick=()=>setRole(false);member.onclick=()=>setRole(true);document.getElementById('width').onchange=e=>phone.style.setProperty('--phone-width',e.target.value+'px');let toastTimer;phone.addEventListener('click',e=>{if(!e.target.closest('button'))return;const toast=document.getElementById('toast');toast.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.hidden=true,2000);});
+</script></body></html>

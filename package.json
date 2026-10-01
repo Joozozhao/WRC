@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/home-month-summary.test.js && node tests/home-month-summary-page.test.js && node tests/recent-run-heatmap.test.js && node tests/mydata-heatmap-page.test.js"
   },
   "keywords": [],
   "author": "",

@@ -181,15 +181,50 @@ Page({
     const firstDay = new Date(year, month - 1, 1).getDay()
     const leadingEmpty = (firstDay + 6) % 7
     const daysInMonth = new Date(year, month, 0).getDate()
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
     let totalMonthDistance = 0
     let runDaysCount = 0
     const cells = []
 
-    for (let e = 0; e < leadingEmpty; e++) {
-      cells.push({ isEmpty: true, level: 0, day: "", distance: 0, displayKm: 0 })
+    // 1. 上月补充天数
+    const prevMonthLastDay = new Date(year, month - 1, 0)
+    const prevTotalDays = prevMonthLastDay.getDate()
+    const prevYear = prevMonthLastDay.getFullYear()
+    const prevMonth = prevMonthLastDay.getMonth() + 1
+    const prevMonthKey = prevYear + "-" + (prevMonth < 10 ? "0" + prevMonth : prevMonth)
+
+    for (let p = leadingEmpty - 1; p >= 0; p--) {
+      const pDay = prevTotalDays - p
+      const dStr = pDay < 10 ? "0" + pDay : String(pDay)
+      const dateKey = prevMonthKey + "-" + dStr
+      const distance = this.data.monthlyDailyMap[dateKey] || 0
+      const curDate = new Date(prevYear, prevMonth - 1, pDay)
+      const isFuture = curDate > todayStart
+
+      let level = 0
+      if (distance > 0 && !isFuture) {
+        if (distance < 5) level = 1
+        else if (distance < 10) level = 2
+        else if (distance < 21.0975) level = 3
+        else level = 4
+      }
+
+      cells.push({
+        isEmpty: false,
+        isOtherMonth: true,
+        isPrevMonth: true,
+        isFuture: isFuture,
+        isToday: false,
+        day: pDay,
+        dateKey: dateKey,
+        distance: distance,
+        displayKm: Math.round(distance),
+        level: isFuture ? 0 : level
+      })
     }
 
+    // 2. 当月天数
     for (let d = 1; d <= daysInMonth; d++) {
       const dStr = d < 10 ? "0" + d : String(d)
       const dateKey = monthKey + "-" + dStr
@@ -210,8 +245,46 @@ Page({
 
       cells.push({
         isEmpty: false,
+        isOtherMonth: false,
         isFuture: isFuture,
         isToday: isToday,
+        day: d,
+        dateKey: dateKey,
+        distance: distance,
+        displayKm: Math.round(distance),
+        level: isFuture ? 0 : level
+      })
+    }
+
+    // 3. 下月补充天数
+    const remainder = cells.length % 7
+    const trailingCount = remainder === 0 ? 0 : 7 - remainder
+    const nextMonthFirstDay = new Date(year, month, 1)
+    const nextYear = nextMonthFirstDay.getFullYear()
+    const nextMonth = nextMonthFirstDay.getMonth() + 1
+    const nextMonthKey = nextYear + "-" + (nextMonth < 10 ? "0" + nextMonth : nextMonth)
+
+    for (let d = 1; d <= trailingCount; d++) {
+      const dStr = d < 10 ? "0" + d : String(d)
+      const dateKey = nextMonthKey + "-" + dStr
+      const distance = this.data.monthlyDailyMap[dateKey] || 0
+      const curDate = new Date(nextYear, nextMonth - 1, d)
+      const isFuture = curDate > todayStart
+
+      let level = 0
+      if (distance > 0 && !isFuture) {
+        if (distance < 5) level = 1
+        else if (distance < 10) level = 2
+        else if (distance < 21.0975) level = 3
+        else level = 4
+      }
+
+      cells.push({
+        isEmpty: false,
+        isOtherMonth: true,
+        isNextMonth: true,
+        isFuture: isFuture,
+        isToday: false,
         day: d,
         dateKey: dateKey,
         distance: distance,

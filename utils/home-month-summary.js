@@ -53,10 +53,18 @@ function formatKm(num) {
 function parseMonthRecords(monthData, year, month, now) {
   const nowDate = now instanceof Date ? now : new Date();
   const todayStart = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
-  const curMonthKey = year + '-' + pad2(month);
-
   const dailyMap = {};
-  const dayItems = Array.isArray(monthData) ? monthData : (monthData && monthData[curMonthKey]) || [];
+  let dayItems = [];
+  if (Array.isArray(monthData)) {
+    dayItems = monthData;
+  } else if (monthData && typeof monthData === 'object') {
+    Object.keys(monthData).forEach((k) => {
+      const list = monthData[k];
+      if (Array.isArray(list)) {
+        dayItems = dayItems.concat(list);
+      }
+    });
+  }
 
   if (Array.isArray(dayItems)) {
     dayItems.forEach((item) => {
@@ -68,8 +76,6 @@ function parseMonthRecords(monthData, year, month, now) {
       const itemY = parseInt(m[1], 10);
       const itemM = parseInt(m[2], 10);
       const itemD = parseInt(m[3], 10);
-      if (itemY !== year || itemM !== month) return;
-
       const itemDate = new Date(itemY, itemM - 1, itemD);
       if (itemDate > todayStart) return;
 
@@ -91,10 +97,17 @@ function parseMonthRecords(monthData, year, month, now) {
   let runDaysCount = 0;
 
   Object.keys(dailyMap).forEach((dayStr) => {
-    const d = dailyMap[dayStr];
-    if (d > 0) {
-      totalDist += d;
-      runDaysCount++;
+    const m = dayStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (m) {
+      const itemY = parseInt(m[1], 10);
+      const itemM = parseInt(m[2], 10);
+      if (itemY === year && itemM === month) {
+        const d = dailyMap[dayStr];
+        if (d > 0) {
+          totalDist += d;
+          runDaysCount++;
+        }
+      }
     }
   });
 
@@ -118,10 +131,50 @@ function buildMonthHeatmap(year, month, dailyMap, now) {
   const startWeekday = (firstDay.getDay() + 6) % 7;
 
   const days = [];
-  for (let p = 0; p < startWeekday; p++) {
-    days.push({ isEmpty: true, key: 'pad_' + p });
+
+  // 1. 上个月补充天数
+  const prevMonthLastDay = new Date(year, month - 1, 0);
+  const prevTotalDays = prevMonthLastDay.getDate();
+  const prevYear = prevMonthLastDay.getFullYear();
+  const prevMonth = prevMonthLastDay.getMonth() + 1;
+
+  for (let p = startWeekday - 1; p >= 0; p--) {
+    const pDay = prevTotalDays - p;
+    const curDate = new Date(prevYear, prevMonth - 1, pDay);
+    const dateStr = formatDateKey(curDate);
+    const isFuture = curDate > todayStart;
+
+    let dist = 0;
+    if (dailyMap && dailyMap[dateStr] !== undefined) {
+      dist = Number(dailyMap[dateStr]) || 0;
+    }
+
+    let level = 0;
+    if (dist > 0 && !isFuture) {
+      if (dist <= 3) level = 1;
+      else if (dist <= 7) level = 2;
+      else if (dist <= 12) level = 3;
+      else level = 4;
+    }
+
+    days.push({
+      isEmpty: false,
+      isOtherMonth: true,
+      isPrevMonth: true,
+      dateStr: dateStr,
+      year: prevYear,
+      month: prevMonth,
+      day: pDay,
+      distance: dist > 0 ? (Math.round(dist * 100) / 100) : 0,
+      displayKm: dist > 0 ? (Math.round(dist * 10) / 10) : null,
+      level: isFuture ? -1 : level,
+      isFuture: isFuture,
+      isToday: dateStr === todayStr,
+      dateLabel: prevMonth + '月' + pDay + '日'
+    });
   }
 
+  // 2. 当月天数
   for (let d = 1; d <= totalDays; d++) {
     const curDate = new Date(year, month - 1, d);
     const dateStr = formatDateKey(curDate);
@@ -142,6 +195,7 @@ function buildMonthHeatmap(year, month, dailyMap, now) {
 
     const item = {
       isEmpty: false,
+      isOtherMonth: false,
       dateStr: dateStr,
       year: year,
       month: month,
@@ -154,6 +208,48 @@ function buildMonthHeatmap(year, month, dailyMap, now) {
       dateLabel: month + '月' + d + '日'
     };
     days.push(item);
+  }
+
+  // 3. 下个月补充天数
+  const remainder = days.length % 7;
+  const trailingCount = remainder === 0 ? 0 : 7 - remainder;
+  const nextMonthFirstDay = new Date(year, month, 1);
+  const nextYear = nextMonthFirstDay.getFullYear();
+  const nextMonth = nextMonthFirstDay.getMonth() + 1;
+
+  for (let d = 1; d <= trailingCount; d++) {
+    const curDate = new Date(nextYear, nextMonth - 1, d);
+    const dateStr = formatDateKey(curDate);
+    const isFuture = curDate > todayStart;
+
+    let dist = 0;
+    if (dailyMap && dailyMap[dateStr] !== undefined) {
+      dist = Number(dailyMap[dateStr]) || 0;
+    }
+
+    let level = 0;
+    if (dist > 0 && !isFuture) {
+      if (dist <= 3) level = 1;
+      else if (dist <= 7) level = 2;
+      else if (dist <= 12) level = 3;
+      else level = 4;
+    }
+
+    days.push({
+      isEmpty: false,
+      isOtherMonth: true,
+      isNextMonth: true,
+      dateStr: dateStr,
+      year: nextYear,
+      month: nextMonth,
+      day: d,
+      distance: dist > 0 ? (Math.round(dist * 100) / 100) : 0,
+      displayKm: dist > 0 ? (Math.round(dist * 10) / 10) : null,
+      level: isFuture ? -1 : level,
+      isFuture: isFuture,
+      isToday: dateStr === todayStr,
+      dateLabel: nextMonth + '月' + d + '日'
+    });
   }
 
   return {
@@ -728,4 +824,3 @@ module.exports = {
   resolveTotalPages,
   createMonthChallengeCoordinator
 };
-

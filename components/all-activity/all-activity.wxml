@@ -31,10 +31,13 @@
             role="button"
             aria-label="{{item.acty_name || '挑战详情'}}"
           >
-            <image class="item-cover" src="{{item.acty_img}}" mode="aspectFill" lazy-load="true"></image>
-            <view class="item-tag is-challenge">挑战</view>
-            <view class="item-overlay" wx:if="{{item.acty_name}}">
+            <view class="item-img-wrap">
+              <image wx:if="{{item.acty_img}}" class="item-cover" src="{{item.acty_img}}" mode="aspectFit" lazy-load="true"></image>
+              <view wx:else class="item-cover-empty">挑战记录</view>
+            </view>
+            <view class="item-info">
               <text class="item-name">{{item.acty_name}}</text>
+              <text class="item-date" wx:if="{{item.start_timestr}}">{{item.start_timestr}}</text>
             </view>
           </view>
         </block>
@@ -78,9 +81,11 @@
             role="button"
             aria-label="{{item.acty_name || '团跑详情'}}"
           >
-            <image class="item-cover" src="{{item.acty_img}}" mode="aspectFill" lazy-load="true"></image>
-            <view class="item-tag is-run">团跑</view>
-            <view class="item-overlay">
+            <view class="item-img-wrap">
+              <image wx:if="{{item.acty_img}}" class="item-cover" src="{{item.acty_img}}" mode="aspectFit" lazy-load="true"></image>
+              <view wx:else class="item-cover-empty">团跑记录</view>
+            </view>
+            <view class="item-info">
               <text class="item-name">{{item.acty_name}}</text>
               <text class="item-date" wx:if="{{item.start_timestr}}">{{item.start_timestr}}</text>
             </view>

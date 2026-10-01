@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WRC「我的」下半部重新设计稿 (2026-10-01)</title>
+  <style>
+    :root {
+      --bg-warm: #fbfcf9;
+      --pine-dark: #072f27;
+      --pine-mid: #0b503b;
+      --pine-light: #164e3f;
+      --accent-lime: #d9ff3f;
+      --border-soft: #e1e9e3;
+      --card-white: #ffffff;
+      --text-muted: #73877b;
+      --text-sub: #8a9c91;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      background: #1e2422;
+      color: var(--pine-dark);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+    .preview-header {
+      color: #e5ece6;
+      text-align: center;
+      max-width: 600px;
+    }
+    .preview-header h1 { font-size: 20px; margin-bottom: 8px; font-weight: 700; color: #fff; }
+    .preview-header p { font-size: 13px; color: #9bb0a3; font-weight: 200; line-height: 1.6; }
+
+    .toggle-bar {
+      display: flex;
+      gap: 12px;
+      background: #2b3330;
+      padding: 6px;
+      border-radius: 999px;
+    }
+    .toggle-btn {
+      border: none;
+      background: transparent;
+      color: #9bb0a3;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .toggle-btn.active {
+      background: var(--accent-lime);
+      color: #062b23;
+      font-weight: 700;
+    }
+
+    /* 移动端容器模拟 */
+    .mobile-frame {
+      width: 390px;
+      background: var(--bg-warm);
+      border-radius: 40px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4), 0 0 0 10px #2c3531;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .phone-notch {
+      height: 38px;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding-bottom: 4px;
+    }
+    .notch-pill {
+      width: 110px;
+      height: 24px;
+      background: #000;
+      border-radius: 20px;
+    }
+
+    .content-scroll {
+      padding: 0 20px 80px;
+      overflow-y: auto;
+    }
+
+    /* 章节标题 */
+    .sec-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 24px 2px 10px;
+    }
+    .sec-head-left {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .sec-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--pine-dark);
+      letter-spacing: -0.3px;
+    }
+    .sec-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 200;
+    }
+    .sec-link {
+      font-size: 11.5px;
+      color: var(--pine-mid);
+      font-weight: 200;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+    }
+
+    /* 1. 常用服务卡片 (一体化列表) */
+    .services-card {
+      background: var(--card-white);
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(7, 47, 39, 0.02);
+    }
+    .service-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 52px;
+      padding: 0 16px;
+      position: relative;
+      cursor: pointer;
+    }
+    .service-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 0;
+      height: 1px;
+      background: #f0f4f0;
+    }
+    .service-item:active {
+      background: #f9fbf8;
+    }
+    .service-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .service-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--pine-dark);
+    }
+    .service-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 200;
+    }
+    .service-arrow {
+      font-size: 14px;
+      color: var(--pine-mid);
+      font-weight: 300;
+    }
+
+    /* 2. 马拉松成绩 */
+    .races-card {
+      background: var(--card-white);
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(7, 47, 39, 0.02);
+    }
+    .race-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      position: relative;
+      cursor: pointer;
+    }
+    .race-row:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 0;
+      height: 1px;
+      background: #f0f4f0;
+    }
+    .race-main {
+      flex: 1;
+      min-width: 0;
+      padding-right: 14px;
+    }
+    .race-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .race-tag {
+      font-size: 9.5px;
+      color: #2e6949;
+      background: #eaf3ed;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .race-date {
+      font-size: 10.5px;
+      color: var(--text-sub);
+      font-weight: 200;
+    }
+    .race-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--pine-dark);
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .race-score-wrap {
+      flex: none;
+      text-align: right;
+    }
+    .race-score {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--pine-mid);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.5px;
+    }
+    .race-score-lbl {
+      font-size: 9.5px;
+      color: var(--text-muted);
+      font-weight: 200;
+      margin-top: 2px;
+    }
+
+    /* 3. 参与记录 (横滑卡片升级) */
+    .record-box {
+      background: var(--card-white);
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      padding: 14px 14px 16px;
+      margin-top: 12px;
+      box-shadow: 0 2px 10px rgba(7, 47, 39, 0.02);
+    }
+    .record-box-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 0 2px;
+    }
+    .record-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .record-box-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--pine-dark);
+    }
+    .record-box-en {
+      font-size: 10px;
+      font-weight: 600;
+      color: #92a499;
+      letter-spacing: 0.8px;
+    }
+    .record-pill {
+      display: flex;
+      align-items: center;
+      background: #f1f6f1;
+      padding: 3px 10px;
+      border-radius: 999px;
+      gap: 3px;
+      cursor: pointer;
+    }
+    .record-pill-num {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--pine-dark);
+    }
+    .record-pill-unit {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 200;
+    }
+    .record-pill-arrow {
+      font-size: 11px;
+      color: var(--pine-mid);
+      margin-left: 1px;
+    }
+
+    /* 横滑列表 */
+    .record-hscroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .record-hscroll::-webkit-scrollbar { display: none; }
+
+    .hcard {
+      flex: none;
+      width: 175px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f7faf7;
+      border: 1px solid #e3ebe4;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    .hcard-img-wrap {
+      width: 100%;
+      height: 100px;
+      position: relative;
+      background: #e6ede8;
+      overflow: hidden;
+    }
+    .hcard-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .hcard-badge {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 9.5px;
+      font-weight: 750;
+      line-height: 1.2;
+    }
+    .hcard-badge.lime {
+      background: var(--accent-lime);
+      color: #062b23;
+    }
+    .hcard-badge.white {
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--pine-dark);
+      backdrop-filter: blur(4px);
+    }
+
+    .hcard-info {
+      padding: 8px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+    .hcard-name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--pine-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+    .hcard-date {
+      font-size: 10px;
+      color: var(--text-sub);
+      font-weight: 200;
+      margin-top: 3px;
+    }
+
+    /* 末尾更多卡片 */
+    .hcard-more {
+      flex: none;
+      width: 80px;
+      border-radius: 12px;
+      border: 1px dashed #cedbd0;
+      background: #f7faf7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .more-btn-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: var(--pine-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .more-btn-text {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 200;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="preview-header">
+    <h1>WRC · 「我的」下半部重设计稿</h1>
+    <p>延续暖白底、深松绿、荧光黄绿主题 · 小字统一 200 字重 · 完整无裁切海报视觉</p>
+  </div>
+
+  <div class="toggle-bar">
+    <button class="toggle-btn active" onclick="setRole('admin')">管理员视图（4项服务）</button>
+    <button class="toggle-btn" onclick="setRole('user')">普通跑友视图（3项服务）</button>
+  </div>
+
+  <div class="mobile-frame">
+    <div class="phone-notch">
+      <div class="notch-pill"></div>
+    </div>
+
+    <div class="content-scroll">
+      <!-- 1. 常用服务 -->
+      <div class="sec-head">
+        <div class="sec-head-left">
+          <div class="sec-title">常用服务</div>
+          <div class="sec-note">记录 · 兑换 · 管理</div>
+        </div>
+      </div>
+      <div class="services-card">
+        <div class="service-item">
+          <div class="service-item-left">
+            <span class="service-name">打卡记录</span>
+            <span class="service-desc">日常跑步轨迹与凭证</span>
+          </div>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-item">
+          <div class="service-item-left">
+            <span class="service-name">我的兑换</span>
+            <span class="service-desc">历史兑换记录与物流</span>
+          </div>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-item">
+          <div class="service-item-left">
+            <span class="service-name">兑换好礼</span>
+            <span class="service-desc">用积分与小花兑换跑团福利</span>
+          </div>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-item admin-only">
+          <div class="service-item-left">
+            <span class="service-name">跑团管理</span>
+            <span class="service-desc">审核跑友打卡与活动发布</span>
+          </div>
+          <span class="service-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- 2. 马拉松成绩 -->
+      <div class="sec-head">
+        <div class="sec-head-left">
+          <div class="sec-title">马拉松成绩</div>
+          <div class="sec-note">你的高光时刻</div>
+        </div>
+        <div class="sec-link">查看全部成绩 →</div>
+      </div>
+      <div class="races-card">
+        <div class="race-row">
+          <div class="race-main">
+            <div class="race-badge-row">
+              <span class="race-tag">中国田协A类赛事 · 半程</span>
+              <span class="race-date">2021-04-24</span>
+            </div>
+            <div class="race-name">中国银联2021北京国际长跑节--北京半程马拉松</div>
+          </div>
+          <div class="race-score-wrap">
+            <div class="race-score">01:49:31</div>
+            <div class="race-score-lbl">净成绩</div>
+          </div>
+        </div>
+
+        <div class="race-row">
+          <div class="race-main">
+            <div class="race-badge-row">
+              <span class="race-tag">中国田协A类赛事 · 全程</span>
+              <span class="race-date">2018-09-08</span>
+            </div>
+            <div class="race-name">2018太原国际马拉松赛</div>
+          </div>
+          <div class="race-score-wrap">
+            <div class="race-score">03:48:51</div>
+            <div class="race-score-lbl">净成绩</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 参与记录 -->
+      <div class="sec-head">
+        <div class="sec-head-left">
+          <div class="sec-title">参与记录</div>
+          <div class="sec-note">每一次挑战与团聚</div>
+        </div>
+      </div>
+
+      <!-- 挑战记录 -->
+      <div class="record-box">
+        <div class="record-box-head">
+          <div class="record-title-wrap">
+            <span class="record-box-title">挑战</span>
+            <span class="record-box-en">CHALLENGE</span>
+          </div>
+          <div class="record-pill">
+            <span class="record-pill-num">80</span>
+            <span class="record-pill-unit">次</span>
+            <span class="record-pill-arrow">›</span>
+          </div>
+        </div>
+        <div class="record-hscroll">
+          <div class="hcard">
+            <div class="hcard-img-wrap">
+              <img class="hcard-img" src="https://images.unsplash.com/photo-1517649763962-0c623266ddc0?w=400&auto=format&fit=crop&q=80" alt="挑战封面">
+              <span class="hcard-badge lime">挑战</span>
+            </div>
+            <div class="hcard-info">
+              <div class="hcard-name">2026年12月里程挑战</div>
+              <div class="hcard-date">年度压轴挑战</div>
+            </div>
+          </div>
+
+          <div class="hcard">
+            <div class="hcard-img-wrap">
+              <img class="hcard-img" src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=400&auto=format&fit=crop&q=80" alt="挑战封面">
+              <span class="hcard-badge lime">挑战</span>
+            </div>
+            <div class="hcard-info">
+              <div class="hcard-name">2026年10月里程挑战</div>
+              <div class="hcard-date">金秋收获季</div>
+            </div>
+          </div>
+
+          <div class="hcard-more">
+            <div class="more-btn-circle">→</div>
+            <div class="more-btn-text">全部挑战</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 团跑记录 -->
+      <div class="record-box">
+        <div class="record-box-head">
+          <div class="record-title-wrap">
+            <span class="record-box-title">团跑</span>
+            <span class="record-box-en">GROUP RUN</span>
+          </div>
+          <div class="record-pill">
+            <span class="record-pill-num">201</span>
+            <span class="record-pill-unit">次</span>
+            <span class="record-pill-arrow">›</span>
+          </div>
+        </div>
+        <div class="record-hscroll">
+          <div class="hcard">
+            <div class="hcard-img-wrap">
+              <img class="hcard-img" src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=400&auto=format&fit=crop&q=80" alt="团跑合影">
+              <span class="hcard-badge white">团跑</span>
+            </div>
+            <div class="hcard-info">
+              <div class="hcard-name">微网跑团273期聚跑</div>
+              <div class="hcard-date">2026-04-22 00:00</div>
+            </div>
+          </div>
+
+          <div class="hcard">
+            <div class="hcard-img-wrap">
+              <img class="hcard-img" src="https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?w=400&auto=format&fit=crop&q=80" alt="团跑合影">
+              <span class="hcard-badge white">团跑</span>
+            </div>
+            <div class="hcard-info">
+              <div class="hcard-name">微网跑团272期聚跑</div>
+              <div class="hcard-date">2026-04-15 11:00</div>
+            </div>
+          </div>
+
+          <div class="hcard-more">
+            <div class="more-btn-circle">→</div>
+            <div class="more-btn-text">全部团跑</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function setRole(role) {
+      document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      const adminItem = document.querySelector('.admin-only');
+      if (role === 'admin') {
+        adminItem.style.display = 'flex';
+      } else {
+        adminItem.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
+

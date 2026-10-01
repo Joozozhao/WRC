@@ -1,15 +1,13 @@
 <wxs src="../../utils/toDecimal2.wxs" module="number" />
+<site-header avatar="{{headerImg}}" bindprofiletap="openProfile"></site-header>
 <view class="profile-page">
-  <site-header avatar="{{headerImg}}" bindprofiletap="openProfile"></site-header>
-  <scroll-view scroll-y="true" class="profile-scroll">
-    <view class="profile-shell">
-      <view class="profile-hero">
-        <text class="profile-eyebrow">WRC · MY RUNNING</text>
-        <view class="profile-title-row">
-          <text class="profile-title">我的跑步</text>
-          <text class="profile-intro">每一步，都有回响。</text>
-        </view>
-      </view>
+  <view class="profile-hero">
+    <text class="profile-eyebrow">WRC · MY RUNNING</text>
+    <text class="profile-title">跑步，<text class="profile-title-break">就服自己！</text></text>
+    <view class="profile-title-line"></view>
+    <text class="profile-intro">每一步都算数。把每一次坚持，跑成自己的故事。</text>
+  </view>
+  <view class="profile-shell">
       <view class="profile-person">
         <view class="profile-avatar-wrap" bindtap="openProfile" hover-class="profile-touch" role="button" aria-label="{{userId > 0 ? '查看个人资料' : '登录'}}">
           <image class="profile-avatar" src="{{headerImg || '/images/default.png'}}" mode="aspectFill"></image>
@@ -24,12 +22,16 @@
         </view>
         <view class="profile-asset-buttons" wx:if="{{userId > 0}}">
           <view class="profile-asset-btn" bindtap="checkPoint" hover-class="profile-asset-btn-hover" role="button" aria-label="查看积分">
+            <image class="profile-asset-btn-icon" src="/images/score.svg" mode="aspectFit"></image>
             <text class="profile-asset-btn-num">{{statsLoaded ? score : '0'}}</text>
             <text class="profile-asset-btn-label">积分</text>
+            <text class="profile-asset-btn-arrow">→</text>
           </view>
           <view class="profile-asset-btn" bindtap="checkEnergy" hover-class="profile-asset-btn-hover" role="button" aria-label="查看小花儿">
+            <image class="profile-asset-btn-icon" src="/images/flower.svg" mode="aspectFit"></image>
             <text class="profile-asset-btn-num">{{statsLoaded ? number.slice(energy) : '0'}}</text>
             <text class="profile-asset-btn-label">小花</text>
+            <text class="profile-asset-btn-arrow">→</text>
           </view>
         </view>
       </view>
@@ -133,28 +135,61 @@
             <text class="profile-section-title">常用服务</text>
             <text class="profile-section-note">记录 · 兑换 · 管理</text>
           </view>
-          <view class="profile-services-grid">
-            <view class="profile-service-row" bindtap="toRecord" hover-class="profile-touch" role="button" aria-label="查看打卡记录"><text>打卡记录</text><text class="profile-service-arrow">→</text></view>
-            <view class="profile-service-row" bindtap="toHistory" hover-class="profile-touch" role="button" aria-label="查看我的兑换"><text>我的兑换</text><text class="profile-service-arrow">→</text></view>
-            <view class="profile-service-row" bindtap="toPrize" hover-class="profile-touch" role="button" aria-label="兑换好礼"><text>兑换好礼</text><text class="profile-service-arrow">→</text></view>
-            <view class="profile-service-row" wx:if="{{duty == '管理员' || duty == '管理员/团长'}}" bindtap="toManage" hover-class="profile-touch" role="button" aria-label="进入跑团管理"><text>跑团管理</text><text class="profile-service-arrow">→</text></view>
+          <view class="profile-services-card">
+            <view class="profile-service-row" bindtap="toRecord" hover-class="profile-touch" role="button" aria-label="查看打卡记录">
+              <view class="profile-service-main">
+                <text class="profile-service-name">打卡记录</text>
+                <text class="profile-service-desc">日常跑步轨迹与凭证</text>
+              </view>
+              <text class="profile-service-arrow">→</text>
+            </view>
+            <view class="profile-service-row" bindtap="toHistory" hover-class="profile-touch" role="button" aria-label="查看我的兑换">
+              <view class="profile-service-main">
+                <text class="profile-service-name">我的兑换</text>
+                <text class="profile-service-desc">历史兑换记录与物流</text>
+              </view>
+              <text class="profile-service-arrow">→</text>
+            </view>
+            <view class="profile-service-row" bindtap="toPrize" hover-class="profile-touch" role="button" aria-label="兑换好礼">
+              <view class="profile-service-main">
+                <text class="profile-service-name">兑换好礼</text>
+                <text class="profile-service-desc">用积分与小花兑换跑团福利</text>
+              </view>
+              <text class="profile-service-arrow">→</text>
+            </view>
+            <view class="profile-service-row" wx:if="{{duty == '管理员' || duty == '管理员/团长'}}" bindtap="toManage" hover-class="profile-touch" role="button" aria-label="进入跑团管理">
+              <view class="profile-service-main">
+                <text class="profile-service-name">跑团管理</text>
+                <text class="profile-service-desc">审核打卡与活动发布</text>
+              </view>
+              <text class="profile-service-arrow">→</text>
+            </view>
           </view>
         </view>
 
         <view class="profile-races" wx:if="{{marathons.length}}">
           <view class="profile-section-head">
-            <text class="profile-section-title">马拉松成绩</text>
-            <text class="profile-section-note">你的高光时刻</text>
-          </view>
-          <view class="profile-race" wx:for="{{marathons}}" wx:key="index" bindtap="navigateWithParams" hover-class="profile-touch" role="button" aria-label="查看马拉松成绩">
-            <view class="profile-race-info">
-              <text class="profile-race-type">{{item.events_type}} · {{item.project_type}}</text>
-              <text class="profile-race-name">{{item.marathon_name}}</text>
-              <text class="profile-race-date">{{item.playing_time}}</text>
+            <view class="profile-section-left">
+              <text class="profile-section-title">马拉松成绩</text>
+              <text class="profile-section-note">你的高光时刻</text>
             </view>
-            <text class="profile-race-score">{{item.accurate_score}}</text>
+            <view class="profile-section-link" bindtap="navigateWithParams" hover-class="profile-touch" role="button" aria-label="查看全部马拉松成绩">查看全部成绩 →</view>
           </view>
-          <view class="profile-race-more" bindtap="navigateWithParams" role="button" aria-label="查看全部马拉松成绩">查看全部成绩 →</view>
+          <view class="profile-races-card">
+            <view class="profile-race" wx:for="{{marathons}}" wx:key="index" bindtap="navigateWithParams" hover-class="profile-touch" role="button" aria-label="查看马拉松成绩">
+              <view class="profile-race-info">
+                <view class="profile-race-meta">
+                  <text class="profile-race-type">{{item.events_type}} · {{item.project_type}}</text>
+                  <text class="profile-race-date">{{item.playing_time}}</text>
+                </view>
+                <text class="profile-race-name">{{item.marathon_name}}</text>
+              </view>
+              <view class="profile-race-score-wrap">
+                <text class="profile-race-score">{{item.accurate_score}}</text>
+                <text class="profile-race-score-label">净成绩</text>
+              </view>
+            </view>
+          </view>
         </view>
       </block>
     </view>
@@ -167,6 +202,5 @@
     </view>
     <all-activity wx:if="{{userId > 0}}" totalChallenge="{{totalChallenge}}" totalActy="{{totalActy}}" activityList="{{activityList}}" activityList2="{{activityList2}}" bind:parentEvent="loadMore" bind:parentEvent2="loadMore2" bind:parentEvent3="toDet"></all-activity>
     <view class="profile-bottom-space"></view>
-  </scroll-view>
 </view>
 <tabbar tabbar="{{tabbar}}"></tabbar>

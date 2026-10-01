@@ -188,17 +188,48 @@ page {
 .home-month-head-right {
   display: flex;
   align-items: center;
-  gap: 8rpx;
+  gap: 12rpx;
   color: #7d8984;
   font-size: 24rpx;
   font-weight: 100;
   padding: 4rpx 8rpx;
 }
 
-.home-month-sub {
+.home-calendar-entry {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+  background: #edf5ee;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.home-calendar-entry:active {
+  opacity: 0.75;
+}
+.home-calendar-entry-label {
   color: #0b503b;
-  font-weight: 600;
-  font-size: 24rpx;
+  font-size: 21rpx;
+  font-weight: 750;
+  line-height: 1;
+}
+.home-calendar-entry-arrow {
+  width: 18rpx;
+  height: 18rpx;
+  transform: rotate(90deg);
+  transition: transform 0.25s ease;
+  opacity: 0.75;
+  display: block;
+}
+.home-calendar-entry-arrow.is-expanded {
+  transform: rotate(-90deg);
+}
+
+.home-month-sub {
+  color: #7d8984;
+  font-weight: 500;
+  font-size: 22rpx;
 }
 
 .home-month-summary {
@@ -326,7 +357,7 @@ page {
   text-align: center;
 }
 
-.home-challenge { margin-top: 68rpx; padding-top: 32rpx; border-top: 1rpx solid #e2e9e4; }
+.home-challenge { margin-top: 36rpx; padding-top: 0; border-top: none; }
 .home-challenge-content {
   display: flex;
   align-items: center;
@@ -441,6 +472,13 @@ page {
 }
 .home-heatmap-cell.level-0 .cell-day-num {
   color: #4a6356;
+}
+.home-heatmap-cell.is-other-month.level-0 {
+  background: #f7faf7;
+}
+.home-heatmap-cell.is-other-month .cell-day-num {
+  color: #a4b3aa;
+  opacity: 0.75;
 }
 .home-heatmap-cell.level-1 {
   background: #aae98f;

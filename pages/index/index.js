@@ -163,6 +163,15 @@ Page({
     monthGoalStatus: "idle",
     monthGoalCaption: "本月默认参考目标 · 77 公里",
     currentMonthNum: (new Date()).getMonth() + 1,
+    calendarExpanded: false
+  },
+  toggleCalendar: function () {
+    this.setData({ calendarExpanded: !this.data.calendarExpanded })
+  },
+  onPageScroll: function (e) {
+    if (!this.data.calendarExpanded && e && e.scrollTop > 20) {
+      this.setData({ calendarExpanded: true })
+    }
   },
   setTodayLabel: function () {
     const now = new Date()

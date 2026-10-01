@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WRC · 参与记录三稿比较</title>
+  <style>
+    :root { --paper:#fbfcf9; --pine:#072f27; --muted:#667970; --line:#dce6de; --lime:#d9ff3f; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#eef2ed; color:var(--pine); font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif; }
+    button { font:inherit; cursor:pointer; }
+    header { max-width:1360px; margin:auto; padding:40px 32px 24px; }
+    .brand { font-size:12px; font-weight:750; letter-spacing:2px; color:#0d6447; }
+    h1 { margin:12px 0 10px; font-size:32px; line-height:1.2; letter-spacing:-1px; }
+    .intro { margin:0; color:var(--muted); font-size:14px; font-weight:300; line-height:1.8; }
+    .toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:22px; }
+    .filter { min-height:42px; padding:8px 16px; border:1px solid #ccdacf; border-radius:999px; background:transparent; color:var(--pine); font-size:13px; }
+    .filter[aria-pressed="true"] { background:var(--pine); color:var(--lime); border-color:var(--pine); }
+    main { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; max-width:1360px; padding:0 32px 32px; margin:auto; align-items:start; }
+    article { overflow:hidden; min-width:0; background:var(--paper); border:1px solid var(--line); border-radius:20px; }
+    .card-head { min-height:92px; display:flex; align-items:center; gap:12px; padding:20px 20px 16px; }
+    .letter { flex:none; width:36px; height:36px; display:grid; place-items:center; border-radius:50%; background:var(--pine); color:var(--lime); font-size:18px; font-weight:800; }
+    h2 { margin:0; font-size:19px; font-weight:750; }
+    .lead { display:block; margin-top:4px; color:var(--muted); font-size:12px; font-weight:300; line-height:1.5; }
+    .artwork { display:block; width:100%; padding:0; border:0; background:var(--paper); }
+    .artwork img { display:block; width:100%; height:auto; }
+    .card-foot { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:18px 20px 20px; border-top:1px solid var(--line); }
+    .card-foot p { margin:0; color:var(--muted); font-size:12px; font-weight:300; line-height:1.7; }
+    .zoom { flex:none; min-height:42px; padding:6px 12px; border:0; border-radius:10px; background:#e8eee5; color:var(--pine); font-size:12px; }
+    .recommend { font-size:10px; font-weight:650; color:var(--pine); background:var(--lime); border-radius:4px; padding:3px 5px; margin-left:6px; vertical-align:middle; }
+    footer { max-width:1360px; margin:auto; padding:0 32px 32px; color:var(--muted); font-size:12px; font-weight:300; line-height:1.8; }
+    body[data-focus] main { grid-template-columns:minmax(0,540px); justify-content:center; }
+    body[data-focus] article { display:none; }
+    body[data-focus="A"] article[data-option="A"], body[data-focus="B"] article[data-option="B"], body[data-focus="C"] article[data-option="C"] { display:block; }
+    dialog { padding:0; width:min(800px,94vw); max-height:94vh; border:1px solid var(--line); border-radius:18px; background:var(--paper); color:var(--pine); }
+    dialog::backdrop { background:#072f2780; backdrop-filter:blur(3px); }
+    .dialog-head { position:sticky; top:0; display:flex; justify-content:space-between; align-items:center; padding:14px 18px; background:var(--paper); border-bottom:1px solid var(--line); }
+    .dialog-head strong { font-size:16px; }
+    .close { min-width:44px; min-height:44px; border:0; border-radius:50%; background:#e8eee5; color:var(--pine); font-size:24px; }
+    dialog img { display:block; width:100%; height:auto; }
+    button:focus-visible { outline:3px solid #0d6447; outline-offset:3px; }
+    @media(max-width:900px) { main { gap:14px; padding:0 16px 24px; } header { padding:28px 20px 20px; } .card-head { min-height:110px; padding:16px 12px; gap:8px; } h2 { font-size:16px; } .letter { width:30px; height:30px; font-size:16px; } .card-foot { flex-direction:column; align-items:flex-start; padding:14px; gap:10px; } footer { padding:0 20px 24px; } }
+    @media(max-width:480px) { h1 { font-size:27px; } main { grid-template-columns:1fr; max-width:440px; gap:22px; } .card-head { padding:18px; gap:12px; } h2 { font-size:19px; } .card-foot { flex-direction:row; align-items:center; padding:18px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">WRC · MY RUNNING</div>
+    <h1>参与记录 · 三稿比较</h1>
+    <p class="intro">同一份内容，三种版式。点击设计稿可放大查看。</p>
+    <div class="toolbar" role="group" aria-label="选择查看的方案">
+      <button class="filter" data-focus="all" aria-pressed="true">并排比较</button>
+      <button class="filter" data-focus="A" aria-pressed="false">A · 轻量相册</button>
+      <button class="filter" data-focus="B" aria-pressed="false">B · 时间列表</button>
+      <button class="filter" data-focus="C" aria-pressed="false">C · 精选大图</button>
+    </div>
+  </header>
+  <main>
+    <article data-option="A">
+      <div class="card-head"><span class="letter">A</span><div><h2>轻量相册<span class="recommend">建议优先看</span></h2><span class="lead">去掉外框，让海报和合影更突出</span></div></div>
+      <button class="artwork" data-zoom="A" aria-label="放大 A 轻量相册设计稿"><img src="option-a.png" alt="A 轻量相册设计稿"></button>
+      <div class="card-foot"><p>清爽、轻盈<br>延续当前横滑习惯</p><button class="zoom" data-zoom="A">放大查看</button></div>
+    </article>
+    <article data-option="B">
+      <div class="card-head"><span class="letter">B</span><div><h2>时间列表</h2><span class="lead">日期和标题优先，缩略图辅助识别</span></div></div>
+      <button class="artwork" data-zoom="B" aria-label="放大 B 时间列表设计稿"><img src="option-b.png" alt="B 时间列表设计稿"></button>
+      <div class="card-foot"><p>紧凑、好查找<br>适合回看历史记录</p><button class="zoom" data-zoom="B">放大查看</button></div>
+    </article>
+    <article data-option="C">
+      <div class="card-head"><span class="letter">C</span><div><h2>精选大图</h2><span class="lead">一条主记录，搭配一条次要记录</span></div></div>
+      <button class="artwork" data-zoom="C" aria-label="放大 C 精选大图设计稿"><img src="option-c.png" alt="C 精选大图设计稿"></button>
+      <div class="card-foot"><p>更有照片与回忆感<br>图片占比更大</p><button class="zoom" data-zoom="C">放大查看</button></div>
+    </article>
+  </main>
+  <footer>本页为候选视觉稿，选定后再应用到小程序。</footer>
+  <dialog aria-label="放大设计稿"><div class="dialog-head"><strong id="dialog-title"></strong><button class="close" aria-label="关闭放大视图">×</button></div><img id="dialog-image" alt=""></dialog>
+  <script>
+    const names={A:'A · 轻量相册',B:'B · 时间列表',C:'C · 精选大图'};
+    document.querySelectorAll('.filter').forEach(button=>button.addEventListener('click',()=>{const option=button.dataset.focus;if(option==='all')delete document.body.dataset.focus;else document.body.dataset.focus=option;document.querySelectorAll('.filter').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));}));
+    const dialog=document.querySelector('dialog');
+    document.querySelectorAll('[data-zoom]').forEach(button=>button.addEventListener('click',()=>{const option=button.dataset.zoom;document.getElementById('dialog-title').textContent=names[option];const img=document.getElementById('dialog-image');img.src='option-'+option.toLowerCase()+'.png';img.alt=names[option]+'设计稿';dialog.showModal();}));
+    document.querySelector('.close').addEventListener('click',()=>dialog.close());
+    dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+  </script>
+</body>
+</html>

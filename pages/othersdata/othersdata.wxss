@@ -281,6 +281,15 @@ page {
   color: #4a6356;
 }
 
+.day-cell.is-other-month.level-0 {
+  background: #f7faf7;
+}
+
+.day-cell.is-other-month .cell-day-text {
+  color: #a4b3aa;
+  opacity: 0.75;
+}
+
 .day-cell.level-1 {
   background: #aae98f;
 }
