@@ -1,0 +1,40 @@
+<view wx:if="{{visible}}" class="image-viewer {{mode === 'card' ? 'image-viewer--card' : ''}}" catchtouchmove="preventTouchMove" catchtap="close">
+  <block wx:if="{{mode === 'card'}}">
+    <view class="viewer-card" catchtap="preventTouchMove">
+      <view class="viewer-card-head">
+        <view class="viewer-card-title-wrap">
+          <text class="viewer-card-title">{{title || '轨迹凭证'}}</text>
+          <text class="viewer-card-sub">TRACK PROOF</text>
+        </view>
+        <view class="viewer-card-close" bindtap="close" role="button" aria-label="关闭">
+          <view class="viewer-card-close-x"></view>
+          <view class="viewer-card-close-y"></view>
+        </view>
+      </view>
+      <view class="viewer-card-body">
+        <swiper wx:if="{{urls.length > 1}}" class="viewer-card-swiper" current="{{currentIndex}}" duration="220" bindchange="onSwiperChange">
+          <swiper-item wx:for="{{urls}}" wx:key="*this" class="viewer-card-slide">
+            <image class="viewer-card-image" src="{{item}}" mode="aspectFit" show-menu-by-longpress="true"></image>
+          </swiper-item>
+        </swiper>
+        <image wx:else class="viewer-card-image" src="{{urls[currentIndex]}}" mode="aspectFit" show-menu-by-longpress="true"></image>
+        <view wx:if="{{urls.length > 1}}" class="viewer-card-count">{{currentIndex + 1}}<text> / {{urls.length}}</text></view>
+      </view>
+      <view class="viewer-card-tip">{{urls.length > 1 ? '左右滑动切换 · 长按可保存 · 点击空白处关闭' : '点击空白处或右上角关闭 · 长按可保存图片'}}</view>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="viewer-topbar" style="height: {{topbarHeight}}px; padding-top: {{statusBarHeight}}px;" catchtap="preventTouchMove">
+      <view class="viewer-count">{{currentIndex + 1}}<text> / {{urls.length}}</text></view>
+      <view class="viewer-close" bindtap="close" role="button" aria-label="关闭图片">
+        <view class="viewer-close-x"></view>
+        <view class="viewer-close-y"></view>
+      </view>
+    </view>
+    <swiper class="viewer-swiper" current="{{currentIndex}}" duration="220" bindchange="onSwiperChange" catchtap="preventTouchMove">
+      <swiper-item wx:for="{{urls}}" wx:key="*this" class="viewer-slide">
+        <image class="viewer-image" src="{{item}}" mode="aspectFit" show-menu-by-longpress="true"></image>
+      </swiper-item>
+    </swiper>
+  </block>
+</view>

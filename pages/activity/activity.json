@@ -1,12 +1,12 @@
 {
   "navigationStyle": "custom",
-  "backgroundTextStyle": "dark",
-  "navigationBarBackgroundColor": "#fbfcf9",
+  "backgroundTextStyle": "light",
+  "navigationBarBackgroundColor": "#0b0e12",
   "navigationBarTitleText": "团跑",
-  "navigationBarTextStyle": "black",
+  "navigationBarTextStyle": "white",
   "usingComponents": {
     "tabbar": "../../components/tabbarComponent/tabbar",
     "site-header": "../../components/site-header/site-header"
   },
-  "backgroundColor": "#fbfcf9"
+  "backgroundColor": "#0b0e12"
 }

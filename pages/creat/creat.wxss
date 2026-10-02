@@ -221,10 +221,15 @@ page {
 }
 
 .cover-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   padding: 10rpx 24rpx;
   border-radius: 999rpx;
   font-size: 22rpx;
   font-weight: 700;
+  box-sizing: border-box;
 }
 
 .cover-btn + .cover-btn {
@@ -314,6 +319,7 @@ page {
 }
 
 .primary-submit-btn {
+  width: 100% !important;
   background: #d9ff3f;
   color: #072f27;
   font-size: 30rpx;
@@ -321,6 +327,13 @@ page {
   border-radius: 999rpx;
   height: 94rpx;
   line-height: 94rpx;
+  padding: 0 !important;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
   border: none;
   box-shadow: 0 8rpx 24rpx rgba(7, 47, 39, 0.12);
 }
@@ -415,10 +428,14 @@ page {
   flex: 1;
   height: 80rpx;
   line-height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   border-radius: 999rpx;
   font-size: 26rpx;
   font-weight: 750;
+  box-sizing: border-box;
 }
 
 .modal-btn + .modal-btn {

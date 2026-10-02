@@ -1,260 +1,398 @@
-/* WRC Runner Profile: TA的主页视觉规范 */
+/* pages/othersdata/othersdata.wxss */
+/* 对齐 WRC “我的”页面暖白、松绿与荧光黄绿视觉设计规范 */
 page {
-  background-color: #fafbf7;
-  color: #103d2e;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: #fbfcf9;
+  color: #072f27;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
 }
 
 .others-page {
   min-height: 100vh;
-  padding: 180rpx 36rpx 80rpx;
+  padding: calc(175rpx + 25px) 40rpx 120rpx;
   box-sizing: border-box;
+  background: #fbfcf9;
 }
 
-.eyebrow {
+/* 头部大字英雄区（对齐“我的”页面 profile-hero 规范） */
+.profile-hero {
+  padding: 12rpx 4rpx 36rpx;
+  border-bottom: 1rpx solid #e1e9e3;
+}
+
+.profile-eyebrow {
   display: block;
-  color: #547767;
-  font-size: 20rpx;
+  color: #0d6447;
+  font-size: 22rpx;
   font-weight: 750;
   letter-spacing: 3rpx;
-  margin-bottom: 12rpx;
 }
 
-/* 英雄卡片 */
-.hero-card {
-  background: #ffffff;
-  border: 1rpx solid #e3ebe4;
-  border-radius: 26rpx;
-  padding: 32rpx 28rpx;
-  box-sizing: border-box;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 16rpx rgba(7, 47, 39, 0.03);
-}
-
-.person-row {
-  display: flex;
-  align-items: center;
-  margin-top: 10rpx;
-}
-
-.avatar-wrap {
-  position: relative;
-  width: 108rpx;
-  height: 108rpx;
-  flex: none;
-}
-
-.avatar-img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 3rpx solid #e2ece3;
-  background: #edf2ed;
-}
-
-.vip-badge {
-  position: absolute;
-  right: -4rpx;
-  bottom: -4rpx;
-  width: 38rpx;
-  height: 38rpx;
-}
-
-.person-info {
-  margin-left: 24rpx;
-  flex: 1;
-  min-width: 0;
-}
-
-.name-line {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-}
-
-.runner-name {
-  font-size: 38rpx;
+.profile-title {
+  display: block;
+  margin-top: 24rpx;
+  color: #072f27;
+  font-size: 76rpx;
+  line-height: 1.15;
   font-weight: 850;
-  color: #073329;
-  letter-spacing: -1rpx;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 320rpx;
+  letter-spacing: -3rpx;
 }
 
-.sex-icon {
-  width: 30rpx;
-  height: 30rpx;
-  flex: none;
+.profile-title-break {
+  display: block;
 }
 
-.duty-tag {
+.profile-title-line {
+  width: 180rpx;
+  height: 7rpx;
+  margin-top: 6rpx;
+  border-radius: 10rpx;
   background: #d9ff3f;
-  color: #123d2f;
-  font-size: 20rpx;
-  font-weight: 800;
-  padding: 2rpx 12rpx;
-  border-radius: 8rpx;
-  flex: none;
+  transform: rotate(-2deg);
 }
 
-.id-line {
-  margin-top: 10rpx;
+.profile-intro {
+  display: block;
+  margin-top: 22rpx;
+  color: #7a8980;
+  font-size: 25rpx;
+  line-height: 1.6;
 }
 
-.id-tag {
-  font-size: 22rpx;
-  color: #84968c;
-  font-weight: 500;
-}
-
-/* 统计四宫格卡片 */
-.stats-card {
+/* 跑者身份信息条（对齐“我的”页面 profile-person 规范） */
+.profile-person {
   display: flex;
   align-items: center;
-  background: #ffffff;
-  border: 1rpx solid #e3ebe4;
-  border-radius: 26rpx;
-  padding: 28rpx 16rpx;
+  min-height: 120rpx;
+  padding: 22rpx 0 28rpx;
   box-sizing: border-box;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 16rpx rgba(7, 47, 39, 0.03);
 }
 
-.stat-item {
+.profile-avatar-wrap {
+  width: 84rpx;
+  height: 84rpx;
+  flex: none;
+}
+
+.profile-avatar {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  background: #e5ece6;
+  display: block;
+}
+
+
+.profile-person-main {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  padding-left: 20rpx;
+}
+
+.profile-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.profile-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #072f27;
+  font-size: 34rpx;
+  font-weight: 850;
+  max-width: 220rpx;
+}
+
+.profile-duty-tag {
+  padding: 2rpx 12rpx;
+  border-radius: 12rpx;
+  background: #d9ff3f;
+  color: #062b23;
+  font-size: 20rpx;
+  font-weight: 750;
+  line-height: 1.3;
+}
+
+.profile-asset-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex: none;
+}
+
+.profile-asset-btn {
+  display: flex;
+  align-items: center;
+  height: 58rpx;
+  padding: 0 16rpx;
+  border-radius: 30rpx;
+  background: #edf5eb;
+  border: 1rpx solid #dceada;
+  box-sizing: border-box;
+}
+
+.profile-asset-btn-icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-right: 6rpx;
+  flex: none;
+}
+
+.profile-asset-btn-num {
+  font-size: 23rpx;
+  font-weight: 850;
+  color: #083c2e;
+  font-variant-numeric: tabular-nums;
+}
+
+.profile-asset-btn-label {
+  margin-left: 6rpx;
+  color: #627768;
+  font-size: 19rpx;
+  font-weight: 600;
+}
+
+/* 跑量概览大卡片（对齐 mydata 经典规范） */
+.profile-summary-card {
+  margin-bottom: 34rpx;
+  padding: 34rpx 32rpx 30rpx;
+  border-radius: 26rpx;
+  background: #103d30;
+  color: #ffffff;
+  box-shadow: 0 8rpx 24rpx rgba(16, 61, 48, 0.12);
+}
+
+.summary-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.summary-title {
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.summary-subtitle {
+  color: #9eb6a3;
+  font-size: 20rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+}
+
+.summary-main {
+  display: flex;
+  align-items: baseline;
+  margin-top: 14rpx;
+}
+
+.summary-number {
+  font-size: 78rpx;
+  line-height: 1;
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -2rpx;
+}
+
+.summary-unit {
+  margin-left: 12rpx;
+  color: #cfe1d3;
+  font-size: 25rpx;
+  font-weight: 600;
+}
+
+.summary-accent-line {
+  width: 140rpx;
+  height: 6rpx;
+  margin-top: 18rpx;
+  border-radius: 6rpx;
+  background: #d9ff3f;
+}
+
+.summary-stats-grid {
+  display: flex;
+  margin-top: 26rpx;
+  padding-top: 22rpx;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.16);
+}
+
+.summary-stat-col {
+  width: 33.33%;
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-stat-col.is-left {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.summary-stat-col.is-center {
   align-items: center;
   text-align: center;
 }
 
-.stat-number {
+.summary-stat-col.is-right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.stat-col-val {
   font-size: 38rpx;
   font-weight: 850;
-  color: #073329;
-  line-height: 1.1;
+  color: #ffffff;
+  line-height: 1.15;
   font-variant-numeric: tabular-nums;
 }
 
-.stat-number.highlight {
-  color: #0b6338;
+.stat-col-total {
+  color: #d9ff3f;
 }
 
-.stat-label {
-  font-size: 19rpx;
-  color: #899c90;
+.stat-col-label {
   margin-top: 8rpx;
+  color: #abc1b0;
+  font-size: 20rpx;
   font-weight: 500;
-  white-space: nowrap;
 }
 
-.stat-divider {
-  width: 1rpx;
-  height: 48rpx;
-  background: #e2ece3;
-  flex: none;
-}
-
-/* 模块卡片 */
+/* 统一 Section 卡片 */
 .section-card {
+  margin-bottom: 34rpx;
+  padding: 32rpx 30rpx;
+  border-radius: 24rpx;
   background: #ffffff;
-  border: 1rpx solid #e3ebe4;
-  border-radius: 26rpx;
-  padding: 30rpx 28rpx;
-  box-sizing: border-box;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 16rpx rgba(7, 47, 39, 0.03);
+  border: 1rpx solid #e3ede4;
+  box-shadow: 0 4rpx 16rpx rgba(7, 47, 39, 0.02);
 }
 
 .section-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 22rpx;
+  margin-bottom: 20rpx;
 }
 
-.section-title-wrap {
+.section-heading-wrap {
   display: flex;
   flex-direction: column;
 }
 
 .section-title {
-  font-size: 32rpx;
+  color: #072f27;
+  font-size: 34rpx;
   font-weight: 800;
-  color: #073329;
+  letter-spacing: -0.5rpx;
 }
 
-.section-sub {
+.section-desc {
+  margin-top: 6rpx;
+  color: #829487;
   font-size: 21rpx;
-  color: #8c9c92;
-  margin-top: 4rpx;
 }
 
-.section-link {
-  font-size: 24rpx;
+.section-link-action {
+  color: #0b6748;
+  font-size: 23rpx;
   font-weight: 750;
-  color: #0c6246;
 }
 
-/* 热力图 */
-.heatmap-nav {
+/* 跑步日历模块（以月为单位，支持左右滑动） */
+.calendar-section {
+  padding-bottom: 24rpx;
+}
+
+.calendar-nav {
   display: flex;
   align-items: center;
   gap: 12rpx;
+  background: #f1f6ed;
+  border: 1rpx solid #dce8db;
+  border-radius: 30rpx;
+  padding: 6rpx 18rpx;
 }
 
 .nav-arrow {
-  width: 44rpx;
-  height: 44rpx;
-  border-radius: 50%;
-  background: #f1f6f1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28rpx;
+  width: 36rpx;
+  height: 36rpx;
+  line-height: 34rpx;
+  text-align: center;
+  color: #0c6246;
+  font-size: 30rpx;
   font-weight: 800;
-  color: #123d2f;
 }
 
 .nav-arrow.disabled {
-  opacity: 0.3;
+  color: #bdcebf;
 }
 
-.nav-label {
-  font-size: 24rpx;
-  font-weight: 750;
-  color: #073329;
+.nav-month-label {
+  font-size: 23rpx;
+  font-weight: 800;
+  color: #093729;
 }
 
-.calendar-grid {
-  margin-top: 14rpx;
+.month-stats-banner {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 10rpx 16rpx;
+  background: #f5f9f3;
+  border-radius: 12rpx;
+  color: #556c5e;
+  font-size: 22rpx;
+  margin-bottom: 16rpx;
 }
 
-.weekdays-row {
+.month-stats-banner .dot {
+  color: #a2b3a7;
+}
+
+.highlight-days {
+  color: #0c6246;
+  font-weight: 850;
+}
+
+.highlight-km {
+  color: #0c6246;
+  font-weight: 850;
+}
+
+.weekdays-bar {
   display: flex;
   justify-content: space-between;
-  padding: 0 0 10rpx;
+  padding: 0 0 8rpx;
 }
 
-.weekdays-row text {
+.weekdays-bar text {
   flex: 1;
   text-align: center;
-  font-size: 20rpx;
-  font-weight: 600;
+  font-size: 19rpx;
+  font-weight: 300;
   color: #8fa096;
+}
+
+/* 日历 Swiper 滑动容器 */
+.calendar-swiper {
+  width: 100%;
 }
 
 .days-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 8rpx;
+  gap: 6rpx;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+/* 日历单元格：与首页 home-heatmap-cell 完全一致 */
 .day-cell {
-  width: calc((100% - 48rpx) / 7);
-  height: 52rpx;
+  width: calc((100% - 36rpx) / 7);
+  height: 36rpx;
   border-radius: 11rpx;
   display: flex;
   flex-direction: column;
@@ -264,12 +402,11 @@ page {
   overflow: hidden;
 }
 
-.day-cell.is-empty {
+.day-cell.is-future {
   background: transparent;
 }
 
-.day-cell.is-future {
-  background: transparent;
+.day-cell.is-future .cell-day-num {
   color: #cad6ce;
 }
 
@@ -277,7 +414,7 @@ page {
   background: #f1f5f2;
 }
 
-.day-cell.level-0 .cell-day-text {
+.day-cell.level-0 .cell-day-num {
   color: #4a6356;
 }
 
@@ -285,7 +422,7 @@ page {
   background: #f7faf7;
 }
 
-.day-cell.is-other-month .cell-day-text {
+.day-cell.is-other-month .cell-day-num {
   color: #a4b3aa;
   opacity: 0.75;
 }
@@ -294,7 +431,7 @@ page {
   background: #aae98f;
 }
 
-.day-cell.level-1 .cell-run-wrap {
+.day-cell.level-1 .cell-day-num {
   color: #0b3d1b;
 }
 
@@ -302,7 +439,7 @@ page {
   background: #50cf64;
 }
 
-.day-cell.level-2 .cell-run-wrap {
+.day-cell.level-2 .cell-day-num {
   color: #042e13;
 }
 
@@ -310,7 +447,7 @@ page {
   background: #199c4f;
 }
 
-.day-cell.level-3 .cell-run-wrap {
+.day-cell.level-3 .cell-day-num {
   color: #ffffff;
 }
 
@@ -318,159 +455,158 @@ page {
   background: #075b40;
 }
 
-.day-cell.level-4 .cell-run-wrap {
+.day-cell.level-4 .cell-day-num {
   color: #ffffff;
 }
 
-.cell-day-text {
-  font-size: 20rpx;
+.cell-day-num {
+  font-size: 18rpx;
   font-weight: 600;
+  line-height: 1;
 }
 
-.cell-run-wrap {
+/* 有跑量打卡：与首页 cell-run 完全一致 */
+.cell-run {
   display: flex;
   align-items: baseline;
   justify-content: center;
-  line-height: 1;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
   font-variant-numeric: tabular-nums;
 }
 
-.cell-run-km {
-  font-size: 20rpx;
-  font-weight: 750;
-}
+.cell-run-value { font-size: 19rpx; font-weight: 750; line-height: 1; }
+.cell-run-unit { margin-left: 2rpx; font-size: 11rpx; font-weight: 600; line-height: 1; }
+.cell-run.is-condensed .cell-run-value { font-size: 13rpx; }
+.day-cell.level-1 .cell-run,
+.day-cell.level-2 .cell-run { color: #0b3d1b; }
+.day-cell.level-3 .cell-run,
+.day-cell.level-4 .cell-run { color: #ffffff; }
 
-.cell-run-unit {
-  font-size: 11rpx;
-  font-weight: 600;
-  margin-left: 2rpx;
-}
-
-.calendar-loading {
-  padding: 40rpx 0;
-  text-align: center;
-  font-size: 24rpx;
-  color: #8c9e93;
-}
-
-/* 马拉松记录 */
-.marathon-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14rpx;
-}
-
-.marathon-card {
-  background: #f7faf7;
-  border: 1rpx solid #e2eee3;
-  border-radius: 18rpx;
-  padding: 18rpx 20rpx;
-}
-
-.marathon-head {
+/* 日历图例：与首页梯队配色一致 */
+.calendar-legend-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: 14rpx;
+  padding-top: 14rpx;
+  border-top: 1rpx solid #f0f5ee;
 }
 
-.marathon-title {
-  font-size: 27rpx;
-  font-weight: 750;
-  color: #073329;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.legend-hint {
+  color: #8c9e92;
+  font-size: 20rpx;
 }
 
-.pb-tag {
-  background: #fff8e1;
-  border: 1rpx solid #ffe082;
-  color: #e65100;
-  font-size: 18rpx;
-  font-weight: 800;
-  padding: 2rpx 10rpx;
+.legend-swatches {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  color: #8c9e92;
+  font-size: 19rpx;
+}
+
+.legend-swatch {
+  width: 22rpx;
+  height: 22rpx;
   border-radius: 6rpx;
 }
 
-.marathon-body {
+.legend-swatch.level-0 { background: #f1f5f2; border: 1rpx solid #e1ebe0; }
+.legend-swatch.level-1 { background: #aae98f; }
+.legend-swatch.level-2 { background: #50cf64; }
+.legend-swatch.level-3 { background: #199c4f; }
+.legend-swatch.level-4 { background: #075b40; }
+
+.calendar-loading-box {
+  text-align: center;
+  padding: 80rpx 0;
+}
+
+.calendar-loading-text, .calendar-error-text {
+  font-size: 24rpx;
+  color: #85988b;
+}
+
+/* 马拉松高光时刻（对齐 mydata 经典规范） */
+.marathon-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.marathon-card-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10rpx;
+  padding: 20rpx 22rpx;
+  background: #fbfdfa;
+  border: 1rpx solid #e5eee5;
+  border-radius: 18rpx;
+  box-shadow: 0 2rpx 8rpx rgba(7, 47, 39, 0.015);
 }
 
-.marathon-type {
+.marathon-card-info {
+  flex: 1;
+  min-width: 0;
+  padding-right: 18rpx;
+}
+
+.marathon-meta-line {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  color: #829487;
   font-size: 21rpx;
-  color: #7d9085;
 }
 
-.marathon-score {
-  font-size: 30rpx;
-  font-weight: 800;
-  color: #0c6246;
+.marathon-date {
   font-variant-numeric: tabular-nums;
 }
 
-/* 参与活动与挑战选项卡 */
-.section-tabs {
-  display: flex;
-  gap: 16rpx;
-  margin-bottom: 20rpx;
-  border-bottom: 1rpx solid #e8eee8;
-  padding-bottom: 14rpx;
-}
-
-.tab-item {
-  font-size: 27rpx;
-  font-weight: 700;
-  color: #798d81;
-  padding: 6rpx 12rpx;
+.marathon-pb-tag {
+  color: #c97f08;
+  background: #fff4d9;
+  border: 1rpx solid #f6deb0;
+  font-size: 18rpx;
+  font-weight: 800;
+  padding: 2rpx 10rpx;
   border-radius: 8rpx;
-  transition: all 0.15s ease;
 }
 
-.tab-item.active {
-  color: #073329;
-  font-weight: 850;
-  background: #f0f6ef;
-}
-
-.acty-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16rpx;
-}
-
-.acty-card {
-  width: calc((100% - 16rpx) / 2);
-  border-radius: 16rpx;
-  overflow: hidden;
-  background: #f7faf7;
-  border: 1rpx solid #e2eee3;
-}
-
-.acty-img {
-  width: 100%;
-  height: 170rpx;
+.marathon-name-line {
   display: block;
-  background: #edf2ed;
-}
-
-.acty-name {
-  display: block;
-  padding: 12rpx 14rpx;
-  font-size: 24rpx;
-  font-weight: 700;
-  color: #073329;
+  margin-top: 8rpx;
+  color: #072f27;
+  font-size: 27rpx;
+  font-weight: 800;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.empty-tip {
-  padding: 40rpx 0;
-  text-align: center;
-  font-size: 24rpx;
-  color: #92a498;
-  width: 100%;
+.marathon-score-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: none;
+}
+
+.marathon-score-num {
+  font-size: 32rpx;
+  font-weight: 850;
+  color: #0c6246;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.marathon-score-unit {
+  margin-top: 6rpx;
+  font-size: 19rpx;
+  color: #809285;
+}
+
+.page-bottom-padding {
+  height: 40rpx;
 }

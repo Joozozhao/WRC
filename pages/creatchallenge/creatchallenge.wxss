@@ -310,6 +310,7 @@ page {
 }
 
 .primary-submit-btn {
+  width: 100% !important;
   background: #d9ff3f;
   color: #123d2f;
   font-size: 30rpx;
@@ -317,6 +318,13 @@ page {
   border-radius: 999rpx;
   height: 94rpx;
   line-height: 94rpx;
+  padding: 0 !important;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
   border: none;
   box-shadow: 0 8rpx 24rpx rgba(18, 61, 47, 0.12);
 }

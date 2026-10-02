@@ -22,6 +22,11 @@
     "miniprogram": {
       "list": [
         {
+          "name": "挑战详情",
+          "pathName": "pages/challengedetail/challengedetail",
+          "query": "id=368&userid=1"
+        },
+        {
           "name": "我的",
           "pathName": "pages/mydata/mydata",
           "query": ""
@@ -34,7 +39,7 @@
         {
           "name": "TA的主页",
           "pathName": "pages/othersdata/othersdata",
-          "query": "id=23"
+          "query": "id=1"
         },
         {
           "name": "团跑",
@@ -47,7 +52,7 @@
           "query": ""
         }
       ],
-      "current": 0
+      "current": 3
     }
   },
   "description": "Project configuration file, more information: https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",

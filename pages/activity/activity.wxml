@@ -1,5 +1,8 @@
-<site-header bindprofiletap="openMyPage"></site-header>
-<view class="run-page">
+<view class="run-screen">
+  <image class="run-backdrop" src="../../images/redesign/group-run-night-branded.jpg" mode="aspectFill" aria-hidden="true"></image>
+  <view class="run-backdrop-shade"></view>
+  <site-header dark="{{true}}" bindprofiletap="openMyPage"></site-header>
+  <view class="run-page {{pageMotion ? 'page-enter-motion' : ''}}">
   <view class="run-hero">
     <text class="run-eyebrow">WRC · RUN TOGETHER</text>
     <text class="run-title">一起跑，<text class="run-title-break">跑更远。</text></text>
@@ -11,7 +14,7 @@
     <text class="run-create" wx:if="{{duty == '管理员'||duty == '管理员/团长'}}" bindtap="creatNew">＋ 发起团跑</text>
   </view>
   <view class="run-list" wx:if="{{activityList.length}}">
-    <view class="run-card" wx:for="{{activityList}}" wx:key="id">
+    <view class="run-card {{item._entering ? 'is-entering' : ''}}" wx:for="{{activityList}}" wx:key="id">
       <view class="run-card-main" bindtap="toDet" data-id="{{item.id}}">
         <image class="run-poster" src="{{item.acty_img}}" mode="aspectFill"></image>
         <view class="run-card-copy">
@@ -36,5 +39,6 @@
     <text class="run-empty-action" bindtap="retryLoad">重新加载 →</text>
   </view>
   <view class="run-tail" wx:if="{{activityList.length && !hasMore}}">已经看到全部团跑</view>
+  </view>
 </view>
-<tabbar tabbar="{{tabbar}}"></tabbar>
+<tabbar tabbar="{{tabbar}}" dark="{{true}}"></tabbar>

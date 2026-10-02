@@ -21,7 +21,6 @@ page {
   margin-bottom: 36rpx;
 }
 .avatar-wrap {
-  position: relative;
   width: 108rpx;
   height: 108rpx;
   flex: none;
@@ -31,13 +30,6 @@ page {
   height: 100%;
   border-radius: 50%;
   background: #e6eee7;
-}
-.vip-badge {
-  position: absolute;
-  right: -4rpx;
-  bottom: -4rpx;
-  width: 38rpx;
-  height: 38rpx;
 }
 .profile-header-meta {
   flex: 1;

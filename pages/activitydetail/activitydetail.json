@@ -5,7 +5,9 @@
   "navigationBarBackgroundColor": "#fbfcf9",
   "navigationBarTitleText": "团跑详情",
   "navigationBarTextStyle":"black",
+  "enablePullDownRefresh": true,
   "usingComponents": {
-    "site-header": "../../components/site-header/site-header"
+    "site-header": "../../components/site-header/site-header",
+    "image-viewer": "/components/image-viewer/image-viewer"
   }
 }

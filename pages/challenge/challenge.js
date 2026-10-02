@@ -1,5 +1,6 @@
 // pages/challenge/challenge.js
 const util = require('../../utils/util.js')
+const playPageMotion = require('../../utils/page-motion.js')
 // 获取应用实例
 const app = getApp()
 Page({
@@ -15,7 +16,8 @@ Page({
     actyState: 0,
     loading: true,
     hasMore: true,
-    loadError: false
+    loadError: false,
+    pageMotion: false
   },
   openMyPage: function () {
     wx.switchTab({ url: '../mydata/mydata' })
@@ -30,28 +32,11 @@ Page({
       title: name
     })
   },
-  addRules: function(e){
-    var id = e.currentTarget.dataset.id
-    wx.navigateTo({
-      url: '../addrules/addrules?id='+id
-    })
-  },
-  delRules: function(e){
-    var id = e.currentTarget.dataset.id
-    var data = {
-      id: id
-    }
-    console.log(data)
-    util.request('acty/delRule', 'POST', data, '数据加载中 ...', (res)=>{
-      console.log(res)
-      if(res.data.success){
-        wx.showToast({
-          title: '删除成功',
-          icon: 'none',
-          duration: 1500
-        })
-      }
-    })
+  createChallenge: function () {
+    const duty = this.data.duty || ''
+    const canCreate = duty === '团长' || duty === '管理员' || duty === '管理员/团长'
+    if (!canCreate) return
+    wx.navigateTo({ url: '../creatchallenge/creatchallenge' })
   },
   editCon: function(e){
     var id = e.currentTarget.dataset.id
@@ -106,6 +91,7 @@ Page({
     this.initLimit()
   },
   onShow: function(){
+    playPageMotion(this)
     wx.hideTabBar();
     this.initLimit()
     this.initChallenge()
@@ -123,16 +109,15 @@ Page({
       var that = this
       console.log(res)
       if(res.data.success){
+        var duty = res.data.data.duty || ''
+        if (duty === '团长,管理员' || duty === '管理员,团长') duty = '管理员/团长'
         that.setData({
-          duty: res.data.data.duty
+          duty: duty
         })
-        if(res.data.data.duty=='团长,管理员'||res.data.data.duty=='管理员,团长'){
-          that.setData({
-            duty : '管理员/团长',
-          })
-        }
+      } else {
+        that.setData({ duty: '' })
       }
-    })
+    }, () => this.setData({ duty: '' }))
   },
   initChallenge:function(){
     var that = this
@@ -179,13 +164,25 @@ Page({
     this.setData({ loading: true })
     util.request('acty/getchallengeacty', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data && res.data.success){
-        var challengeData = res.data.data || []
+        var challengeData = (res.data.data || []).map(function(item) {
+          return Object.assign({}, item, { _entering: true })
+        })
         that.setData({
           challengeList: that.data.challengeList.concat(challengeData),
           page: that.data.page + 1,
           hasMore: challengeData.length > 0,
           loading: false
         })
+        setTimeout(function() {
+          that.setData({
+            challengeList: that.data.challengeList.map(function(item) {
+              if (!item._entering) return item
+              var next = Object.assign({}, item)
+              delete next._entering
+              return next
+            })
+          })
+        }, 420)
       }else{
         that.setData({ loading: false })
       }

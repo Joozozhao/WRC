@@ -5,5 +5,8 @@
   "navigationBarTitleText": "打卡记录",
   "navigationBarTextStyle": "black",
   "enablePullDownRefresh": true,
-  "backgroundColor": "#fbfcf9"
+  "backgroundColor": "#fbfcf9",
+  "usingComponents": {
+    "image-viewer": "/components/image-viewer/image-viewer"
+  }
 }

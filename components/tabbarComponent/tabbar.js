@@ -5,6 +5,7 @@ Component({
    * 组件的属性列表
    */
   properties: {
+    dark: { type: Boolean, value: false },
     tabbar: {
       type: Object,
       value: {

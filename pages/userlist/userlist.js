@@ -1,5 +1,7 @@
 // pages/userlist/userlist.js
 const util = require('../../utils/util.js')
+const { toDisplayMemberLevel } = require('../../utils/member-level.js')
+const { addProfileBadges } = require('../../utils/profile-badges.js')
 // 获取应用实例
 const app = getApp()
 Page({
@@ -9,10 +11,10 @@ Page({
   data: {
     userList: [],
     selList: [
-      {text: '全部'},
-      {text:'VIP'},
-      {text:'普通'},
-      {text:'非会员'}
+      {text: '全部', value: ''},
+      {text: 'SVip', value: 'VIP'},
+      {text: 'Vip', value: '普通'},
+      {text: 'PVip', value: '非会员'}
     ],
     sortList:[
       {text: '积分'},
@@ -30,6 +32,8 @@ Page({
     phoneH: '',
     showIt: false,
     userId: 0,
+    targetUserName: '',
+    targetUserAvatar: '',
     id: 0,
     level: '',
     selLevel: '',
@@ -41,11 +45,20 @@ Page({
     var duty = e.currentTarget.dataset.duty
     var level = e.currentTarget.dataset.level
     var userid = e.currentTarget.dataset.userid
+    var name = e.currentTarget.dataset.name || ''
+    var avatar = e.currentTarget.dataset.avatar || ''
+    var dutyStr = String(duty || '')
+    var isAdmin = dutyStr.indexOf('管理员') > -1
+    var isLeader = dutyStr.indexOf('团长') > -1
     this.setData({
       changeModal: true,
       duty: duty,
+      isAdmin: isAdmin,
+      isLeader: isLeader,
       level: level,
-      userId: userid
+      userId: userid,
+      targetUserName: name,
+      targetUserAvatar: avatar
     })
   },
   onCancel:function(){
@@ -58,6 +71,22 @@ Page({
     this.setData({
       level: lev
     })
+  },
+  toggleDuty: function(e){
+    var type = e.currentTarget.dataset.type
+    if (type === 'admin') {
+      this.setData({ isAdmin: !this.data.isAdmin })
+    } else if (type === 'leader') {
+      this.setData({ isLeader: !this.data.isLeader })
+    }
+    var duties = []
+    if (this.data.isAdmin) duties.push('管理员')
+    if (this.data.isLeader) duties.push('团长')
+    this.setData({ duty: duties.join(',') })
+  },
+  selectLevel: function(e){
+    var lev = e.currentTarget.dataset.level
+    this.setData({ level: lev })
   },
   setDuty: function(e){
     var duty = e.detail.value
@@ -161,8 +190,11 @@ Page({
     util.request('user/getuserlist', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data.success){
         console.log(res)
+        var userList = (res.data.data || []).map(function (item) {
+          return Object.assign(addProfileBadges(item), { levelLabel: toDisplayMemberLevel(item.level) })
+        })
         that.setData({
-          userList: res.data.data,
+          userList: userList,
           loaded: true
         })
         wx.hideLoading({
@@ -227,19 +259,9 @@ Page({
   },
   choose: function(e){
     var id = e.currentTarget.dataset.id
-    var txt = e.currentTarget.dataset.txt
+    var level = e.currentTarget.dataset.level
     var that = this
-    if(txt == '全部'){
-      that.setData({
-        id: id,
-        selLevel: ''
-      })
-    } else {
-      that.setData({
-        id: id,
-        selLevel: txt
-      })
-    }
+    that.setData({ id: id, selLevel: level || '' })
     that.setData({
       selAll: false,
       sortAll: false,
@@ -290,7 +312,9 @@ Page({
       if(res.data.success){
         console.log(res)
         var allData = res.data.data
-        var content = that.data.userList.concat(allData)
+        var content = that.data.userList.concat((allData || []).map(function (item) {
+          return Object.assign(addProfileBadges(item), { levelLabel: toDisplayMemberLevel(item.level) })
+        }))
         that.setData({
           userList: content
         })

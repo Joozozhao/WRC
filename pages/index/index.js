@@ -1,5 +1,6 @@
 const homeSummary = require("../../utils/home-month-summary.js")
 const util = require('../../utils/util.js')
+const playPageMotion = require('../../utils/page-motion.js')
 // index.js
 // 获取应用实例
 const app = getApp()
@@ -125,6 +126,7 @@ Page({
     imgheight: '',
     setHeight: '',
     recordList: [],
+    homeSvipAvatars: [],
     recordLoading: false,
     recordError: false,
     myTip: '',
@@ -187,6 +189,39 @@ Page({
   },
   toClockIn: function () {
     wx.navigateTo({ url: '../clockdaily/clockdaily' })
+  },
+  loadHomeSvipAvatars: function () {
+    this._svipAvatarReqSeq = (this._svipAvatarReqSeq || 0) + 1
+    const reqSeq = this._svipAvatarReqSeq
+    util.request('user/getuserlist', 'POST', {
+      nickName: '',
+      mobile: '',
+      openId: '',
+      sort: 3,
+      levelId: 'VIP',
+      page: 1,
+      size: 100
+    }, '', (res) => {
+      if (reqSeq !== this._svipAvatarReqSeq) return
+      const users = res && res.data && res.data.success && Array.isArray(res.data.data) ? res.data.data : []
+      const avatars = users.map(user => {
+        const distance = Math.max(0, Number(user && user.month_count) || 0)
+        let heatLevel = 0
+        if (distance > 0 && distance <= 3) heatLevel = 1
+        else if (distance > 3 && distance <= 7) heatLevel = 2
+        else if (distance > 7 && distance <= 12) heatLevel = 3
+        else if (distance > 12) heatLevel = 4
+        return {
+          id: user && user.id,
+          avatar: user && user.header_url || '/images/default.png',
+          monthDistance: distance,
+          heatLevel: heatLevel
+        }
+      }).sort((a, b) => b.monthDistance - a.monthDistance)
+      this.setData({ homeSvipAvatars: avatars })
+    }, () => {
+      if (reqSeq === this._svipAvatarReqSeq) this.setData({ homeSvipAvatars: [] })
+    })
   },
   toRunningDetail: function () {
     wx.switchTab({ url: '../mydata/mydata' })
@@ -781,63 +816,148 @@ Page({
   },
   initRecord: function () {
     this.setData({ recordLoading: true, recordError: false })
-    const data = {
-      userId: 0,
-      actyId: 0,
-      address: '',
-      actyIds: -1,
-      page: 1
-    }
-    util.request('acty/getsports', 'POST', data, '', (res) => {
-      if (res.data && res.data.success && Array.isArray(res.data.data)) {
-        const filtered = res.data.data.filter(function (item) {
-          if (!item) return false
-          if (Number(item.state) === 2) return false
-          const dist = Number(item.distance)
-          return Number.isFinite(dist) && dist > 0
-        })
-        const seenUsers = {}
-        const records = []
-        for (let i = 0; i < filtered.length && records.length < 3; i++) {
-          const record = filtered[i]
-          const userKey = record.user_id || record.openId || record.name || record.nick_name || ('u_' + i)
-          if (seenUsers[userKey]) continue
-          seenUsers[userKey] = true
-          records.push(Object.assign({}, record, {
-            displayAvatar: record.header_url || '/images/default.png',
-            displayName: record.name || record.nick_name || '跑友',
-            displayDate: formatFeedDate(record.create_time || record.create_time_str),
-            displayDistance: Number(record.distance).toFixed(2),
-            displaySpeed: record.speed || '—',
-            monthCheckInTimes: 1
-          }))
-        }
-        const now = new Date()
-        const curMonthKey = now.getFullYear() + '-' + (now.getMonth() + 1 < 10 ? '0' + (now.getMonth() + 1) : (now.getMonth() + 1))
-        this.setData({ recordList: records, recordLoading: false, recordError: false })
+    const now = new Date()
+    const curYear = now.getFullYear()
+    const curMonth = now.getMonth() + 1
+    const curMonthKey = curYear + '-' + (curMonth < 10 ? '0' + curMonth : curMonth)
 
-        // 异步获取每位跑者本月的实际打卡次数
+    const targetCount = 10
+    const maxPages = 6
+    const seenUsers = {}
+    const records = []
+
+    const fetchPage = (page) => {
+      const data = {
+        userId: 0,
+        actyId: 0,
+        address: '',
+        actyIds: -1,
+        page: page
+      }
+      util.request('acty/getsports', 'POST', data, '', (res) => {
+        if (res.data && res.data.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          const filtered = res.data.data.filter(function (item) {
+            if (!item) return false
+            if (Number(item.state) === 2) return false
+            const dist = Number(item.distance)
+            return Number.isFinite(dist) && dist > 0
+          })
+          for (let i = 0; i < filtered.length && records.length < targetCount; i++) {
+            const record = filtered[i]
+            const userKey = record.user_id || record.openId || record.name || record.nick_name || ('u_' + records.length)
+            if (seenUsers[userKey]) continue
+            seenUsers[userKey] = true
+
+            // 判定是否是本月打卡
+            const rawDate = String(record.sport_date || record.create_time || record.create_time_str || '')
+            const mMatch = rawDate.match(/^(\d{4})[-/](\d{1,2})/)
+            let isCurrentMonth = false
+            if (mMatch) {
+              isCurrentMonth = Number(mMatch[1]) === curYear && Number(mMatch[2]) === curMonth
+            }
+
+            records.push(Object.assign({}, record, {
+              displayAvatar: record.header_url || '/images/default.png',
+              displayName: record.name || record.nick_name || '跑友',
+              displayDate: formatFeedDate(record.create_time || record.create_time_str || record.sport_date),
+              displayDistance: Number(record.distance).toFixed(2),
+              displaySpeed: record.speed || '—',
+              isCurrentMonth: isCurrentMonth,
+              monthCheckInTimes: 1,
+              yearBadgeText: '今年跑了 — km'
+            }))
+          }
+
+          if (records.length < targetCount && page < maxPages && res.data.data.length >= 15) {
+            fetchPage(page + 1)
+          } else {
+            finishRecords()
+          }
+        } else {
+          if (records.length > 0) {
+            finishRecords()
+          } else {
+            this.setData({ recordList: [], recordLoading: false, recordError: true })
+          }
+        }
+      }, () => {
+        if (records.length > 0) {
+          finishRecords()
+        } else {
+          this.setData({ recordList: [], recordLoading: false, recordError: true })
+        }
+      })
+    }
+
+    const finishRecords = () => {
+      this.setData({ recordList: records, recordLoading: false, recordError: false })
+
+      // 获取排行榜数据作为 year_count 的高效匹配源
+      util.request('user/getuserlist', 'POST', {
+        nickName: '',
+        mobile: '',
+        openId: '',
+        sort: 4,
+        levelId: '',
+        page: 1,
+        size: 100
+      }, '', (lbRes) => {
+        const userMap = {}
+        if (lbRes && lbRes.data && lbRes.data.success && Array.isArray(lbRes.data.data)) {
+          lbRes.data.data.forEach((u) => {
+            if (u && u.id) userMap[u.id] = u
+          })
+        }
+
+        // 分别获取每位跑者的打卡/年跑量数据
         records.forEach((rec, idx) => {
           if (!rec.user_id) return
-          util.request('user/getMonthList', 'POST', { user_id: rec.user_id }, '', (mRes) => {
-            if (mRes && mRes.data && mRes.data.success && mRes.data.data) {
-              const mData = mRes.data.data[curMonthKey] || []
-              const times = mData.reduce((acc, d) => acc + (Number(d.sport_times) || (Number(d.sport_total) > 0 ? 1 : 0)), 0)
-              const count = times > 0 ? times : 1
+          if (rec.isCurrentMonth) {
+            // 本月打卡：异步获取本月实际打卡次数
+            util.request('user/getMonthList', 'POST', { user_id: rec.user_id }, '', (mRes) => {
+              if (mRes && mRes.data && mRes.data.success && mRes.data.data) {
+                const mData = mRes.data.data[curMonthKey] || []
+                const times = mData.reduce((acc, d) => acc + (Number(d.sport_times) || (Number(d.sport_total) > 0 ? 1 : 0)), 0)
+                const count = times > 0 ? times : 1
+                const currentList = (this.data.recordList || []).slice()
+                if (currentList[idx] && currentList[idx].user_id === rec.user_id) {
+                  currentList[idx] = Object.assign({}, currentList[idx], { monthCheckInTimes: count })
+                  this.setData({ recordList: currentList })
+                }
+              }
+            })
+          } else {
+            // 不是本月打卡：显示「他/她，今年跑了 X km」
+            const applyYearBadge = (yearKm, sex) => {
+              const kmInt = Math.round(Number(yearKm) || 0)
+              const pronoun = String(sex) === '2' ? '她' : '他'
+              const text = pronoun + '，今年跑了 ' + kmInt + ' km'
               const currentList = (this.data.recordList || []).slice()
               if (currentList[idx] && currentList[idx].user_id === rec.user_id) {
-                currentList[idx] = Object.assign({}, currentList[idx], { monthCheckInTimes: count })
+                currentList[idx] = Object.assign({}, currentList[idx], { yearBadgeText: text })
                 this.setData({ recordList: currentList })
               }
             }
-          })
+
+            const lbUser = userMap[rec.user_id]
+            if (lbUser && lbUser.year_count !== undefined && lbUser.year_count !== null) {
+              applyYearBadge(lbUser.year_count, lbUser.sex)
+            } else {
+              // 兜底通过 getsportinfo 获取
+              util.request('user/getsportinfo', 'POST', { userId: rec.user_id }, '', (infoRes) => {
+                if (infoRes && infoRes.data && infoRes.data.success && infoRes.data.data) {
+                  const d = infoRes.data.data
+                  const yr = d.year_count !== undefined && d.year_count !== null ? d.year_count : (d.totalDistance || 0)
+                  applyYearBadge(yr, d.sex)
+                }
+              })
+            }
+          }
         })
-      } else {
-        this.setData({ recordList: [], recordLoading: false, recordError: true })
-      }
-    }, () => {
-      this.setData({ recordList: [], recordLoading: false, recordError: true })
-    })
+      })
+    }
+
+    fetchPage(1)
   },
   getLatestActivity: function () {
     var that = this
@@ -900,11 +1020,8 @@ Page({
       wx.showToast({ title: '这条记录暂无凭证图片', icon: 'none' })
       return
     }
-    wx.previewImage({
-      current: img,
-      urls: [img],
-      fail: () => wx.showToast({ title: '凭证图片暂时无法打开', icon: 'none' })
-    })
+    const viewer = this.selectComponent('#imageViewer')
+    if (viewer) viewer.open([img], img, { mode: 'card', title: '轨迹凭证' })
   },
   onLoad() {
     // 开启转发功能
@@ -939,10 +1056,12 @@ Page({
     this.loadHomeChallenge(userId)
     this.initHomeHeatmap(userId)
     this.initRecord()
+    this.loadHomeSvipAvatars()
     wx.stopPullDownRefresh()
     this.timeOut()
   },
   onShow: function () {
+    playPageMotion(this)
     wx.hideTabBar();
     app.editTabbar();
     var userId = app.globalData.userId
@@ -958,6 +1077,7 @@ Page({
     this.loadHomeChallenge(userId)
     this.initHomeHeatmap(userId)
     this.initRecord()
+    this.loadHomeSvipAvatars()
   },
   myLogin: function() {
     var that = this

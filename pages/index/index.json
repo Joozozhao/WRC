@@ -2,6 +2,7 @@
   "enablePullDownRefresh": true,
   "usingComponents": {
     "tabbar": "../../components/tabbarComponent/tabbar",
-    "site-header": "../../components/site-header/site-header"
+    "site-header": "../../components/site-header/site-header",
+    "image-viewer": "/components/image-viewer/image-viewer"
   }
 }

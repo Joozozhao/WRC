@@ -65,21 +65,25 @@ App({
         {
           "pagePath": "/pages/index/index",
           "iconPath": "/images/redesign/home.svg",
+          "selectedIconPath": "/images/redesign/home-active.svg",
           // "lottieData": homeLottie,
           "text": "首页"
         },{
           "pagePath": "/pages/activity/activity",
           "iconPath": "/images/redesign/groups.svg",
+          "selectedIconPath": "/images/redesign/groups-active.svg",
           // "lottieData": require('./lotties/groups.js'),
           "text": "团跑"
         },{
           "pagePath": "/pages/challenge/challenge",
           "iconPath": "/images/redesign/trophy.svg",
+          "selectedIconPath": "/images/redesign/trophy-active.svg",
           // "lottieData": require('./lotties/trophy.js'),
           "text": "挑战"
         },{
           "pagePath": "/pages/mydata/mydata",
           "iconPath": "/images/redesign/person.svg",
+          "selectedIconPath": "/images/redesign/person-active.svg",
           // "lottieData": require('./lotties/person.js'),
           "text": "我的"
         }

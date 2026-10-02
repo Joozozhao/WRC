@@ -52,6 +52,11 @@
     "miniprogram": {
       "list": [
         {
+          "name": "挑战详情",
+          "pathName": "pages/challengedetail/challengedetail",
+          "query": "id=368&userid=1"
+        },
+        {
           "name": "我的",
           "pathName": "pages/mydata/mydata",
           "query": ""
@@ -90,11 +95,6 @@
           "name": "我的马历",
           "pathName": "pages/results/results",
           "query": ""
-        },
-        {
-          "name": "报名跑友",
-          "pathName": "pages/actyin/actyin",
-          "query": "id=1"
         }
       ],
       "current": 0
@@ -142,6 +142,34 @@
       {
         "type": "folder",
         "value": "tests"
+      },
+      {
+        "type": "folder",
+        "value": ".git"
+      },
+      {
+        "type": "folder",
+        "value": ".svn"
+      },
+      {
+        "type": "file",
+        "value": "images/.DS_Store"
+      },
+      {
+        "type": "file",
+        "value": "images/redesign/group-run-default-cover.png"
+      },
+      {
+        "type": "file",
+        "value": "images/redesign/group-run-night-branded.png"
+      },
+      {
+        "type": "file",
+        "value": "images/redesign/group-run-night-standalone.png"
+      },
+      {
+        "type": "file",
+        "value": "images/redesign/wrc-logo.png"
       }
     ],
     "include": []

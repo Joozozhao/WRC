@@ -42,7 +42,7 @@
     <view class="detail-section" wx:if="{{acty_type != 'V挑战'}}">
       <view class="detail-section-head">
         <text>{{hasClickon == 1 ? (viewingOther ? 'TA的挑战进度' : '我的挑战进度') : '挑战目标'}}</text>
-        <text class="detail-section-note">距离 · KM</text>
+        <text class="detail-section-note">{{hasClickon == 1 ? '实时累计 · KM' : '目标里程 · KM'}}</text>
       </view>
       <view wx:if="{{hasClickon == 1}}">
         <view wx:if="{{progressAvailable}}">
@@ -52,8 +52,8 @@
           </view>
           <view class="detail-progress-track"><view class="detail-progress-fill" style="width: {{per}}%;"></view></view>
           <view class="detail-progress-foot">
-            <text>已完成 {{per}}%</text>
-            <text>{{finalDis > 0 ? '还差 ' + finalDis + ' 公里' : '已达到目标'}}</text>
+            <text class="detail-progress-stat">已完成 <text class="detail-stat-highlight">{{per}}%</text></text>
+            <text class="detail-progress-stat">{{finalDis > 0 ? '还差 ' + finalDis + ' 公里' : '已达到目标'}}</text>
           </view>
         </view>
         <view class="detail-muted" wx:else>进度数据暂不可用，请稍后再查看。</view>
@@ -79,56 +79,150 @@
     </view>
 
     <view class="detail-section">
-      <view class="detail-section-head"><text>挑战时间</text></view>
-      <view class="detail-time-row"><text>开始时间</text><text>{{startTime || '暂未提供'}}</text></view>
-      <view class="detail-time-row"><text>结束时间</text><text>{{endTime || '暂未提供'}}</text></view>
+      <view class="detail-section-head">
+        <text>挑战时间</text>
+        <text class="detail-section-note">SCHEDULE</text>
+      </view>
+      <view class="detail-time-card">
+        <view class="detail-time-row">
+          <text class="detail-time-label">开始时间</text>
+          <text class="detail-time-val">{{startTime || '暂未提供'}}</text>
+        </view>
+        <view class="detail-time-row">
+          <text class="detail-time-label">结束时间</text>
+          <text class="detail-time-val">{{endTime || '暂未提供'}}</text>
+        </view>
+      </view>
     </view>
 
     <view class="detail-section" wx:if="{{score !== null}}">
-      <view class="detail-section-head"><text>完成挑战额外奖励</text></view>
-      <view class="detail-reward"><text>{{score}}</text><text>{{rewardUnit}}</text></view>
+      <view class="detail-section-head">
+        <text>完成挑战额外奖励</text>
+        <text class="detail-section-note">REWARD</text>
+      </view>
+      <view class="detail-reward-card">
+        <view class="detail-reward-badge">
+          <text class="detail-reward-num">{{score}}</text>
+          <text class="detail-reward-unit">{{rewardUnit}}</text>
+        </view>
+        <text class="detail-reward-tip">达成挑战目标后自动发放</text>
+      </view>
     </view>
 
     <view class="detail-section">
-      <view class="detail-section-head"><text>挑战规则</text></view>
-      <rich-text class="detail-rules" nodes="{{remark}}" wx:if="{{remark}}"></rich-text>
-      <view class="detail-muted" wx:else>暂无挑战规则</view>
+      <view class="detail-section-head">
+        <text>挑战规则</text>
+        <text class="detail-section-note">RULES</text>
+      </view>
+      <view class="detail-rules-card" wx:if="{{remark}}">
+        <rich-text class="detail-rules" nodes="{{remark}}"></rich-text>
+      </view>
+      <view class="detail-muted detail-rules-empty" wx:else>暂无挑战规则说明</view>
     </view>
 
-    <view class="detail-section">
-      <view class="detail-section-head detail-section-link" bindtap="toList">
-        <text>参赛人员</text><text>查看全部 →</text>
+    <!-- 关联抽奖模块：仅当有抽奖时显示，无关联抽奖则整块隐藏 -->
+    <view class="detail-section detail-lottery-section" wx:if="{{ltyList && ltyList.length > 0}}">
+      <view class="detail-section-head">
+        <text>关联抽奖</text>
+        <text class="detail-section-note">福利 · LOTTERY</text>
       </view>
-      <view class="detail-people-summary">{{participantCountText}} 人参加挑战</view>
-      <view class="detail-avatars" wx:if="{{actyInList.length > 0}}">
-        <block wx:for="{{actyInList}}" wx:key="index">
-          <view class="detail-avatar" wx:if="{{index < 5}}">
-            <image wx:if="{{item.header_url}}" src="{{item.header_url}}" mode="aspectFill"></image>
-            <text wx:else>跑</text>
-          </view>
-        </block>
-      </view>
-      <view class="detail-muted" wx:elif="{{participantsLoading}}">正在加载参赛人员…</view>
-      <view class="detail-muted" wx:elif="{{participantsError}}">参赛人员暂时无法加载 <text class="detail-inline-action" bindtap="loadParticipants">重试 →</text></view>
-      <view class="detail-muted" wx:else>暂无参赛人员</view>
-    </view>
-
-    <view class="detail-section detail-lottery-section">
-      <view class="detail-section-head"><text>关联抽奖</text></view>
-      <view class="detail-lottery-list" wx:if="{{ltyList.length > 0}}">
+      <view class="detail-lottery-list">
         <view class="detail-lottery-item" wx:for="{{ltyList}}" wx:key="id" data-id="{{item.id}}" bindtap="toLty">
           <image wx:if="{{item.goods_pic}}" src="{{item.goods_pic}}" mode="aspectFill"></image>
           <view class="detail-lottery-placeholder" wx:else>奖品</view>
           <view class="detail-lottery-copy">
-            <text>{{item.address || '查看抽奖详情'}}</text>
-            <text wx:if="{{item.goods_num !== undefined && item.goods_num !== null}}">奖品数量 {{item.goods_num}}</text>
+            <text class="detail-lottery-name">{{item.address || '查看抽奖详情'}}</text>
+            <text class="detail-lottery-count" wx:if="{{item.goods_num !== undefined && item.goods_num !== null}}">奖品数量 {{item.goods_num}} 件</text>
           </view>
           <text class="detail-lottery-arrow">→</text>
         </view>
       </view>
-      <view class="detail-muted" wx:elif="{{lotteryLoading}}">正在加载抽奖信息…</view>
-      <view class="detail-muted" wx:elif="{{lotteryError}}">抽奖信息暂时无法加载 <text class="detail-inline-action" bindtap="loadLottery">重试 →</text></view>
-      <view class="detail-muted" wx:else>当前挑战暂无关联抽奖</view>
+    </view>
+
+    <!-- 底部：参赛跑友模块（原 actyin 数据直接整合显示在此处） -->
+    <view class="detail-section detail-members-section">
+      <view class="detail-section-head">
+        <text>报名跑友</text>
+        <text class="detail-section-note">SQUAD · {{totalMemberCount}}人</text>
+      </view>
+
+      <!-- 等级筛选与跑量排序栏 -->
+      <view class="filter-sort-bar">
+        <view class="level-tabs">
+          <view
+            wx:for="{{levelList}}"
+            wx:key="value"
+            class="level-tab {{activeLevelIndex === index ? 'active' : ''}}"
+            data-index="{{index}}"
+            bindtap="chooseLevel">
+            {{item.label}}
+          </view>
+        </view>
+        <view class="sort-btn" bindtap="toggleSort" hover-class="btn-hover">
+          <text class="sort-text">跑量</text>
+          <text class="sort-arrow">{{sortOrder === 1 ? '↓' : '↑'}}</text>
+        </view>
+      </view>
+
+      <!-- 跑友列表卡片 -->
+      <view class="member-list" wx:if="{{memberList.length > 0}}">
+        <block wx:for="{{memberList}}" wx:key="id">
+          <view class="member-card" data-userid="{{item.id}}" bindtap="toUserDetail" hover-class="card-hover">
+            <view class="rank-index {{item.rankNum <= 3 ? 'top' : ''}}">
+              <text wx:if="{{item.rankNum < 10}}">0{{item.rankNum}}</text>
+              <text wx:else>{{item.rankNum}}</text>
+            </view>
+
+            <!-- 头像 -->
+            <image class="member-avatar" src="{{item.header_url || '/images/default.png'}}" mode="aspectFill"></image>
+
+            <!-- 跑友信息 -->
+            <view class="member-info">
+              <view class="name-row">
+                <text class="member-name">{{item.user_name || item.nick_name || '跑友'}}</text>
+                <text class="level-badge vip" wx:if="{{item.levelLabel}}">{{item.levelLabel}}</text>
+              </view>
+              <view class="meta-row">
+                <text class="profile-badge profile-gender-badge" wx:if="{{item.genderLabel}}">{{item.genderLabel}}</text>
+                <view wx:if="{{item.regionLabel}}" class="profile-badge profile-region-badge"><image class="profile-region-icon" src="/images/place.png" mode="aspectFit"></image><text>{{item.regionLabel}}</text></view>
+                <text class="member-id">ID {{item.id}}</text>
+                <text class="member-status-tag" wx:if="{{item.isCompleted}}">已达标</text>
+              </view>
+            </view>
+
+            <!-- 进度与距离 -->
+            <view class="progress-col">
+              <view class="distance-numbers">
+                <text class="dist-finish">{{item.displayFinish}}</text>
+                <text class="dist-sep">/</text>
+                <text class="dist-target">{{item.displayTarget}}</text>
+                <text class="dist-unit">KM</text>
+              </view>
+              <view class="progress-track">
+                <view
+                  class="progress-fill {{item.isCompleted ? 'completed' : ''}}"
+                  style="width: {{item.percent}}%;">
+                </view>
+              </view>
+              <view class="percent-label">{{item.percent}}%</view>
+            </view>
+          </view>
+        </block>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="member-empty-block" wx:elif="{{!participantsLoading && memberList.length === 0}}">
+        <text class="member-empty-title">暂无符合条件的报名成员</text>
+        <text class="member-empty-desc">可尝试切换筛选条件或稍后再看</text>
+      </view>
+
+      <!-- 加载中 -->
+      <view class="member-loading-block" wx:elif="{{participantsLoading}}">
+        <text class="member-loading-text">正在加载报名跑友…</text>
+      </view>
+      <view class="detail-muted" wx:elif="{{participantsError}}">
+        跑友信息暂时无法加载 <text class="detail-inline-action" bindtap="loadParticipants">重试 →</text>
+      </view>
     </view>
   </view>
 </view>

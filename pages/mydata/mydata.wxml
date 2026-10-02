@@ -1,6 +1,6 @@
 <wxs src="../../utils/toDecimal2.wxs" module="number" />
 <site-header avatar="{{headerImg}}" bindprofiletap="openProfile"></site-header>
-<view class="profile-page">
+<view class="profile-page {{pageMotion ? 'page-enter-motion' : ''}}">
   <view class="profile-hero">
     <text class="profile-eyebrow">WRC · MY RUNNING</text>
     <text class="profile-title">跑步，<text class="profile-title-break">就服自己！</text></text>
@@ -11,14 +11,19 @@
       <view class="profile-person">
         <view class="profile-avatar-wrap" bindtap="openProfile" hover-class="profile-touch" role="button" aria-label="{{userId > 0 ? '查看个人资料' : '登录'}}">
           <image class="profile-avatar" src="{{headerImg || '/images/default.png'}}" mode="aspectFill"></image>
-          <image wx:if="{{level == 'VIP'}}" class="profile-vip-badge" src="/images/vip_1.svg" mode="aspectFit"></image>
         </view>
         <view class="profile-person-main" bindtap="openProfile" hover-class="profile-touch">
           <view class="profile-name-row">
             <text class="profile-name">{{userId > 0 ? (userName || nickName || '跑者') : '你好，跑者'}}</text>
             <text class="profile-duty-tag" wx:if="{{userId > 0 && (duty == '团长' || duty == '管理员/团长' || duty == '管理员')}}">{{duty == '管理员' ? '管理员' : '团长'}}</text>
           </view>
-          <text class="profile-sub">{{userId > 0 ? '跑者 ID · ' + userId : '登录后，记录你的每一步'}}</text>
+          <view class="profile-badge-row" wx:if="{{userId > 0}}">
+            <text class="profile-badge" wx:if="{{levelLabel}}">{{levelLabel}}</text>
+            <text class="profile-badge profile-gender-badge" wx:if="{{sex == 1 || sex == 2}}">{{sex == 1 ? '男' : '女'}}</text>
+            <view class="profile-badge profile-region-badge" wx:if="{{regionLabel}}"><image class="profile-region-icon" src="/images/place.png" mode="aspectFit"></image><text>{{regionLabel}}</text></view>
+            <text class="profile-badge profile-id-badge">id {{userId}}</text>
+          </view>
+          <text class="profile-sub" wx:else>登录后，记录你的每一步</text>
         </view>
         <view class="profile-asset-buttons" wx:if="{{userId > 0}}">
           <view class="profile-asset-btn" bindtap="checkPoint" hover-class="profile-asset-btn-hover" role="button" aria-label="查看积分">
@@ -194,13 +199,19 @@
       </block>
     </view>
 
-    <view class="profile-section-head profile-activity-head" wx:if="{{userId > 0 && (activityList.length || activityList2.length)}}">
+    <view class="profile-section-head profile-activity-head" wx:if="{{userId > 0}}">
       <view class="profile-section-heading-copy">
         <text class="profile-section-title">参与记录</text>
         <text class="profile-section-note">每一次挑战与团聚</text>
       </view>
     </view>
-    <all-activity wx:if="{{userId > 0}}" totalChallenge="{{totalChallenge}}" totalActy="{{totalActy}}" activityList="{{activityList}}" activityList2="{{activityList2}}" bind:parentEvent="loadMore" bind:parentEvent2="loadMore2" bind:parentEvent3="toDet"></all-activity>
+    <all-activity wx:if="{{userId > 0}}"
+      totalChallenge="{{totalChallenge}}" totalActy="{{totalActy}}"
+      activityList="{{activityList}}" activityList2="{{activityList2}}"
+      challengeStatus="{{challengeStatus}}" runStatus="{{runStatus}}"
+      challengeHasMore="{{challengeHasMore}}" runHasMore="{{runHasMore}}"
+      challengeCountKnown="{{challengeCountKnown}}" runCountKnown="{{runCountKnown}}"
+      bind:parentEvent="loadMore" bind:parentEvent2="loadMore2" bind:parentEvent3="toDet"></all-activity>
     <view class="profile-bottom-space"></view>
 </view>
 <tabbar tabbar="{{tabbar}}"></tabbar>

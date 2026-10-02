@@ -185,11 +185,18 @@ page {
   position: relative;
   width: 96rpx;
   height: 96rpx;
+  flex: none;
+  overflow: hidden;
+  border-radius: 50%;
+  box-sizing: border-box;
 }
 
 .user-pic .pic {
+  display: block;
   width: 96rpx;
   height: 96rpx;
+  min-height: 0;
+  margin: 0;
   border-radius: 50%;
   background: #e9f0e8;
   box-sizing: border-box;
@@ -205,14 +212,6 @@ page {
 
 .user-pic.guest .pic {
   border: 4rpx solid #c3ccc5;
-}
-
-.user-pic .badge {
-  position: absolute;
-  right: -4rpx;
-  bottom: -4rpx;
-  width: 36rpx;
-  height: 36rpx;
 }
 
 .member-info {
@@ -238,11 +237,16 @@ page {
   max-width: 200rpx;
 }
 
-.sex-icon {
-  width: 24rpx;
-  height: 24rpx;
+.member-level-label {
   flex: none;
+  padding: 2rpx 10rpx;
+  border-radius: 999rpx;
+  color: #0c6246;
+  background: #edf6ed;
+  font-size: 18rpx;
+  font-weight: 750;
 }
+
 
 .duty-tag {
   background: #072f27;
@@ -385,45 +389,99 @@ page {
   box-shadow: 0 20rpx 50rpx rgba(7, 47, 39, 0.18);
 }
 
+.modal-header {
+  margin-bottom: 8rpx;
+}
+
+.modal-user-brief {
+  display: flex;
+  align-items: center;
+}
+
+.modal-user-avatar {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  background: #e9f0e8;
+  margin-right: 18rpx;
+  flex: none;
+  border: 2rpx solid #dfe9df;
+}
+
+.modal-user-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .modal-title {
   color: #072f27;
   font-size: 32rpx;
   font-weight: 800;
+  line-height: 1.2;
+}
+
+.modal-subtitle {
+  color: #7d8b80;
+  font-size: 22rpx;
+  margin-top: 6rpx;
 }
 
 .modal-section {
-  margin-top: 24rpx;
-  padding-top: 24rpx;
+  margin-top: 22rpx;
+  padding-top: 22rpx;
   border-top: 1rpx solid #eef3ee;
 }
 
 .modal-label {
-  color: #7d8b80;
+  color: #547767;
   font-size: 22rpx;
   font-weight: 750;
-  letter-spacing: 2rpx;
+  letter-spacing: 1.5rpx;
   margin-bottom: 16rpx;
 }
 
-.modal-options {
+.modal-chips {
   display: flex;
   flex-wrap: wrap;
+  gap: 14rpx;
 }
 
-.modal-option {
-  display: flex;
+.modal-chip {
+  display: inline-flex;
   align-items: center;
-  width: 50%;
-  box-sizing: border-box;
-  padding: 10rpx 0;
-  color: #103d2e;
+  justify-content: center;
+  padding: 14rpx 28rpx;
+  background: #f4f8f4;
+  border: 1.5rpx solid #dfe9df;
+  border-radius: 999rpx;
+  color: #4b6657;
   font-size: 26rpx;
+  font-weight: 650;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+
+.modal-chip.is-active {
+  background: #d9ff3f;
+  border-color: #bcd930;
+  color: #072f27;
+  font-weight: 800;
+}
+
+.modal-chip-icon {
+  font-size: 24rpx;
+  margin-right: 8rpx;
+  font-weight: 800;
 }
 
 .modal-footer {
   display: flex;
   gap: 20rpx;
   margin-top: 32rpx;
+  background: none;
+  padding: 0;
 }
 
 .modal-btn {

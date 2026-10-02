@@ -56,7 +56,7 @@
   <view class="prize-section" wx:if="{{currentTab == 1}}">
     <view class="section-heading">
       <text class="section-title">小花儿好礼</text>
-      <text class="section-note">超级会员专享兑换资格</text>
+      <text class="section-note">SVip 专享兑换资格</text>
     </view>
     <view class="prize-grid" wx:if="{{listState == 'ready' && listData2.length}}">
       <view class="prize-card" wx:for="{{listData2}}" wx:for-item="item" wx:key="id" bindtap="toPrize2" data-id="{{item.id}}">

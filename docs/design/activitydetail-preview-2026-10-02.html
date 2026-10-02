@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WRC · 团跑详情重设计</title>
+<style id="page-css"></style>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e8ede7; color: #072f27; font-family: -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif; }
+  .review-bar { padding: 18px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; background: #103d30; color: #fff; font-size: 13px; }
+  .review-bar label { display: flex; align-items: center; gap: 8px; }
+  .review-bar select { padding: 8px; border-radius: 8px; background: #fff; color: #072f27; border: none; }
+  .review-bar span { opacity: .75; }
+  .preview-stage { display: flex; justify-content: center; padding: 24px 0; }
+  #screen { width: 393px; background: #fbfcf9; position: relative; box-shadow: 0 16px 64px #072f2710; }
+  button { border: 0; cursor: pointer; font-family: inherit; }
+  img { object-fit: cover; }
+  .preview-nav { position: absolute; top: 28px; left: 20px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid #e1e9e3; background: #fff; }
+  .preview-nav img { width: 22px; height: 22px; transform: rotate(180deg); }
+  .detail-action { position: fixed; left: 50%; right: auto; width: 393px; max-width: 100vw; transform: translateX(-50%); }
+  .album-scroll { overflow-x: auto; }
+  .album-scroll::-webkit-scrollbar { display: none; }
+  .preview-viewer { position: fixed; inset: 0; z-index: 9999; background: #050a09f5; display: flex; align-items: center; justify-content: center; }
+  .preview-viewer img { max-width: 90vw; max-height: 84vh; object-fit: contain; }
+  .preview-viewer-head { position: absolute; top: 20px; left: 24px; right: 24px; display: flex; align-items: center; justify-content: space-between; color: #fff; }
+  .preview-viewer button { background: #fff; padding: 10px 18px; border-radius: 22px; }
+  #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); max-width: 80vw; padding: 14px 20px; border-radius: 16px; background: #072f27ed; color: #fff; font-size: 13px; z-index: 10000; }
+  .preview-failure { padding: 32px; color: #b12727; }
+  @media(max-width:450px) { .preview-stage { padding: 0; } #screen { width: 100%; box-shadow: none; } .detail-action { width: 100%; } }
+</style>
+<div class="review-bar"><strong>WRC · 团跑详情重设计</strong><label>查看状态<select id="scenario"><option value="real">第273期 · 接口快照</option><option value="joined">样例 · 我的成绩</option><option value="open">样例 · 可报名</option><option value="empty">样例 · 空数据</option><option value="error">样例 · 加载失败</option><option value="long">样例 · 长名称</option><option value="extras">样例 · 相册与抽奖</option></select></label><span>直接渲染本页 WXML / WXSS / JS；样例操作不写入后台。</span></div>
+<div class="preview-stage"><main id="screen" aria-label="团跑详情预览"></main></div>
+<div id="toast" hidden role="status"></div>
+<script>
+  const screen = document.querySelector('#screen');
+  let page, ast, fixture, scenario = 'real', renderQueued = false;
+  const errors = []; window.addEventListener('error', e => errors.push(e.message));
+  const notify = message => { const n = document.querySelector('#toast'); n.textContent = message; n.hidden = false; clearTimeout(notify.timer); notify.timer = setTimeout(() => n.hidden = true, 2200); };
+  const request = async path => { const r = await fetch(path); if(!r.ok) throw Error(path + ': ' + r.status); return r.text(); };
+  function scheduleRender() { if(renderQueued) return; renderQueued = true; queueMicrotask(() => { renderQueued = false; render(); }); }
+  function evaluate(expr, scope) { return Function('scope', 'with(scope){return (' + expr + ')}')(new Proxy(scope,{has:() => true,get:(target,key) => key === Symbol.unscopables ? undefined : target[key]})); }
+  function value(text, scope) {
+    const exact = text.match(/^\{\{([\s\S]*)\}\}$/);
+    if(exact && !exact[1].includes('}}')) return evaluate(exact[1], scope);
+    return text.replace(/\{\{([\s\S]*?)\}\}/g, (_, expr) => String(evaluate(expr, scope) ?? ''));
+  }
+  function attributes(node) { return Object.fromEntries([...node.attributes].map(a => [a.name,a.value])); }
+  function children(nodes, scope) {
+    const result = document.createDocumentFragment(); let chain = false, matched = false;
+    for(const node of nodes) {
+      if(node.nodeType === 3) { if(node.textContent.trim()) result.append(document.createTextNode(value(node.textContent, scope))); continue; }
+      if(node.nodeType !== 1) continue;
+      const attrs = attributes(node);
+      if(attrs['wx:for']) { result.append(element(node,scope)); chain = false; matched = false; continue; }
+      if(attrs['wx:if'] !== undefined) { chain = true; matched = Boolean(value(attrs['wx:if'], scope)); if(!matched) continue; }
+      else if(attrs['wx:elif'] !== undefined) { if(!chain || matched) continue; matched = Boolean(value(attrs['wx:elif'], scope)); if(!matched) continue; }
+      else if(attrs['wx:else'] !== undefined) { if(!chain || matched) continue; matched = true; }
+      else { chain = false; matched = false; }
+      result.append(element(node,scope));
+    }
+    return result;
+  }
+  function element(node, scope, loop = false) {
+    const attrs = attributes(node), tag = node.nodeName;
+    if(attrs['wx:for'] && !loop) {
+      const frag = document.createDocumentFragment(), list = value(attrs['wx:for'], scope) || [];
+      list.forEach((item,index) => { const local = Object.assign({},scope,{item,index}); if(attrs['wx:if'] && !value(attrs['wx:if'],local)) return; frag.append(element(node,local,true)); });
+      return frag;
+    }
+    if(tag === 'wxs' || tag === 'site-header' || tag === 'image-viewer') return document.createDocumentFragment();
+    if(tag === 'block') return children(node.childNodes,scope);
+    const out = document.createElement(({view:'div',text:'span',image:'img','scroll-view':'div'})[tag] || tag);
+    for(const [name,text] of Object.entries(attrs)) {
+      if(name.startsWith('wx:') || name === 'mode' || name === 'hover-class' || name.startsWith('bind')) continue;
+      const rendered = value(text,scope); if(rendered == null) continue;
+      if(name === 'disabled') { out.disabled = Boolean(rendered); continue; }
+      out.setAttribute(name,String(rendered));
+    }
+    if(tag === 'image') {
+      const mode = value(attrs.mode || '',scope);
+      out.style.objectFit = mode === 'aspectFit' || mode === 'widthFix' || mode === 'heightFix' ? 'contain' : 'cover';
+      if(mode === 'widthFix') out.style.height = 'auto';
+      if(mode === 'heightFix') out.style.width = 'auto';
+    }
+    else out.append(children(node.childNodes,scope));
+    if(attrs.bindtap) out.addEventListener('click', () => {
+      const dataset = {}; for(const [name,text] of Object.entries(attrs)) if(name.startsWith('data-')) dataset[name.slice(5)] = value(text,scope);
+      page[attrs.bindtap]({currentTarget:{dataset}});
+    });
+    return out;
+  }
+  function render() {
+    const scope = Object.assign({number:{toDecimal2:x => Number(x).toFixed(2)}},page.data);
+    screen.replaceChildren(children(ast.documentElement.childNodes,scope));
+    const nav = document.createElement('button'); nav.className = 'preview-nav'; nav.setAttribute('aria-label','返回'); nav.innerHTML = '<img src="/images/redesign/chevron.svg" alt="">'; nav.onclick = () => notify('小程序中返回团跑列表'); screen.prepend(nav);
+  }
+  function openViewer(urls,current) {
+    const index = urls.indexOf(current); const viewer = document.createElement('div'); viewer.className = 'preview-viewer'; viewer.setAttribute('role','dialog'); viewer.setAttribute('aria-label','活动照片');
+    const image = document.createElement('img'); image.src = current; image.alt = '活动照片'; viewer.append(image);
+    const head = document.createElement('div'); head.className = 'preview-viewer-head'; const count = document.createElement('span'); count.textContent = (index+1)+' / '+urls.length;
+    const close = document.createElement('button'); close.textContent = '关闭图片'; close.onclick = () => viewer.remove(); head.append(count,close); viewer.append(head); document.body.append(viewer);
+  }
+  async function start(nextScenario) {
+    scenario = nextScenario; const f = structuredClone(fixture);
+    if(scenario === 'open') f['acty/getdetail'].data.acty_state = 1;
+    if(scenario === 'extras') {
+      const photo = f['acty/getactyimgs'].data[0];
+      const urls = [photo.img_url,'/images/redesign/group-run-night-branded.jpg','/images/redesign/group-run-default-cover.jpg'];
+      f['acty/getactyimgs'].data = urls.map((img_url,index) => ({...photo,id:9001+index,img_url}));
+      f['acty/getluckdrawlist'] = {success:true,data:[{id:0,address:'团跑纪念礼（预览样例）',goods_num:2,goods_pic:'/images/redesign/group-run-night-branded.jpg'}]};
+    }
+    if(scenario === 'empty') { f['acty/getsport'].data = {total:0,number:0}; for(const endpoint of ['acty/getactyuser','acty/getsportlog','acty/getactyimgs']) f[endpoint].data = []; }
+    if(scenario === 'long') { f['acty/getdetail'].data.acty_name = '微网跑团周末城市漫跑暨秋日长距离训练相聚活动'; f['acty/getactyuser'].data[0].user_name = '这是一位有很长昵称的跑友'; f['acty/getsportlog'].data[0].nick_name = '这是一位有很长昵称的跑友'; }
+    if(scenario === 'error') for(const endpoint of ['acty/getsport','acty/getactyuser','acty/getsportlog']) f[endpoint].success = false;
+    const app = {globalData:{userId: scenario === 'joined' ? 23 : 0}};
+    const util = {
+      request: (url,method,data,message,success,fail) => setTimeout(() => success({data:f[url] || {success:true,data:{address:''}}}),80),
+      dislodgeZero: text => text.split('-').map(v => v[0] === '0' ? v.slice(1) : v).join('-'),
+      showLogin: () => notify('小程序中会打开微信登录；预览不提交数据。')
+    };
+    const wx = {getSystemInfoSync:() => ({statusBarHeight:20}),getMenuButtonBoundingClientRect:() => ({bottom:62}),setNavigationBarTitle:() => {},navigateTo:o => notify('小程序内跳转：'+o.url),switchTab:o => notify('小程序内跳转：'+o.url),showToast:o => notify(o.title),stopPullDownRefresh:() => {}};
+    const modules = window.previewModules;
+    Function('Page','getApp','wx','require',window.pageSource)(config => page = Object.assign({},config,{data:structuredClone(config.data),setData(patch){Object.assign(this.data,patch);scheduleRender();},selectComponent:() => ({open:openViewer})}),() => app,wx,name => name.includes('util.js') ? util : modules[name]);
+    page.onLoad({id:360}); render();
+  }
+  (async() => {
+    const paths = ['/pages/activitydetail/activitydetail.wxml','/pages/activitydetail/activitydetail.wxss','/pages/activitydetail/activitydetail.js','/utils/member-level.js','/utils/profile-badges.js','/preview-data'];
+    const [wxml,css,js,levels,badges,data] = await Promise.all(paths.map(request));
+    const width = Math.min(393,window.innerWidth);
+    document.querySelector('#page-css').textContent = css.replace(/([\d.]+)rpx/g,(_,n) => (Number(n)*width/750)+'px').replace(/(?<![\w-])page\s*\{/g,'#screen {').replace(/(?<![\w-])text\b(?=[:\s.>+{])/g,'span').replace(/(?<![\w-])image\b(?=[:\s.>+{])/g,'img');
+    const escaped = wxml.replace(/\{\{[\s\S]*?\}\}/g,match => match.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')).replace(/wx:else(?=[\s>])/g,'wx:else=""');
+    ast = new DOMParser().parseFromString('<root xmlns:wx="urn:wx">'+escaped+'</root>','application/xml');
+    if(ast.querySelector('parsererror')) throw Error(ast.querySelector('parsererror').textContent);
+    window.pageSource = js; window.previewModules = {};
+    for(const [key,source] of [['../../utils/member-level.js',levels],['../../utils/profile-badges.js',badges]]) {const module={exports:{}}; Function('module',source)(module); window.previewModules[key]=module.exports;}
+    fixture = JSON.parse(data); await start('real');
+    document.querySelector('#scenario').onchange = e => start(e.target.value);
+  })().catch(error => { errors.push(error.message); screen.innerHTML = '<p class="preview-failure">预览加载失败</p>'; console.error(error); });
+</script>
+</html>

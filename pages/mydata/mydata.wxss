@@ -21,7 +21,6 @@ page {
   box-sizing: border-box;
 }
 .profile-avatar-wrap {
-  position: relative;
   width: 80rpx;
   height: 80rpx;
   flex: none;
@@ -32,13 +31,6 @@ page {
   border-radius: 50%;
   background: #e5ece6;
   display: block;
-}
-.profile-vip-badge {
-  position: absolute;
-  right: -4rpx;
-  bottom: -4rpx;
-  width: 32rpx;
-  height: 32rpx;
 }
 .profile-person-main {
   flex: 1;
@@ -72,7 +64,8 @@ page {
 .profile-sub {
   margin-top: 7rpx;
   color: #667970;
-  font-size: 23rpx;
+  font-size: 19rpx;
+  line-height: 1.4;
 }
 .profile-asset-buttons {
   display: flex;
@@ -253,7 +246,7 @@ page {
   margin-left: 14rpx;
   color: #667970;
   font-size: 22rpx;
-  font-weight: 200;
+  font-weight: 300;
 }
 .profile-section-left { display: flex; flex: 1; min-width: 0; flex-direction: column; }
 .profile-section-left .profile-section-note { margin: 5rpx 0 0; }
@@ -264,7 +257,7 @@ page {
   min-height: 88rpx;
   color: #0b503b;
   font-size: 23rpx;
-  font-weight: 200;
+  font-weight: 300;
 }
 
 /* 常用服务：一体化白卡分组列表，3/4 项都自然平铺，辅助小字 200 字重。 */
@@ -299,7 +292,7 @@ page {
   margin-top: 6rpx;
   color: #73877b;
   font-size: 22rpx;
-  font-weight: 200;
+  font-weight: 300;
 }
 .profile-service-arrow {
   flex: none;
@@ -320,7 +313,7 @@ page {
   border-radius: 24rpx;
   background: #fff;
   box-sizing: border-box;
-  font-weight: 100;
+  font-weight: 300;
 }
 .profile-heatmap-heading {
   display: flex;
@@ -356,7 +349,7 @@ page {
   background: transparent;
   color: #1d5b45;
   font-size: 24rpx;
-  font-weight: 100;
+  font-weight: 300;
   line-height: 1.4;
   box-sizing: border-box;
 }
@@ -376,7 +369,7 @@ page {
   align-items: center;
   color: #6f8478;
   font-size: 17rpx;
-  font-weight: 100;
+  font-weight: 300;
   line-height: 1;
 }
 .profile-heatmap-weekday:last-child { margin-bottom: 0 !important; }
@@ -386,7 +379,7 @@ page {
 .profile-heatmap-months { position: relative; }
 .profile-heatmap-month {
   position: absolute;
-  bottom: 0;
+  bottom: 10rpx;
   box-sizing: border-box;
   color: #7c8f84;
   font-size: 18rpx;
@@ -418,7 +411,7 @@ page {
 .profile-heatmap-legend { display: flex; align-items: center; gap: 6rpx; color: #667970; font-size: 19rpx; }
 .profile-heatmap-swatch { width: 18rpx; height: 18rpx; border-radius: 4rpx; }
 .profile-heatmap-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 240rpx; color: #667970; font-size: 24rpx; line-height: 1.6; text-align: center; }
-.profile-heatmap-retry { display: flex; align-items: center; justify-content: center; min-height: 88rpx; margin-top: 10rpx; padding: 0 24rpx; color: #0b503b; font-size: 25rpx; font-weight: 100; }
+.profile-heatmap-retry { display: flex; align-items: center; justify-content: center; min-height: 88rpx; margin-top: 10rpx; padding: 0 24rpx; color: #0b503b; font-size: 25rpx; font-weight: 300; }
 
 /* 马拉松成绩：一体化白卡，类型药丸 + 日期在上，名称最多两行，右侧大号成绩。 */
 .profile-races-card {
@@ -447,12 +440,12 @@ page {
   background: #eaf3ed;
   color: #2e6949;
   font-size: 20rpx;
-  font-weight: 200;
+  font-weight: 300;
   line-height: 1.4;
   box-sizing: border-box;
   word-break: break-all;
 }
-.profile-race-date { flex: none; color: #718175; font-size: 21rpx; font-weight: 200; }
+.profile-race-date { flex: none; color: #718175; font-size: 21rpx; font-weight: 300; }
 .profile-race-name {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -479,7 +472,7 @@ page {
   margin-top: 4rpx;
   color: #8a9b90;
   font-size: 19rpx;
-  font-weight: 200;
+  font-weight: 300;
 }
 
 .profile-activity-head {

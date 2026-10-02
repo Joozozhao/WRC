@@ -4,6 +4,7 @@ const app = getApp()
 Component({
   properties: {
     avatar: { type: String, value: '' },
+    dark: { type: Boolean, value: false },
     showBack: { type: Boolean, value: false },
     backUrl: { type: String, value: '/pages/index/index' }
   },

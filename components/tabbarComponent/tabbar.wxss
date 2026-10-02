@@ -12,6 +12,9 @@
   box-sizing: content-box;
 }
 .tabbar_box.iphoneX-height { padding-bottom: 60rpx; }
+.tabbar_box.is-dark { border-top-color: #30353b; }
+.tabbar_box.is-dark .tabbar_nav.is-selected::after { background: #d9ff3f; }
+.tabbar_box.is-dark .tabbar_icon { filter: brightness(0) invert(1); }
 .tabbar_slot {
   width: 25%;
   height: 100%;
@@ -28,7 +31,7 @@
   justify-content: center;
   align-items: center;
   color: #87928c;
-  font-size: 23rpx;
+  font-size: 20rpx;
   font-weight: 600;
   line-height: 1.2;
   white-space: nowrap;
@@ -43,7 +46,7 @@
   border-radius: 6rpx;
   background: #d9ff3f;
 }
-.tabbar_icon { width: 46rpx; height: 46rpx; margin-bottom: 6rpx; opacity: .67; }
+.tabbar_icon { width: 56rpx; height: 56rpx; margin-bottom: 2rpx; opacity: .67; }
 .tabbar_nav.is-selected .tabbar_icon { opacity: 1; animation: iconPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
 
 @keyframes iconPop {

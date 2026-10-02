@@ -1,5 +1,7 @@
 // pages/challengedetail/challengedetail.js
 const util = require('../../utils/util.js')
+const { toDisplayMemberLevel } = require('../../utils/member-level.js')
+const { addProfileBadges } = require('../../utils/profile-badges.js')
 const app = getApp()
 
 function numberOrNull(value) {
@@ -10,6 +12,20 @@ function numberOrNull(value) {
 
 function shortTime(value) {
   return typeof value === 'string' && value ? value.slice(0, 16) : ''
+}
+
+function toFixed(num) {
+  const n = Number(num)
+  if (!Number.isFinite(n)) return '0.00'
+  return (Math.round(n * 100) / 100).toFixed(2)
+}
+
+function calcPercent(finish, total) {
+  const f = Number(finish) || 0
+  const t = Number(total) || 0
+  if (t <= 0) return 0
+  const p = Math.round((f / t) * 100)
+  return Math.min(100, Math.max(0, p))
 }
 
 Page({
@@ -44,6 +60,16 @@ Page({
     joins: null,
     participantCountText: '—',
     actyInList: [],
+    memberList: [],
+    levelList: [
+      { label: '全部', value: '' },
+      { label: 'SVip', value: 'VIP' },
+      { label: 'Vip', value: '普通' },
+      { label: 'PVip', value: '非会员' }
+    ],
+    activeLevelIndex: 0,
+    sortOrder: 1, // 1: 降序, 0: 升序
+    totalMemberCount: 0,
     participantsLoading: false,
     participantsError: false,
     ltyList: [],
@@ -123,6 +149,7 @@ Page({
       detailLoaded: false,
       detailError: '',
       actyInList: [],
+      memberList: [],
       ltyList: [],
       participantsError: false,
       lotteryError: false
@@ -200,28 +227,79 @@ Page({
 
   retryLoad: function () { this.initChallenge(this.data.actyId) },
 
-  loadParticipants: function () {
+  chooseLevel: function (e) {
+    const index = Number(e.currentTarget.dataset.index)
+    if (index === this.data.activeLevelIndex) return
+    this.setData({ activeLevelIndex: index })
+    this.loadParticipants()
+  },
+
+  toggleSort: function () {
+    const nextOrder = this.data.sortOrder === 1 ? 0 : 1
+    this.setData({ sortOrder: nextOrder })
+    this.loadParticipants()
+  },
+
+  toUserDetail: function (e) {
+    const id = e.currentTarget.dataset.userid
+    if (!id) return
+    const currentUserId = app.globalData.userId
+    if (currentUserId && String(id) === String(currentUserId)) {
+      wx.switchTab({ url: '../mydata/mydata' })
+    } else {
+      wx.navigateTo({ url: '../othersdata/othersdata?id=' + id })
+    }
+  },
+
+  loadParticipants: function (cb) {
     const viewedUserId = this.data.userid !== undefined && this.data.userid !== ''
       ? this.data.userid : (app.globalData.userId || 0)
+    const levelStr = this.data.levelList[this.data.activeLevelIndex].value
     const data = {
       actyId: this.data.actyId,
       userId: viewedUserId,
       userName: '',
       mobile: '',
-      level: '',
-      distance: 1
+      level: levelStr,
+      distance: this.data.sortOrder
     }
     this.setData({ participantsLoading: true, participantsError: false })
     util.request('acty/getactyuser', 'POST', data, '', (res) => {
       const valid = !!(res.data && res.data.success && Array.isArray(res.data.data))
       const list = valid ? res.data.data : []
+      const processed = list.map((item, idx) => {
+        const finish = Number(item.finish_distance) || 0
+        const rawTarget = Number(item.distance) || 0
+        const target = Math.round(rawTarget)
+        const percent = calcPercent(finish, target)
+        return Object.assign(addProfileBadges(item), {
+          levelLabel: toDisplayMemberLevel(item.level),
+          displayFinish: toFixed(finish),
+          displayTarget: String(target),
+          percent: percent,
+          isCompleted: finish >= target && target > 0,
+          rankNum: idx + 1
+        })
+      })
       this.setData({
         actyInList: list,
+        memberList: processed,
+        totalMemberCount: processed.length,
         participantCountText: this.data.joins !== null ? String(this.data.joins) : valid ? String(list.length) : '—',
         participantsLoading: false,
         participantsError: !valid
       })
-    }, () => this.setData({ participantsLoading: false, participantsError: true }))
+      if (typeof cb === 'function') cb()
+    }, () => {
+      this.setData({
+        actyInList: [],
+        memberList: [],
+        totalMemberCount: 0,
+        participantsLoading: false,
+        participantsError: true
+      })
+      if (typeof cb === 'function') cb()
+    })
   },
 
   loadLottery: function () {
@@ -233,10 +311,6 @@ Page({
         lotteryError: !(res.data && res.data.success)
       })
     }, () => this.setData({ lotteryLoading: false, lotteryError: true }))
-  },
-
-  toList: function () {
-    if (this.data.actyId) wx.navigateTo({ url: '../actyin/actyin?id=' + encodeURIComponent(this.data.actyId) })
   },
 
   toLty: function (e) {

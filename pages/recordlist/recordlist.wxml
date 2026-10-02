@@ -3,7 +3,7 @@
 <wxs src="../../utils/toDecimal2.wxs" module="module1" />
 <view class="recordlist-page">
   <!-- Top Filter Bar -->
-  <view class="filter-bar">
+  <view class="filter-bar" style="top: {{filterTop}}px;">
     <view class="filter-item {{selAll ? 'is-active' : ''}}" bindtap="clickArea">
       <text class="filter-label">地区</text>
       <text class="filter-arrow">{{iconState ? "▾" : "▴"}}</text>
@@ -15,7 +15,7 @@
   </view>
 
   <!-- Dropdown 1: Area -->
-  <view class="dropdown-mask {{selAll ? 'show' : 'hide'}}" bindtap="close">
+  <view class="dropdown-mask {{selAll ? 'show' : 'hide'}}" style="top: {{filterBottom}}px;" bindtap="close">
     <view class="dropdown-menu" catchtap="true">
       <view class="dropdown-item {{id == index ? 'is-selected' : ''}}" wx:for="{{btnTab}}" wx:key="index" data-id="{{index}}" data-txt="{{item}}" catchtap="choose">
         <text>{{item}}</text>
@@ -25,7 +25,7 @@
   </view>
 
   <!-- Dropdown 2: Type -->
-  <view class="dropdown-mask {{sortAll ? 'show' : 'hide'}}" bindtap="close">
+  <view class="dropdown-mask {{sortAll ? 'show' : 'hide'}}" style="top: {{filterBottom}}px;" bindtap="close">
     <view class="dropdown-menu" catchtap="true">
       <view class="dropdown-item {{id2 == index ? 'is-selected' : ''}}" wx:for="{{btnTab2}}" wx:key="index" data-id="{{index}}" data-txt="{{item}}" catchtap="choose2">
         <text>{{item}}</text>
@@ -110,25 +110,33 @@
     <text>一键通过待审核记录（{{pendingCount}}）</text>
   </view>
 </view>
+<image-viewer id="imageViewer" />
 
 <!-- Refuse Modal -->
 <view class="modal-mask" wx:if="{{changeModal}}" bindtap="onCancel"></view>
 <view class="modal-dialog" wx:if="{{changeModal}}">
   <form bindsubmit="onConfirm">
-    <view class="modal-title">驳回打卡申请</view>
+    <view class="modal-head">
+      <image wx:if="{{rejectTarget.avatar}}" class="modal-runner-avatar" src="{{rejectTarget.avatar}}" mode="aspectFill"></image>
+      <view class="modal-head-meta">
+        <text class="modal-title">驳回打卡申请</text>
+        <text class="modal-subtitle">{{rejectTarget.name ? rejectTarget.name + ' · ' : ''}}{{rejectTarget.distance}} 公里</text>
+      </view>
+    </view>
     <view class="modal-body">
       <view class="modal-field">
         <label class="modal-label">驳回原因</label>
-        <input type="text" placeholder="请输入驳回原因" name="reason" value="{{reason}}" class="modal-input" />
+        <input type="text" placeholder="请输入驳回原因，将通知该跑友" placeholder-class="modal-ph" name="reason" value="{{reason}}" class="modal-input" />
       </view>
       <view class="modal-field">
         <label class="modal-label">扣除积分</label>
-        <input type="number" placeholder="0" name="score" value="{{score}}" class="modal-input" />
+        <input type="number" placeholder="0" placeholder-class="modal-ph" name="score" value="{{score}}" class="modal-input" />
       </view>
+      <view class="modal-hint">驳回后该记录将标记为未通过，并从该跑友账户扣除相应积分</view>
     </view>
     <view class="modal-footer">
-      <button class="modal-btn btn-cancel" bindtap="onCancel">取消</button>
-      <button class="modal-btn btn-confirm" form-type="submit">确认驳回</button>
+      <button class="modal-btn btn-cancel" bindtap="onCancel" hover-class="btn-cancel-hover">取消</button>
+      <button class="modal-btn btn-confirm" form-type="submit" hover-class="btn-confirm-hover">确认驳回</button>
     </view>
   </form>
 </view>

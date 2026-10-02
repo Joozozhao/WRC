@@ -18,10 +18,9 @@
           <view class="name-row">
             <text class="member-name" wx:if="{{item.user_name !== ''}}">{{item.user_name}}</text>
             <text class="member-name" wx:else>{{item.nick_name || '跑友'}}</text>
-            <image wx:if="{{item.level == 'VIP'}}" src="/images/superVIP.svg" mode="aspectFit" class="vip-icon"></image>
-            <image wx:elif="{{item.level == '普通'}}" src="/images/normalVIP.svg" mode="aspectFit" class="vip-icon"></image>
-            <image wx:if="{{item.sex == 1}}" src="/images/man.svg" mode="aspectFit" class="sex-icon"></image>
-            <image wx:elif="{{item.sex == 2}}" src="/images/woman.svg" mode="aspectFit" class="sex-icon"></image>
+            <text class="level-label" wx:if="{{item.levelLabel}}">{{item.levelLabel}}</text>
+            <text wx:if="{{item.genderLabel}}" class="profile-badge profile-gender-badge">{{item.genderLabel}}</text>
+            <view wx:if="{{item.regionLabel}}" class="profile-badge profile-region-badge"><image class="profile-region-icon" src="/images/place.png" mode="aspectFit"></image><text>{{item.regionLabel}}</text></view>
           </view>
           <view class="meta-row">
             <text class="member-id">ID {{item.id}}</text>

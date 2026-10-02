@@ -1,7 +1,11 @@
 // pages/mydata/mydata.js
 const util = require("../../utils/util.js");
 const heatmap = require("../../utils/recent-run-heatmap.js");
+const participation = require("../../utils/participation-timeline.js");
+const { toDisplayMemberLevel } = require('../../utils/member-level.js');
+const { getRegionLabel } = require('../../utils/profile-badges.js');
 const app = getApp();
+const playPageMotion = require('../../utils/page-motion.js')
 
 Page({
   /**
@@ -15,6 +19,8 @@ Page({
     nickName: "",
     sex: "",
     level: "",
+    levelLabel: "",
+    regionLabel: "",
     score: 0,
     energy: 0,
     totalDistance: 0,
@@ -30,6 +36,12 @@ Page({
     totalActy: 0,
     activityList: [],
     activityList2: [],
+    challengeStatus: "loading",
+    runStatus: "loading",
+    challengeHasMore: false,
+    runHasMore: false,
+    challengeCountKnown: false,
+    runCountKnown: false,
     page: 1,
     page2: 1,
     recentHeatmap: null,
@@ -125,6 +137,8 @@ Page({
           nickName: myData.nickName || "",
           sex: myData.sex || "",
           level: myData.level || "",
+          levelLabel: toDisplayMemberLevel(myData.level),
+          regionLabel: getRegionLabel(myData),
           score: myData.score || 0,
           energy: myData.energy || 0,
           monthDistance: myData.monthDistance || 0,
@@ -274,102 +288,33 @@ Page({
     wx.navigateTo({ url: "../results/results?id=" + userId });
   },
 
-  // 挑战记录列表
-  initActy: function(id) {
+  // 参与记录的两个来源独立分页，切换账号或重新进入页面会作废旧回调。
+  getParticipationController: function() {
     var that = this;
-    if (!id || id <= 0) return;
-    var data = {
-      userId: id,
-      type: "挑战",
-      page: 1
-    };
-    util.request("acty/getacty", "POST", data, "", function(res) {
-      if (res.data && res.data.success) {
-        var allData = res.data.data || [];
-        allData.forEach(function(item) {
-          if (item.start_timestr) item.start_timestr = item.start_timestr.substring(0, 16);
-          if (item.end_timestr) item.end_timestr = item.end_timestr.substring(11, 16);
-        });
-        that.setData({
-          activityList: allData,
-          totalChallenge: res.data.total || allData.length,
-          page: 2
-        });
-      } else {
-        that.setData({ activityList: [] });
-      }
-    });
+    if (!this._participationController) {
+      this._participationController = participation.createParticipationController({
+        isCurrentUser: function(requestUserId) {
+          return String(that.data.userId) === String(requestUserId);
+        },
+        fetchPage: function(requestUserId, type, page, onSuccess, onFail) {
+          util.request("acty/getacty", "POST", { userId: requestUserId, type: type, page: page }, "", onSuccess, onFail);
+        },
+        onState: function(patch) { that.setData(patch); }
+      });
+    }
+    return this._participationController;
   },
 
-  // 团跑记录列表
-  initActy2: function(id) {
-    var that = this;
-    if (!id || id <= 0) return;
-    var data = {
-      userId: id,
-      type: "团跑",
-      page: 1
-    };
-    util.request("acty/getacty", "POST", data, "", function(res) {
-      if (res.data && res.data.success) {
-        var allData = res.data.data || [];
-        allData.forEach(function(item) {
-          if (item.start_timestr) item.start_timestr = item.start_timestr.substring(0, 16);
-          if (item.end_timestr) item.end_timestr = item.end_timestr.substring(11, 16);
-        });
-        that.setData({
-          activityList2: allData,
-          totalActy: res.data.total || allData.length,
-          page2: 2
-        });
-      } else {
-        that.setData({ activityList2: [] });
-      }
-    });
+  initParticipationData: function(userId) {
+    this.getParticipationController().load(userId);
   },
 
   loadMore: function() {
-    var that = this;
-    var data = {
-      userId: that.data.userId,
-      type: "挑战",
-      page: that.data.page++
-    };
-    util.request("acty/getacty", "POST", data, "", function(res) {
-      if (res.data && res.data.success) {
-        var allData = res.data.data || [];
-        allData.forEach(function(item) {
-          if (item.start_timestr) item.start_timestr = item.start_timestr.substring(0, 16);
-          if (item.end_timestr) item.end_timestr = item.end_timestr.substring(11, 16);
-        });
-        that.setData({
-          activityList: that.data.activityList.concat(allData),
-          totalChallenge: res.data.total
-        });
-      }
-    });
+    this.getParticipationController().loadMore("challenge");
   },
 
   loadMore2: function() {
-    var that = this;
-    var data = {
-      userId: that.data.userId,
-      type: "团跑",
-      page: that.data.page2++
-    };
-    util.request("acty/getacty", "POST", data, "", function(res) {
-      if (res.data && res.data.success) {
-        var allData = res.data.data || [];
-        allData.forEach(function(item) {
-          if (item.start_timestr) item.start_timestr = item.start_timestr.substring(0, 16);
-          if (item.end_timestr) item.end_timestr = item.end_timestr.substring(11, 16);
-        });
-        that.setData({
-          activityList2: that.data.activityList2.concat(allData),
-          totalActy: res.data.total
-        });
-      }
-    });
+    this.getParticipationController().loadMore("run");
   },
 
   toDet: function(e) {
@@ -496,6 +441,7 @@ Page({
   },
 
   onShow: function() {
+    playPageMotion(this)
     wx.hideTabBar();
     var userId = wx.getStorageSync("userId") || app.globalData.userId || 0;
     if (userId !== this.data.userId) {
@@ -517,18 +463,21 @@ Page({
     }
     this.setData({ userId: userId, statsLoaded: false, weekLoaded: false, yearLoaded: false });
     this.initHeatmapData(userId);
+    this.initParticipationData(userId);
     if (userId > 0) {
       this.initInfor(userId);
       this.getWeekRuns(userId);
       this.getYearDistance(userId);
       this.initDuty(userId);
       this.initMarathon(userId);
-      this.initActy(userId);
-      this.initActy2(userId);
     }
   },
 
   onHide: function() {},
+
+  onUnload: function() {
+    if (this._participationController) this._participationController.dispose();
+  },
 
   myLogin: function(userId) {
     this.setData({ userId: userId, statsLoaded: false, weekLoaded: false });
@@ -538,7 +487,6 @@ Page({
     this.initDuty(userId);
     this.initMarathon(userId);
     this.initHeatmapData(userId);
-    this.initActy(userId);
-    this.initActy2(userId);
+    this.initParticipationData(userId);
   }
 });

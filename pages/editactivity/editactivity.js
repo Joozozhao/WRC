@@ -1,5 +1,6 @@
 const util = require("../../utils/util.js")
 const app = getApp()
+const DEFAULT_GROUP_COVER = '/images/redesign/group-run-default-cover.jpg'
 
 Page({
   data: {
@@ -86,22 +87,80 @@ Page({
 
   setPickerTime(e) {
     const data = e.detail
+    const startTime = util.dislodgeZero(data.startTime)
+    const endTime = util.dislodgeZero(data.endTime)
     this.setData({
-      startTime: data.startTime,
-      endTime: data.endTime
+      startTime: startTime,
+      endTime: endTime
     })
   },
 
   uploadAction() {
-    wx.chooseImage({
+    const that = this
+    const chooseFn = wx.chooseMedia || wx.chooseImage
+    const isMedia = Boolean(wx.chooseMedia)
+    chooseFn({
       count: 1,
+      mediaType: ['image'],
       sizeType: ["original", "compressed"],
       sourceType: ["album", "camera"],
       success: (res) => {
-        const path = res.tempFilePaths[0]
-        wx.navigateTo({
-          url: "../cropper/cropper?src=" + encodeURIComponent(path)
+        let path = ''
+        if (isMedia && res.tempFiles && res.tempFiles[0]) {
+          path = res.tempFiles[0].tempFilePath
+        } else if (res.tempFilePaths && res.tempFilePaths[0]) {
+          path = res.tempFilePaths[0]
+        }
+        if (!path) return
+
+        wx.showActionSheet({
+          itemList: ['裁剪后上传（建议横版）', '直接原图上传'],
+          success: (tapRes) => {
+            if (tapRes.tapIndex === 0) {
+              wx.navigateTo({
+                url: "../cropper/cropper?src=" + encodeURIComponent(path)
+              })
+            } else {
+              that.directUploadCover(path)
+            }
+          },
+          fail: (err) => {
+            if (err && err.errMsg && err.errMsg.indexOf('cancel') !== -1) return
+            wx.navigateTo({
+              url: "../cropper/cropper?src=" + encodeURIComponent(path)
+            })
+          }
         })
+      }
+    })
+  },
+
+  directUploadCover(filePath) {
+    const userId = app.globalData.userId || wx.getStorageSync('userId') || 0
+    wx.showLoading({ title: "正在上传封面...", mask: true })
+    wx.uploadFile({
+      url: "https://applet.51welink.com/sport/acty/uploadimg",
+      filePath: filePath,
+      name: "file",
+      formData: { userId: userId, fileId: "file" },
+      success: (ret) => {
+        wx.hideLoading()
+        try {
+          const obj = typeof ret.data === "string" ? JSON.parse(ret.data) : ret.data
+          if (obj && obj.success && obj.data && obj.data.img) {
+            this.setData({ tempFilePaths: obj.data.img })
+            wx.showToast({ title: "封面上传成功", icon: "success" })
+            return
+          }
+        } catch (e) {
+          console.error("Direct upload cover parse error", e)
+        }
+        wx.showToast({ title: "上传失败，请重试", icon: "none" })
+      },
+      fail: (err) => {
+        wx.hideLoading()
+        console.error("Direct upload cover failed", err)
+        wx.showToast({ title: "网络错误，请重试", icon: "none" })
       }
     })
   },
@@ -197,25 +256,45 @@ Page({
 
   uploadGroupPhoto() {
     const actyId = this.data.actyId
-    wx.chooseImage({
+    const chooseFn = wx.chooseMedia || wx.chooseImage
+    const isMedia = Boolean(wx.chooseMedia)
+    chooseFn({
       count: 1,
+      mediaType: ['image'],
       sizeType: ["original", "compressed"],
       sourceType: ["album", "camera"],
       success: (res) => {
-        const filePath = res.tempFilePaths[0]
+        let filePath = ''
+        if (isMedia && res.tempFiles && res.tempFiles[0]) {
+          filePath = res.tempFiles[0].tempFilePath
+        } else if (res.tempFilePaths && res.tempFilePaths[0]) {
+          filePath = res.tempFilePaths[0]
+        }
+        if (!filePath) return
+
         wx.showLoading({ title: "正在上传照片...", mask: true })
         wx.uploadFile({
           url: "https://applet.51welink.com/sport/acty/uploadactyimg",
           filePath: filePath,
           name: "file",
           formData: { actyId: actyId, fileId: "file" },
-          success: () => {
+          success: (uploadRes) => {
             wx.hideLoading()
-            this.loadGroupPhotos(actyId)
-            wx.showToast({ title: "上传成功", icon: "success" })
+            try {
+              const obj = typeof uploadRes.data === 'string' ? JSON.parse(uploadRes.data) : uploadRes.data
+              if (obj && (obj.success || (obj.data && obj.data.img))) {
+                this.loadGroupPhotos(actyId)
+                wx.showToast({ title: "上传成功", icon: "success" })
+                return
+              }
+            } catch (e) {
+              console.error("Upload photo parse error", e)
+            }
+            wx.showToast({ title: "上传失败，请重试", icon: "none" })
           },
-          fail: () => {
+          fail: (err) => {
             wx.hideLoading()
+            console.error("Upload photo failed", err)
             wx.showToast({ title: "上传失败，请重试", icon: "none" })
           }
         })
@@ -264,11 +343,6 @@ Page({
       wx.showToast({ title: "请填写正确的活动距离", icon: "none" })
       return
     }
-    if (!this.data.tempFilePaths) {
-      wx.showToast({ title: "请上传活动封面", icon: "none" })
-      return
-    }
-
     const postData = {
       userId: userId,
       actyId: this.data.actyId,
@@ -280,7 +354,7 @@ Page({
       region: this.data.region,
       remark: "",
       distance: f.distance,
-      actyImg: this.data.tempFilePaths,
+      actyImg: this.data.tempFilePaths || DEFAULT_GROUP_COVER,
       hasMobile: this.data.hasMobile,
       hasName: 1,
       stype: 0,

@@ -1,9 +1,0 @@
-{
-  "navigationStyle": "custom",
-  "backgroundTextStyle": "dark",
-  "navigationBarBackgroundColor": "#fafbf7",
-  "navigationBarTitleText": "活动数据",
-  "navigationBarTextStyle": "black",
-  "backgroundColor": "#fafbf7",
-  "enablePullDownRefresh": true
-}

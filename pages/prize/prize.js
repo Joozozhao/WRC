@@ -122,7 +122,7 @@ Page({
     if (this.data.level === 'VIP') {
       wx.navigateTo({ url: '../prizedetails/prizedetails?id=' + e.currentTarget.dataset.id })
     } else {
-      wx.showToast({ title: '仅限超级会员兑换，继续加油', icon: 'none' })
+      wx.showToast({ title: '仅限 SVip 兑换，继续加油', icon: 'none' })
     }
   },
 

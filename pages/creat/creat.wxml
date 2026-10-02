@@ -69,13 +69,13 @@
     <view class="form-card">
       <view class="card-badge">02 / 活动封面</view>
 
-      <view class="cover-uploader" wx:if="{{addView}}" bindtap="uploadAction">
+      <view class="cover-uploader" wx:if="{{!tempFilePaths}}" bindtap="uploadAction">
         <view class="uploader-icon">📷</view>
-        <text class="uploader-title">点击上传活动封面</text>
-        <text class="uploader-sub">选择照片后将进入裁剪，建议使用横版活动照片</text>
+        <text class="uploader-title">点击上传活动封面（可选）</text>
+        <text class="uploader-sub">未上传时将自动使用微网跑团 4:3 默认封面</text>
       </view>
 
-      <view class="cover-preview-box" wx:if="{{showView}}">
+      <view class="cover-preview-box" wx:else>
         <image class="cover-image" src="{{tempFilePaths}}" mode="aspectFill" bindtap="uploadAction"></image>
         <view class="cover-actions">
           <view class="cover-btn change-btn" bindtap="uploadAction">重新选择</view>

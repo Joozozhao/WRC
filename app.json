@@ -9,7 +9,6 @@
     "pages/hope/hope",
     "pages/together/together",
     "pages/addtype/addtype",
-    "pages/addrules/addrules",
     "pages/memberdata/memberdata",
     "pages/editchallenge/editchallenge",
     "pages/orderlist/orderlist",
@@ -28,15 +27,12 @@
     "pages/othersdata/othersdata",
     "pages/record/record",
     "pages/challengedetail/challengedetail",
-    "pages/actyin/actyin",
     "pages/prize/prize",
     "pages/energy/energy",
     "pages/clockdaily/clockdaily",
     "pages/checkpoint/checkpoint",
     "pages/activitydetail/activitydetail",
     "pages/editactivity/editactivity",
-    "pages/activitydata/activitydata",
-    "pages/member/member",
     "pages/signin/signin",
     "pages/history/history",
     "pages/orderdetail/orderdetail",
@@ -85,7 +81,8 @@
   "plugins": {},
   "usingComponents": {
     "time-picker": "/components/timePicker/timePicker",
-    "site-header": "/components/site-header/site-header"
+    "site-header": "/components/site-header/site-header",
+    "image-viewer": "/components/image-viewer/image-viewer"
   },
   "style": "v2",
   "requiredPrivateInfos": [

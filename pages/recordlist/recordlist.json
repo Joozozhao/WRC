@@ -4,5 +4,8 @@
   "backgroundColor": "#fbfcf9",
   "navigationBarBackgroundColor": "#fbfcf9",
   "navigationBarTitleText": "打卡记录",
-  "navigationBarTextStyle": "black"
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "image-viewer": "/components/image-viewer/image-viewer"
+  }
 }

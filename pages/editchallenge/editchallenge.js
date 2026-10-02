@@ -14,12 +14,6 @@ Page({
     remark: "",
     tempFilePaths: "",
     hasMobile: 0,
-    runCon: true,
-    actyMember: [],
-    avastars: [],
-    runModal: false,
-    totalMan: 0,
-    selectedUserIds: [],
     isPickerShow: false,
     isPickerRender: false,
     pickerConfig: {
@@ -35,7 +29,6 @@ Page({
     const id = options && options.id ? options.id : 0
     this.setData({ actyId: id })
     this.initChallenge(id)
-    this.initActyIn(id)
   },
 
   initChallenge(actyId) {
@@ -115,71 +108,6 @@ Page({
   toggleMobile(e) {
     const checked = e.detail.value
     this.setData({ hasMobile: checked ? 1 : 0 })
-  },
-
-  // V挑战成员选择弹窗
-  openMemberModal() {
-    util.request("acty/getactyuser", "POST", {
-      actyId: this.data.actyId,
-      userId: app.globalData.userId || 0,
-      level: "",
-      distance: 1,
-      userName: "",
-      mobile: ""
-    }, "读取成员中...", (res) => {
-      if (res && res.data && res.data.success && Array.isArray(res.data.data)) {
-        const raw = res.data.data
-        const selected = this.data.actyMember.map(m => String(m.id))
-        const list = raw.map(item => {
-          return Object.assign({}, item, {
-            checked: selected.includes(String(item.id))
-          })
-        })
-        this.setData({
-          avastars: list,
-          runModal: true,
-          totalMan: selected.length,
-          selectedUserIds: selected
-        })
-      } else {
-        wx.showToast({ title: "暂无报名成员", icon: "none" })
-      }
-    })
-  },
-
-  closeMemberModal() {
-    this.setData({ runModal: false })
-  },
-
-  checkboxChangeMember(e) {
-    const values = e.detail.value
-    this.setData({
-      selectedUserIds: values,
-      totalMan: values.length
-    })
-  },
-
-  confirmMembers() {
-    const userIdsStr = this.data.selectedUserIds.join(",")
-    util.request("acty/updatejoinstate", "POST", {
-      userIds: userIdsStr,
-      actyId: this.data.actyId
-    }, "保存中...", () => {
-      this.initActyIn(this.data.actyId)
-      this.setData({ runModal: false })
-      wx.showToast({ title: "已更新挑战成员", icon: "none" })
-    })
-  },
-
-  initActyIn(actyId) {
-    util.request("acty/getclickuser", "POST", { actyId: actyId }, "", (res) => {
-      if (res && res.data && res.data.success && Array.isArray(res.data.data)) {
-        this.setData({
-          actyMember: res.data.data,
-          totalMan: res.data.data.length
-        })
-      }
-    })
   },
 
   submit(e) {

@@ -1,5 +1,5 @@
 <site-header bindprofiletap="openMyPage"></site-header>
-<view class="challenge-page">
+<view class="challenge-page {{pageMotion ? 'page-enter-motion' : ''}}">
   <view class="challenge-hero">
     <text class="challenge-eyebrow">WRC · CHALLENGE YOURSELF</text>
     <text class="challenge-title">给自己一个<text class="challenge-title-break">新目标。</text></text>
@@ -7,14 +7,17 @@
     <text class="challenge-intro">每一步都算数。从今天的距离，跑向下一个自己。</text>
   </view>
   <view class="challenge-heading">
-    <text>挑战活动</text>
-    <text class="challenge-heading-count" wx:if="{{challengeList.length}}">{{challengeList.length}} 个已加载</text>
+    <view class="challenge-heading-copy">
+      <text class="challenge-heading-title">挑战活动</text>
+      <text class="challenge-heading-count" wx:if="{{challengeList.length}}">{{challengeList.length}} 个已加载</text>
+    </view>
+    <text class="challenge-create" wx:if="{{duty == '团长' || duty == '管理员' || duty == '管理员/团长'}}" bindtap="createChallenge">＋ 发起挑战</text>
   </view>
   <view class="challenge-list" wx:if="{{challengeList.length}}">
     <block wx:for="{{challengeList}}" wx:key="acty_id">
-      <view class="challenge-card" wx:if="{{item.acty_type !== 'V挑战' || duty == '管理员' || duty == '管理员/团长'}}">
+      <view class="challenge-card {{item._entering ? 'is-entering' : ''}}" wx:if="{{item.acty_type !== 'V挑战' || duty == '管理员' || duty == '管理员/团长'}}">
         <view class="challenge-card-main" bindtap="toDetail" data-id="{{item.acty_id}}" data-name="{{item.acty_name}}">
-          <image class="challenge-poster" src="{{item.acty_img}}" mode="aspectFill"></image>
+          <image class="challenge-poster" src="{{item.acty_img}}" mode="aspectFill" style="height: 489rpx; display: block; box-sizing: border-box; left: 0rpx; top: -109rpx"></image>
           <view class="challenge-card-content">
             <text class="challenge-kicker">{{item.acty_type || '跑步挑战'}}</text>
             <text class="challenge-card-title">{{item.acty_name}}</text>
@@ -35,8 +38,6 @@
           <text class="challenge-state {{item.days < 0 ? 'is-ended' : ''}}">{{item.days < 0 ? '已结束' : '可参与'}}</text>
         </view>
         <view class="challenge-admin" wx:if="{{duty == '管理员'||duty == '管理员/团长'}}">
-          <text wx:if="{{item.days >= 0 && item.acty_type == 'V挑战'}}" bindtap="addRules" data-id="{{item.acty_id}}">加规则</text>
-          <text wx:if="{{item.days >= 0 && item.acty_type == 'V挑战'}}" bindtap="delRules" data-id="{{item.acty_id}}">删规则</text>
           <text wx:if="{{item.days >= 0}}" bindtap="editCon" data-id="{{item.acty_id}}">编辑</text>
           <text bindtap="delCon" data-index="{{index}}" data-id="{{item.acty_id}}">删除</text>
         </view>

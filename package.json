@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "node tests/home-month-summary.test.js && node tests/home-month-summary-page.test.js && node tests/recent-run-heatmap.test.js && node tests/mydata-heatmap-page.test.js"
+    "test": "node tests/home-month-summary.test.js && node tests/home-month-summary-page.test.js && node tests/recent-run-heatmap.test.js && node tests/mydata-heatmap-page.test.js && node --test tests/participation-timeline.test.js tests/mydata-participation-page.test.js tests/participation-component.test.js tests/challengedetail-lottery.test.js tests/othersdata-calendar.test.js tests/activitydetail-data-panel.test.js"
   },
   "keywords": [],
   "author": "",

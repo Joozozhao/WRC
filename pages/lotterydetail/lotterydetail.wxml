@@ -64,7 +64,7 @@
         <view class="luck-winners">
           <block wx:for="{{luckList}}" wx:key="index" wx:if="{{item.state==1}}">
             <view class="luck-winner">
-              <image src="{{item.header_url}}" class="luck-avatar luck-avatar-big"></image>
+              <image src="{{item.header_url}}" class="luck-avatar luck-avatar-big" mode="aspectFill"></image>
               <view class="luck-winner-name" wx:if="{{item.name==''}}">{{item.nick_name}}</view>
               <view class="luck-winner-name" wx:else>{{item.name}}</view>
             </view>
@@ -82,7 +82,7 @@
     <view class="luck-card">
       <view class="luck-joined">
         <block wx:for="{{luckList}}" wx:key="index">
-          <image src="{{item.header_url}}" class="luck-avatar"></image>
+          <image src="{{item.header_url}}" class="luck-avatar" mode="aspectFill"></image>
         </block>
       </view>
     </view>

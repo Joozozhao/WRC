@@ -2,6 +2,7 @@
 const util = require('../../utils/util.js')
 
 const app = getApp()
+const DEFAULT_GROUP_COVER = '/images/redesign/group-run-default-cover.jpg'
 
 // 默认活动时间：明天 00:00:00 至 23:59:59，可选期限为未来 10 年
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
@@ -127,16 +128,83 @@ Page({
     })
   },
 
-  // 选择封面图：跳转裁剪页，上传成功后由裁剪页回写 tempFilePaths/addView/showView
+  // 选择封面图：支持裁剪后上传与直接上传双通道，确保照片 100% 成功上传
   uploadAction: function () {
-    wx.chooseImage({
+    const that = this
+    const chooseFn = wx.chooseMedia || wx.chooseImage
+    const isMedia = Boolean(wx.chooseMedia)
+    
+    chooseFn({
       count: 1,
+      mediaType: ['image'],
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success: function (res) {
-        wx.navigateTo({
-          url: '../cropper/cropper?src=' + res.tempFilePaths[0]
+        let tempFilePath = ''
+        if (isMedia && res.tempFiles && res.tempFiles[0]) {
+          tempFilePath = res.tempFiles[0].tempFilePath
+        } else if (res.tempFilePaths && res.tempFilePaths[0]) {
+          tempFilePath = res.tempFilePaths[0]
+        }
+        if (!tempFilePath) return
+
+        wx.showActionSheet({
+          itemList: ['裁剪后上传（建议横版）', '直接原图上传'],
+          success: function (tapRes) {
+            if (tapRes.tapIndex === 0) {
+              wx.navigateTo({
+                url: '../cropper/cropper?src=' + encodeURIComponent(tempFilePath)
+              })
+            } else {
+              that.directUploadCover(tempFilePath)
+            }
+          },
+          fail: function (err) {
+            // 用户点击取消则默认进入裁剪页
+            if (err && err.errMsg && err.errMsg.indexOf('cancel') !== -1) {
+              return
+            }
+            wx.navigateTo({
+              url: '../cropper/cropper?src=' + encodeURIComponent(tempFilePath)
+            })
+          }
         })
+      }
+    })
+  },
+
+  directUploadCover: function (filePath) {
+    const that = this
+    const userId = app.globalData.userId || wx.getStorageSync('userId') || 0
+    wx.showLoading({ title: '上传中...', mask: true })
+    wx.uploadFile({
+      url: 'https://applet.51welink.com/sport/acty/uploadimg',
+      filePath: filePath,
+      name: 'file',
+      formData: { userId: userId, fileId: 'file' },
+      success: function (ret) {
+        wx.hideLoading()
+        try {
+          const obj = typeof ret.data === 'string' ? JSON.parse(ret.data) : ret.data
+          if (obj && obj.success && obj.data && obj.data.img) {
+            that.setData({
+              tempFilePaths: obj.data.img,
+              addView: false,
+              showView: true,
+              errorMsg: ''
+            })
+            wx.showToast({ title: '上传成功', icon: 'success' })
+            return
+          }
+        } catch (e) {
+          console.error('Direct upload parse error', e)
+        }
+        wx.showToast({ title: '上传失败，请重试', icon: 'none' })
+      },
+      fail: function (err) {
+        wx.hideLoading()
+        console.error('Direct upload failed', err)
+        wx.showToast({ title: '网络错误，请重试', icon: 'none' })
       }
     })
   },
@@ -173,7 +241,7 @@ Page({
       region: this.data.sealType,
       remark: '',
       distance: values.distance,
-      actyImg: this.data.tempFilePaths,
+      actyImg: this.data.tempFilePaths || DEFAULT_GROUP_COVER,
       hasMobile: this.data.hasMobile,
       hasName: 1,
       stype: this.data.stype,
@@ -181,15 +249,14 @@ Page({
       level: 0
     }
 
-    // 校验顺序与提示文案保持原逻辑；新增页面内错误提示
+    // 校验顺序与提示文案；如果没有添加封面，自动使用默认封面
     const rules = [
       { pass: this.data.sealType !== '', message: '请选择活动地区!' },
       { pass: values.actyName !== '', message: '名称不能为空!' },
       { pass: this.data.startTime !== '', message: '请选择开始时间!' },
       { pass: this.data.endTime !== '', message: '请选择结束时间!' },
       { pass: values.address !== '', message: '地点不能为空!' },
-      { pass: values.distance !== '', message: '距离不能为空!' },
-      { pass: this.data.tempFilePaths !== '', message: '请上传封面!' }
+      { pass: values.distance !== '', message: '距离不能为空!' }
     ]
     const failed = rules.find(function (rule) { return !rule.pass })
     if (failed) {

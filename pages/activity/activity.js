@@ -2,6 +2,9 @@
 const util = require('../../utils/util.js')
 // 获取应用实例
 const app = getApp()
+const DEFAULT_GROUP_COVER = '/images/redesign/group-run-default-cover.jpg'
+const playPageMotion = require('../../utils/page-motion.js')
+
 Page({
   /**
    * 页面的初始数据
@@ -13,7 +16,8 @@ Page({
     page: 1,
     loading: true,
     hasMore: true,
-    loadError: false
+    loadError: false,
+    pageMotion: false
   },
   openMyPage: function () {
     wx.switchTab({ url: '../mydata/mydata' })
@@ -83,6 +87,9 @@ Page({
     app.editTabbar();
     this.initLimit()
   },
+  onReady: function () {
+    wx.hideTabBar({ fail: () => {} })
+  },
   initLimit: function(){
     var userId = app.globalData.userId
     if (!userId || userId <= 0) {
@@ -125,6 +132,8 @@ Page({
           hasMore: allData.length > 0,
           loadError: false
         })
+        // 尝试查询各活动的合照，若已有合照则以第一张合照作为活动封面展示
+        that.syncGroupPhotosForList(allData)
       } else {
         that.setData({ activityList: [], loading: false, hasMore: false, loadError: true })
       }
@@ -135,8 +144,27 @@ Page({
       var start = item.start_timestr || ''
       var end = item.end_timestr || ''
       return Object.assign({}, item, {
+        acty_img: item.acty_img || DEFAULT_GROUP_COVER,
         start_timestr: start ? util.dislodgeZero(start.substring(0, 16)) : '时间待公布',
         end_timestr: end ? util.dislodgeZero(end.substring(11, 16)) : ''
+      })
+    })
+  },
+  syncGroupPhotosForList: function(list) {
+    if (!Array.isArray(list) || !list.length) return
+    const that = this
+    list.forEach(function(item, idx) {
+      if (!item.id) return
+      util.request('acty/getactyimgs', 'POST', { actyId: item.id }, '', (res) => {
+        if (res.data && res.data.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          const firstPhoto = res.data.data[0].img_url
+          if (firstPhoto) {
+            const key = 'activityList[' + idx + '].acty_img'
+            that.setData({
+              [key]: firstPhoto
+            })
+          }
+        }
       })
     })
   },
@@ -147,7 +175,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    wx.hideTabBar();
+    playPageMotion(this)
+    wx.hideTabBar({ fail: () => {} })
+    app.editTabbar();
     this.initLimit()
     this.initActy()
   },
@@ -167,13 +197,25 @@ Page({
     this.setData({ loading: true })
     util.request('acty/getactylist', 'POST', data, '数据加载中...', (res)=>{
       if(res.data && res.data.success){
-        var allData = that.formatActivity(res.data.data || [])
+        var allData = that.formatActivity(res.data.data || []).map(function(item) {
+          return Object.assign({}, item, { _entering: true })
+        })
         that.setData({
           activityList: that.data.activityList.concat(allData),
           page: that.data.page + 1,
           hasMore: allData.length > 0,
           loading: false
         })
+        setTimeout(function() {
+          that.setData({
+            activityList: that.data.activityList.map(function(item) {
+              if (!item._entering) return item
+              var next = Object.assign({}, item)
+              delete next._entering
+              return next
+            })
+          })
+        }, 420)
       }else{
         that.setData({ loading: false })
       }

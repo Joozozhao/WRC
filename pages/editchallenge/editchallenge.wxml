@@ -119,7 +119,7 @@
     </view>
 
     <!-- 04 参与设置 -->
-    <view class="form-card" wx:if="{{actyType !== 'V挑战'}}">
+    <view class="form-card">
       <view class="card-badge">04 / 报名填写项</view>
 
       <view class="switch-row">
@@ -139,59 +139,12 @@
       </view>
     </view>
 
-    <!-- V挑战专属成员设置 -->
-    <view class="form-card" wx:if="{{actyType === 'V挑战'}}">
-      <view class="card-badge">04 / V挑战限定成员</view>
-      <view class="group-members-section">
-        <view class="group-members-head" bindtap="openMemberModal">
-          <text class="section-title">限定参赛跑友 ({{actyMember.length}}人)</text>
-          <text class="section-link">选择成员 →</text>
-        </view>
-        <view class="member-avatar-row" wx:if="{{actyMember.length > 0}}" bindtap="openMemberModal">
-          <image
-            wx:for="{{actyMember}}"
-            wx:key="id"
-            wx:if="{{index < 8}}"
-            class="stacked-avatar"
-            src="{{item.header_url || '/images/default.png'}}"
-            mode="aspectFill">
-          </image>
-          <view class="more-count" wx:if="{{actyMember.length > 8}}">+{{actyMember.length - 8}}</view>
-        </view>
-        <view class="member-empty-tip" wx:else bindtap="openMemberModal">点击指定参与此项V挑战的跑友</view>
-      </view>
-    </view>
-
     <!-- 底部操作栏 -->
     <view class="bottom-action-bar">
       <button class="primary-submit-btn" form-type="submit" hover-class="btn-pressed">保存挑战修改</button>
     </view>
   </form>
 
-  <!-- 成员选择弹窗 -->
-  <view class="modal-mask" wx:if="{{runModal}}" bindtap="closeMemberModal"></view>
-  <view class="member-modal" wx:if="{{runModal}}">
-    <view class="modal-head">
-      <text class="modal-title">指定V挑战参赛成员</text>
-      <text class="modal-count">已选 {{totalMan}} 人</text>
-    </view>
-    <scroll-view scroll-y="true" class="modal-scroll">
-      <checkbox-group bindchange="checkboxChangeMember">
-        <label class="member-picker-row" wx:for="{{avastars}}" wx:key="id">
-          <checkbox value="{{item.id}}" checked="{{item.checked}}" color="#075b40" />
-          <image class="picker-avatar" src="{{item.header_url || '/images/default.png'}}" mode="aspectFill"></image>
-          <view class="picker-name-col">
-            <text class="picker-name">{{item.user_name || item.nick_name || '跑友'}}</text>
-            <text class="picker-meta">ID {{item.id}} · {{item.address || '跑团成员'}}</text>
-          </view>
-        </label>
-      </checkbox-group>
-    </scroll-view>
-    <view class="modal-foot">
-      <view class="modal-btn cancel-btn" bindtap="closeMemberModal">取消</view>
-      <view class="modal-btn confirm-btn" bindtap="confirmMembers">确定选择 ({{totalMan}})</view>
-    </view>
-  </view>
 </view>
 
 <!-- 日期选择器 -->

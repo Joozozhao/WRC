@@ -1,109 +1,126 @@
 <wxs src="../../utils/toDecimal2.wxs" module="number" />
 <site-header show-back="{{true}}" back-url="/pages/activity/activity" bindprofiletap="openMyPage"></site-header>
-<view class="detail-page">
-  <view class="detail-message" wx:if="{{loading}}">团跑详情加载中…</view>
+<view class="detail-page {{state != '已结束' ? 'has-action' : ''}}" style="padding-top: {{contentTop}}px;">
+  <view class="detail-message" wx:if="{{loading}}">
+    <text class="detail-message-title">准备好，一起跑。</text>
+    <text class="detail-message-copy">正在加载团跑详情…</text>
+  </view>
   <view class="detail-message" wx:elif="{{loadError}}">
     <text class="detail-message-title">暂时无法查看团跑</text>
     <text class="detail-message-copy">请检查网络后重试。</text>
     <button class="detail-retry" bindtap="retryLoad">重新加载</button>
   </view>
   <block wx:else>
-    <view class="detail-cover">
-      <image wx:if="{{acty_img}}" src="{{acty_img}}" mode="aspectFill"></image>
-      <view class="detail-cover-fallback" wx:else>WRC · RUN TOGETHER</view>
-      <text class="detail-cover-state" wx:if="{{state == '已结束'}}">已结束</text>
-    </view>
     <view class="detail-intro">
-      <text class="detail-eyebrow">WRC · 团跑活动</text>
+      <view class="detail-heading-row">
+        <text class="detail-eyebrow">WRC · RUN TOGETHER</text>
+        <text class="detail-state {{state == '已结束' ? 'is-ended' : ''}}">{{state == '已结束' ? '已结束' : (signTrue ? '可报名' : '已报名')}}</text>
+      </view>
       <text class="detail-title">{{acty_name}}</text>
-      <view class="detail-tags">
-        <text wx:if="{{acty_type}}">{{acty_type}}</text>
-        <text wx:if="{{region}}">{{region}}</text>
-        <text>活动 ID {{actyId}}</text>
-      </view>
-      <view class="detail-meta">
-        <view wx:if="{{start_time}}"><text>时间</text><text>{{start_time}}{{end_time ? ' — ' + end_time : ''}}</text></view>
-        <view wx:if="{{address}}"><text>地点</text><text>{{address}}</text></view>
-      </view>
     </view>
-    <view class="detail-distance">
-      <view><text class="detail-section-kicker">本次目标</text><text class="detail-distance-number">{{distance}}</text><text class="detail-distance-unit">公里</text></view>
-      <text class="detail-distance-note">一起跑，跑更远。</text>
-    </view>
-    <view class="detail-section detail-people" bindtap="toList">
-      <view class="detail-section-heading"><text>已报名团员</text><text class="detail-section-link">查看全部 →</text></view>
-      <view class="detail-people-row">
-        <view class="detail-avatars">
-          <image wx:for="{{avastars}}" wx:key="id" wx:if="{{index < 12 && item.header_url}}" src="{{item.header_url}}" mode="aspectFill"></image>
+
+    <view class="event-card">
+      <view class="event-cover-wrap" data-url="{{actyImg.length ? acty_img : ''}}" bindtap="preview" aria-label="查看活动照片">
+        <image class="detail-cover {{actyImg.length ? 'is-photo' : 'is-default'}}" src="{{acty_img}}" mode="widthFix"></image>
+        <text class="cover-photo-label" wx:if="{{actyImg.length}}">查看照片 · {{actyImg.length}} 张</text>
+      </view>
+      <view class="event-info" wx:if="{{start_time || address || region}}">
+        <view class="event-info-row" wx:if="{{start_time}}">
+          <image class="event-info-icon" src="/images/time.png" mode="aspectFit"></image>
+          <text>{{start_time}}{{end_time ? ' — ' + end_time : ''}}</text>
         </view>
-        <text class="detail-people-count">{{memberLoaded ? actyIn : '—'}} 人</text>
-      </view>
-    </view>
-    <view class="detail-section" wx:if="{{acty_level == 1 && actyMember.length}}" bindtap="toList2">
-      <view class="detail-section-heading"><text>聚跑团员</text><text class="detail-section-link">查看全部 →</text></view>
-      <view class="detail-people-row">
-        <view class="detail-avatars"><image wx:for="{{actyMember}}" wx:key="id" wx:if="{{index < 12 && item.header_url}}" src="{{item.header_url}}" mode="aspectFill"></image></view>
-        <text class="detail-people-count">{{actyMember.length}} 人</text>
-      </view>
-    </view>
-    <view class="detail-section" wx:if="{{actyImg.length}}">
-      <view class="detail-section-heading"><text>活动相册</text><text class="detail-section-caption">点击照片查看</text></view>
-      <swiper class="detail-gallery" indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" circular="true">
-        <swiper-item wx:for="{{actyImg}}" wx:key="id" data-url="{{item.img_url}}" bindtap="preview"><image src="{{item.img_url}}" mode="aspectFill"></image></swiper-item>
-      </swiper>
-    </view>
-    <view class="detail-section" wx:if="{{ltyList.length}}">
-      <view class="detail-section-heading"><text>本期抽奖</text></view>
-      <view class="detail-prizes">
-        <view class="detail-prize" wx:for="{{ltyList}}" wx:key="id" data-id="{{item.id}}" bindtap="toLty">
-          <image src="{{item.goods_pic}}" mode="aspectFill"></image>
-          <view><text>{{item.address || '抽奖奖品'}}</text><text wx:if="{{item.goods_num}}">{{item.goods_num}} 件</text></view>
+        <view class="event-info-row" wx:if="{{address || region}}">
+          <image class="event-info-icon" src="/images/place.png" mode="aspectFit"></image>
+          <text>{{region}}{{region && address ? ' · ' : ''}}{{address}}</text>
         </view>
       </view>
     </view>
-    <view class="detail-section" bindtap="toactyData">
-      <view class="detail-section-heading"><text>活动数据</text><text class="detail-section-link">查看详情 →</text></view>
-      <view class="detail-stats">
-        <view><text class="detail-stat-value">{{statsLoaded ? allNum : '—'}}</text><text class="detail-stat-label">运动人数</text></view>
-        <view><text class="detail-stat-value">{{statsLoaded ? number.toDecimal2(allDistance) : '—'}}</text><text class="detail-stat-label">总跑量 / 公里</text></view>
+
+    <view class="run-summary">
+      <image class="summary-watermark" src="/images/redesign/wrc-mark.png" mode="aspectFit"></image>
+      <view class="summary-main">
+        <text class="summary-label">本期累计跑量</text>
+        <view class="summary-distance"><text>{{statsLoaded ? number.toDecimal2(allDistance) : '—'}}</text><text class="summary-unit">公里</text></view>
+      </view>
+      <view class="summary-grid">
+        <view class="summary-stat"><text class="summary-value">{{memberLoaded ? actyIn : '—'}}</text><text class="summary-stat-label">报名人数</text></view>
+        <view class="summary-stat"><text class="summary-value">{{statsLoaded ? allNum : '—'}}</text><text class="summary-stat-label">打卡次数</text></view>
+        <view class="summary-stat summary-stat-target"><text class="summary-value">{{distance}}</text><text class="summary-stat-label">目标 / 公里</text></view>
+      </view>
+      <view class="summary-notice" wx:if="{{statsError}}"><text>跑量统计加载失败</text><button bindtap="retryLoad">重试</button></view>
+      <view class="my-result" wx:if="{{myRecord}}" data-userid="{{myRecord.user_id}}" bindtap="toUserDetail" hover-class="my-result-pressed" aria-label="查看我的跑步数据">
+        <image class="my-result-avatar" src="{{myRecord.header_url || '/images/default.png'}}" mode="aspectFill"></image>
+        <view class="my-result-info"><text class="my-result-label">我的本次打卡</text><view class="my-result-meta"><text class="my-result-distance">{{myRecord.displayDistance}}<text class="my-result-unit"> km</text></text><text class="my-result-speed">配速 {{myRecord.speed || '—'}}</text></view></view>
+        <text class="my-result-rank">第 {{myRecord.rankNum}} 名</text>
       </view>
     </view>
-    <!-- 活动报名成员列表（由原 member 页面移至此处） -->
-    <view class="detail-section detail-members-section">
-      <view class="detail-section-heading">
-        <text>活动报名成员</text>
-        <text class="detail-section-caption" wx:if="{{memberLoaded}}">共 {{actyIn}} 位跑友</text>
+
+    <view class="data-panel">
+      <view class="data-tabs" role="tablist" aria-label="活动数据分类">
+        <button class="data-tab {{dataPanel == 'results' ? 'is-active' : ''}}" data-panel="results" bindtap="switchDataPanel" role="tab" aria-selected="{{dataPanel == 'results'}}">成绩榜</button>
+        <button class="data-tab {{dataPanel == 'members' ? 'is-active' : ''}}" data-panel="members" bindtap="switchDataPanel" role="tab" aria-selected="{{dataPanel == 'members'}}">报名成员<text wx:if="{{memberLoaded}}" class="tab-count">{{actyIn}}</text></button>
       </view>
-      <view class="member-list" wx:if="{{avastars.length > 0}}">
-        <view class="member-card" wx:for="{{avastars}}" wx:key="id" data-userid="{{item.id}}" bindtap="toUserDetail" hover-class="card-hover">
-          <view class="rank-index {{index < 3 ? 'top' : ''}}">
-            <text wx:if="{{index + 1 < 10}}">0{{index + 1}}</text>
-            <text wx:else>{{index + 1}}</text>
+
+      <view wx:if="{{dataPanel == 'results'}}" class="data-content fade-slide-enter">
+        <view class="result-list" wx:if="{{logList.length}}">
+          <view class="result-row {{item.isMe ? 'is-me' : ''}}" wx:for="{{logList}}" wx:key="rankNum" data-userid="{{item.user_id}}" bindtap="toUserDetail" hover-class="row-pressed" aria-label="查看{{item.nick_name || '跑友'}}的主页">
+            <text class="row-index {{item.rankNum <= 3 ? 'is-top' : ''}}">{{item.rankNum < 10 ? '0' + item.rankNum : item.rankNum}}</text>
+            <image class="row-avatar" src="{{item.header_url || '/images/default.png'}}" mode="aspectFill"></image>
+            <view class="row-info"><view class="row-name-line"><text class="row-name">{{item.nick_name || '跑友'}}</text><text class="me-label" wx:if="{{item.isMe}}">我</text></view><text class="row-secondary">配速 {{item.speed || '—'}}</text></view>
+            <text class="row-distance">{{item.displayDistance}} <text class="row-distance-unit">km</text></text>
           </view>
-          <image class="member-avatar" src="{{item.header_url || '/images/default.png'}}" mode="aspectFill"></image>
-          <view class="member-info">
-            <view class="name-row">
-              <text class="member-name">{{item.user_name || item.nick_name || '跑友'}}</text>
-              <text class="level-badge vip" wx:if="{{item.level === 'VIP'}}">VIP</text>
+        </view>
+        <view class="panel-state" wx:if="{{logError}}"><text>成绩暂时没有加载成功</text><button class="text-button" bindtap="retryLogs">重新加载</button></view>
+        <view class="panel-state" wx:elif="{{logLoading}}">正在加载成绩…</view>
+        <view class="panel-state" wx:elif="{{logLoaded && !logList.length}}"><text class="panel-state-title">暂无跑步打卡记录</text><text>跑友打卡后，成绩会展示在这里。</text></view>
+        <button class="panel-more" wx:elif="{{logHasMore && logList.length}}" bindtap="loadMoreLogs">加载更多成绩</button>
+        <text class="panel-end" wx:elif="{{logLoaded && logList.length}}">全部 {{logList.length}} 条打卡记录</text>
+      </view>
+
+      <view wx:else class="data-content fade-slide-enter">
+        <view class="member-list" wx:if="{{avastars.length}}">
+          <view class="member-row" wx:for="{{avastars}}" wx:key="id" data-userid="{{item.id}}" bindtap="toUserDetail" hover-class="row-pressed" aria-label="查看{{item.user_name || item.nick_name || '跑友'}}的主页">
+            <text class="row-index">{{index + 1 < 10 ? '0' + (index + 1) : index + 1}}</text>
+            <image class="row-avatar" src="{{item.header_url || '/images/default.png'}}" mode="aspectFill"></image>
+            <view class="row-info">
+              <view class="row-name-line"><text class="row-name">{{item.user_name || item.nick_name || '跑友'}}</text><text class="member-level" wx:if="{{item.levelLabel}}">{{item.levelLabel}}</text></view>
+              <view class="member-meta"><text wx:if="{{item.genderLabel}}">{{item.genderLabel}}</text><text wx:if="{{item.regionLabel}}">{{item.regionLabel}}</text><text>ID {{item.id}}</text></view>
             </view>
-            <view class="meta-row">
-              <text class="member-sex-tag male" wx:if="{{item.sex == 1}}">男</text>
-              <text class="member-sex-tag female" wx:elif="{{item.sex == 2}}">女</text>
-              <text class="member-id">ID {{item.id}}</text>
-              <text class="member-tag" wx:if="{{item.address}}">{{item.address}}</text>
-            </view>
-          </view>
-          <view class="member-action">
-            <text class="action-text">TA的主页</text>
-            <text class="action-arrow">→</text>
+            <image class="row-chevron" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
           </view>
         </view>
+        <view class="panel-state" wx:if="{{memberError && signTrue}}"><text class="panel-state-title">尚未报名</text><text>报名后即可查看活动成员。</text></view>
+        <view class="panel-state" wx:elif="{{memberError}}"><text>报名成员加载失败</text><button class="text-button" bindtap="retryLoad">重新加载</button></view>
+        <view class="panel-state" wx:elif="{{memberLoading || !memberLoaded}}">正在加载报名成员…</view>
+        <view class="panel-state" wx:elif="{{!avastars.length}}"><text class="panel-state-title">还没有跑友报名</text><text>一起出发，让这次团跑热闹起来。</text></view>
+        <view class="together-row" wx:if="{{acty_level == 1 && actyMember.length}}" bindtap="toList2">
+          <view><text class="together-title">聚跑团员</text><text class="row-secondary">{{actyMember.length}} 位跑友相聚</text></view>
+          <view class="together-avatars"><image wx:for="{{actyMember}}" wx:key="id" wx:if="{{index < 3}}" src="{{item.header_url || '/images/default.png'}}" mode="aspectFill"></image></view>
+          <image class="row-chevron" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+        </view>
       </view>
-      <view class="detail-no-members" wx:elif="{{memberLoaded}}">暂无报名成员</view>
+    </view>
+
+    <view class="detail-section album-section" wx:if="{{actyImg.length > 1}}">
+      <view class="section-heading"><view><text class="section-title">活动相册</text><text class="section-count">{{actyImg.length}} 张</text></view><text class="section-caption">点击查看大图</text></view>
+      <scroll-view class="album-scroll" scroll-x="true" show-scrollbar="false" enhanced="true">
+        <view class="album-photos"><image class="album-photo" wx:for="{{actyImg}}" wx:key="id" src="{{item.img_url}}" mode="heightFix" data-url="{{item.img_url}}" bindtap="preview" aria-label="查看第{{index + 1}}张活动照片"></image></view>
+      </scroll-view>
+    </view>
+
+    <view class="detail-section lottery-section" wx:if="{{ltyList.length}}">
+      <view class="section-heading"><text class="section-title">本期抽奖</text><text class="section-caption">{{ltyList.length}} 项好礼</text></view>
+      <view class="prize-row" wx:for="{{ltyList}}" wx:key="id" data-id="{{item.id}}" bindtap="toLty" hover-class="row-pressed">
+        <image class="prize-image" src="{{item.goods_pic}}" mode="aspectFill"></image>
+        <view class="prize-info"><text class="prize-name">{{item.address || '抽奖奖品'}}</text><text class="row-secondary">{{item.goods_num ? '共 ' + item.goods_num + ' 份 · ' : ''}}查看抽奖详情</text></view>
+        <image class="row-chevron" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+      </view>
     </view>
   </block>
 </view>
 <view class="detail-action" wx:if="{{!loading && !loadError && state != '已结束'}}">
-  <button wx:if="{{signTrue}}" bindtap="signIn">{{userId > 0 ? '报名团跑' : '登录后报名'}}<text> →</text></button>
-  <button class="detail-action-done" disabled="true" wx:else>已报名</button>
+  <view class="action-copy"><text>{{signTrue ? '一起跑，跑更远。' : '报名成功，一起出发。'}}</text><text class="action-copy-sub">{{distance}} 公里 · 本次目标</text></view>
+  <button wx:if="{{signTrue}}" bindtap="signIn">{{userId > 0 ? '报名团跑' : '登录后报名'}}<image class="action-chevron" src="/images/redesign/chevron.svg" mode="aspectFit"></image></button>
+  <button class="detail-action-done" wx:else bindtap="cancelSign" hover-class="detail-action-done-hover">已报名 · 点击取消</button>
 </view>
+<image-viewer id="imageViewer" />

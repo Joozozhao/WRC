@@ -90,6 +90,8 @@ page {
 .name-row {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  row-gap: 6rpx;
   gap: 8rpx;
 }
 
@@ -103,17 +105,16 @@ page {
   max-width: 260rpx;
 }
 
-.vip-icon {
-  width: 28rpx;
-  height: 28rpx;
+.level-label {
   flex: none;
+  padding: 2rpx 10rpx;
+  border-radius: 999rpx;
+  background: #edf6ed;
+  color: #0c6246;
+  font-size: 18rpx;
+  font-weight: 750;
 }
 
-.sex-icon {
-  width: 24rpx;
-  height: 24rpx;
-  flex: none;
-}
 
 .meta-row {
   display: flex;

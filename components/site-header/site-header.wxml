@@ -1,4 +1,4 @@
-<view class="site-header {{backMode ? 'site-header-fixed' : ''}}" style="padding-top: {{menuTop}}px;">
+<view class="site-header {{backMode ? 'site-header-fixed' : ''}} {{dark ? 'site-header-dark' : ''}}" style="padding-top: {{menuTop}}px;">
   <view class="site-header-row" style="height: {{barHeight}}px;">
     <view class="site-header-leading">
       <view class="site-header-back" wx:if="{{backMode}}" bindtap="handleBack" hover-class="site-header-back-pressed" aria-label="返回">

@@ -47,8 +47,8 @@
         <view class="runner-name-line">
           <text class="runner-name">{{item.displayName}}</text>
           <text wx:if="{{item.isMe}}" class="me-badge">我</text>
-          <image wx:if="{{item.sex == 1}}" class="sex-icon" src="../../images/man.svg" />
-          <image wx:if="{{item.sex == 2}}" class="sex-icon" src="../../images/woman.svg" />
+          <text wx:if="{{item.genderLabel}}" class="profile-badge profile-gender-badge">{{item.genderLabel}}</text>
+          <view wx:if="{{item.regionLabel}}" class="profile-badge profile-region-badge"><image class="profile-region-icon" src="/images/place.png" mode="aspectFit"></image><text>{{item.regionLabel}}</text></view>
         </view>
         <text class="runner-meta">ID {{item.id}} · 跑步 {{item.displayCount}} 次</text>
       </view>

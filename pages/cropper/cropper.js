@@ -1,22 +1,12 @@
-// components/cropper/cropper.js
+// pages/cropper/cropper.js
 import WeCropper from './we-cropper.js'
 const app = getApp()
 const util = require('../../utils/util.js')
 const device = wx.getSystemInfoSync()
-console.log(device);
 const width = device.windowWidth
-const height = device.windowHeight+50
-Component({
-  /**
-   * 组件的属性列表
-   */
-  properties: {
+const height = device.windowHeight + 50
 
-  },
-
-  /**
-   * 组件的初始数据
-   */
+Page({
   data: {
     cropperOpt: {
       id: 'cropper',
@@ -33,158 +23,202 @@ Component({
         height: 200
       },
       boundStyle: {
-        color: "#04b00f",
+        color: "#d9ff3f",
         mask: 'rgba(0,0,0,0.8)',
         lineWidth: 1
       }
     },
-    /**是否还原 */
     isReduction: false,
-    click: true
+    click: true,
+    src: ''
   },
-  /**
-   * 组件的方法列表
-   */
-  methods: {
-    onLoad(options) {
-      if (options.src) {
-        this.data.src = options.src;
-      }
 
-      this.init();
-    },
-    touchStart(e) {
-      // this.cropper.touchStart(e)
-      const isReduction = this.data.isReduction;
+  onLoad(options) {
+    if (options && options.src) {
+      let src = options.src
+      try {
+        src = decodeURIComponent(src)
+      } catch (e) {
+        // ignore decode error
+      }
+      this.setData({ src: src })
+      this.data.src = src
+    }
+    this.init()
+  },
+
+  touchStart(e) {
+    const isReduction = this.data.isReduction
+    if (this.cropper && e.touches) {
       this.cropper.touchStart({
         touches: e.touches.filter(i => i.x !== undefined)
-      });
-      if (!isReduction) {
-        this.setData({
-          isReduction: true
-        })
-      }
-    },
-    touchMove(e) {
-      // this.cropper.touchMove(e)
+      })
+    }
+    if (!isReduction) {
+      this.setData({ isReduction: true })
+    }
+  },
+
+  touchMove(e) {
+    if (this.cropper && e.touches) {
       this.cropper.touchMove({
         touches: e.touches.filter(i => i.x !== undefined)
       })
-    },
-    touchEnd(e) {
+    }
+  },
+
+  touchEnd(e) {
+    if (this.cropper) {
       this.cropper.touchEnd(e)
-    },
-    upload:function(){
-      this.getCropperImage()
-      this.setData({
-        click:false
-      })
-    },
-    getCropperImage(){
-      if(this.data.click){
-        var userId = app.globalData.userId
-        wx.showLoading({
-          title: '上传中',
-          icon: 'loading',
-          mask: true
-        })
-        this.cropper.getCropperImage()
-          .then((src) => {
-            wx.uploadFile({
-              url: 'https://applet.51welink.com/sport/acty/uploadimg', //这里是上传的服务器地址
-              filePath: src,
-              name: "file",
-              formData: {userId: userId,fileId:'file'},
-              success: function (res) {
-                console.log(res);
-                console.log("uploadOK");
-                var obj = JSON.parse(res.data)
-                var filePath = obj.data.img
-                console.log(obj)
-                let pages = getCurrentPages();  // 当前页的数据，可以输出来看看有什么东西
-                let prevPage = pages[pages.length - 2];  // 上一页的数据，也可以输出来看看有什么东西
-                console.log(prevPage)
-                /** 设置数据 这里面的 value 是上一页你想被携带过去的数据， */
+    }
+  },
+
+  upload: function () {
+    if (!this.data.click) return
+    this.setData({ click: false })
+    this.getCropperImage()
+  },
+
+  getCropperImage() {
+    const that = this
+    const userId = app.globalData.userId || wx.getStorageSync('userId') || 0
+    wx.showLoading({
+      title: '上传中',
+      mask: true
+    })
+
+    const doUploadFile = function (targetFilePath) {
+      wx.uploadFile({
+        url: 'https://applet.51welink.com/sport/acty/uploadimg',
+        filePath: targetFilePath,
+        name: "file",
+        formData: { userId: userId, fileId: 'file' },
+        success: function (res) {
+          wx.hideLoading()
+          try {
+            const obj = typeof res.data === 'string' ? JSON.parse(res.data) : res.data
+            if (obj && obj.success && obj.data && obj.data.img) {
+              const filePath = obj.data.img
+              const pages = getCurrentPages()
+              if (pages.length >= 2) {
+                const prevPage = pages[pages.length - 2]
                 prevPage.setData({
                   tempFilePaths: filePath,
                   addView: false,
                   showView: true
                 })
-                wx.hideLoading({})
-                wx.showToast({
-                  title: '上传成功',
-                  icon: 'success',
-                  mask: true,
-                  duration: 1000
-                })
-                setTimeout(function(){
-                  /** 返回上一页 这个时候数据就传回去了 可以在上一页的onShow方法里把 value 输出来查看是否已经携带完成 */
-                  wx.navigateBack({
-                    delta: 1
-                  })
-                }, 1000)
-              },
-              fail(){
-                console.log('ss')
               }
-            })
-          }).catch(() => {
-            console.log('获取图片地址失败，请稍后重试')
+              wx.showToast({
+                title: '上传成功',
+                icon: 'success',
+                mask: true,
+                duration: 1000
+              })
+              setTimeout(function () {
+                wx.navigateBack({ delta: 1 })
+              }, 900)
+              return
+            }
+          } catch (e) {
+            console.error('Parse upload result error', e)
+          }
+          that.setData({ click: true })
+          wx.showToast({
+            title: '上传失败，请重试',
+            icon: 'none',
+            duration: 1500
+          })
+        },
+        fail: function (err) {
+          console.error('Upload failed', err)
+          wx.hideLoading()
+          that.setData({ click: true })
+          wx.showToast({
+            title: '网络错误，请重试',
+            icon: 'none',
+            duration: 1500
           })
         }
-    },
-    /**初始化画布 */
-    init() {
-      const {
-        cropperOpt
-      } = this.data,
-        self = this,
-        src = this.data.src;
-
-      cropperOpt.boundStyle.color = "#04b00f";
-
-      this.setData({
-        cropperOpt
       })
-
-      this.cropper = new WeCropper(cropperOpt)
-        .on('ready', (ctx) => {
-          if (src) {
-            ctx.pushOrign(src);
-          }
-          console.log(`wecropper is ready for work!`)
-        })
-        .on('beforeImageLoad', (ctx) => {
-          wx.showToast({
-            title: '上传中',
-            icon: 'loading',
-            mask: true,
-            duration: 20000
-          })
-        })
-        .on('imageLoad', (ctx) => {
-          wx.hideToast()
-        })
-    },
-    /**还原画布 */
-    reduction() {
-      const isReduction = this.data.isReduction,
-        self = this;
-      if (!isReduction) return;
-      this.cropper.reduction().then(() => {
-        self.setData({
-          isReduction: !isReduction
-        })
-      });
-    },
-    /**旋转画布 */
-    rotate() {
-      this.cropper.rotateAngle = this.cropper.rotateAngle + 1;
-      this.cropper.rotate();
-    },
-    /**取消编辑 */
-    cancel() {
-      wx.navigateBack();
     }
+
+    if (this.cropper && typeof this.cropper.getCropperImage === 'function') {
+      this.cropper.getCropperImage()
+        .then((src) => {
+          if (src) {
+            doUploadFile(src)
+          } else {
+            // 降级使用原图上传
+            doUploadFile(that.data.src)
+          }
+        })
+        .catch((err) => {
+          console.warn('获取裁剪图片失败，降级使用原图上传', err)
+          if (that.data.src) {
+            doUploadFile(that.data.src)
+          } else {
+            wx.hideLoading()
+            that.setData({ click: true })
+            wx.showToast({
+              title: '图片处理失败，请重试',
+              icon: 'none'
+            })
+          }
+        })
+    } else if (this.data.src) {
+      doUploadFile(this.data.src)
+    } else {
+      wx.hideLoading()
+      this.setData({ click: true })
+    }
+  },
+
+  /** 初始化画布 */
+  init() {
+    const { cropperOpt } = this.data
+    const src = this.data.src
+
+    cropperOpt.boundStyle.color = "#d9ff3f"
+    this.setData({ cropperOpt })
+
+    this.cropper = new WeCropper(cropperOpt)
+      .on('ready', (ctx) => {
+        if (src) {
+          ctx.pushOrign(src)
+        }
+      })
+      .on('beforeImageLoad', () => {
+        wx.showToast({
+          title: '加载中...',
+          icon: 'loading',
+          mask: true,
+          duration: 3000
+        })
+      })
+      .on('imageLoad', () => {
+        wx.hideToast()
+      })
+  },
+
+  /** 还原画布 */
+  reduction() {
+    const isReduction = this.data.isReduction
+    if (!isReduction || !this.cropper) return
+    this.cropper.reduction().then(() => {
+      this.setData({ isReduction: false })
+    })
+  },
+
+  /** 旋转画布 */
+  rotate() {
+    if (!this.cropper) return
+    this.cropper.rotateAngle = this.cropper.rotateAngle + 1
+    this.cropper.rotate()
+  },
+
+  /** 取消编辑 */
+  cancel() {
+    wx.navigateBack({ delta: 1 })
   }
 })
+

@@ -1,152 +1,165 @@
-<!-- WRC Runner Profile: TA的主页 -->
+<!-- pages/othersdata/othersdata.wxml -->
 <site-header show-back="{{true}}" back-url="/pages/index/index"></site-header>
-<view class="others-page">
-  <!-- 头部英雄区 -->
-  <view class="hero-card">
-    <view class="eyebrow">WRC · RUNNER PROFILE</view>
-    <view class="person-row">
-      <view class="avatar-wrap">
-        <image class="avatar-img" src="{{headerImg}}" mode="aspectFill"></image>
-        <image wx:if="{{level === 'VIP'}}" class="vip-badge" src="/images/vip_1.svg" mode="aspectFit"></image>
+<view class="others-page {{pageMotion ? 'page-enter-motion' : ''}}">
+  <!-- 头部大字英雄区（对齐“我的”页面 profile-hero 样式） -->
+  <view class="profile-hero">
+    <text class="profile-eyebrow">WRC · RUNNER PROFILE</text>
+    <text class="profile-title">{{sex == 2 ? '看她，' : '看他，'}}<text class="profile-title-break">如何多娇！</text></text>
+    <view class="profile-title-line"></view>
+    <text class="profile-intro">每一步都算数。把每一次坚持，跑成自己的故事。</text>
+  </view>
+
+  <!-- 跑者身份信息条（对齐“我的”页面 profile-person 样式） -->
+  <view class="profile-person">
+    <view class="profile-avatar-wrap">
+      <image class="profile-avatar" src="{{headerImg || '/images/default.png'}}" mode="aspectFill"></image>
+    </view>
+    <view class="profile-person-main">
+      <view class="profile-name-row">
+        <text class="profile-name">{{userName || nickName || '跑者'}}</text>
       </view>
-      <view class="person-info">
-        <view class="name-line">
-          <text class="runner-name">{{userName || nickName || "跑者"}}</text>
-          <image wx:if="{{sex == 1}}" class="sex-icon" src="/images/me-n.svg" mode="aspectFit"></image>
-          <image wx:elif="{{sex == 2}}" class="sex-icon" src="/images/me-v.svg" mode="aspectFit"></image>
-          <text class="duty-tag" wx:if="{{duty}}">{{duty}}</text>
-        </view>
-        <view class="id-line">
-          <text class="id-tag">跑者 ID · {{targetUserId}}</text>
-        </view>
+      <view class="profile-badge-row">
+        <text class="profile-badge" wx:if="{{levelLabel}}">{{levelLabel}}</text>
+        <text class="profile-badge profile-gender-badge" wx:if="{{sex == 1 || sex == 2}}">{{sex == 1 ? '男' : '女'}}</text>
+        <view class="profile-badge profile-region-badge" wx:if="{{regionLabel}}"><image class="profile-region-icon" src="/images/place.png" mode="aspectFit"></image><text>{{regionLabel}}</text></view>
+        <text class="profile-badge profile-id-badge">id {{targetUserId}}</text>
+      </view>
+    </view>
+    <view class="profile-asset-buttons" wx:if="{{statsLoaded}}">
+      <view class="profile-asset-btn">
+        <image class="profile-asset-btn-icon" src="/images/score.svg" mode="aspectFit"></image>
+        <text class="profile-asset-btn-num">{{score}}</text>
+        <text class="profile-asset-btn-label">积分</text>
+      </view>
+      <view class="profile-asset-btn">
+        <image class="profile-asset-btn-icon" src="/images/flower.svg" mode="aspectFit"></image>
+        <text class="profile-asset-btn-num">{{energy}}</text>
+        <text class="profile-asset-btn-label">小花</text>
       </view>
     </view>
   </view>
 
-  <!-- 数据概览四宫格卡片 -->
-  <view class="stats-card">
-    <view class="stat-item">
-      <text class="stat-number highlight">{{statsLoaded ? monthDistance : "—"}}</text>
-      <text class="stat-label">本月跑量 (公里)</text>
+  <!-- 跑量数据概览卡片（对齐“我的”页面 profile-summary 规范） -->
+  <view class="profile-summary-card">
+    <view class="summary-head">
+      <text class="summary-title">跑量好猛</text>
+      <text class="summary-subtitle">AWESOME</text>
     </view>
-    <view class="stat-divider"></view>
-    <view class="stat-item">
-      <text class="stat-number">{{statsLoaded ? totalDistance : "—"}}</text>
-      <text class="stat-label">累计跑量 (公里)</text>
-    </view>
-    <view class="stat-divider"></view>
-    <view class="stat-item">
-      <text class="stat-number">{{statsLoaded ? score : "—"}}</text>
-      <text class="stat-label">积分资产</text>
-    </view>
-    <view class="stat-divider"></view>
-    <view class="stat-item">
-      <text class="stat-number">{{statsLoaded ? energy : "—"}}</text>
-      <text class="stat-label">小花儿</text>
+    <view class="summary-accent-line"></view>
+    <view class="summary-stats-grid">
+      <view class="summary-stat-col is-left">
+        <text class="stat-col-val">{{weekLoaded ? weekDistance : '—'}}</text>
+        <text class="stat-col-label">本周跑量 / 公里</text>
+      </view>
+      <view class="summary-stat-col is-center">
+        <text class="stat-col-val">{{yearLoaded ? yearDistance : '—'}}</text>
+        <text class="stat-col-label">本年跑量 / 公里</text>
+      </view>
+      <view class="summary-stat-col is-right">
+        <text class="stat-col-val stat-col-total">{{statsLoaded ? totalDistance : '—'}}</text>
+        <text class="stat-col-label">累计跑量 / 公里</text>
+      </view>
     </view>
   </view>
 
-  <!-- 跑步日历热力图 -->
-  <view class="section-card">
+  <!-- 跑步日历模块：以月为单位，支持左右划动查看每天打卡情况 -->
+  <view class="section-card calendar-section">
     <view class="section-head">
-      <view class="section-title-wrap">
+      <view class="section-heading-wrap">
         <text class="section-title">跑步日历</text>
-        <text class="section-sub">打卡足迹与跑量分布</text>
       </view>
-      <view class="heatmap-nav" wx:if="{{heatmapStatus === 'ready'}}">
+      <!-- 月份前后切换 -->
+      <view class="calendar-nav" wx:if="{{heatmapStatus === 'ready'}}">
         <view class="nav-arrow {{canPrevMonth ? '' : 'disabled'}}" bindtap="onPrevMonth">‹</view>
-        <text class="nav-label">{{myHeatmap.monthLabel}}</text>
+        <text class="nav-month-label">{{monthPages[currentMonthIndex].monthLabel}}</text>
         <view class="nav-arrow {{canNextMonth ? '' : 'disabled'}}" bindtap="onNextMonth">›</view>
       </view>
     </view>
 
-    <view class="calendar-grid" wx:if="{{heatmapStatus === 'ready'}}">
-      <view class="weekdays-row">
+    <!-- 支持左右划动的月历 Swiper -->
+    <block wx:if="{{heatmapStatus === 'ready'}}">
+      <view class="month-stats-banner" wx:if="{{monthPages[currentMonthIndex]}}">
+        <text>当月跑步打卡 <text class="highlight-days">{{monthPages[currentMonthIndex].runDaysCount}}</text> 天</text>
+        <text class="dot">·</text>
+        <text>月累计跑量 <text class="highlight-km">{{monthPages[currentMonthIndex].totalDistance}}</text> 公里</text>
+      </view>
+
+      <view class="weekdays-bar">
         <text wx:for="{{['一', '二', '三', '四', '五', '六', '日']}}" wx:key="*this">{{item}}</text>
       </view>
-      <view class="days-grid">
-        <block wx:for="{{myHeatmap.days}}" wx:key="index">
-          <view wx:if="{{item.isEmpty}}" class="day-cell is-empty"></view>
-          <view
-            wx:else
-            class="day-cell level-{{item.level}} {{item.isOtherMonth ? 'is-other-month' : ''}} {{item.isFuture ? 'is-future' : ''}} {{item.isToday ? 'is-today' : ''}}">
-            <text class="cell-day-text" wx:if="{{item.distance <= 0}}">{{item.day}}</text>
-            <view class="cell-run-wrap" wx:if="{{item.distance > 0}}">
-              <text class="cell-run-km">{{item.displayKm}}</text>
-              <text class="cell-run-unit">km</text>
+
+      <swiper
+        class="calendar-swiper"
+        style="height: {{monthPages[currentMonthIndex].gridHeight}}rpx;"
+        current="{{currentMonthIndex}}"
+        bindchange="onMonthSwiperChange"
+        duration="250">
+        <swiper-item wx:for="{{monthPages}}" wx:key="monthKey" wx:for-item="monthItem">
+          <view class="days-grid">
+            <view
+              wx:for="{{monthItem.days}}"
+              wx:key="dateKey"
+              class="day-cell level-{{item.level}} {{item.isOtherMonth ? 'is-other-month' : ''}} {{item.isFuture ? 'is-future' : ''}} {{item.isToday ? 'is-today' : ''}}">
+              <!-- 无打卡：展示日历日期 -->
+              <text class="cell-day-num" wx:if="{{item.distance <= 0}}">{{item.day}}</text>
+              <!-- 有打卡：突出展示打卡公里数（与首页日历完全一致） -->
+              <view class="cell-run {{item.displayKm >= 100 ? 'is-condensed' : ''}}" wx:if="{{item.distance > 0}}">
+                <text class="cell-run-value">{{item.displayKm}}</text><text class="cell-run-unit">km</text>
+              </view>
             </view>
           </view>
-        </block>
+        </swiper-item>
+      </swiper>
+
+      <!-- 底部跑量等级图例 -->
+      <view class="calendar-legend-bar">
+        <text class="legend-hint">颜色越深，当天跑量越多</text>
+        <view class="legend-swatches">
+          <text>少</text>
+          <view class="legend-swatch level-0"></view>
+          <view class="legend-swatch level-1"></view>
+          <view class="legend-swatch level-2"></view>
+          <view class="legend-swatch level-3"></view>
+          <view class="legend-swatch level-4"></view>
+          <text>多</text>
+        </view>
       </view>
+    </block>
+
+    <view class="calendar-loading-box" wx:elif="{{heatmapStatus === 'loading'}}">
+      <text class="calendar-loading-text">正在读取跑步日历…</text>
     </view>
-    <view class="calendar-loading" wx:elif="{{heatmapStatus === 'loading'}}">
-      <text>正在读取跑步日历…</text>
+    <view class="calendar-loading-box" wx:elif="{{heatmapStatus === 'error'}}">
+      <text class="calendar-error-text">跑步日历暂时无法加载</text>
     </view>
   </view>
 
-  <!-- 马拉松成绩 -->
+  <!-- 马拉松成绩（对齐“我的”页面 profile-races 卡片） -->
   <view class="section-card" wx:if="{{marathons.length > 0}}">
     <view class="section-head" bindtap="toMarathonAll">
-      <view class="section-title-wrap">
+      <view class="section-heading-wrap">
         <text class="section-title">马拉松成绩</text>
-        <text class="section-sub">共完赛 {{totalMarathons}} 场认证赛事</text>
+        <text class="section-desc">共完赛 {{totalMarathons}} 场认证赛事</text>
       </view>
-      <text class="section-link">全部成绩 →</text>
+      <text class="section-link-action">全部成绩 →</text>
     </view>
 
-    <view class="marathon-list">
-      <block wx:for="{{marathons}}" wx:key="index">
-        <view class="marathon-card" bindtap="toMarathonAll">
-          <view class="marathon-head">
-            <text class="marathon-title">{{item.marathon_name}}</text>
-            <text class="pb-tag" wx:if="{{item.is_pb == 1}}">★ PB</text>
+    <view class="marathon-card-list">
+      <view class="marathon-card-item" wx:for="{{marathons}}" wx:key="index" bindtap="toMarathonAll">
+        <view class="marathon-card-info">
+          <view class="marathon-meta-line">
+            <text class="marathon-date">{{item.playing_time}}</text>
+            <text class="marathon-pb-tag" wx:if="{{item.is_pb == 1}}">★ PB</text>
           </view>
-          <view class="marathon-body">
-            <text class="marathon-type">{{item.events_type || "认证赛事"}} · {{item.playing_time}}</text>
-            <text class="marathon-score">{{item.accurate_score || "—"}}</text>
-          </view>
+          <text class="marathon-name-line">{{item.marathon_name}}</text>
         </view>
-      </block>
+        <view class="marathon-score-wrap">
+          <text class="marathon-score-num">{{item.accurate_score || '—'}}</text>
+          <text class="marathon-score-unit">净成绩</text>
+        </view>
+      </view>
     </view>
   </view>
 
-  <!-- 参与活动与挑战 -->
-  <view class="section-card">
-    <view class="section-tabs">
-      <view
-        class="tab-item {{activeTab === 'challenge' ? 'active' : ''}}"
-        data-tab="challenge"
-        bindtap="switchTab">
-        参与的挑战 ({{totalChallenge}})
-      </view>
-      <view
-        class="tab-item {{activeTab === 'activity' ? 'active' : ''}}"
-        data-tab="activity"
-        bindtap="switchTab">
-        参与的团跑 ({{totalActy}})
-      </view>
-    </view>
-
-    <!-- 挑战列表 -->
-    <view class="acty-grid" wx:if="{{activeTab === 'challenge'}}">
-      <block wx:for="{{activityList}}" wx:key="id">
-        <view class="acty-card" data-id="{{item.id || item.acty_id}}" bindtap="toChallengeDetail">
-          <image class="acty-img" src="{{item.acty_img || '/images/default.png'}}" mode="aspectFill"></image>
-          <text class="acty-name">{{item.acty_name}}</text>
-        </view>
-      </block>
-      <view class="empty-tip" wx:if="{{activityList.length === 0}}">TA 暂未参加挑战</view>
-    </view>
-
-    <!-- 团跑列表 -->
-    <view class="acty-grid" wx:if="{{activeTab === 'activity'}}">
-      <block wx:for="{{activityList2}}" wx:key="id">
-        <view class="acty-card" data-id="{{item.id || item.acty_id}}" bindtap="toActivityDetail">
-          <image class="acty-img" src="{{item.acty_img || '/images/default.png'}}" mode="aspectFill"></image>
-          <text class="acty-name">{{item.acty_name}}</text>
-        </view>
-      </block>
-      <view class="empty-tip" wx:if="{{activityList2.length === 0}}">TA 暂未参加团跑活动</view>
-    </view>
-  </view>
+  <view class="page-bottom-padding"></view>
 </view>

@@ -1,12 +1,23 @@
 // pages/activitydetail/activitydetail.js
 const util = require('../../utils/util.js')
+const { toDisplayMemberLevel } = require('../../utils/member-level.js')
+const { addProfileBadges } = require('../../utils/profile-badges.js')
 // 获取应用实例
 const app = getApp()
+const DEFAULT_GROUP_COVER = '/images/redesign/group-run-default-cover.jpg'
+
+function toFixed2(num) {
+  const n = Number(num)
+  if (!Number.isFinite(n)) return '0.00'
+  return (Math.round(n * 100) / 100).toFixed(2)
+}
+
 Page({
   /**
    * 页面的初始数据
    */
   data: {
+    contentTop: 96,
     activityList: [],
     avastars: [],
     memberList: [],
@@ -30,29 +41,40 @@ Page({
     nickName: '',
     page: 1,
     actyImg: [],
-    indicatorDots: true,
-    vertical: false,
-    autoplay: true,
-    interval: 2000,
-    duration: 500,
     showBtn: false,
     myAddress: '',
     showSign: false,
     signTrue: true,
     loading: true,
     loadError: false,
+    dataPanel: 'results',
+    statsLoading: false,
+    statsError: false,
     statsLoaded: false,
+    memberLoading: false,
+    memberError: false,
     memberLoaded: false,
     dataList: [],
-    actyMember: []
+    actyMember: [],
+    actyMemberLoading: false,
+    actyMemberLoaded: false,
+    actyMemberError: false,
+    logList: [],
+    myRecord: null,
+    myId: 0,
+    logPage: 1,
+    logHasMore: true,
+    logLoading: false,
+    logLoaded: false,
+    logError: false
+  },
+  switchDataPanel: function (event) {
+    var panel = event && event.currentTarget && event.currentTarget.dataset && event.currentTarget.dataset.panel
+    if (panel !== 'results' && panel !== 'members') return
+    if (panel !== this.data.dataPanel) this.setData({ dataPanel: panel })
   },
   openMyPage: function () {
     wx.switchTab({ url: '../mydata/mydata' })
-  },
-  toactyData: function(){
-    wx.navigateTo({
-      url: '../activitydata/activitydata?id=' + this.data.actyId
-    })
   },
   initLimit: function(){
     var userId = app.globalData.userId
@@ -77,8 +99,8 @@ Page({
       return
     }
     var adrr = this.data.region || ''
-    var myadrr = this.data.myAddress || ''
-    if (myadrr && adrr.indexOf(myadrr) > -1) {
+    var myadrr = (this.data.myAddress || '').trim()
+    if (!adrr || !myadrr || adrr.indexOf(myadrr) > -1) {
       wx.navigateTo({
         url: '../signin/signin?id=' + this.data.actyId + '&has_name=' + this.data.has_name + '&has_mobile=' + this.data.has_mobile + '&target=0&acty_type=' + encodeURIComponent(this.data.acty_type || '团跑')
       })
@@ -88,6 +110,38 @@ Page({
         icon: 'none'
       })
     }
+  },
+  //取消报名
+  cancelSign: function(){
+    var that = this
+    if (this.data.loading || this.data.loadError || this.data.state === '已结束' || this.data.signTrue) return
+    var userId = app.globalData.userId
+    if (!userId || userId <= 0) {
+      this.openLogin()
+      return
+    }
+    wx.showModal({
+      title: '是否确定取消报名？',
+      success: function (res) {
+        if (!res.confirm) return
+        util.request('acty/cancelacty', 'POST', {
+          actyId: that.data.actyId,
+          userId: userId
+        }, '数据加载中 ...', (resp) => {
+          if (resp && resp.data && resp.data.success) {
+            wx.showToast({ title: '已取消报名', icon: 'none', duration: 1500 })
+            that.setData({ signTrue: true, has_clickon: 0 })
+            that.initActyDetail(that.data.actyId)
+          } else {
+            wx.showToast({
+              title: (resp && resp.data && resp.data.error) || '取消失败，请稍后再试',
+              icon: 'none',
+              duration: 1500
+            })
+          }
+        })
+      }
+    })
   },
   openLogin: function () {
     util.showLogin((profile) => {
@@ -133,13 +187,36 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    var contentTop = this.data.contentTop
+    try {
+      if (typeof wx.getSystemInfoSync === 'function') {
+        var systemInfo = wx.getSystemInfoSync()
+        var statusBarHeight = systemInfo && systemInfo.statusBarHeight
+        if (Number.isFinite(statusBarHeight) && statusBarHeight >= 0) {
+          contentTop = statusBarHeight + 6 + 32 + 20
+        }
+      }
+    } catch (error) { /* 保留默认安全间距，避免设备 API 异常阻断数据加载。 */ }
+    try {
+      if (typeof wx.getMenuButtonBoundingClientRect === 'function') {
+        var menu = wx.getMenuButtonBoundingClientRect()
+        var menuBottom = menu && menu.bottom
+        if ((!Number.isFinite(menuBottom) || menuBottom <= 0) && menu &&
+            Number.isFinite(menu.top) && menu.top >= 0 && Number.isFinite(menu.height) && menu.height > 0) {
+          menuBottom = menu.top + menu.height
+        }
+        if (Number.isFinite(menuBottom) && menuBottom > 0) contentTop = menuBottom + 20
+      }
+    } catch (error) { /* 胶囊位置不可用时采用状态栏回退值。 */ }
     var id = options.id
     var userid = options.userid
     var userId = app.globalData.userId
     this.setData({
+      contentTop: Number.isFinite(contentTop) ? contentTop : 96,
       actyId: id,
       userId: userId,
-      userid: userid
+      userid: userid,
+      myId: userId || 0
     })
     if (userId && userId > 0) {
       util.request('user/get', 'POST', { id: userId }, '数据加载中 ...', (res)=>{
@@ -151,6 +228,97 @@ Page({
     this.initActyIn()
     this.getactyimgs()
     this.initLimit()
+    this.initActyDetail(id)
+    this.fetchSportLog(true)
+  },
+  // 活动成绩榜：分页拉取实跑打卡记录
+  fetchSportLog: function (reset, cb) {
+    if (this.data.logLoading && !reset) return
+    if (!reset && !this.data.logHasMore) return
+    var page = reset ? 1 : this.data.logPage
+    var requestId = (this._logRequestId || 0) + 1
+    this._logRequestId = requestId
+    this.setData({ logLoading: true, logError: false })
+    if (reset) this.setData({ myRecord: null })
+    var fail = () => {
+      if (requestId !== this._logRequestId) return
+      // 保留已加载的成绩及失败页码，重试继续请求同一页。
+      this._logRetryReset = reset
+      this.setData({ logLoading: false, logLoaded: true, logError: true })
+      if (typeof cb === 'function') cb()
+    }
+    util.request('acty/getsportlog', 'POST', { actyId: this.data.actyId, page: page }, '', (res) => {
+      if (requestId !== this._logRequestId) return
+      if (res && res.data && res.data.success && Array.isArray(res.data.data)) {
+        var raw = res.data.data
+        var myId = this.data.myId
+        var processed = raw.map(function (item, idx) {
+          return Object.assign(addProfileBadges(item), {
+            rankNum: (page - 1) * 15 + idx + 1,
+            levelLabel: toDisplayMemberLevel(item.level),
+            displayDistance: toFixed2(item.distance),
+            isMe: myId > 0 && String(item.user_id) === String(myId)
+          })
+        })
+        var combined = reset ? processed : this.data.logList.concat(processed)
+        var myRecord = null
+        for (var i = 0; i < combined.length; i++) {
+          if (combined[i].isMe) { myRecord = combined[i]; break }
+        }
+        this._logRetryReset = false
+        this.setData({
+          logList: combined,
+          myRecord: myRecord,
+          logPage: page + 1,
+          logHasMore: raw.length >= 15,
+          logLoading: false,
+          logLoaded: true,
+          logError: false
+        })
+      } else {
+        const responseData = res && res.data
+        const responseText = responseData
+          ? [responseData.error, responseData.msg, responseData.message].filter(Boolean).join(' ')
+          : ''
+        const hasExplicitEmptyText = /暂无.*(?:打卡|成绩|记录|数据)|(?:没有|无)(?:人)?(?:打卡(?:记录)?|跑步成绩|成绩数据|记录)/.test(responseText)
+        const noRecords = Boolean(responseData && responseData.success && (Array.isArray(responseData.data) && responseData.data.length === 0)) || hasExplicitEmptyText
+        if (noRecords) {
+          // 接口明确返回无记录时按空列表展示，避免误显示为加载失败
+          this._logRetryReset = false
+          this.setData({
+            logList: reset ? [] : this.data.logList,
+            myRecord: null,
+            logHasMore: false,
+            logLoading: false,
+            logLoaded: true,
+            logError: false
+          })
+          if (typeof cb === 'function') cb()
+          return
+        }
+        fail()
+        return
+      }
+      if (typeof cb === 'function') cb()
+    }, fail)
+  },
+  loadMoreLogs: function () {
+    if (this.data.dataPanel === 'results' && this.data.logHasMore && !this.data.logLoading && !this.data.logError) {
+      this.fetchSportLog(false)
+    }
+  },
+  retryLogs: function () {
+    if (this.data.logLoading) return
+    this.fetchSportLog(this._logRetryReset || !this.data.logLoaded || this.data.logPage === 1)
+  },
+  onReachBottom: function () {
+    this.loadMoreLogs()
+  },
+  onPullDownRefresh: function () {
+    this.retryLoad()
+    this.fetchSportLog(true, function () {
+      wx.stopPullDownRefresh()
+    })
   },
   getactyimgs: function(){
     var that = this
@@ -159,9 +327,16 @@ Page({
     }
     util.request('acty/getactyimgs', 'POST', data, '数据加载中 ...', (res)=>{
       if(res.data && res.data.success){
+        const list = Array.isArray(res.data.data) ? res.data.data : []
         that.setData({
-          actyImg: Array.isArray(res.data.data) ? res.data.data : []
+          actyImg: list
         })
+        // 如果活动后上传了合照，则优先调用第一张合照作为封面展示
+        if (list.length > 0 && list[0].img_url) {
+          that.setData({
+            acty_img: list[0].img_url
+          })
+        }
       }
     })
   },
@@ -186,17 +361,25 @@ Page({
       }
     }
     this.setData({ loading: true, loadError: false })
-    this.setData({ statsLoaded: false, memberLoaded: false })
+    this.setData({
+      statsLoaded: false, statsLoading: true, statsError: false,
+      memberLoaded: false, memberLoading: true, memberError: false
+    })
     util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data && res.data.success && res.data.data){
+      if(res && res.data && res.data.success && res.data.data){
         var allData = res.data.data
         var createTime = (allData.start_timestr || '').substring(0, 16)
         var endTime = (allData.end_timestr || '').substring(11, 16)
         var state = allData.acty_state
         var createTime1 = createTime ? util.dislodgeZero(createTime) : ''
         var endTime1 = endTime ? util.dislodgeZero(endTime) : ''
+        // 封面图降级：如果有合照已先载入则优先保留合照封面，否则使用活动封面或默认4:3团跑封面
+        var currentCover = this.data.acty_img
+        if (!currentCover || currentCover === DEFAULT_GROUP_COVER) {
+          currentCover = allData.acty_img || DEFAULT_GROUP_COVER
+        }
         this.setData({
-          acty_img: allData.acty_img || '',
+          acty_img: currentCover,
           state: state == 0 ? '已结束' : state,
           acty_name: allData.acty_name || '',
           region: allData.region || '',
@@ -230,7 +413,7 @@ Page({
       }else{
         this.setData({ loading: false, loadError: true })
         wx.showToast({
-          title: (res.data && res.data.error) || '活动加载失败',
+          title: (res && res.data && res.data.error) || '活动加载失败',
           icon: 'none',
           duration: 1500
         })
@@ -241,16 +424,31 @@ Page({
       id: id
     }
     util.request('acty/getsport', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data && res.data.success && res.data.data){
+      if(res && res.data && res.data.success && res.data.data && res.data.data.total != null && res.data.data.number != null){
         that.setData({
           allDistance: res.data.data.total == null ? 0 : res.data.data.total,
           allNum: res.data.data.number == null ? 0 : res.data.data.number,
           dataList: Array.isArray(res.data.data.user_list) ? res.data.data.user_list : [],
-          statsLoaded: res.data.data.total != null && res.data.data.number != null
+          statsLoaded: true,
+          statsLoading: false,
+          statsError: false
         })
       }else{
+        if(res && res.data && res.data.error && res.data.error.indexOf('无打卡') > -1){
+          // 后端用 success:false 表示暂无打卡数据，按零值展示而不是加载失败
+          that.setData({
+            allDistance: 0,
+            allNum: 0,
+            dataList: [],
+            statsLoaded: true,
+            statsLoading: false,
+            statsError: false
+          })
+        }else{
+          that.setData({ statsLoaded: false, statsLoading: false, statsError: true })
+        }
       }
-    })
+    }, () => that.setData({ statsLoaded: false, statsLoading: false, statsError: true }))
     // 获取报名人数
     if(that.data.userid==undefined){
       var data = {
@@ -272,17 +470,32 @@ Page({
       } 
     }
     util.request('acty/getactyuser', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data && res.data.success){
-        var dataAll = Array.isArray(res.data.data) ? res.data.data : []
+      if(res && res.data && res.data.success && Array.isArray(res.data.data)){
+        var dataAll = res.data.data.map(function (item) {
+          return Object.assign(addProfileBadges(item), { levelLabel: toDisplayMemberLevel(item.level) })
+        })
         this.setData({
           avastars: dataAll, 
           actyIn: dataAll.length,
-          memberLoaded: Array.isArray(res.data.data)
+          memberLoaded: true,
+          memberLoading: false,
+          memberError: false
         })
       }else{
-        
+        if(res && res.data && res.data.error && res.data.error.indexOf('暂无参与者') > -1){
+          // 后端用 success:false 表示暂无报名成员，按空列表展示而不是加载失败
+          this.setData({
+            avastars: [],
+            actyIn: 0,
+            memberLoaded: true,
+            memberLoading: false,
+            memberError: false
+          })
+        }else{
+          this.setData({ memberLoaded: false, memberLoading: false, memberError: true })
+        }
       }
-    })
+    }, () => this.setData({ memberLoaded: false, memberLoading: false, memberError: true }))
     //获取关联抽奖
     var data = {
       actyId : id
@@ -302,20 +515,13 @@ Page({
     var url = e.currentTarget.dataset.url
     var previewImgArr = (this.data.actyImg || []).map(item => item.img_url).filter(Boolean)
     if (!url || !previewImgArr.length) return
-    wx.previewImage({
-    current: url,
-    urls: previewImgArr
-    })
+    const viewer = this.selectComponent('#imageViewer')
+    if (viewer) viewer.open(previewImgArr, url, { mode: 'card', title: '活动相册' })
   },
   toLty: function(e){
     var id = e.currentTarget.dataset.id
     wx.navigateTo({
       url: '../lotterydetail/lotterydetail?id='+id
-    })    
-  },
-  toList: function(){
-    wx.navigateTo({
-      url: '../member/member?id='+this.data.actyId
     })    
   },
   toList2: function(){
@@ -339,11 +545,19 @@ Page({
     var data = {
       actyId: that.data.actyId
     }
+    this.setData({ actyMemberLoading: true, actyMemberLoaded: false, actyMemberError: false })
+    var fail = () => this.setData({
+      actyMemberLoading: false, actyMemberLoaded: false, actyMemberError: true,
+      picShow: '', runCon: false
+    })
     util.request('acty/getclickuser', 'POST', data, '数据加载中 ...', (res)=>{
-      if(res.data && res.data.success){
-        var allDta = Array.isArray(res.data.data) ? res.data.data : []
+      if(res && res.data && res.data.success && Array.isArray(res.data.data)){
+        var allDta = res.data.data
         this.setData({
           actyMember: allDta,
+          actyMemberLoading: false,
+          actyMemberLoaded: true,
+          actyMemberError: false,
           picShow: true,
           runCon: true
         })
@@ -358,12 +572,19 @@ Page({
         }
         
       }else{
-        this.setData({
-          picShow: '',
-          runCon: false
-        })
+        if(res && res.data && res.data.error && res.data.error.indexOf('暂无') > -1){
+          // 后端用 success:false 表示暂无聚跑成员，按空列表展示而不是加载失败
+          this.setData({
+            actyMember: [],
+            actyMemberLoading: false,
+            actyMemberLoaded: true,
+            actyMemberError: false
+          })
+        }else{
+          fail()
+        }
       }
-    })
+    }, fail)
   },
 
   /**

@@ -42,7 +42,7 @@
       <view class="reward-price-panel">
         <view class="reward-price-top">
           <text>兑换所需</text>
-          <text class="reward-vip" wx:if="{{goodsType == 1}}">超级会员专享</text>
+          <text class="reward-vip" wx:if="{{goodsType == 1}}">SVip 专享</text>
         </view>
         <view class="reward-price" wx:if="{{priceKnown}}">
           <text class="reward-price-number">{{priceValue}}</text>

@@ -6,12 +6,15 @@ page { background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMac
 .challenge-title-break { display: block; }
 .challenge-title-line { width: 200rpx; height: 7rpx; margin-top: 3rpx; border-radius: 10rpx; background: #d9ff3f; transform: rotate(-2deg); }
 .challenge-intro { display: block; margin-top: 24rpx; color: #7a8980; font-size: 26rpx; line-height: 1.6; }
-.challenge-heading { display: flex; justify-content: space-between; align-items: baseline; padding: 39rpx 4rpx 23rpx; font-size: 36rpx; font-weight: 800; }
-.challenge-heading-count { color: #819087; font-size: 22rpx; font-weight: 500; }
+.challenge-heading { display: flex; justify-content: space-between; align-items: flex-end; padding: 39rpx 4rpx 23rpx; }
+.challenge-heading-copy { display: flex; flex-direction: column; min-width: 0; }
+.challenge-heading-title { color: #072f27; font-size: 36rpx; font-weight: 800; }
+.challenge-heading-count { margin-top: 7rpx; color: #819087; font-size: 22rpx; font-weight: 500; }
+.challenge-create { padding: 12rpx 17rpx; border-radius: 25rpx; background: #d9ff3f; color: #062b23; font-size: 22rpx; font-weight: 750; white-space: nowrap; box-shadow: 0 4rpx 16rpx rgba(217, 255, 63, 0.25); }
 .challenge-list { display: flex; flex-direction: column; gap: 25rpx; }
 .challenge-card { position: relative; overflow: hidden; border: 1rpx solid #e3ebe4; border-radius: 24rpx; background: #fff; }
 .challenge-card-main { position: relative; }
-.challenge-poster { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: #e5ede6; }
+.challenge-poster { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: #e5ede6; transform: translateY(-5%); }
 .challenge-state { position: absolute; top: 20rpx; left: 22rpx; z-index: 2; padding: 9rpx 18rpx; border-radius: 24rpx; background: #d9ff3f; color: #082d23; font-size: 21rpx; font-weight: 750; }
 .challenge-state.is-ended { background: #eef2ed; color: #65746a; }
 .challenge-card-content {

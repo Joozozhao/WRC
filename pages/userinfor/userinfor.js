@@ -1,5 +1,6 @@
 // pages/userinfor/userinfor.js
 var util = require('../../utils/util.js');
+const { toDisplayMemberLevel } = require('../../utils/member-level.js')
 var now_date = util.formatDate(new Date());
 // 获取应用实例
 const app = getApp()
@@ -232,6 +233,7 @@ Page({
             score: res.data.data.score,
             duty: res.data.data.duty,
             level: res.data.data.level,
+            levelLabel: toDisplayMemberLevel(res.data.data.level),
             userId: res.data.data.id
           })
         }

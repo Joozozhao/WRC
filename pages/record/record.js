@@ -210,10 +210,8 @@ Page({
   preview: function (e) {
     const url = e.currentTarget.dataset.url
     if (!url) return
-    wx.previewImage({
-      current: url,
-      urls: [url]
-    })
+    const viewer = this.selectComponent('#imageViewer')
+    if (viewer) viewer.open([url], url, { mode: 'card', title: '打卡凭证' })
   },
 
   /**

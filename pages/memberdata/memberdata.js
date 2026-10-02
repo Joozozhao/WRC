@@ -1,4 +1,5 @@
 const util = require('../../utils/util.js')
+const { addProfileBadges } = require('../../utils/profile-badges.js')
 const app = getApp()
 const PAGE_SIZE = 30
 
@@ -92,7 +93,7 @@ Page({
 
       const rows = response.data.map((item, index) => {
         const name = hasValue(item.name) ? item.name : item.nick_name
-        return Object.assign({}, item, {
+        return Object.assign(addProfileBadges(item), {
           displayName: hasValue(name) ? name : '跑者',
           displayCount: hasValue(item[tab.countField]) ? item[tab.countField] : '—',
           displayDistance: formatDistance(item[tab.field]),

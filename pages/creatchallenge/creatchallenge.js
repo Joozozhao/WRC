@@ -39,7 +39,6 @@ Page({
     formatDate: '',
     tempFilePaths: '',
     checkOr: '',
-    special: false,
     hasMobile: 0,
     sealType: '',
     showModal: false,
@@ -128,19 +127,6 @@ Page({
       this.setData({
         checkOr: '',
         hasMobile: 0
-      })
-    }
-  },
-  special: function(){
-    if(this.data.special == false){
-      this.setData({
-        special: true,
-        actyType: 'V挑战'
-      })
-    } else {
-      this.setData({
-        special: false,
-        actyType: '挑战'
       })
     }
   },

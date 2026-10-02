@@ -6,6 +6,10 @@
   background: #fbfcf9;
 }
 
+.site-header-dark { background: transparent; }
+.site-header-dark .site-header-logo { filter: brightness(0) invert(1); }
+.site-header-dark .site-header-avatar { border-color: rgba(255, 255, 255, .6); background: #252a2f; }
+
 .site-header-fixed {
   position: fixed;
   top: 0;

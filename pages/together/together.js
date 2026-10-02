@@ -1,5 +1,7 @@
 // pages/together/together.js
 var util = require('../../utils/util.js');
+const { toDisplayMemberLevel } = require('../../utils/member-level.js')
+const { addProfileBadges } = require('../../utils/profile-badges.js')
 // 获取应用实例
 const app = getApp()
 Page({
@@ -39,7 +41,9 @@ Page({
     that.setData({ loading: true })
     util.request('acty/getclickuser', 'POST', data, '数据加载中 ...', (res) => {
       if (res && res.data && res.data.success && Array.isArray(res.data.data)) {
-        var allDta = res.data.data
+        var allDta = res.data.data.map(function (item) {
+          return Object.assign(addProfileBadges(item), { levelLabel: toDisplayMemberLevel(item.level) })
+        })
         that.setData({
           actyMember: allDta,
           totalCount: allDta.length,

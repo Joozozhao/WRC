@@ -24,7 +24,7 @@
     <!-- 类型筛选面板 -->
     <view class="filter-pop {{selAll ? 'show' : 'hide'}}">
       <view class="filter-panel">
-        <text class="filter-option {{id == index ? 'active' : ''}}" wx:for="{{selList}}" wx:key="index" data-id="{{index}}" data-txt="{{item.text}}" catchtap="choose">{{item.text}}</text>
+        <text class="filter-option {{id == index ? 'active' : ''}}" wx:for="{{selList}}" wx:key="index" data-id="{{index}}" data-level="{{item.value}}" catchtap="choose">{{item.text}}</text>
       </view>
     </view>
 
@@ -46,17 +46,8 @@
         <view class="member-index">{{index + 1}}</view>
 
         <view class="member-avatar-wrap" data-id="{{item.id}}" bindtap="details" hover-class="avatar-hover">
-          <view class="user-pic vip" wx:if="{{item.level == 'VIP'}}">
+          <view class="user-pic {{item.level == 'VIP' ? 'vip' : (item.level == '普通' ? 'normal' : 'guest')}}">
             <image src="{{item.header_url}}" mode="aspectFill" class="pic"></image>
-            <image src="../../images/vip_1.svg" mode="aspectFit" class="badge"></image>
-          </view>
-          <view class="user-pic normal" wx:if="{{item.level == '普通'}}">
-            <image src="{{item.header_url}}" mode="aspectFill" class="pic"></image>
-            <image src="../../images/normal.svg" mode="aspectFit" class="badge"></image>
-          </view>
-          <view class="user-pic guest" wx:if="{{item.level == '非会员'}}">
-            <image src="{{item.header_url}}" mode="aspectFill" class="pic"></image>
-            <image src="../../images/none.svg" mode="aspectFit" class="badge"></image>
           </view>
         </view>
 
@@ -64,8 +55,9 @@
           <view class="name-row">
             <text class="member-name" wx:if="{{item.name !== ''}}">{{item.name}}</text>
             <text class="member-name" wx:else>{{item.nick_name}}</text>
-            <image class="sex-icon" wx:if="{{item.sex == 1}}" src="../../images/man.svg" mode="aspectFit"></image>
-            <image class="sex-icon" wx:elif="{{item.sex == 2}}" src="../../images/woman.svg" mode="aspectFit"></image>
+            <text class="member-level-label" wx:if="{{item.levelLabel}}">{{item.levelLabel}}</text>
+            <text class="profile-badge profile-gender-badge" wx:if="{{item.genderLabel}}">{{item.genderLabel}}</text>
+            <view class="profile-badge profile-region-badge" wx:if="{{item.regionLabel}}"><image class="profile-region-icon" src="/images/place.png" mode="aspectFit"></image><text>{{item.regionLabel}}</text></view>
             <text class="duty-tag" wx:if="{{item.duty == '团长'}}">团长</text>
             <text class="duty-tag" wx:if="{{item.duty == '管理员'}}">管理员</text>
             <text class="duty-tag" wx:if="{{item.duty == '管理员,团长' || item.duty == '团长,管理员'}}">管理员/团长</text>
@@ -75,7 +67,7 @@
         </view>
 
         <view class="member-ops">
-          <text class="op-set" data-userid="{{item.id}}" data-duty="{{item.duty}}" data-level="{{item.level}}" bindtap="setInfor" hover-class="op-hover">设置</text>
+          <text class="op-set" data-userid="{{item.id}}" data-duty="{{item.duty}}" data-level="{{item.level}}" data-name="{{item.name || item.nick_name || '成员'}}" data-avatar="{{item.header_url}}" bindtap="setInfor" hover-class="op-hover">设置</text>
         </view>
       </view>
 
@@ -131,33 +123,43 @@
   <!-- 成员设置弹窗 -->
   <view class="ul-modal" wx:if="{{changeModal}}">
     <form bindsubmit="onConfirm">
-      <view class="modal-title">成员设置</view>
-
-      <view class="modal-section">
-        <view class="modal-label">职务</view>
-        <checkbox-group class="modal-options" name="duty" bindchange="setDuty">
-          <label class="modal-option">
-            <checkbox value="管理员" checked="" color="#0c6246"></checkbox>管理员
-          </label>
-          <label class="modal-option">
-            <checkbox value="团长" checked="" color="#0c6246"></checkbox>团长
-          </label>
-        </checkbox-group>
+      <view class="modal-header">
+        <view class="modal-user-brief">
+          <image class="modal-user-avatar" src="{{targetUserAvatar || '/images/default.png'}}" mode="aspectFill"></image>
+          <view class="modal-user-meta">
+            <text class="modal-title">成员设置</text>
+            <text class="modal-subtitle">{{targetUserName}} · ID {{userId}}</text>
+          </view>
+        </view>
       </view>
 
       <view class="modal-section">
-        <view class="modal-label">级别</view>
-        <radio-group class="modal-options" name="level" bindchange="setLevel">
-          <label class="modal-option">
-            <radio value="VIP" checked="{{level === 'VIP' ? 'true' : ''}}" color="#0c6246"></radio>超级会员
-          </label>
-          <label class="modal-option">
-            <radio value="普通" checked="{{level === '普通' ? 'true' : ''}}" color="#0c6246"></radio>普通会员
-          </label>
-          <label class="modal-option">
-            <radio value="非会员" checked="{{level === '非会员' ? 'true' : ''}}" color="#0c6246"></radio>非会员
-          </label>
-        </radio-group>
+        <view class="modal-label">职务权限（可多选）</view>
+        <view class="modal-chips">
+          <view class="modal-chip {{isAdmin ? 'is-active' : ''}}" data-type="admin" bindtap="toggleDuty">
+            <text class="modal-chip-icon">{{isAdmin ? '✓' : '+'}}</text>
+            <text class="modal-chip-text">管理员</text>
+          </view>
+          <view class="modal-chip {{isLeader ? 'is-active' : ''}}" data-type="leader" bindtap="toggleDuty">
+            <text class="modal-chip-icon">{{isLeader ? '✓' : '+'}}</text>
+            <text class="modal-chip-text">团长</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="modal-section">
+        <view class="modal-label">会员级别（单选）</view>
+        <view class="modal-chips">
+          <view class="modal-chip {{level === 'VIP' ? 'is-active' : ''}}" data-level="VIP" bindtap="selectLevel">
+            <text class="modal-chip-text">SVip</text>
+          </view>
+          <view class="modal-chip {{level === '普通' ? 'is-active' : ''}}" data-level="普通" bindtap="selectLevel">
+            <text class="modal-chip-text">Vip</text>
+          </view>
+          <view class="modal-chip {{level === '非会员' ? 'is-active' : ''}}" data-level="非会员" bindtap="selectLevel">
+            <text class="modal-chip-text">PVip</text>
+          </view>
+        </view>
       </view>
 
       <view class="modal-footer">

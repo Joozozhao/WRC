@@ -29,14 +29,6 @@
     <view class="form-card">
       <view class="card-badge">02 / 挑战信息</view>
 
-      <view class="switch-row" bindtap="special">
-        <view class="switch-info">
-          <text class="switch-title">特别版挑战</text>
-          <text class="switch-sub">开启后创建 V 挑战</text>
-        </view>
-        <switch name="switch" checked="{{special}}" color="#075b40" />
-      </view>
-
       <view class="form-group">
         <label class="form-label">活动名称</label>
         <input class="form-input" type="text" focus="{{focus}}" value="{{actyName}}" name="actyName" placeholder="请输入活动名称" placeholder-class="placeholder-text" />

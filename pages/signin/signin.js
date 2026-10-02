@@ -125,7 +125,10 @@ Page({
     //   })
     //   return false
     // }
-    if(that.data.acty_type=='团跑'){
+    // 需要填写挑战目标的条件与页面展示逻辑保持一致：
+    // 非团跑类型且原目标大于 0 时才显示并校验"挑战公里数"
+    var needTarget = that.data.acty_type != '团跑' && Number(that.data.distance) > 0
+    if(!needTarget){
       var data = {
         actyId : that.data.actyId,
         userId : userId,

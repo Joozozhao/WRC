@@ -6,12 +6,10 @@
     <view class="profile-header-card">
       <view class="avatar-wrap">
         <image class="avatar-img" src="{{avatarUrl || '/images/default.png'}}" mode="aspectFill"></image>
-        <image wx:if="{{level == 'VIP'}}" class="vip-badge" src="/images/vip_1.svg" mode="aspectFit"></image>
-        <image wx:elif="{{level == '普通'}}" class="vip-badge" src="/images/normal.svg" mode="aspectFit"></image>
       </view>
       <view class="profile-header-meta">
         <text class="profile-header-nick">{{nickName || '跑者昵称'}}</text>
-        <text class="profile-header-level">{{level ? level + '会员' : '微跑团跑者'}}</text>
+        <text class="profile-header-level">{{levelLabel || '微跑团跑者'}}</text>
       </view>
       <view class="edit-avatar-btn" bindtap="editUrl">修改资料</view>
     </view>

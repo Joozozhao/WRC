@@ -15,6 +15,7 @@ Page({
     pendingCount: 0,
     stateIcon: true,
     changeModal: false,
+    rejectTarget: {},
     recordType: '',
     noHistory: true,
     page: 1,
@@ -26,6 +27,8 @@ Page({
     getH: '',
     iconState: true,
     iconState2: true,
+    filterTop: 0,
+    filterBottom: 94,
     selAll: false,
     sortAll: false,
     selArea: '',
@@ -148,10 +151,9 @@ Page({
         previewImgArr = data[i].sport_img;
       }
     }
-    wx.previewImage({
-      current: url, // 当前显示图片的http链接
-      urls: [previewImgArr] // 需要预览的图片http链接列表
-    })
+    const urls = Array.isArray(previewImgArr) ? previewImgArr : [previewImgArr]
+    const viewer = this.selectComponent('#imageViewer')
+    if (viewer) viewer.open(urls, url, { mode: 'card', title: '打卡凭证' })
   },
   /**
    * 生命周期函数--监听页面加载
@@ -160,6 +162,14 @@ Page({
     this._reqSeq = 0
     this._loadingMore = false
     this._hasMore = true
+    const system = wx.getSystemInfoSync ? wx.getSystemInfoSync() : {}
+    const menu = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null
+    const statusBarHeight = system.statusBarHeight || 20
+    const filterTop = menu && menu.top
+      ? menu.top + menu.height + 8
+      : statusBarHeight + 46
+    const filterHeight = system.windowWidth ? system.windowWidth * 94 / 750 : 47
+    this.setData({ filterTop, filterBottom: filterTop + filterHeight })
     this.initRecord()
     this.getH()
   },
@@ -313,9 +323,22 @@ Page({
   refuseCon: function (e) {
     var that = this
     var id = e.currentTarget.dataset.id
+    var target = {}
+    var list = that.data.recordList || []
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].id == id) {
+        target = {
+          name: list[i].name || list[i].nick_name || '微马跑者',
+          avatar: list[i].header_url || '',
+          distance: list[i].distance != null ? list[i].distance : '—'
+        }
+        break
+      }
+    }
     that.setData({
       changeModal: true,
-      rcdId: id
+      rcdId: id,
+      rejectTarget: target
     })
   },
   onCancel: function (e) {

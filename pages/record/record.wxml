@@ -156,3 +156,4 @@
     </block>
   </view>
 </view>
+<image-viewer id="imageViewer" />

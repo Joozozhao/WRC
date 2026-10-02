@@ -1,24 +1,28 @@
 <!-- WRC member home: selected training dashboard direction. -->
 <site-header avatar="{{avatarUrl}}" bindprofiletap="handleProfileTap"></site-header>
-<view class="home-root">
+<view class="home-root {{pageMotion ? 'page-enter-motion' : ''}}">
   <view class="home-hero">
     <image class="home-watermark" src="/images/redesign/wr-mark.png" mode="aspectFit"></image>
     <text class="home-eyebrow">WRC · {{todayLabel}}</text>
     <view class="home-hero-title"><view>今天，</view><view>跑得怎么样？</view></view>
     <view class="home-hero-underline"></view>
     <text class="home-hero-intro">跑步，只不过是一场自己与自己的较量</text>
-    <view class="home-cta" bindtap="toClockIn" hover-class="home-cta-pressed" role="button" aria-label="跑步打卡">
-      <image class="home-cta-runner" src="/images/redesign/runner.png" mode="aspectFit"></image>
-      <view class="home-cta-rule"></view>
-      <text class="home-cta-label">跑步打卡</text>
-      <image class="home-cta-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
-    </view>
   </view>
 
-  <view class="home-section home-month-card">
+  <view class="home-svip-avatars" wx:if="{{homeSvipAvatars.length}}" aria-label="SVip本月跑量">
+    <image
+      wx:for="{{homeSvipAvatars}}"
+      wx:key="id"
+      class="home-svip-avatar heat-level-{{item.heatLevel}}"
+      src="{{item.avatar}}"
+      mode="aspectFill"
+      aria-label="SVip本月跑量 {{item.monthDistance}} 公里"></image>
+  </view>
+
+  <view class="home-section home-month-card {{homeSvipAvatars.length ? 'has-svip-avatars' : ''}}">
     <view class="home-section-head">
       <view class="home-month-title-left">
-        <text class="home-month-main-title">本周目标跑量</text>
+        <text class="home-month-main-title">本周跑量</text>
       </view>
       <view class="home-month-head-right">
         <view class="home-calendar-entry" bindtap="toggleCalendar" role="button" aria-label="{{calendarExpanded ? '收起跑量日历' : '展开跑量日历'}}">
@@ -61,7 +65,7 @@
       </view>
     </view>
 
-    <view class="home-month-calendar" wx:if="{{calendarExpanded}}">
+    <view class="home-month-calendar fade-slide-enter" wx:if="{{calendarExpanded}}">
       <view class="home-heatmap-weekdays">
         <text wx:for="{{['一', '二', '三', '四', '五', '六', '日']}}" wx:key="*this">{{item}}</text>
       </view>
@@ -85,8 +89,15 @@
     </view>
   </view>
 
+  <view class="home-cta" bindtap="toClockIn" hover-class="home-cta-pressed" role="button" aria-label="跑步打卡">
+    <image class="home-cta-runner" src="/images/redesign/runner.png" mode="aspectFit"></image>
+    <view class="home-cta-rule"></view>
+    <text class="home-cta-label">跑步打卡</text>
+    <image class="home-cta-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
+  </view>
+
   <view class="home-section home-challenge">
-    <view class="home-section-head" bindtap="toChallengeList">
+    <view class="home-section-head" bindtap="toChallengeDetail">
       <text>当前挑战</text>
       <view class="home-section-link">查看挑战<image src="/images/redesign/chevron.svg" mode="aspectFit"></image></view>
     </view>
@@ -115,7 +126,6 @@
     <view class="home-friends-heading">
       <view class="home-friends-head-left">
         <text class="home-friends-title">跑友动态</text>
-        <text class="home-friends-count" wx:if="{{recordList.length > 0}}">{{recordList.length}} 条最新打卡</text>
       </view>
       <view class="home-rank-entry" bindtap="toList" hover-class="home-rank-entry-active" role="button" aria-label="查看跑友排行榜">
         <image class="home-rank-trophy" src="/images/redesign/trophy.svg" mode="aspectFit"></image>
@@ -140,7 +150,8 @@
                 <text class="home-friend-date">{{item.displayDate || '今日打卡'}}</text>
               </view>
             </view>
-            <view class="home-friend-badge">本月打卡 {{item.monthCheckInTimes || 1}} 次</view>
+            <view class="home-friend-badge" wx:if="{{item.isCurrentMonth}}">本月打卡 {{item.monthCheckInTimes || 1}} 次</view>
+            <view class="home-friend-badge" wx:else>{{item.yearBadgeText || '今年跑了 — km'}}</view>
           </view>
           <view class="home-friend-card-body">
             <view class="home-friend-metrics">
@@ -166,3 +177,4 @@
   </view>
 </view>
 <tabbar tabbar="{{tabbar}}"></tabbar>
+<image-viewer id="imageViewer" />

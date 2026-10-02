@@ -1,101 +1,157 @@
-<view class="all-activity-wrap">
-  <!-- 挑战记录卡片 -->
-  <view class="record-card challenge-record" wx:if="{{activityList.length > 0}}">
-    <view class="record-card-head">
-      <view class="record-head-main">
-        <text class="record-title">挑战</text>
-        <text class="record-kicker">CHALLENGE</text>
-      </view>
-      <view class="record-count-pill" bindtap="toChallengeTab" hover-class="pill-touch" role="button" aria-label="查看全部挑战">
-        <text class="count-number">{{totalChallenge}}</text>
-        <text class="count-unit">次</text>
-        <text class="count-arrow">›</text>
-      </view>
-    </view>
-    <scroll-view 
-      class="record-scroll" 
-      scroll-x="true" 
-      enable-flex="true" 
-      enhanced="true" 
-      show-scrollbar="false" 
-      bindscrolltolower="onTapChild"
+<view class="tl-wrap">
+  <!-- 分类切换：全部 / 挑战 / 团跑 -->
+  <view class="tl-tabs" aria-label="参与记录分类">
+    <view
+      class="tl-tab {{activeFilter === 'all' ? 'is-active' : ''}}"
+      data-filter="all"
+      bindtap="onFilterTap"
+      hover-class="tl-tab-touch"
+      aria-role="button"
+      aria-label="全部参与记录{{activeFilter === 'all' ? '，当前已选中' : ''}}"
     >
-      <view class="record-list">
-        <block wx:for="{{activityList}}" wx:key="id" wx:for-item="item">
-          <view 
-            class="record-item challenge-item" 
-            bindtap="getInfor" 
-            data-id="{{item.id}}" 
-            data-type="{{item.acty_type || '挑战'}}" 
-            hover-class="item-touch"
-            role="button"
-            aria-label="{{item.acty_name || '挑战详情'}}"
-          >
-            <view class="item-img-wrap">
-              <image wx:if="{{item.acty_img}}" class="item-cover" src="{{item.acty_img}}" mode="aspectFit" lazy-load="true"></image>
-              <view wx:else class="item-cover-empty">挑战记录</view>
-            </view>
-            <view class="item-info">
-              <text class="item-name">{{item.acty_name}}</text>
-              <text class="item-date" wx:if="{{item.start_timestr}}">{{item.start_timestr}}</text>
-            </view>
-          </view>
-        </block>
-        <view class="record-more-card more-challenge" bindtap="toChallengeTab" hover-class="item-touch" role="button" aria-label="查看全部挑战">
-          <view class="more-circle">→</view>
-          <text class="more-label">全部挑战</text>
-        </view>
-      </view>
-    </scroll-view>
+      <text class="tl-tab-text">全部</text>
+    </view>
+    <view
+      class="tl-tab {{activeFilter === 'challenge' ? 'is-active' : ''}}"
+      data-filter="challenge"
+      bindtap="onFilterTap"
+      hover-class="tl-tab-touch"
+      aria-role="button"
+      aria-label="挑战记录，共{{challengeCountText}}次{{activeFilter === 'challenge' ? '，当前已选中' : ''}}"
+    >
+      <text class="tl-tab-text">挑战</text>
+      <text class="tl-tab-count">{{challengeCountText}}</text>
+    </view>
+    <view
+      class="tl-tab {{activeFilter === 'run' ? 'is-active' : ''}}"
+      data-filter="run"
+      bindtap="onFilterTap"
+      hover-class="tl-tab-touch"
+      aria-role="button"
+      aria-label="团跑记录，共{{runCountText}}次{{activeFilter === 'run' ? '，当前已选中' : ''}}"
+    >
+      <text class="tl-tab-text">团跑</text>
+      <text class="tl-tab-count">{{runCountText}}</text>
+    </view>
   </view>
 
-  <!-- 团跑记录卡片 -->
-  <view class="record-card run-record" wx:if="{{activityList2.length > 0}}">
-    <view class="record-card-head">
-      <view class="record-head-main">
-        <text class="record-title">团跑</text>
-        <text class="record-kicker">GROUP RUN</text>
+  <!-- 初始加载骨架 -->
+  <view wx:if="{{showSkeleton}}" class="tl-skeleton" aria-label="参与记录加载中，请稍候">
+    <view class="sk-row" wx:for="{{[1, 2, 3]}}" wx:key="*this">
+      <view class="sk-texts">
+        <view class="sk-line sk-line-type"></view>
+        <view class="sk-line sk-line-title"></view>
+        <view class="sk-line sk-line-date"></view>
       </view>
-      <view class="record-count-pill" bindtap="toActivityTab" hover-class="pill-touch" role="button" aria-label="查看全部团跑">
-        <text class="count-number">{{totalActy}}</text>
-        <text class="count-unit">次</text>
-        <text class="count-arrow">›</text>
-      </view>
+      <view class="sk-thumb"></view>
     </view>
-    <scroll-view 
-      class="record-scroll" 
-      scroll-x="true" 
-      enable-flex="true" 
-      enhanced="true" 
-      show-scrollbar="false" 
-      bindscrolltolower="onTapChild2"
-    >
-      <view class="record-list">
-        <block wx:for="{{activityList2}}" wx:key="id" wx:for-item="item">
-          <view 
-            class="record-item run-item" 
-            bindtap="getInfor" 
-            data-id="{{item.id}}" 
-            data-type="{{item.acty_type || '团跑'}}" 
-            hover-class="item-touch"
-            role="button"
-            aria-label="{{item.acty_name || '团跑详情'}}"
-          >
-            <view class="item-img-wrap">
-              <image wx:if="{{item.acty_img}}" class="item-cover" src="{{item.acty_img}}" mode="aspectFit" lazy-load="true"></image>
-              <view wx:else class="item-cover-empty">团跑记录</view>
+    <text class="tl-status-text">正在加载参与记录…</text>
+  </view>
+
+  <!-- 加载失败：按数据源分别提示与重试 -->
+  <block wx:if="{{!showSkeleton}}">
+    <view wx:if="{{challengeError}}" class="tl-error" aria-label="挑战记录加载失败">
+      <text class="tl-error-text">挑战记录加载失败，请检查网络后重试</text>
+      <view
+        class="tl-retry"
+        bindtap="onRetryChallenge"
+        hover-class="tl-tab-touch"
+        aria-role="button"
+        aria-label="重试加载挑战记录"
+      >重试</view>
+    </view>
+    <view wx:if="{{runError}}" class="tl-error" aria-label="团跑记录加载失败">
+      <text class="tl-error-text">团跑记录加载失败，请检查网络后重试</text>
+      <view
+        class="tl-retry"
+        bindtap="onRetryRun"
+        hover-class="tl-tab-touch"
+        aria-role="button"
+        aria-label="重试加载团跑记录"
+      >重试</view>
+    </view>
+  </block>
+
+  <!-- 空态 -->
+  <view wx:if="{{showEmpty}}" class="tl-empty">
+    <text class="tl-empty-title">{{emptyTitle}}</text>
+    <text class="tl-empty-desc">{{emptyDesc}}</text>
+    <view class="tl-empty-actions">
+      <view
+        wx:if="{{emptyShowChallenge}}"
+        class="tl-empty-btn"
+        bindtap="toChallengeTab"
+        hover-class="tl-tab-touch"
+        aria-role="button"
+        aria-label="去发现挑战"
+      >发现挑战</view>
+      <view
+        wx:if="{{emptyShowRun}}"
+        class="tl-empty-btn"
+        bindtap="toActivityTab"
+        hover-class="tl-tab-touch"
+        aria-role="button"
+        aria-label="去发现团跑"
+      >发现团跑</view>
+    </view>
+  </view>
+
+  <!-- 时间列表 -->
+  <block wx:if="{{view.groups.length > 0}}">
+    <view class="tl-group" wx:for="{{view.groups}}" wx:for-item="group" wx:key="key">
+      <view class="tl-group-label">{{group.label}}</view>
+      <view class="tl-items">
+        <view class="tl-rail"></view>
+        <view
+          class="tl-item"
+          wx:for="{{group.items}}"
+          wx:for-item="item"
+          wx:key="key"
+          bindtap="getInfor"
+          data-id="{{item.id}}"
+          data-type="{{item.type}}"
+          hover-class="tl-item-touch"
+          aria-role="button"
+          aria-label="{{item.type}}：{{item.title}}，{{item.dateText}}"
+        >
+          <view class="tl-dot"></view>
+          <view class="tl-item-main {{index === group.items.length - 1 ? 'is-last' : ''}}">
+            <view class="tl-item-texts">
+              <text class="tl-item-type">{{item.type}}</text>
+              <text class="tl-item-title">{{item.title}}</text>
+              <text class="tl-item-date">{{item.dateText}}</text>
             </view>
-            <view class="item-info">
-              <text class="item-name">{{item.acty_name}}</text>
-              <text class="item-date" wx:if="{{item.start_timestr}}">{{item.start_timestr}}</text>
+            <view class="tl-thumb">
+              <image
+                wx:if="{{item.cover && !failedCovers[item.key]}}"
+                class="tl-thumb-img"
+                src="{{item.cover}}"
+                mode="aspectFill"
+                lazy-load="true"
+                binderror="onCoverError"
+                data-key="{{item.key}}"
+              ></image>
+              <view wx:else class="tl-thumb-empty">暂无封面</view>
             </view>
           </view>
-        </block>
-        <view class="record-more-card more-run" bindtap="toActivityTab" hover-class="item-touch" role="button" aria-label="查看全部团跑">
-          <view class="more-circle">→</view>
-          <text class="more-label">全部团跑</text>
         </view>
       </view>
-    </scroll-view>
+    </view>
+  </block>
+
+  <!-- 加载更多与页脚计数 -->
+  <view wx:if="{{view.shownCount > 0}}" class="tl-foot">
+    <view
+      wx:if="{{showLoadMore}}"
+      class="tl-more {{moreDisabled ? 'is-disabled' : ''}}"
+      bindtap="onLoadMore"
+      hover-class="{{moreDisabled ? '' : 'tl-tab-touch'}}"
+      aria-role="button"
+      aria-disabled="{{moreDisabled}}"
+      aria-label="{{moreDisabled ? '参与记录加载中，请稍候' : '加载更多参与记录'}}"
+    >
+      <text class="tl-more-text">{{moreText}}</text>
+    </view>
+    <text class="tl-foot-count">已显示 {{view.shownCount}} 条记录</text>
   </view>
 </view>
