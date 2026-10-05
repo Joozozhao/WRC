@@ -60,7 +60,7 @@
     <view class="admin-menu">
       <view class="admin-item" bindtap="toUser" hover-class="admin-item-hover">
         <view class="admin-item-main">
-          <text class="admin-item-name">会员管理</text>
+          <text class="admin-item-name">成员管理</text>
           <text class="admin-item-desc">团员信息与角色权限</text>
         </view>
         <image class="admin-item-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>

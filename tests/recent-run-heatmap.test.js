@@ -198,7 +198,7 @@ test("buildRecentHeatmap：每周固定 7 格，首尾范围外为透明 padding
     assert.equal(week.days.length, 7, "每周必须是 7 格");
     assert.equal(keyToDate(week.key).getDay(), 1, "周键必须是周一");
     week.days.forEach((day, index) => {
-      assert.deepEqual(Object.keys(day).sort(), ["isPadding", "key", "level"], "每格只暴露 key/level/isPadding");
+      assert.deepEqual(Object.keys(day).sort(), ["distance", "isPadding", "key", "level"], "每格暴露日期键、跑量和热力等级");
       assert.equal(keyToDate(day.key).getDay(), (index + 1) % 7, "列顺序为周一至周日");
       flat.push(day);
     });
@@ -326,8 +326,11 @@ test("checkinDays：按日期去重、驳回不计、待审计入、范围外未
   const heatmap = hm.buildRecentHeatmap({ today: d(2026, 10, 1), dailyMap: aggregated.dailyMap, monthsBack: 6 });
   assert.equal(heatmap.checkinDays, 2, "只有 09-10 与 09-12 计入");
   assert.equal(findDay(heatmap, "2026-09-10").level, 3, "5+4=9km 属于第 3 级");
+  assert.equal(findDay(heatmap, "2026-09-10").distance, 9, "点击日期使用同日记录的聚合跑量");
   assert.equal(findDay(heatmap, "2026-09-11").level, 0);
+  assert.equal(findDay(heatmap, "2026-09-11").distance, 0, "无跑量日期展示 0 公里");
   assert.equal(findDay(heatmap, "2026-09-12").level, 4);
+  assert.equal(findDay(heatmap, "2026-09-12").distance, 24.9);
   assert.equal(findDay(heatmap, "2026-10-05"), null, "未来日期没有单元格");
 });
 
@@ -351,24 +354,26 @@ test("几何常量与 wxss 版面自洽：750 = 页面边距 + 卡片边距 + �
   );
 });
 
-test("computeHeatmapLayout：四范围统一 18/6/24，短范围自然留白、长范围滚到含尾月标的末端", () => {
+test("computeHeatmapLayout：四范围统一 21.6/6/27.6，短范围自然留白、长范围滚到含尾月标的末端", () => {
+  // 27.6 的二进制浮点有噪声，几何断言统一 round1 后比较。
+  const round1 = (n) => Math.round(n * 10) / 10;
   const cases = [
-    { months: 1, gridWidth: 114, canvasWidth: 162, scrollRpx: 0 },
-    { months: 3, gridWidth: 330, canvasWidth: 378, scrollRpx: 0 },
-    { months: 6, gridWidth: 642, canvasWidth: 690, scrollRpx: 136 },
-    { months: 12, gridWidth: 1266, canvasWidth: 1314, scrollRpx: 760 }
+    { months: 1, gridWidth: 132, canvasWidth: 180, scrollRpx: 0 },
+    { months: 3, gridWidth: 380.4, canvasWidth: 428.4, scrollRpx: 0 },
+    { months: 6, gridWidth: 739.2, canvasWidth: 787.2, scrollRpx: 233.2 },
+    { months: 12, gridWidth: 1456.8, canvasWidth: 1504.8, scrollRpx: 950.8 }
   ];
   cases.forEach((item) => {
     const heatmap = hm.buildRecentHeatmap({ today: d(2026, 10, 1), dailyMap: {}, monthsBack: item.months });
     const layout = hm.computeHeatmapLayout(heatmap.weeks.length);
-    assert.equal(layout.cell, 18, item.months + " 个月的格子固定为 18rpx");
+    assert.equal(layout.cell, 21.6, item.months + " 个月的格子固定为 21.6rpx");
     assert.equal(layout.gap, 6, "间隔不得拉伸");
-    assert.equal(layout.stride, 24);
-    assert.equal(layout.gridWidth, item.gridWidth);
-    assert.equal(layout.canvasWidth, item.canvasWidth);
+    assert.equal(layout.stride, 27.6);
+    assert.equal(round1(layout.gridWidth), item.gridWidth);
+    assert.equal(round1(layout.canvasWidth), item.canvasWidth);
     assert.equal(layout.canvasWidth - layout.gridWidth, 48, "尾月预留保持 48rpx");
-    assert.equal(layout.axisHeight, 34);
-    assert.equal(layout.scrollRpx, item.scrollRpx);
+    assert.equal(layout.axisHeight, 40.8);
+    assert.equal(round1(layout.scrollRpx), item.scrollRpx);
     if (item.months <= 3) {
       assert.ok(layout.canvasWidth < hm.HEATMAP_VIEWPORT_RPX, "短范围保留空白，不铺满可视宽度");
     } else {
@@ -378,15 +383,16 @@ test("computeHeatmapLayout：四范围统一 18/6/24，短范围自然留白、�
 });
 
 test("computeHeatmapLayout：固定尺寸下的滚动边界包含尾月预留", () => {
-  const fits = hm.computeHeatmapLayout(21);
-  const overflows = hm.computeHeatmapLayout(22);
-  assert.equal(fits.canvasWidth, 546);
+  const round1 = (n) => Math.round(n * 10) / 10;
+  const fits = hm.computeHeatmapLayout(15);
+  const overflows = hm.computeHeatmapLayout(20);
+  assert.equal(round1(fits.canvasWidth), 456);
   assert.equal(fits.scrollRpx, 0);
-  assert.equal(overflows.gridWidth, 522, "网格本身仍能装下");
-  assert.equal(overflows.canvasWidth, 570, "加上尾月预留后需要横滚");
-  assert.equal(overflows.scrollRpx, 16);
+  assert.equal(round1(overflows.gridWidth), 546, "网格本身仍能装下");
+  assert.equal(round1(overflows.canvasWidth), 594, "加上尾月预留后需要横滚");
+  assert.equal(round1(overflows.scrollRpx), 40);
   [fits, overflows].forEach((layout) => {
-    assert.deepEqual([layout.cell, layout.gap, layout.stride], [18, 6, 24]);
+    assert.deepEqual([layout.cell, layout.gap, layout.stride], [21.6, 6, 27.6]);
   });
 });
 

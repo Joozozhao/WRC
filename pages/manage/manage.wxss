@@ -8,12 +8,12 @@ page {
 
 .admin-page {
   min-height: 100vh;
-  padding: 180rpx 40rpx 120rpx;
+  padding: 0 40rpx 120rpx;
   box-sizing: border-box;
 }
 
 .admin-hero {
-  padding: 44rpx 2rpx 30rpx;
+  padding: 24rpx 2rpx 30rpx;
 }
 
 .admin-eyebrow {

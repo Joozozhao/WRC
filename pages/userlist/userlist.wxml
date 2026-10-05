@@ -36,9 +36,6 @@
     </view>
   </view>
 
-  <!-- 筛选遮罩 -->
-  <view class="filter-mask {{selAll || sortAll ? 'show' : 'hide'}}" bindtap="close"></view>
-
   <!-- 成员列表 -->
   <view class="member-list" wx:if="{{userList.length > 0}}">
     <view class="member-block" wx:for="{{userList}}" wx:key="id">

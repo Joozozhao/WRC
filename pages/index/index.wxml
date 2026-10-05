@@ -16,7 +16,10 @@
       class="home-svip-avatar heat-level-{{item.heatLevel}}"
       src="{{item.avatar}}"
       mode="aspectFill"
-      aria-label="SVip本月跑量 {{item.monthDistance}} 公里"></image>
+      data-userid="{{item.id}}"
+      bindtap="openRunnerProfile"
+      hover-class="home-svip-avatar-active"
+      aria-label="查看跑友主页"></image>
   </view>
 
   <view class="home-section home-month-card {{homeSvipAvatars.length ? 'has-svip-avatars' : ''}}">

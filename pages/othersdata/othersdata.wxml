@@ -1,5 +1,5 @@
 <!-- pages/othersdata/othersdata.wxml -->
-<site-header show-back="{{true}}" back-url="/pages/index/index"></site-header>
+<site-header show-back="{{true}}" overlay="{{true}}" back-url="/pages/index/index"></site-header>
 <view class="others-page {{pageMotion ? 'page-enter-motion' : ''}}">
   <!-- 头部大字英雄区（对齐“我的”页面 profile-hero 样式） -->
   <view class="profile-hero">

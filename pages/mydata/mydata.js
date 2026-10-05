@@ -57,6 +57,12 @@ Page({
     heatmapCanvasWidth: heatmap.HEATMAP_VIEWPORT_RPX,
     heatmapMonthAxisHeight: heatmap.HEATMAP_MONTH_AXIS_HEIGHT,
     heatmapScrollLeft: 0,
+    heatmapTooltipVisible: false,
+    heatmapSelectedDate: "",
+    heatmapTooltipDate: "",
+    heatmapTooltipDistance: "",
+    heatmapTooltipLeft: 0,
+    heatmapTooltipTop: 0,
     // 行 0/2/4 对应周一/周三/周五，与左侧星期轴逐行对齐。
     heatmapWeekdayRows: ["周一", "", "周三", "", "周五", "", ""]
   },
@@ -378,6 +384,7 @@ Page({
       heatmapCheckinDays: ready ? (state.checkinDays || 0) : 0,
       heatmapDaysText: ready ? String(state.checkinDays || 0) : "—"
     };
+    patch.heatmapTooltipVisible = false;
     if (ready) {
       var layout = heatmap.computeHeatmapLayout(state.recentHeatmap.weeks.length);
       patch.heatmapCellSize = layout.cell;
@@ -393,6 +400,51 @@ Page({
     if (state && state.status === "error") {
       console.warn("[mydata] 热力图加载失败：", state.reason || "unknown");
     }
+  },
+
+  /** 点击热力格显示日期与当日跑量；定位时限制在热力卡片内部，避免横向滚动区裁切。 */
+  onHeatmapDayTap: function(e) {
+    var dataset = e && e.currentTarget && e.currentTarget.dataset || {};
+    if (dataset.isPadding === true || dataset.isPadding === "true" || !dataset.date) return;
+    if (this.data.heatmapSelectedDate === dataset.date && this.data.heatmapTooltipVisible) {
+      this.setData({ heatmapTooltipVisible: false, heatmapSelectedDate: "" });
+      return;
+    }
+
+    var parts = String(dataset.date).split("-");
+    var km = Number(dataset.distance);
+    if (!Number.isFinite(km)) km = 0;
+    var that = this;
+    this.setData({
+      heatmapTooltipVisible: true,
+      heatmapSelectedDate: dataset.date,
+      heatmapTooltipDate: parts.length === 3 ? Number(parts[0]) + "年" + Number(parts[1]) + "月" + Number(parts[2]) + "日" : dataset.date,
+      heatmapTooltipDistance: km.toFixed(2)
+    }, function() {
+      var query = wx.createSelectorQuery();
+      query.select("#heatmap-section").boundingClientRect();
+      query.select("#heatmap-day-" + dataset.date).boundingClientRect();
+      query.select("#heatmap-tooltip").boundingClientRect();
+      query.exec(function(rects) {
+        var section = rects && rects[0];
+        var cell = rects && rects[1];
+        var tooltip = rects && rects[2];
+        if (!section || !cell || !tooltip) return;
+
+        var pxPerRpx = that.getPxPerRpx();
+        var inset = 12 * pxPerRpx;
+        var maxLeft = Math.max(inset, section.width - tooltip.width - inset);
+        var left = cell.left + cell.width / 2 - section.left - tooltip.width / 2;
+        left = Math.max(inset, Math.min(left, maxLeft));
+        var top = cell.top - section.top - tooltip.height - 10 * pxPerRpx;
+        if (top < inset) top = cell.bottom - section.top + 10 * pxPerRpx;
+        // 接近卡片底部时改放到日期上方，避免压住图例。
+        if (top + tooltip.height > section.height - inset) {
+          top = cell.top - section.top - tooltip.height - 10 * pxPerRpx;
+        }
+        that.setData({ heatmapTooltipLeft: left, heatmapTooltipTop: Math.max(inset, top) });
+      });
+    });
   },
 
   /** rpx -> px 的换算比例（scroll-left 只认 px）。 */
@@ -423,7 +475,7 @@ Page({
       index = this.data.heatmapRangeIndex;
     }
     var months = heatmap.RANGE_OPTIONS[index];
-    this.setData({ heatmapRangeIndex: index, heatmapRangeValue: months });
+    this.setData({ heatmapRangeIndex: index, heatmapRangeValue: months, heatmapTooltipVisible: false, heatmapSelectedDate: "" });
     this.getHeatmapController().setMonths(months);
   },
 

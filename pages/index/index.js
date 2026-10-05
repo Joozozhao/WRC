@@ -223,6 +223,12 @@ Page({
       if (reqSeq === this._svipAvatarReqSeq) this.setData({ homeSvipAvatars: [] })
     })
   },
+  openRunnerProfile: function (e) {
+    const dataset = e && e.currentTarget && e.currentTarget.dataset || {}
+    const userId = String(dataset.userid || dataset.userId || '').trim()
+    if (!userId || userId === '0') return
+    wx.navigateTo({ url: '../othersdata/othersdata?id=' + encodeURIComponent(userId) })
+  },
   toRunningDetail: function () {
     wx.switchTab({ url: '../mydata/mydata' })
   },

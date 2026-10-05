@@ -11,13 +11,13 @@
           <view class="viewer-card-close-y"></view>
         </view>
       </view>
-      <view class="viewer-card-body">
+      <view class="viewer-card-body" style="{{bodyHeightStyle}}">
         <swiper wx:if="{{urls.length > 1}}" class="viewer-card-swiper" current="{{currentIndex}}" duration="220" bindchange="onSwiperChange">
           <swiper-item wx:for="{{urls}}" wx:key="*this" class="viewer-card-slide">
-            <image class="viewer-card-image" src="{{item}}" mode="aspectFit" show-menu-by-longpress="true"></image>
+            <image class="viewer-card-image" src="{{item}}" mode="widthFix" show-menu-by-longpress="true" bindload="onImageLoad" data-index="{{index}}"></image>
           </swiper-item>
         </swiper>
-        <image wx:else class="viewer-card-image" src="{{urls[currentIndex]}}" mode="aspectFit" show-menu-by-longpress="true"></image>
+        <image wx:else class="viewer-card-image" src="{{urls[currentIndex]}}" mode="widthFix" show-menu-by-longpress="true" bindload="onImageLoad" data-index="{{currentIndex}}"></image>
         <view wx:if="{{urls.length > 1}}" class="viewer-card-count">{{currentIndex + 1}}<text> / {{urls.length}}</text></view>
       </view>
       <view class="viewer-card-tip">{{urls.length > 1 ? '左右滑动切换 · 长按可保存 · 点击空白处关闭' : '点击空白处或右上角关闭 · 长按可保存图片'}}</view>

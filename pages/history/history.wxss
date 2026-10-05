@@ -1,5 +1,5 @@
 page { min-height: 100%; background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
-.history-page { min-height: 100vh; padding: 180rpx 40rpx 100rpx; box-sizing: border-box; }
+.history-page { min-height: 100vh; padding: 0 40rpx 100rpx; box-sizing: border-box; }
 .history-hero { padding: 18rpx 4rpx 30rpx; border-bottom: 1rpx solid #e1e9e3; }
 .history-eyebrow { display: block; color: #0d6447; font-size: 22rpx; font-weight: 750; letter-spacing: 3rpx; }
 .history-title { display: block; margin-top: 27rpx; font-size: 68rpx; line-height: 1.15; font-weight: 800; letter-spacing: -2rpx; }

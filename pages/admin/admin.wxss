@@ -7,11 +7,12 @@ page {
 
 .cfg-page {
   min-height: 100vh;
-  padding: 180rpx 36rpx calc(200rpx + env(safe-area-inset-bottom));
+  padding: 0 36rpx calc(200rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
 .cfg-header {
+  padding-top: 24rpx;
   margin-bottom: 34rpx;
 }
 

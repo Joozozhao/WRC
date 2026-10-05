@@ -1,7 +1,7 @@
 /* pages/lotterydetail/lotterydetail.wxss 自包含：不再依赖 activitydetail 旧样式 */
 page { background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
-.luck-page { min-height: 100vh; padding: 180rpx 40rpx calc(60rpx + env(safe-area-inset-bottom)); box-sizing: border-box; }
-.luck-hero { padding: 18rpx 4rpx 35rpx; border-bottom: 1rpx solid #e1e9e3; }
+.luck-page { min-height: 100vh; padding: 0 40rpx calc(60rpx + env(safe-area-inset-bottom)); box-sizing: border-box; }
+.luck-hero { padding: 24rpx 4rpx 35rpx; border-bottom: 1rpx solid #e1e9e3; }
 .luck-eyebrow { display: block; color: #0d6447; font-size: 22rpx; font-weight: 750; letter-spacing: 3rpx; }
 .luck-title { display: block; margin-top: 27rpx; font-size: 72rpx; line-height: 1.15; font-weight: 800; letter-spacing: -2rpx; }
 .luck-title-line { width: 185rpx; height: 7rpx; margin-top: 4rpx; border-radius: 10rpx; background: #d9ff3f; transform: rotate(-2deg); }

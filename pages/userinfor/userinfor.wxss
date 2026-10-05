@@ -6,7 +6,7 @@ page {
 }
 .userinfor-page {
   min-height: 100vh;
-  padding: 180rpx 40rpx 180rpx;
+  padding: 0 40rpx 180rpx;
   box-sizing: border-box;
 }
 

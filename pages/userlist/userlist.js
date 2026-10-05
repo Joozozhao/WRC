@@ -24,12 +24,10 @@ Page({
     tab: 0,
     changeModal: false,
     page: 1,
-    getH: '',
     iconState: true,
     iconState2: true,
     selAll: false,
     sortAll: false,
-    phoneH: '',
     showIt: false,
     userId: 0,
     targetUserName: '',
@@ -169,7 +167,6 @@ Page({
   onLoad: function (options) {
     wx.hideShareMenu({})
     this.initUser()
-    this.getH()
   },
   initUser: function(){
     var that = this
@@ -210,17 +207,6 @@ Page({
       }
     })
   },
-  getH: function(){
-    //获取机型可用高度
-    var that = this
-    wx.getSystemInfo({
-      success: function (res) {
-        that.setData({
-          phoneH: res.windowHeight - (res.windowWidth / 750) * 94 + "px"
-        })
-      }
-    })
-  },
   clickLevel: function(){
     var that = this
     that.setData({
@@ -229,15 +215,6 @@ Page({
       sortAll: false,
       iconState2: true
     })
-    if(that.data.getH==''){
-      that.setData({
-        getH: that.data.phoneH
-      })
-    } else {
-      that.setData({
-        getH: ''
-      })
-    }
   },
   clickSort: function(){
     var that = this
@@ -247,15 +224,6 @@ Page({
       selAll: false,
       iconState: true
     })
-    if(that.data.getH==''){
-      that.setData({
-        getH: that.data.phoneH
-      })
-    } else {
-      that.setData({
-        getH: ''
-      })
-    }
   },
   choose: function(e){
     var id = e.currentTarget.dataset.id
@@ -266,8 +234,7 @@ Page({
       selAll: false,
       sortAll: false,
       iconState: true,
-      iconState2: true,
-      getH: ''
+      iconState2: true
     })
     that.initUser()
   },
@@ -279,18 +246,9 @@ Page({
       selAll: false,
       sortAll: false,
       iconState: true,
-      iconState2: true,
-      getH: ''
+      iconState2: true
     })
     that.initUser()
-  },
-  close: function(){
-    this.setData({
-      selAll: false,
-      sortAll: false,
-      iconState: true,
-      iconState2: true,
-    })
   },
   loadMore: function(){
     var that = this

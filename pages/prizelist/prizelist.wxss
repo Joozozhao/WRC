@@ -1,6 +1,6 @@
 /* pages/prizelist/prizelist.wxss 自包含：不再 @import orderlist.wxss */
 page { background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
-.pick-page { min-height: 100vh; padding: 180rpx 40rpx calc(190rpx + env(safe-area-inset-bottom)); box-sizing: border-box; }
+.pick-page { min-height: 100vh; padding: 0 40rpx calc(190rpx + env(safe-area-inset-bottom)); box-sizing: border-box; }
 .pick-hero { padding: 18rpx 4rpx 35rpx; border-bottom: 1rpx solid #e1e9e3; }
 .pick-eyebrow { display: block; color: #0d6447; font-size: 22rpx; font-weight: 750; letter-spacing: 3rpx; }
 .pick-title { display: block; margin-top: 27rpx; font-size: 72rpx; line-height: 1.15; font-weight: 800; letter-spacing: -2rpx; }

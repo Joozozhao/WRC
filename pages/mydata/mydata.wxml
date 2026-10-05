@@ -69,7 +69,7 @@
         </view>
       </view>
 
-      <view class="profile-heatmap-section">
+      <view id="heatmap-section" class="profile-heatmap-section">
         <view class="profile-heatmap-heading">
           <text class="profile-heatmap-title">最近 {{heatmapRangeValue}} 个月跑步打卡 <text class="profile-heatmap-days">{{heatmapDaysText}}</text> 天</text>
           <picker class="profile-heatmap-picker" mode="selector" range="{{heatmapRangeLabels}}" value="{{heatmapRangeIndex}}" bindchange="onHeatmapRangeChange">
@@ -90,13 +90,17 @@
                 <view class="profile-heatmap-months" style="height: {{heatmapMonthAxisHeight}}rpx; width: {{heatmapCanvasWidth}}rpx;">
                   <view class="profile-heatmap-month" wx:for="{{recentHeatmap.monthLabels}}" wx:key="key" style="left: {{item.index * heatmapColumnStride}}rpx;">{{item.label}}</view>
                 </view>
-                <view class="profile-heatmap-grid">
+                <view id="heatmap-grid" class="profile-heatmap-grid">
                   <view class="profile-heatmap-week" wx:for="{{recentHeatmap.weeks}}" wx:for-item="week" wx:key="key" style="width: {{heatmapCellSize}}rpx; margin-right: {{heatmapColumnGap}}rpx;">
-                    <view class="profile-heatmap-day level-{{day.level}} {{day.isPadding ? 'is-padding' : ''}}" wx:for="{{week.days}}" wx:for-item="day" wx:key="key" style="width: {{heatmapCellSize}}rpx; height: {{heatmapCellSize}}rpx; margin-bottom: {{heatmapColumnGap}}rpx;"></view>
+                    <view id="heatmap-day-{{day.key}}" class="profile-heatmap-day level-{{day.level}} {{day.isPadding ? 'is-padding' : ''}} {{heatmapSelectedDate == day.key ? 'is-selected' : ''}}" wx:for="{{week.days}}" wx:for-item="day" wx:key="key" data-date="{{day.key}}" data-distance="{{day.distance}}" data-is-padding="{{day.isPadding}}" bindtap="onHeatmapDayTap" style="width: {{heatmapCellSize}}rpx; height: {{heatmapCellSize}}rpx; margin-bottom: {{heatmapColumnGap}}rpx;"></view>
                   </view>
                 </view>
               </view>
             </scroll-view>
+          </view>
+          <view wx:if="{{heatmapTooltipVisible}}" id="heatmap-tooltip" class="profile-heatmap-tooltip" style="left: {{heatmapTooltipLeft}}px; top: {{heatmapTooltipTop}}px;">
+            <text class="profile-heatmap-tooltip-date">{{heatmapTooltipDate}}</text>
+            <text class="profile-heatmap-tooltip-distance">{{heatmapTooltipDistance}} 公里</text>
           </view>
           <view class="profile-heatmap-footer">
             <text class="profile-heatmap-hint">颜色越深，当天跑量越多</text>

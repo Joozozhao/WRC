@@ -245,7 +245,7 @@ function mondayOf(date) {
 }
 
 // 生成 [start, end]（含两端）的周网格，范围外为 isPadding 透明格。
-// 每格只暴露 { key, level, isPadding }：key 仅供模板定位，不展示日期与公里数。
+// distance 与 level 共用聚合值，供点击日期时展示当天跑量。
 function buildHeatmapWeeks(start, end, dailyMap) {
   var weeks = [];
   var cursor = mondayOf(start);
@@ -256,9 +256,11 @@ function buildHeatmapWeeks(start, end, dailyMap) {
       var dayDate = addDays(cursor, i);
       var key = toDateKey(dayDate);
       var isPadding = dayDate < start || dayDate > end;
+      var distance = isPadding ? 0 : (dailyMap && dailyMap[key] || 0);
       days.push({
         key: key,
-        level: isPadding ? 0 : levelForDistance(dailyMap ? dailyMap[key] : 0),
+        level: levelForDistance(distance),
+        distance: distance,
         isPadding: isPadding
       });
     }
@@ -375,15 +377,15 @@ function buildRecentHeatmap(options) {
 var HEATMAP_VIEWPORT_RPX = 554;
 var HEATMAP_WEEKDAY_COLUMN_RPX = 56;
 var HEATMAP_WEEKDAY_MARGIN_RPX = 8;
-var HEATMAP_MIN_CELL = 18;
-// 保留原有尺寸常量接口；所有范围统一为 18rpx，不再随周数放大。
+var HEATMAP_MIN_CELL = 21.6;
+// 保留原有尺寸常量接口；所有范围统一为 21.6rpx（18 的 1.2 倍），不再随周数放大。
 var HEATMAP_MAX_CELL = HEATMAP_MIN_CELL;
 var HEATMAP_GAP = 6;
 // 末尾月份标签可能比最后一列宽（例如「10月」），reserve 直接计入 canvas 宽度：
 //   - 1/3 个月能整体装下时，canvas 不会超出可视宽度，因此不会出现无意义的尾部横滚；
 //   - 6/12 个月装不下时才滚动，且滚动上限按 canvas 宽度算，滚到最新端后最后一列 + 尾月标完整可见。
 var HEATMAP_LABEL_RESERVE_RPX = 48;
-var HEATMAP_MONTH_AXIS_HEIGHT = 34;
+var HEATMAP_MONTH_AXIS_HEIGHT = 40.8;
 
 // 固定方格与间距：短范围左对齐自然留白，含尾月标装不下时横滚到最新端。
 function computeHeatmapLayout(weekCount) {

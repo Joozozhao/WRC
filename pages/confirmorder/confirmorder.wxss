@@ -6,7 +6,7 @@ page {
 }
 .co-page {
   min-height: 100vh;
-  padding-top: 180rpx;
+  padding-top: 0;
   padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }

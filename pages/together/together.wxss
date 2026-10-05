@@ -7,7 +7,7 @@ page {
 
 .together-page {
   min-height: 100vh;
-  padding: 180rpx 36rpx calc(80rpx + env(safe-area-inset-bottom));
+  padding: 0 36rpx calc(80rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 

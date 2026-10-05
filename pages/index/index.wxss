@@ -195,6 +195,7 @@ page {
   background: #f1f5f2;
 }
 .home-svip-avatar:first-child { margin-left: 0; }
+.home-svip-avatar-active { opacity: .72; transform: scale(.94); }
 .home-svip-avatar.heat-level-0 { border-color: #f1f5f2; }
 .home-svip-avatar.heat-level-1 { border-color: #aae98f; }
 .home-svip-avatar.heat-level-2 { border-color: #50cf64; }

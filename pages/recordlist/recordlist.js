@@ -27,8 +27,6 @@ Page({
     getH: '',
     iconState: true,
     iconState2: true,
-    filterTop: 0,
-    filterBottom: 94,
     selAll: false,
     sortAll: false,
     selArea: '',
@@ -162,14 +160,6 @@ Page({
     this._reqSeq = 0
     this._loadingMore = false
     this._hasMore = true
-    const system = wx.getSystemInfoSync ? wx.getSystemInfoSync() : {}
-    const menu = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null
-    const statusBarHeight = system.statusBarHeight || 20
-    const filterTop = menu && menu.top
-      ? menu.top + menu.height + 8
-      : statusBarHeight + 46
-    const filterHeight = system.windowWidth ? system.windowWidth * 94 / 750 : 47
-    this.setData({ filterTop, filterBottom: filterTop + filterHeight })
     this.initRecord()
     this.getH()
   },

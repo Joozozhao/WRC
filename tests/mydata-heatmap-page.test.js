@@ -53,6 +53,7 @@ function sport(id, sportDate, distance, state) {
 const requestLog = [];
 let failSportList = false;
 let storage = {};
+let selectorRects = {};
 
 function fakeRequest(url, method, data, msg, onSuccess, onFail) {
   requestLog.push({ url: url, page: data && data.page });
@@ -74,6 +75,18 @@ global.wx = {
   navigateTo: () => {},
   switchTab: () => {},
   getWindowInfo: () => ({ windowWidth: 375 }),
+  createSelectorQuery: () => {
+    const selectors = [];
+    const query = {
+      select(selector) {
+        selectors.push(selector);
+        return query;
+      },
+      boundingClientRect() { return query; },
+      exec(callback) { callback(selectors.map((selector) => selectorRects[selector] || null)); }
+    };
+    return query;
+  },
   getStorageSync: (key) => storage[key],
   setStorageSync: (key, value) => { storage[key] = value; }
 };
@@ -93,10 +106,14 @@ function createPage(userId) {
   storage = userId > 0 ? { userId: userId, openId: "openid-" + userId } : {};
   requestLog.length = 0;
   failSportList = false;
+  selectorRects = {};
   const instance = {};
   Object.keys(pageConfig).forEach((key) => { instance[key] = pageConfig[key]; });
   instance.data = JSON.parse(JSON.stringify(pageConfig.data));
-  instance.setData = function (patch) { Object.assign(this.data, patch); };
+  instance.setData = function (patch, callback) {
+    Object.assign(this.data, patch);
+    if (callback) callback.call(this);
+  };
   instance.onLoad({});
   return instance;
 }
@@ -134,10 +151,33 @@ test("页面：登录后默认最近 6 个月，标题显示真实打卡天数�
   assert.equal(page.data.heatmapCheckinDays, 3);
   assert.equal(sportListCalls().length, 2, "全量取满两页");
   assert.ok(page.data.recentHeatmap.weeks.length > 0);
-  assert.equal(page.data.heatmapCellSize, 18);
+  assert.equal(page.data.heatmapCellSize, 21.6);
   assert.equal(page.data.heatmapColumnGap, 6);
-  assert.equal(page.data.heatmapColumnStride, 24);
+  assert.equal(page.data.heatmapColumnStride, 27.6);
   assert.ok(page.data.heatmapScrollLeft > 0, "6 个月默认滚到最新端");
+});
+
+test("页面：点击热力格显示日期和当日聚合跑量，可再次点击收起并忽略空白格", async () => {
+  const page = createPage(7);
+  page.onShow();
+  await flush();
+  selectorRects = {
+    "#heatmap-section": { left: 20, top: 100, width: 335, height: 280 },
+    ["#heatmap-day-" + TODAY_KEY]: { left: 310, right: 319, top: 175, bottom: 184, width: 9, height: 9 },
+    "#heatmap-tooltip": { width: 120, height: 58 }
+  };
+
+  page.onHeatmapDayTap({ currentTarget: { dataset: { date: TODAY_KEY, distance: "25", isPadding: "false" } } });
+  assert.equal(page.data.heatmapTooltipVisible, true);
+  assert.equal(page.data.heatmapTooltipDate, TODAY.getFullYear() + "年" + (TODAY.getMonth() + 1) + "月" + TODAY.getDate() + "日");
+  assert.equal(page.data.heatmapTooltipDistance, "25.00");
+  assert.ok(page.data.heatmapTooltipLeft >= 6 && page.data.heatmapTooltipLeft <= 209, "提示框横向限制在卡片内");
+  assert.ok(page.data.heatmapTooltipTop >= 6, "提示框不会顶出卡片上沿");
+
+  page.onHeatmapDayTap({ currentTarget: { dataset: { date: TODAY_KEY, distance: "25", isPadding: false } } });
+  assert.equal(page.data.heatmapTooltipVisible, false, "再次点击当前日期收起提示框");
+  page.onHeatmapDayTap({ currentTarget: { dataset: { date: "padding", distance: "0", isPadding: "true" } } });
+  assert.equal(page.data.heatmapSelectedDate, "", "范围外透明补位格不能打开详情");
 });
 
 test("页面：下拉切范围本地重算，不再请求分页", async () => {
@@ -174,12 +214,12 @@ test("页面：事件切换四范围及返回短范围，cell/gap/stride 固定�
     page.onHeatmapRangeChange({ detail: { value: String(index) } });
     assert.equal(page.data.heatmapRangeValue, ranges[index]);
     assert.equal(page.data.heatmapRangeIndex, index);
-    assert.equal(page.data.heatmapCellSize, 18, "切范围不能改变格子大小");
+    assert.equal(page.data.heatmapCellSize, 21.6, "切范围不能改变格子大小");
     assert.equal(page.data.heatmapColumnGap, 6, "切范围不能拉伸间隔");
-    assert.equal(page.data.heatmapColumnStride, 24);
-    assert.equal(page.data.heatmapMonthAxisHeight, 34);
+    assert.equal(page.data.heatmapColumnStride, 27.6);
+    assert.equal(page.data.heatmapMonthAxisHeight, 40.8);
     assert.deepEqual(page.data.heatmapWeekdayRows, ["周一", "", "周三", "", "周五", "", ""]);
-    const canvasWidth = page.data.recentHeatmap.weeks.length * 24 - 6 + 48;
+    const canvasWidth = page.data.recentHeatmap.weeks.length * 27.6 - 6 + 48;
     assert.equal(page.data.heatmapCanvasWidth, canvasWidth);
     if (ranges[index] <= 3) {
       assert.ok(canvasWidth < 554, "短范围自然留白");
@@ -201,7 +241,7 @@ test("页面：加载过程中切范围，完成后按最新选择渲染", async
   assert.equal(page.data.heatmapRangeValue, 1);
   assert.equal(page.data.heatmapDaysText, "2");
   assert.equal(page.data.heatmapScrollLeft, 0);
-  assert.equal(page.data.heatmapCellSize, 18);
+  assert.equal(page.data.heatmapCellSize, 21.6);
   assert.equal(sportListCalls().length, 2, "加载中切范围不会重复请求");
 });
 

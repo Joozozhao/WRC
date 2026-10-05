@@ -1,5 +1,5 @@
 <!-- pages/challengedetail/challengedetail.wxml -->
-<site-header show-back="{{true}}" back-url="/pages/challenge/challenge" bindprofiletap="openMyPage"></site-header>
+<site-header show-back="{{true}}" overlay="{{true}}" back-url="/pages/challenge/challenge" bindprofiletap="openMyPage"></site-header>
 <view class="detail-page">
   <view class="detail-feedback" wx:if="{{detailLoading}}">
     <text class="detail-feedback-title">正在加载挑战</text>

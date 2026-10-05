@@ -153,13 +153,16 @@ Page({
   syncGroupPhotosForList: function(list) {
     if (!Array.isArray(list) || !list.length) return
     const that = this
-    list.forEach(function(item, idx) {
+    list.forEach(function(item) {
       if (!item.id) return
+      const activityId = String(item.id)
       util.request('acty/getactyimgs', 'POST', { actyId: item.id }, '', (res) => {
-        if (res.data && res.data.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
+        if (res && res.data && res.data.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
           const firstPhoto = res.data.data[0].img_url
           if (firstPhoto) {
-            const key = 'activityList[' + idx + '].acty_img'
+            const currentIndex = (that.data.activityList || []).findIndex(current => String(current.id) === activityId)
+            if (currentIndex < 0) return
+            const key = 'activityList[' + currentIndex + '].acty_img'
             that.setData({
               [key]: firstPhoto
             })
@@ -206,6 +209,7 @@ Page({
           hasMore: allData.length > 0,
           loading: false
         })
+        that.syncGroupPhotosForList(allData)
         setTimeout(function() {
           that.setData({
             activityList: that.data.activityList.map(function(item) {

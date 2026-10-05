@@ -1,5 +1,5 @@
 <wxs src="../../utils/toDecimal2.wxs" module="number" />
-<site-header show-back="{{true}}" back-url="/pages/activity/activity" bindprofiletap="openMyPage"></site-header>
+<site-header show-back="{{true}}" overlay="{{true}}" back-url="/pages/activity/activity" bindprofiletap="openMyPage"></site-header>
 <view class="detail-page {{state != '已结束' ? 'has-action' : ''}}" style="padding-top: {{contentTop}}px;">
   <view class="detail-message" wx:if="{{loading}}">
     <text class="detail-message-title">准备好，一起跑。</text>

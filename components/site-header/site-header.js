@@ -6,12 +6,15 @@ Component({
     avatar: { type: String, value: '' },
     dark: { type: Boolean, value: false },
     showBack: { type: Boolean, value: false },
-    backUrl: { type: String, value: '/pages/index/index' }
+    backUrl: { type: String, value: '/pages/index/index' },
+    overlay: { type: Boolean, value: false }
   },
   data: {
     menuTop: 30,
     barHeight: 32,
-    backMode: false
+    backMode: false,
+    showSpacer: false,
+    spacerHeight: 0
   },
   lifetimes: {
     attached: function () {
@@ -27,7 +30,9 @@ Component({
       const route = pages && pages.length ? (pages[pages.length - 1].route || '') : ''
       const basicBackMode = !!this.data.showBack
       const backMode = basicBackMode || (!!route && mainPages.indexOf(route) === -1)
-      this.setData({ menuTop, barHeight, backMode })
+      // 返回按钮悬浮时，用等高的占位视图把正文顶到按钮下方 20px 处，全站统一
+      const spacerHeight = menuTop + barHeight + 20
+      this.setData({ menuTop, barHeight, backMode, spacerHeight, showSpacer: backMode && !this.data.overlay })
       if (!backMode) this.loadAvatar()
     }
   },

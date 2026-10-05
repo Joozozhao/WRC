@@ -1,5 +1,5 @@
 page { min-height: 100%; background: #fafbf7; color: #123d2f; }
-.ranking-page { min-height: 100vh; padding: 180rpx 34rpx 52rpx; box-sizing: border-box; background: #fafbf7; }
+.ranking-page { min-height: 100vh; padding: 0 34rpx 52rpx; box-sizing: border-box; background: #fafbf7; }
 .ranking-head { padding-top: 38rpx; }
 .eyebrow { display: block; color: #547767; font-size: 19rpx; font-weight: 750; letter-spacing: 3rpx; }
 .page-title { display: block; margin-top: 17rpx; color: #103d2e; font-size: 58rpx; line-height: 1.2; font-weight: 820; letter-spacing: -2rpx; }

@@ -7,7 +7,7 @@ page {
 
 .edit-page {
   min-height: 100vh;
-  padding: 180rpx 36rpx 180rpx;
+  padding: 0 36rpx 180rpx;
   box-sizing: border-box;
 }
 

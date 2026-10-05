@@ -1,5 +1,5 @@
 page { background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
-.prize-page { min-height: 100vh; padding: 180rpx 40rpx 100rpx; box-sizing: border-box; }
+.prize-page { min-height: 100vh; padding: 0 40rpx 100rpx; box-sizing: border-box; }
 .prize-hero { padding: 18rpx 4rpx 35rpx; border-bottom: 1rpx solid #e1e9e3; }
 .prize-eyebrow { display: block; color: #0d6447; font-size: 22rpx; font-weight: 750; letter-spacing: 3rpx; }
 .prize-title { display: block; margin-top: 27rpx; font-size: 72rpx; line-height: 1.15; font-weight: 800; letter-spacing: -2rpx; }

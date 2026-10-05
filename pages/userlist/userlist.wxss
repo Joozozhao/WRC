@@ -7,11 +7,12 @@ page {
 
 .ul-page {
   min-height: 100vh;
-  padding: 180rpx 36rpx calc(80rpx + env(safe-area-inset-bottom));
+  padding: 0 36rpx calc(80rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
 .ul-header {
+  padding-top: 24rpx;
   margin-bottom: 30rpx;
 }
 
@@ -94,17 +95,7 @@ page {
   height: 22rpx;
 }
 
-/* 筛选面板与遮罩 */
-.filter-mask {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: rgba(7, 47, 39, 0.35);
-  z-index: 20;
-}
-
+/* 筛选面板 */
 .filter-pop {
   position: absolute;
   left: 0;

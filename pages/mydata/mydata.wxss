@@ -307,6 +307,7 @@ page {
 
 /* 跑步热力图：月份轴 + 固定星期轴 + 横向滚动的周列方格，格内不绘制日期与公里数。 */
 .profile-heatmap-section {
+  position: relative;
   margin-top: 18rpx;
   padding: 26rpx;
   border: 1rpx solid #e1e9e3;
@@ -368,7 +369,7 @@ page {
   display: flex;
   align-items: center;
   color: #6f8478;
-  font-size: 17rpx;
+  font-size: 20.4rpx;
   font-weight: 300;
   line-height: 1;
 }
@@ -382,17 +383,35 @@ page {
   bottom: 10rpx;
   box-sizing: border-box;
   color: #7c8f84;
-  font-size: 18rpx;
+  font-size: 21.6rpx;
   line-height: 1;
   white-space: nowrap;
   overflow: visible;
 }
-.profile-heatmap-grid { display: flex; align-items: flex-start; }
+.profile-heatmap-grid { display: flex; align-items: flex-start; padding-bottom: 4rpx; }
 .profile-heatmap-week { flex: none; display: flex; flex-direction: column; }
 .profile-heatmap-week:last-child { margin-right: 0 !important; }
 .profile-heatmap-day { border-radius: 4rpx; box-sizing: border-box; }
 .profile-heatmap-day:last-child { margin-bottom: 0 !important; }
 .profile-heatmap-day.is-padding { visibility: hidden; }
+.profile-heatmap-day.is-selected { position: relative; z-index: 1; box-shadow: 0 0 0 3rpx #0b503b; }
+.profile-heatmap-tooltip {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 5rpx;
+  width: 240rpx;
+  padding: 14rpx 18rpx;
+  box-sizing: border-box;
+  border: 1rpx solid #e1e9e3;
+  border-radius: 18rpx;
+  background: #fff;
+  box-shadow: 0 5rpx 16rpx rgba(7, 47, 39, .14);
+  pointer-events: none;
+}
+.profile-heatmap-tooltip-date { color: #17231e; font-size: 25rpx; font-weight: 500; line-height: 1.35; white-space: nowrap; }
+.profile-heatmap-tooltip-distance { color: #52645a; font-size: 23rpx; font-weight: 300; line-height: 1.35; }
 .level-0 { background: #edf2ec; }
 .level-1 { background: #cfe7b4; }
 .level-2 { background: #94c86c; }
@@ -407,9 +426,9 @@ page {
   padding-top: 18rpx;
   border-top: 1rpx solid #eef3ee;
 }
-.profile-heatmap-hint { color: #8a9b90; font-size: 19rpx; }
-.profile-heatmap-legend { display: flex; align-items: center; gap: 6rpx; color: #667970; font-size: 19rpx; }
-.profile-heatmap-swatch { width: 18rpx; height: 18rpx; border-radius: 4rpx; }
+.profile-heatmap-hint { color: #8a9b90; font-size: 22.8rpx; }
+.profile-heatmap-legend { display: flex; align-items: center; gap: 6rpx; color: #667970; font-size: 22.8rpx; }
+.profile-heatmap-swatch { width: 21.6rpx; height: 21.6rpx; border-radius: 4rpx; }
 .profile-heatmap-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 240rpx; color: #667970; font-size: 24rpx; line-height: 1.6; text-align: center; }
 .profile-heatmap-retry { display: flex; align-items: center; justify-content: center; min-height: 88rpx; margin-top: 10rpx; padding: 0 24rpx; color: #0b503b; font-size: 25rpx; font-weight: 300; }
 

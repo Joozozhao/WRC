@@ -1,5 +1,5 @@
 page { background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
-.reward-page { min-height: 100vh; padding-top: 180rpx;
+.reward-page { min-height: 100vh; padding-top: 0;
   padding-bottom: calc(190rpx + env(safe-area-inset-bottom)); box-sizing: border-box; }
 .reward-kicker { display: block; color: #0d6447; font-size: 21rpx; font-weight: 750; letter-spacing: 3rpx; }
 .reward-loading, .reward-error { padding: 50rpx 40rpx; }
@@ -8,12 +8,12 @@ page { background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMac
 .reward-loading-line { width: 45%; height: 32rpx; margin: 18rpx 0; border-radius: 8rpx; background: #eaf0e9; }
 .reward-loading-line-long { width: 76%; }
 .reward-loading text { display: block; margin-top: 38rpx; }
-.reward-error { padding-top: 120rpx; }
+.reward-error { padding-top: 24rpx; }
 .reward-error-title { display: block; margin-top: 32rpx; font-size: 48rpx; line-height: 1.25; font-weight: 800; }
 .reward-error-copy { display: block; margin-top: 20rpx; color: #697d70; font-size: 26rpx; line-height: 1.6; }
 .reward-retry-button { width: 240rpx; height: 84rpx; margin: 42rpx 0 0; border-radius: 44rpx; background: #d9ff3f; color: #092f27; font-size: 27rpx; font-weight: 750; line-height: 84rpx; }
 .reward-retry-button::after { border: 0; }
-.reward-head { display: flex; align-items: center; justify-content: space-between; padding: 36rpx 40rpx 27rpx; }
+.reward-head { display: flex; align-items: center; justify-content: space-between; padding: 24rpx 40rpx 27rpx; }
 .reward-head-label { color: #819187; font-size: 21rpx; }
 .reward-media { position: relative; height: 580rpx; margin: 0 40rpx; overflow: hidden; border: 1rpx solid #e2ebe3; border-radius: 22rpx; background: #edf2eb; }
 .reward-gallery { width: 100%; height: 100%; }

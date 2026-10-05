@@ -1,0 +1,167 @@
+<template id="wrc-story-template">
+  <div data-composition-id="wrc-story" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family:'Hiragino Sans GB'; src:local('Hiragino Sans GB'); }
+      :root { --green:#0B503B; --lime:#D9FF3F; --white:#F4F5EF; --sage:#B8C8BE; --deep:#07372B; }
+      * { box-sizing:border-box; }
+      html, body { width:1080px; height:1920px; margin:0; overflow:hidden; background:var(--green); color:var(--white); font-family:"Hiragino Sans GB", Arial, sans-serif; }
+      [data-composition-id="wrc-story"] { position:absolute; inset:0; width:100%; height:100%; overflow:hidden; }
+      .scene { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; padding:110px 92px 130px; gap:42px; background:var(--green); opacity:0; }
+      .scene.photo { background:#062c23; }
+      .backdrop { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.7; }
+      .shade { position:absolute; inset:0; background:linear-gradient(180deg,rgba(4,38,29,.22),rgba(4,38,29,.34) 38%,rgba(4,38,29,.93) 82%); }
+      .glow { position:absolute; width:780px; height:780px; border-radius:50%; background:radial-gradient(circle,rgba(217,255,63,.16),rgba(217,255,63,0) 68%); pointer-events:none; }
+      .topline { position:absolute; top:84px; left:92px; right:92px; display:flex; align-items:center; justify-content:space-between; z-index:2; color:var(--sage); font-size:23px; letter-spacing:.16em; }
+      .brand { display:flex; align-items:center; gap:18px; color:var(--white); font-weight:800; letter-spacing:.04em; }
+      .brand img { width:72px; height:72px; object-fit:contain; }
+      .brand-name { font-size:27px; }
+      .kicker { color:var(--lime); font-family:Arial,sans-serif; font-size:22px; letter-spacing:.2em; font-weight:700; }
+      h1,h2,p { margin:0; }
+      .hero-copy { position:relative; z-index:2; width:100%; display:flex; flex-direction:column; gap:28px; }
+      .hero-title { max-width:850px; font-size:94px; line-height:1.22; letter-spacing:-.045em; font-weight:850; }
+      .hero-title em { color:var(--lime); font-style:normal; }
+      .hero-sub { max-width:790px; color:var(--white); font-size:34px; line-height:1.65; font-weight:350; }
+      .scene-title { position:relative; z-index:2; display:flex; flex-direction:column; gap:23px; }
+      .scene-title h2 { max-width:850px; font-size:75px; line-height:1.25; letter-spacing:-.04em; font-weight:850; }
+      .scene-title p { max-width:780px; font-size:31px; color:var(--sage); line-height:1.55; }
+      .phone { position:relative; z-index:2; align-self:center; width:790px; padding:31px; border-radius:38px; background:#F4F5EF; color:#173E30; box-shadow:0 28px 80px rgba(0,0,0,.28); }
+      .phone-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:26px; color:#708279; font-size:19px; }
+      .phone-heading { margin-bottom:23px; font-size:25px; font-weight:700; }
+      .metric-box { padding:29px 31px; border-radius:25px; background:#E7EEE8; }
+      .metric-label { color:#61776B; font-size:20px; }
+      .metric-row { display:flex; align-items:baseline; gap:12px; margin-top:8px; }
+      .metric-number { color:#0B503B; font-family:Arial,sans-serif; font-size:67px; font-weight:800; letter-spacing:-.04em; }
+      .metric-unit { color:#61776B; font-size:22px; }
+      .mini-stats { display:flex; justify-content:space-between; gap:12px; margin-top:21px; }
+      .mini-stat { flex:1; padding:18px 15px; border-radius:18px; background:white; }
+      .mini-stat b { display:block; margin-bottom:5px; font-size:29px; color:#0B503B; }
+      .mini-stat span { color:#61776B; font-size:17px; }
+      .calendar { display:grid; grid-template-columns:repeat(7,1fr); gap:9px; margin-top:15px; }
+      .day { height:29px; border-radius:8px; background:#DCE5DD; }
+      .day.on { background:#8DCB57; }.day.hot { background:#0B503B; }
+      .ui-note { position:absolute; right:36px; bottom:26px; color:#73867C; font-size:15px; }
+      .run-card { position:relative; z-index:2; overflow:hidden; border-radius:31px; background:#F4F5EF; color:#183E30; box-shadow:0 28px 80px rgba(0,0,0,.32); }
+      .run-card img { display:block; width:100%; height:470px; object-fit:cover; }
+      .run-card-copy { padding:27px 31px 31px; }
+      .run-pill { display:inline-block; margin-bottom:13px; padding:8px 15px; border-radius:99px; background:#E5EFCF; color:#285C3D; font-size:18px; font-weight:700; }
+      .run-card h3 { margin:0 0 13px; font-size:34px; }
+      .run-card p { color:#65796F; font-size:23px; line-height:1.55; }
+      .run-meta { display:flex; justify-content:space-between; align-items:center; margin-top:23px; padding-top:20px; border-top:1px solid #DCE4DE; color:#315C45; font-size:21px; }
+      .run-meta b { color:#0B503B; font-size:22px; }
+      .challenge-card { position:relative; z-index:2; display:flex; align-items:center; gap:35px; width:800px; align-self:center; padding:39px; border-radius:34px; background:#F4F5EF; color:#173E30; box-shadow:0 28px 80px rgba(0,0,0,.26); }
+      .ring { flex:0 0 220px; width:220px; height:220px; display:grid; place-items:center; border-radius:50%; background:conic-gradient(#0B503B 0 65%,#DCE5DD 65% 100%); }
+      .ring-inner { display:flex; flex-direction:column; align-items:center; justify-content:center; width:178px; height:178px; border-radius:50%; background:#F4F5EF; }
+      .ring strong { color:#0B503B; font-family:Arial,sans-serif; font-size:57px; }
+      .ring small { color:#73867C; font-size:16px; }
+      .challenge-copy { display:flex; flex-direction:column; gap:16px; }
+      .challenge-copy .label { color:#668075; font-size:20px; }
+      .challenge-copy h3 { margin:0; color:#173E30; font-size:34px; }
+      .challenge-copy p { color:#61776B; font-size:22px; line-height:1.55; }
+      .progress { height:12px; overflow:hidden; border-radius:20px; background:#DCE5DD; }
+      .progress i { display:block; width:65%; height:100%; border-radius:20px; background:#0B503B; }
+      .social-stack { position:relative; z-index:2; display:flex; flex-direction:column; gap:17px; width:800px; align-self:center; }
+      .social-card { padding:25px 28px; border:1px solid rgba(244,245,239,.15); border-radius:25px; background:rgba(7,55,43,.88); }
+      .social-head { display:flex; align-items:center; gap:17px; margin-bottom:15px; }
+      .avatar { display:grid; place-items:center; width:52px; height:52px; border-radius:50%; background:var(--lime); color:var(--green); font-size:22px; font-weight:800; }
+      .social-name { font-size:22px; font-weight:700; }
+      .social-time { margin-left:auto; color:var(--sage); font-size:17px; }
+      .social-text { color:var(--white); font-size:23px; line-height:1.55; }
+      .social-stats { display:flex; gap:30px; margin-top:17px; color:var(--sage); font-size:19px; }
+      .ranking { display:flex; gap:16px; align-items:center; margin-top:17px; }
+      .rank-tag { padding:12px 18px; border-radius:16px; background:var(--lime); color:var(--deep); font-size:19px; font-weight:800; }
+      .rank-copy { color:var(--white); font-size:21px; }
+      .caption { position:absolute; z-index:4; left:92px; right:92px; bottom:66px; padding-top:21px; border-top:1px solid rgba(244,245,239,.25); color:#E4EBE5; font-size:25px; line-height:1.5; opacity:0; }
+
+      .outro { align-items:center; text-align:center; gap:34px; }
+      .outro .hero-copy { align-items:center; }
+      .outro .hero-title { font-size:86px; }
+      .outro .hero-sub { font-size:31px; }
+      .outro-wordmark { display:flex; flex-direction:column; align-items:center; gap:18px; }
+      .outro-wordmark strong { font:850 145px/1 Arial,sans-serif; letter-spacing:-.06em; }
+      .outro-wordmark span { font-size:39px; font-weight:800; }
+      .cta { display:inline-flex; align-items:center; justify-content:center; padding:20px 31px; border-radius:99px; background:var(--lime); color:var(--deep); font-size:27px; font-weight:800; }
+      .rule { position:absolute; z-index:2; top:50%; left:0; width:100%; height:1px; background:rgba(217,255,63,.12); }
+    </style>
+    
+      <section id="s1" class="clip scene photo">
+        <img class="backdrop" src="assets/group-run.jpg" alt="夜跑中的跑团成员" />
+        <div class="shade"></div><div class="glow" style="top:320px;right:-340px"></div>
+        <div class="topline"><span>WRC · RUN TOGETHER</span><span>01 / 06</span></div>
+        <div class="hero-copy"><div class="kicker">微网跑团 · RUN TOGETHER</div><div class="kicker">跑步，让相遇发生</div><h1 class="hero-title">每一步，<em>都算数。</em></h1><p class="hero-sub">从自己的日常，到一群人的热爱。</p></div>
+        <div class="caption" id="cap1">每次出发，都是和自己的一次约定。</div>
+      </section>
+
+      <section id="s2" class="clip scene">
+        <div class="glow" style="top:850px;left:-390px"></div><div class="topline"><span>01 / RUN LOG</span><span>记录跑步</span></div>
+        <div class="scene-title"><div class="kicker">让每一段努力，都有迹可循</div><h2>跑过的路，<br/>好好记下来。</h2><p>跑量、打卡日历与年度累计，一页回看自己的坚持。</p></div>
+        <div class="phone">
+          <div class="phone-top"><span>‹　我的跑步</span><span>本月⌄</span></div><div class="phone-heading">跑量记录</div>
+          <div class="metric-box"><div class="metric-label">本周跑量</div><div class="metric-row"><span class="metric-number">21.6</span><span class="metric-unit">公里</span></div><div class="mini-stats"><div class="mini-stat"><b>4 天</b><span>本月打卡</span></div><div class="mini-stat"><b>7 天</b><span>连续打卡</span></div><div class="mini-stat"><b>168</b><span>今年公里</span></div></div></div>
+          <div class="phone-heading" style="margin-top:25px">跑步日历</div><div class="calendar"><i class="day"></i><i class="day on"></i><i class="day"></i><i class="day hot"></i><i class="day on"></i><i class="day"></i><i class="day"></i><i class="day on"></i><i class="day hot"></i><i class="day"></i><i class="day on"></i><i class="day"></i><i class="day on"></i><i class="day"></i><i class="day"></i><i class="day"></i><i class="day hot"></i><i class="day"></i><i class="day"></i><i class="day on"></i><i class="day"></i></div>
+          <span class="ui-note">界面示意</span>
+        </div>
+        <div class="caption" id="cap2">记录跑步，查看跑量与打卡日历，让每一步都有迹可循。</div>
+      </section>
+
+      <section id="s3" class="clip scene photo">
+        <div class="topline"><span>02 / GROUP RUN</span><span>发现团跑</span></div>
+        <div class="scene-title"><div class="kicker">把一个人的路，跑成大家的故事</div><h2>约一场团跑，<br/>一起出发。</h2><p>发现团跑活动，看看时间、地点和报名信息。</p></div>
+        <div class="run-card"><div class="run-card-copy"><span class="run-pill">团跑活动 · 界面示意</span><h3>周末，一起去跑步</h3><p>浏览活动详情，确认安排，报名和跑友见面。</p><div class="run-meta"><span>活动详情 · 报名信息</span><b>查看活动　→</b></div></div></div>
+        <div class="caption" id="cap3">发现团跑活动，和跑友相约，把今天的路一起跑完。</div>
+      </section>
+
+      <section id="s4" class="clip scene">
+        <div class="glow" style="top:820px;right:-350px"></div><div class="topline"><span>03 / CHALLENGE</span><span>一起挑战</span></div>
+        <div class="scene-title"><div class="kicker">为自己定一个，够得到的目标</div><h2>一点点进步，<br/>看得见。</h2><p>参加里程挑战，设定目标，随时查看完成进度。</p></div>
+        <div class="challenge-card"><div class="ring"><div class="ring-inner"><strong>65%</strong><small>界面示意</small></div></div><div class="challenge-copy"><span class="label">我的挑战进度</span><h3>向目标继续跑</h3><p>每一次打卡都在累积，离目标再近一点。</p><div class="progress"><i></i></div></div></div>
+        <div class="caption" id="cap4">加入里程挑战，设定目标，看见坚持一点点累积。</div>
+      </section>
+
+      <section id="s5" class="clip scene">
+        <div class="glow" style="top:970px;left:-400px"></div><div class="topline"><span>04 / RUN WITH FRIENDS</span><span>跑友同行</span></div>
+        <div class="scene-title"><div class="kicker">看见彼此的努力</div><h2>跑友的每一步，<br/>都是鼓励。</h2><p>浏览跑友动态与跑步数据，也看看大家的月榜、年榜。</p></div>
+        <div class="social-stack">
+          <article class="social-card"><div class="social-head"><span class="avatar">跑</span><span class="social-name">跑友动态</span><span class="social-time">今天</span></div><div class="social-text">完成今天的训练。下一次，也一起出发吧。</div><div class="social-stats"><span>跑步记录</span><span>里程与配速</span></div></article>
+          <article class="social-card"><div class="social-head"><span class="avatar">W</span><span class="social-name">跑步数据</span><span class="social-time">持续累积</span></div><div class="social-text">个人跑步日历，汇总每一次打卡。</div><div class="social-stats"><span>月度数据</span><span>年度数据</span></div></article>
+          <article class="social-card"><div class="ranking"><span class="rank-tag">月榜</span><span class="rank-tag" style="background:#315F49;color:#F4F5EF">年榜</span><span class="rank-copy">为每一份坚持喝彩</span></div></article>
+        </div>
+        <div class="caption" id="cap5">跑友动态、跑步数据与榜单，分享进步，也为彼此加油。</div>
+      </section>
+
+      <section id="s6" class="clip scene outro">
+        <div class="glow" style="top:450px;left:160px"></div><div class="topline"><span>WRC · RUN TOGETHER</span><span>05 / 06</span></div>
+        <div class="outro-wordmark"><strong>WRC</strong><span>微网跑团</span></div>
+        <div class="hero-copy"><div class="kicker">记录 · 挑战 · 相聚</div><h2 class="hero-title">今天，<em>一起跑。</em></h2><p class="hero-sub">打开微信小程序，和跑友一起出发。</p></div>
+        <div class="cta">微网跑团 WRC</div>
+        <div class="caption" id="cap6">微网跑团。今天，一起跑。</div>
+      </section>
+    
+    <script>window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const scenes = [
+        { id:"#s1", start:0, end:5.5, cap:"#cap1" }, { id:"#s2", start:5.5, end:12, cap:"#cap2" },
+        { id:"#s3", start:12, end:18, cap:"#cap3" }, { id:"#s4", start:18, end:24, cap:"#cap4" },
+        { id:"#s5", start:24, end:30, cap:"#cap5" }, { id:"#s6", start:30, end:36, cap:"#cap6" }
+      ];
+      scenes.forEach((s, i) => {
+        const start = s.start;
+        const scene = document.querySelector(s.id);
+        tl.to(scene, { opacity:1, duration:0.72, ease:"power2.out" }, start);
+        const end = s.end;
+        if (i < scenes.length - 1) tl.to(scene, { opacity:0, duration:0.72, ease:"sine.inOut" }, end - 0.72);
+        tl.from(scene.querySelector(".topline"), { y:-25, opacity:0, duration:0.48, ease:"power3.out" }, start + 0.16);
+        const title = scene.querySelector(".hero-title, .scene-title h2");
+        if (title) tl.from(title, { y:42, opacity:0, duration:0.62, ease:"expo.out" }, start + 0.24);
+        const kicker = scene.querySelector(".kicker");
+        if (kicker) tl.from(kicker, { x:-28, opacity:0, duration:0.48, ease:"power3.out" }, start + 0.32);
+        const body = scene.querySelector(".hero-sub, .scene-title p");
+        if (body) tl.from(body, { y:22, opacity:0, duration:0.5, ease:"sine.out" }, start + 0.5);
+        const card = scene.querySelector(".phone, .run-card, .challenge-card, .social-stack, .cta, .outro-wordmark");
+        if (card) tl.from(card, { y:48, scale:0.97, opacity:0, duration:0.62, ease:"back.out(1.25)" }, start + 0.66);
+        if (s.cap) tl.to(s.cap, { opacity:1, y:0, duration:0.42, ease:"power2.out" }, start + 1.12);
+        const glow = scene.querySelector(".glow");
+        if (glow) tl.fromTo(glow, { scale:0.94, opacity:0.7 }, { scale:1.06, opacity:1, duration:2.4, ease:"sine.inOut", yoyo:true, repeat:0 }, start + 0.3);
+      });
+      window.__timelines["wrc-story"] = tl;</script>
+  </div>
+</template>

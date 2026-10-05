@@ -8,6 +8,7 @@ const PAGE_PATH = path.resolve(__dirname, "../pages/index/index.js");
 const UTIL_PATH = path.resolve(__dirname, "../utils/util.js");
 
 const requestLog = [];
+const navigations = [];
 let monthListResponse = null;
 let challengeActyResponses = {}; // page -> response
 let challengeDetailResponses = {}; // actyId -> response
@@ -85,7 +86,7 @@ global.wx = {
   request: fakeRequest,
   hideTabBar: () => {},
   showToast: () => {},
-  navigateTo: () => {},
+  navigateTo: (options) => { navigations.push(options); },
   switchTab: () => {},
   showShareMenu: () => {},
   showLoading: () => {},
@@ -116,6 +117,7 @@ function createPage(userId) {
   appInstance.globalData.openId = userId > 0 ? "openid-" + userId : "";
   storage = userId > 0 ? { userId: userId, openId: "openid-" + userId } : {};
   requestLog.length = 0;
+  navigations.length = 0;
   monthListResponse = null;
   challengeActyResponses = {};
   challengeDetailResponses = {};
@@ -437,7 +439,8 @@ test("验收7：本周跑量与周目标（月目标/4）及今年跑量正确�
     success: true,
     data: {
       [curYM]: [
-        { sport_day: curYM + "-01", sport_total: 24.9 }
+        // 用今天而不是每月 1 号：1 号可能落在上周（如周一运行时），导致周跑量断言随日历日漂移。
+        { sport_day: curYM + "-" + (now.getDate() < 10 ? "0" + now.getDate() : now.getDate()), sport_total: 24.9 }
       ]
     }
   };
@@ -467,4 +470,13 @@ test("验收7：本周跑量与周目标（月目标/4）及今年跑量正确�
   // 24.9 / 44.44 = 56%
   assert.equal(p.data.weekPercent, 56);
   assert.equal(p.data.weekProgressWidth, "56%");
+});
+
+test("首页：点击跑友头像进入对应的个人主页，缺失用户ID时不跳转", () => {
+  const p = createPage(1);
+  p.openRunnerProfile({ currentTarget: { dataset: { userid: 63 } } });
+  assert.deepEqual(navigations, [{ url: '../othersdata/othersdata?id=63' }]);
+
+  p.openRunnerProfile({ currentTarget: { dataset: {} } });
+  assert.equal(navigations.length, 1, "没有有效用户ID不执行跳转");
 });

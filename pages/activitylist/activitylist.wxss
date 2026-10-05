@@ -7,7 +7,7 @@ page {
 
 .pick-page {
   min-height: 100vh;
-  padding: 180rpx 36rpx calc(220rpx + env(safe-area-inset-bottom));
+  padding: 0 36rpx calc(220rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 

@@ -1,5 +1,5 @@
 page { background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
-.record-page { min-height: 100vh; padding: 180rpx 40rpx 190rpx; box-sizing: border-box; }
+.record-page { min-height: 100vh; padding: 0 40rpx 190rpx; box-sizing: border-box; }
 .record-hero { padding: 53rpx 4rpx 44rpx; }
 .record-eyebrow { display: block; color: #0d6447; font-size: 22rpx; font-weight: 750; letter-spacing: 3rpx; }
 .record-title { display: block; margin-top: 25rpx; font-size: 79rpx; line-height: 1.13; font-weight: 800; letter-spacing: -3rpx; }

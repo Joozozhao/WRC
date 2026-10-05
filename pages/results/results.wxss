@@ -7,7 +7,7 @@ page {
 
 .results-page {
   min-height: 100vh;
-  padding: 180rpx 36rpx 80rpx;
+  padding: 0 36rpx 80rpx;
   box-sizing: border-box;
 }
 

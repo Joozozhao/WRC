@@ -86,3 +86,7 @@
 }
 
 .site-header-back-pressed { background: #f0f5ef; }
+
+.site-header-spacer {
+  width: 100%;
+}

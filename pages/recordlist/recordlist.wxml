@@ -2,38 +2,6 @@
 <!--pages/recordlist/recordlist.wxml-->
 <wxs src="../../utils/toDecimal2.wxs" module="module1" />
 <view class="recordlist-page">
-  <!-- Top Filter Bar -->
-  <view class="filter-bar" style="top: {{filterTop}}px;">
-    <view class="filter-item {{selAll ? 'is-active' : ''}}" bindtap="clickArea">
-      <text class="filter-label">地区</text>
-      <text class="filter-arrow">{{iconState ? "▾" : "▴"}}</text>
-    </view>
-    <view class="filter-item {{sortAll ? 'is-active' : ''}}" bindtap="clickType">
-      <text class="filter-label">跑步类型</text>
-      <text class="filter-arrow">{{iconState2 ? "▾" : "▴"}}</text>
-    </view>
-  </view>
-
-  <!-- Dropdown 1: Area -->
-  <view class="dropdown-mask {{selAll ? 'show' : 'hide'}}" style="top: {{filterBottom}}px;" bindtap="close">
-    <view class="dropdown-menu" catchtap="true">
-      <view class="dropdown-item {{id == index ? 'is-selected' : ''}}" wx:for="{{btnTab}}" wx:key="index" data-id="{{index}}" data-txt="{{item}}" catchtap="choose">
-        <text>{{item}}</text>
-        <text wx:if="{{id == index}}" class="dropdown-check">✓</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- Dropdown 2: Type -->
-  <view class="dropdown-mask {{sortAll ? 'show' : 'hide'}}" style="top: {{filterBottom}}px;" bindtap="close">
-    <view class="dropdown-menu" catchtap="true">
-      <view class="dropdown-item {{id2 == index ? 'is-selected' : ''}}" wx:for="{{btnTab2}}" wx:key="index" data-id="{{index}}" data-txt="{{item}}" catchtap="choose2">
-        <text>{{item}}</text>
-        <text wx:if="{{id2 == index}}" class="dropdown-check">✓</text>
-      </view>
-    </view>
-  </view>
-
   <!-- Records List -->
   <view class="record-list-wrap">
     <view class="record-hero">
@@ -42,6 +10,33 @@
       <view class="record-title-line"></view>
       <text class="record-intro">逐条核对跑步记录，让每一次出发都被认真记录</text>
     </view>
+
+    <!-- 筛选栏与成员管理页保持相同的文档流吸顶行为 -->
+    <view class="filter-zone">
+      <view class="filter-bar">
+        <view class="filter-trigger {{selAll ? 'is-open' : ''}}" bindtap="clickArea" hover-class="filter-hover">
+          <text class="filter-label">地区</text>
+          <image class="filter-arrow" src="{{iconState ? '/images/arrow-r.svg' : '/images/arrow-d.svg'}}" mode="aspectFit"></image>
+        </view>
+        <view class="filter-trigger {{sortAll ? 'is-open' : ''}}" bindtap="clickType" hover-class="filter-hover">
+          <text class="filter-label">跑步类型</text>
+          <image class="filter-arrow" src="{{iconState2 ? '/images/arrow-r.svg' : '/images/arrow-d.svg'}}" mode="aspectFit"></image>
+        </view>
+      </view>
+
+      <view class="filter-pop {{selAll ? 'show' : 'hide'}}">
+        <view class="filter-panel">
+          <text class="filter-option {{id == index ? 'active' : ''}}" wx:for="{{btnTab}}" wx:key="index" data-id="{{index}}" data-txt="{{item}}" catchtap="choose">{{item}}</text>
+        </view>
+      </view>
+
+      <view class="filter-pop {{sortAll ? 'show' : 'hide'}}">
+        <view class="filter-panel">
+          <text class="filter-option {{id2 == index ? 'active' : ''}}" wx:for="{{btnTab2}}" wx:key="index" data-id="{{index}}" data-txt="{{item}}" catchtap="choose2">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
     <view class="record-state" wx:if="{{listState == 'loading'}}">正在加载打卡记录…</view>
     <view class="record-state" wx:elif="{{listState == 'error'}}">
       <text>打卡记录加载失败</text>

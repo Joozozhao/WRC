@@ -6,7 +6,7 @@ page {
 }
 .od-page {
   min-height: 100vh;
-  padding-top: 180rpx;
+  padding-top: 0;
   padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
@@ -47,7 +47,7 @@ page {
 
 /* 错误态 */
 .od-error {
-  padding: 120rpx 40rpx 60rpx;
+  padding: 24rpx 40rpx 60rpx;
 }
 .od-error-title {
   display: block;
@@ -83,7 +83,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 36rpx 40rpx 10rpx;
+  padding: 24rpx 40rpx 10rpx;
 }
 .od-head-label {
   color: #819187;
