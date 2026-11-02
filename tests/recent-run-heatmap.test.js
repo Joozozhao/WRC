@@ -158,6 +158,10 @@ test("levelForDistance：等级阈值与非法值", () => {
   assert.equal(hm.levelForDistance(7.5), 3);
   assert.equal(hm.levelForDistance(12), 3);
   assert.equal(hm.levelForDistance(12.01), 4);
+  assert.equal(hm.levelForDistance(21.1), 4, "恰好半马仍沿用原有第4级");
+  assert.equal(hm.levelForDistance(21.1001), 5, "超过半马切换第5级");
+  assert.equal(hm.levelForDistance(42.2), 5, "恰好全马仍属于半马以上级别");
+  assert.equal(hm.levelForDistance(42.2001), 6, "超过全马切换第6级");
   assert.equal(hm.levelForDistance("5"), 2);
   assert.equal(hm.levelForDistance("abc"), 0);
   assert.equal(hm.levelForDistance(NaN), 0);
@@ -329,7 +333,7 @@ test("checkinDays：按日期去重、驳回不计、待审计入、范围外未
   assert.equal(findDay(heatmap, "2026-09-10").distance, 9, "点击日期使用同日记录的聚合跑量");
   assert.equal(findDay(heatmap, "2026-09-11").level, 0);
   assert.equal(findDay(heatmap, "2026-09-11").distance, 0, "无跑量日期展示 0 公里");
-  assert.equal(findDay(heatmap, "2026-09-12").level, 4);
+  assert.equal(findDay(heatmap, "2026-09-12").level, 5, "24.9km 超过半马属于第5级");
   assert.equal(findDay(heatmap, "2026-09-12").distance, 24.9);
   assert.equal(findDay(heatmap, "2026-10-05"), null, "未来日期没有单元格");
 });

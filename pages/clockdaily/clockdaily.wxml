@@ -19,7 +19,9 @@
       <text class="record-upload-copy">支持相册或拍摄；上传后会尝试识别数据</text>
     </view>
     <view class="record-preview" wx:if="{{showView}}">
-      <image class="record-preview-image" src="{{tempFilePaths}}" mode="widthFix" bindtap="uploadAction"></image>
+      <scroll-view class="record-preview-scroll" scroll-y="true" show-scrollbar="{{false}}">
+        <image class="record-preview-image" src="{{tempFilePaths}}" mode="widthFix" bindtap="uploadAction"></image>
+      </scroll-view>
       <view class="record-preview-actions"><text bindtap="uploadAction">重新选择</text><text catchtap="delete">移除图片</text></view>
     </view>
     <view class="record-section-label">02 / 跑步数据 <text class="record-section-require">必填</text></view>

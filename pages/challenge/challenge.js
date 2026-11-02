@@ -87,6 +87,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    if (typeof wx.showShareMenu === 'function') {
+      wx.showShareMenu({ menus: ['shareAppMessage'] })
+    }
     app.editTabbar();
     this.initLimit()
   },
@@ -142,6 +145,12 @@ Page({
         that.setData({ challengeList: [], loading: false, hasMore: false, loadError: true })
       }
     })
+  },
+  onShareAppMessage: function () {
+    return {
+      title: '微网跑团 WRC · 一起参加跑步挑战',
+      path: '/pages/challenge/challenge'
+    }
   },
   retryLoad: function() {
     this.initChallenge()

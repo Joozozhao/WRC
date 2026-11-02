@@ -211,7 +211,7 @@ Page({
     const url = e.currentTarget.dataset.url
     if (!url) return
     const viewer = this.selectComponent('#imageViewer')
-    if (viewer) viewer.open([url], url, { mode: 'card', title: '打卡凭证' })
+    if (viewer) viewer.open([url], url, { mode: 'card', title: '打卡凭证', heightScale: 0.8 })
   },
 
   /**

@@ -20,9 +20,9 @@
     </view>
 
     <view class="event-card">
-      <view class="event-cover-wrap" data-url="{{actyImg.length ? acty_img : ''}}" bindtap="preview" aria-label="查看活动照片">
-        <image class="detail-cover {{actyImg.length ? 'is-photo' : 'is-default'}}" src="{{acty_img}}" mode="widthFix"></image>
-        <text class="cover-photo-label" wx:if="{{actyImg.length}}">查看照片 · {{actyImg.length}} 张</text>
+      <view class="event-cover-wrap" data-url="{{acty_img}}" bindtap="preview" aria-label="查看活动图片">
+        <image class="detail-cover {{coverIsAlbum ? 'is-photo' : 'is-default'}}" src="{{acty_img}}" mode="widthFix" binderror="onCoverError" data-src="{{acty_img}}"></image>
+        <text class="cover-photo-label" wx:if="{{actyImg.length}}">{{coverIsAlbum ? '查看照片 · ' + actyImg.length + ' 张' : '查看封面'}}</text>
       </view>
       <view class="event-info" wx:if="{{start_time || address || region}}">
         <view class="event-info-row" wx:if="{{start_time}}">
@@ -101,10 +101,10 @@
       </view>
     </view>
 
-    <view class="detail-section album-section" wx:if="{{actyImg.length > 1}}">
+    <view class="detail-section album-section" wx:if="{{actyImg.length > 0}}">
       <view class="section-heading"><view><text class="section-title">活动相册</text><text class="section-count">{{actyImg.length}} 张</text></view><text class="section-caption">点击查看大图</text></view>
       <scroll-view class="album-scroll" scroll-x="true" show-scrollbar="false" enhanced="true">
-        <view class="album-photos"><image class="album-photo" wx:for="{{actyImg}}" wx:key="id" src="{{item.img_url}}" mode="heightFix" data-url="{{item.img_url}}" bindtap="preview" aria-label="查看第{{index + 1}}张活动照片"></image></view>
+        <view class="album-photos"><image class="album-photo" wx:for="{{actyImg}}" wx:key="id" src="{{item.img_url}}" mode="heightFix" lazy-load="true" data-id="{{item.id}}" data-url="{{item.img_url}}" bindtap="preview" binderror="onAlbumPhotoError" aria-label="查看第{{index + 1}}张活动照片"></image></view>
       </scroll-view>
     </view>
 

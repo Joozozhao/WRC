@@ -14,9 +14,15 @@
       <view class="viewer-card-body" style="{{bodyHeightStyle}}">
         <swiper wx:if="{{urls.length > 1}}" class="viewer-card-swiper" current="{{currentIndex}}" duration="220" bindchange="onSwiperChange">
           <swiper-item wx:for="{{urls}}" wx:key="*this" class="viewer-card-slide">
-            <image class="viewer-card-image" src="{{item}}" mode="widthFix" show-menu-by-longpress="true" bindload="onImageLoad" data-index="{{index}}"></image>
+            <scroll-view wx:if="{{bodyScroll}}" scroll-y class="viewer-card-scroll" enhanced show-scrollbar="{{false}}">
+              <image class="viewer-card-image viewer-card-image--scroll" src="{{item}}" mode="widthFix" show-menu-by-longpress="true" bindload="onImageLoad" data-index="{{index}}"></image>
+            </scroll-view>
+            <image wx:else class="viewer-card-image" src="{{item}}" mode="widthFix" show-menu-by-longpress="true" bindload="onImageLoad" data-index="{{index}}"></image>
           </swiper-item>
         </swiper>
+        <scroll-view wx:elif="{{bodyScroll}}" scroll-y class="viewer-card-scroll" enhanced show-scrollbar="{{false}}">
+          <image class="viewer-card-image viewer-card-image--scroll" src="{{urls[currentIndex]}}" mode="widthFix" show-menu-by-longpress="true" bindload="onImageLoad" data-index="{{currentIndex}}"></image>
+        </scroll-view>
         <image wx:else class="viewer-card-image" src="{{urls[currentIndex]}}" mode="widthFix" show-menu-by-longpress="true" bindload="onImageLoad" data-index="{{currentIndex}}"></image>
         <view wx:if="{{urls.length > 1}}" class="viewer-card-count">{{currentIndex + 1}}<text> / {{urls.length}}</text></view>
       </view>

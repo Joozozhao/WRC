@@ -3,6 +3,7 @@ const util = require("../../utils/util.js")
 const playPageMotion = require("../../utils/page-motion.js")
 const { toDisplayMemberLevel } = require('../../utils/member-level.js')
 const { getRegionLabel } = require('../../utils/profile-badges.js')
+const levelForDistance = require('../../utils/run-heatmap-level.js')
 const app = getApp()
 
 function toInt(num) {
@@ -298,14 +299,7 @@ Page({
       const curDate = new Date(prevYear, prevMonth - 1, pDay)
       const isFuture = curDate > todayStart
 
-      let level = 0
-      if (distance > 0 && !isFuture) {
-        // 与首页日历完全一致的阶梯规则
-        if (distance <= 3) level = 1
-        else if (distance <= 7) level = 2
-        else if (distance <= 12) level = 3
-        else level = 4
-      }
+      const level = isFuture ? 0 : levelForDistance(distance)
 
       cells.push({
         day: pDay,
@@ -329,11 +323,7 @@ Page({
       let level = 0
       if (distance > 0) {
         runDaysCount += 1
-        // 与首页日历完全一致的阶梯规则
-        if (distance <= 3) level = 1
-        else if (distance <= 7) level = 2
-        else if (distance <= 12) level = 3
-        else level = 4
+        level = levelForDistance(distance)
       }
 
       const isFuture = isCurrentMonth && d > todayDate
@@ -366,14 +356,7 @@ Page({
       const curDate = new Date(nextYear, nextMonth - 1, d)
       const isFuture = curDate > todayStart
 
-      let level = 0
-      if (distance > 0 && !isFuture) {
-        // 与首页日历完全一致的阶梯规则
-        if (distance <= 3) level = 1
-        else if (distance <= 7) level = 2
-        else if (distance <= 12) level = 3
-        else level = 4
-      }
+      const level = isFuture ? 0 : levelForDistance(distance)
 
       cells.push({
         day: d,
@@ -445,10 +428,6 @@ Page({
         this.setData({ marathons: res.data.data.slice(0, 3) })
       }
     })
-  },
-
-  toMarathonAll() {
-    wx.navigateTo({ url: "../results/results?id=" + this.data.targetUserId })
   },
 
   // 6. 参与挑战与团跑

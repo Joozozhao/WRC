@@ -91,6 +91,9 @@ Page({
   },
 
   onLoad: function (options) {
+    if (typeof wx.showShareMenu === 'function') {
+      wx.showShareMenu({ menus: ['shareAppMessage'] })
+    }
     const userId = app.globalData.userId || 0
     const userid = options.userid
     this.setData({
@@ -405,6 +408,9 @@ Page({
   },
 
   onShareAppMessage: function () {
+    if (!this.data.actyId) {
+      return { title: '微网跑团 WRC · 一起参加跑步挑战', path: '/pages/challenge/challenge' }
+    }
     const title = (this.data.nickName ? this.data.nickName + '邀请你参加' : '微跑团邀请你参加') +
       '挑战#' + (this.data.actyName || '跑步挑战') + '#，喊你快来挑战～'
     const share = {

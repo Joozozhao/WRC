@@ -192,6 +192,15 @@
   display: block;
 }
 
+.viewer-card-scroll {
+  width: 100%;
+  height: 100%;
+}
+
+.viewer-card-image--scroll {
+  position: static;
+}
+
 .viewer-card-count {
   position: absolute;
   right: 18rpx;

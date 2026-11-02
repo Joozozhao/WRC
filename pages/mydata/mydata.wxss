@@ -417,6 +417,8 @@ page {
 .level-2 { background: #94c86c; }
 .level-3 { background: #4f9455; }
 .level-4 { background: #125c3f; }
+.level-5 { background: #ff7160; }
+.level-6 { background: #5443a4; }
 .profile-heatmap-footer {
   display: flex;
   align-items: center;

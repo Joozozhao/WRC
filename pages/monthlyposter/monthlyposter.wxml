@@ -1,0 +1,39 @@
+<site-header show-back="{{true}}" back-url="/pages/mydata/mydata"></site-header>
+<view class="poster-page">
+  <view class="poster-heading">
+    <text class="poster-eyebrow">WRC · MONTHLY RECAP</text>
+    <text class="poster-title">我的运动月报</text>
+    <view class="poster-accent"></view>
+    <text class="poster-subtitle">{{monthLabel}}，把跑过的路分享给跑友</text>
+  </view>
+
+  <view class="poster-style-selector" role="group" aria-label="选择海报设计">
+    <view class="poster-style {{style === 'calendar' ? 'is-active' : ''}}" data-style="calendar" bindtap="chooseStyle" role="button" aria-label="选择跑历版">
+      <text class="poster-style-no">01</text><text>月度跑历</text>
+    </view>
+    <view class="poster-style {{style === 'story' ? 'is-active' : ''}}" data-style="story" bindtap="chooseStyle" role="button" aria-label="选择故事版">
+      <text class="poster-style-no">03</text><text>跑步故事</text>
+    </view>
+  </view>
+
+  <view class="poster-preview-shell">
+    <image wx:if="{{status === 'ready'}}" class="poster-preview" src="{{posterPath}}" mode="widthFix" bindtap="previewPoster" aria-label="查看运动月报海报"></image>
+    <view wx:else class="poster-state">
+      <image class="poster-state-mark" src="/images/redesign/wrc-mark.png" mode="aspectFit"></image>
+      <text wx:if="{{status === 'loading' || status === 'rendering'}}">正在生成你的运动月报…</text>
+      <text wx:elif="{{status === 'guest'}}">登录后生成你的运动月报</text>
+      <text wx:elif="{{status === 'empty'}}">{{monthLabel}}还没有跑步打卡记录</text>
+      <view wx:else class="poster-retry" bindtap="retry">{{errorMessage || '生成失败'}}，点击重试 →</view>
+    </view>
+  </view>
+
+  <view wx:if="{{status === 'ready'}}" class="poster-summary">
+    <text>{{runDays}} 天打卡</text><text class="poster-summary-divider">·</text><text>{{totalKm}} 公里</text><text class="poster-summary-divider">·</text><text>单日最高 {{bestDayKm}} 公里</text>
+  </view>
+  <view wx:if="{{status === 'ready'}}" class="poster-actions">
+    <view class="poster-action poster-action-primary" bindtap="sharePoster" role="button" aria-label="分享到微信群">分享到群里</view>
+    <view class="poster-action poster-action-secondary {{savingPoster ? 'is-saving' : ''}}" bindtap="savePoster" role="button" aria-label="保存海报到相册" aria-disabled="{{savingPoster}}">{{savingPoster ? '正在保存…' : '保存图片'}}</view>
+  </view>
+  <text wx:if="{{status === 'ready'}}" class="poster-tip">点击海报可放大查看 · 切换设计会重新生成图片</text>
+</view>
+<canvas canvas-id="monthlyPosterCanvas" class="poster-export-canvas" style="width: 750px; height: 1000px;" aria-hidden="{{true}}"></canvas>

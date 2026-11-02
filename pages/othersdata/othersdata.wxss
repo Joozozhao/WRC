@@ -295,10 +295,13 @@ page {
   font-size: 21rpx;
 }
 
-.section-link-action {
-  color: #0b6748;
-  font-size: 23rpx;
-  font-weight: 750;
+.marathon-count {
+  flex: none;
+  margin-left: 12rpx;
+  color: #829487;
+  font-size: 21rpx;
+  white-space: nowrap;
+  text-align: right;
 }
 
 /* 跑步日历模块（以月为单位，支持左右滑动） */
@@ -458,6 +461,11 @@ page {
 .day-cell.level-4 .cell-day-num {
   color: #ffffff;
 }
+.day-cell.level-5 { background: #ff7160; }
+.day-cell.level-5 .cell-day-num,
+.day-cell.level-5 .cell-run { color: #073329; }
+.day-cell.level-6 .cell-day-num { color: #ffffff; }
+.day-cell.level-6 { background: #5443a4; }
 
 .cell-day-num {
   font-size: 18rpx;
@@ -482,7 +490,8 @@ page {
 .day-cell.level-1 .cell-run,
 .day-cell.level-2 .cell-run { color: #0b3d1b; }
 .day-cell.level-3 .cell-run,
-.day-cell.level-4 .cell-run { color: #ffffff; }
+.day-cell.level-4 .cell-run,
+.day-cell.level-6 .cell-run { color: #ffffff; }
 
 /* 日历图例：与首页梯队配色一致 */
 .calendar-legend-bar {
@@ -497,6 +506,7 @@ page {
 .legend-hint {
   color: #8c9e92;
   font-size: 20rpx;
+  flex: none;
 }
 
 .legend-swatches {
@@ -518,6 +528,8 @@ page {
 .legend-swatch.level-2 { background: #50cf64; }
 .legend-swatch.level-3 { background: #199c4f; }
 .legend-swatch.level-4 { background: #075b40; }
+.legend-swatch.level-5 { background: #ff7160; }
+.legend-swatch.level-6 { background: #5443a4; }
 
 .calendar-loading-box {
   text-align: center;

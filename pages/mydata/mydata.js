@@ -176,6 +176,10 @@ Page({
     wx.navigateTo({ url: "../record/record" });
   },
 
+  toMonthlyPoster: function() {
+    wx.navigateTo({ url: "../monthlyposter/monthlyposter" });
+  },
+
   toHistory: function() {
     wx.navigateTo({ url: "../history/history" });
   },

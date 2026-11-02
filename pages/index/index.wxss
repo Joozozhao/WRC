@@ -201,6 +201,8 @@ page {
 .home-svip-avatar.heat-level-2 { border-color: #50cf64; }
 .home-svip-avatar.heat-level-3 { border-color: #199c4f; }
 .home-svip-avatar.heat-level-4 { border-color: #075b40; }
+.home-svip-avatar.heat-level-5 { border-color: #ff7160; }
+.home-svip-avatar.heat-level-6 { border-color: #5443a4; }
 
 .home-month-title-left {
   display: flex;
@@ -533,6 +535,19 @@ page {
 .home-heatmap-cell.level-4 .cell-day-num {
   color: #ffffff;
 }
+.home-heatmap-cell.level-5 {
+  background: #ff7160;
+}
+.home-heatmap-cell.level-5 .cell-day-num,
+.home-heatmap-cell.level-5 .cell-run {
+  color: #073329;
+}
+.home-heatmap-cell.level-6 .cell-day-num {
+  color: #ffffff;
+}
+.home-heatmap-cell.level-6 {
+  background: #5443a4;
+}
 .cell-day-num {
   font-size: 18rpx;
   font-weight: 600;
@@ -553,7 +568,8 @@ page {
 .home-heatmap-cell.level-1 .cell-run,
 .home-heatmap-cell.level-2 .cell-run { color: #0b3d1b; }
 .home-heatmap-cell.level-3 .cell-run,
-.home-heatmap-cell.level-4 .cell-run { color: #ffffff; }
+.home-heatmap-cell.level-4 .cell-run,
+.home-heatmap-cell.level-6 .cell-run { color: #ffffff; }
 
 /* 跑友动态：现代化社区打卡卡片 */
 .home-friends {
@@ -658,6 +674,10 @@ page {
   gap: 20rpx;
 }
 .home-friend-card {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 20rpx;
   background: #ffffff;
   border: 1rpx solid #e3ebe4;
   border-radius: 24rpx;
@@ -669,12 +689,31 @@ page {
   transform: scale(0.985);
   background: #fafcfa;
 }
+.home-friend-card.has-proof {
+  overflow: hidden;
+}
+.home-friend-main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  min-width: 0;
+}
+.home-friend-card.has-proof .home-friend-main {
+  min-height: 184rpx;
+}
+.home-friend-card:not(.has-proof) .home-friend-card-head {
+  padding-right: calc(40% + 16rpx);
+  box-sizing: border-box;
+}
 .home-friend-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.home-friend-person { display: flex; align-items: center; min-width: 0; }
+.home-friend-person { display: flex; align-items: center; min-width: 0; width: 100%; }
 .home-friend-avatar {
   width: 64rpx;
   height: 64rpx;
@@ -689,8 +728,17 @@ page {
   flex-direction: column;
   margin-left: 16rpx;
   min-width: 0;
+  flex: 1;
+}
+.home-friend-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  min-width: 0;
 }
 .home-friend-name {
+  min-width: 0;
+  flex: 0 1 auto;
   color: #072f27;
   font-size: 28rpx;
   font-weight: 750;
@@ -706,9 +754,18 @@ page {
   line-height: 1.2;
 }
 .home-friend-badge {
-  padding: 6rpx 18rpx;
+  position: absolute;
+  z-index: 2;
+  top: 16rpx;
+  right: 16rpx;
+  max-width: 40%;
+  padding: 6rpx 12rpx;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   border-radius: 999rpx;
-  background: #f1f5f2;
+  background: #d9ff3f;
   border: 1rpx solid #e2ece5;
   font-size: 20rpx;
   font-weight: 600;
@@ -719,9 +776,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 22rpx;
-  padding-top: 20rpx;
-  border-top: 1rpx solid #f2f6f2;
+  margin-top: 16rpx;
 }
 .home-friend-metrics {
   display: flex;
@@ -732,10 +787,21 @@ page {
 .home-friend-metric-col {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+.home-friend-metric-col:first-child {
+  flex: 1.25;
+}
+.home-friend-metric-col .metric-val-big,
+.home-friend-metric-col .metric-val-med {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .metric-val-big {
   color: #063d2d;
-  font-size: 50rpx;
+  font-size: 65rpx;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -2rpx;
@@ -756,21 +822,37 @@ page {
   width: 1rpx;
   height: 52rpx;
   background: #e6eee7;
-  margin: 0 28rpx;
+  margin: 0 18rpx;
   flex: none;
   align-self: center;
 }
 .home-friend-proof-wrap {
   position: relative;
-  width: 130rpx;
-  height: 100rpx;
-  border-radius: 14rpx;
+  z-index: 0;
+  width: calc(40% + 60rpx);
+  margin: -24rpx -24rpx -24rpx -36rpx;
+  align-self: stretch;
+  border-radius: 0 23rpx 23rpx 0;
   overflow: hidden;
   flex: none;
-  border: 1rpx solid #e0eae2;
+  border: 0;
   background: #edf2ee;
 }
+.home-friend-proof-wrap::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 72rpx;
+  background: linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 0.45) 65%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
 .home-friend-proof-img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: block;

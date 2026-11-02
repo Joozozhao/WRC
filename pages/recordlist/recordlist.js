@@ -151,7 +151,7 @@ Page({
     }
     const urls = Array.isArray(previewImgArr) ? previewImgArr : [previewImgArr]
     const viewer = this.selectComponent('#imageViewer')
-    if (viewer) viewer.open(urls, url, { mode: 'card', title: '打卡凭证' })
+    if (viewer) viewer.open(urls, url, { mode: 'card', title: '打卡凭证', heightScale: 0.8 })
   },
   /**
    * 生命周期函数--监听页面加载

@@ -14,8 +14,10 @@
 //   - 范围：终点为今天；起点为今天往前 X 个日历月的同日（该月无同日则取月末）再 +1 天，
 //           X 取 1 / 3 / 6 / 12，默认 6。例：2026-10-01 + 6 个月 -> 2026-04-02。
 //   - 网格：每周周一至周日固定 7 格，范围之外的首尾格子为透明 padding（isPadding=true）。
-//   - 等级：0 无跑量；<=3km 为 1；<=7km 为 2；<=12km 为 3；>12km 为 4。
+//   - 等级：0 无跑量；<=3/7/12/21.1km 为 1/2/3/4；>21.1 至 42.2km 为 5；>42.2km 为 6。
 //   - 打卡天数 checkinDays：范围内“有正跑量”的日期去重计数，不是记录条数。
+
+var levelForDistance = require("./run-heatmap-level.js");
 
 var RANGE_OPTIONS = [1, 3, 6, 12];
 var DEFAULT_RANGE_MONTHS = 6;
@@ -139,16 +141,6 @@ function readCount(value) {
   }
   if (!Number.isInteger(num) || num < 0) return null;
   return num;
-}
-
-// 0 无跑量；1 (0,3]；2 (3,7]；3 (7,12]；4 (12,+)。
-function levelForDistance(value) {
-  var read = readEntryKm(value);
-  if (read.status !== "positive") return 0;
-  if (read.km <= 3) return 1;
-  if (read.km <= 7) return 2;
-  if (read.km <= 12) return 3;
-  return 4;
 }
 
 // 校验单条打卡记录，取出聚合需要的四个字段。

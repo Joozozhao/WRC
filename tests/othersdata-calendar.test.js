@@ -55,6 +55,21 @@ test("buildMonthPage 正确生成 35 或 42 个自然日历单元格并统计当
   assert.equal(pageData.totalDistance, "15.1");
 });
 
+test("他人主页日历使用半马与全马两个新增跑量颜色级别", () => {
+  const p = createOthersdataPage();
+  const pageData = p.buildMonthPage("2026-10", {
+    "2026-10-01": 21.1,
+    "2026-10-02": 21.2,
+    "2026-10-03": 42.2,
+    "2026-10-04": 42.3
+  });
+  const levelByDay = Object.fromEntries(pageData.days.map((day) => [day.dateKey, day.level]));
+  assert.equal(levelByDay["2026-10-01"], 4);
+  assert.equal(levelByDay["2026-10-02"], 5);
+  assert.equal(levelByDay["2026-10-03"], 5);
+  assert.equal(levelByDay["2026-10-04"], 6);
+});
+
 test("左右划动触发 onMonthSwiperChange 时，准确同步当前月份索引与前后切换边界", () => {
   const p = createOthersdataPage();
   p.setData({

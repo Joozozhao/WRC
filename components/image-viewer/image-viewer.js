@@ -7,10 +7,13 @@ Component({
     topbarHeight: 84,
     mode: 'fullscreen',
     title: '',
+    bodyMaxPx: 0,
+    bodyScale: 1,
     bodyHeightPx: 0,
     bodyHeightStyle: '',
     maxBodyHeightPx: 0,
-    imageHeights: {}
+    imageHeights: {},
+    bodyScroll: false
   },
   lifetimes: {
     attached: function () {
@@ -36,15 +39,21 @@ Component({
       let index = list.indexOf(current)
       if (index < 0) index = 0
       const opts = options || {}
+      const baseMax = this.data.maxBodyHeightPx || 0
+      const scale = typeof opts.heightScale === 'number' && opts.heightScale > 0 && opts.heightScale < 1 ? opts.heightScale : 1
+      const bodyMaxPx = baseMax ? Math.round(baseMax * scale) : 0
       this.setData({
         visible: true,
         urls: list,
         currentIndex: index,
         mode: opts.mode === 'card' ? 'card' : 'fullscreen',
         title: typeof opts.title === 'string' ? opts.title : '',
-        bodyHeightPx: this.data.maxBodyHeightPx || 0,
-        bodyHeightStyle: '',
-        imageHeights: {}
+        bodyMaxPx: bodyMaxPx,
+        bodyScale: scale,
+        bodyHeightPx: bodyMaxPx,
+        bodyHeightStyle: scale < 1 && bodyMaxPx ? 'height: ' + bodyMaxPx + 'px;' : '',
+        imageHeights: {},
+        bodyScroll: scale < 1
       })
     },
     close: function () {
@@ -74,8 +83,16 @@ Component({
     updateBodyHeight: function (index) {
       const idx = index !== undefined ? index : this.data.currentIndex
       const scaledH = this.data.imageHeights[idx]
-      const maxH = this.data.maxBodyHeightPx || 480
-      if (scaledH && scaledH < maxH) {
+      const maxH = this.data.bodyMaxPx || this.data.maxBodyHeightPx || 480
+      if (this.data.bodyScroll) {
+        // 轨迹/打卡凭证：视窗整体缩至 80%，图片原比例，超出部分上下滑动
+        const scale = this.data.bodyScale || 1
+        const h = scaledH ? Math.min(Math.round(scaledH * scale), maxH) : maxH
+        this.setData({
+          bodyHeightPx: h,
+          bodyHeightStyle: 'height: ' + h + 'px;'
+        })
+      } else if (scaledH && scaledH < maxH) {
         this.setData({
           bodyHeightPx: scaledH,
           bodyHeightStyle: 'height: ' + scaledH + 'px;'
@@ -90,4 +107,3 @@ Component({
     preventTouchMove: function () {}
   }
 })
-

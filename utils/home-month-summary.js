@@ -2,6 +2,7 @@
 // 首页本月跑量与打卡融合纯逻辑与编排控制器
 
 const DEFAULT_DEFAULT_TARGET = 77;
+const levelForDistance = require("./run-heatmap-level.js");
 
 function pad2(n) {
   return n < 10 ? '0' + n : '' + n;
@@ -149,13 +150,7 @@ function buildMonthHeatmap(year, month, dailyMap, now) {
       dist = Number(dailyMap[dateStr]) || 0;
     }
 
-    let level = 0;
-    if (dist > 0 && !isFuture) {
-      if (dist <= 3) level = 1;
-      else if (dist <= 7) level = 2;
-      else if (dist <= 12) level = 3;
-      else level = 4;
-    }
+    const level = isFuture ? 0 : levelForDistance(dist);
 
     days.push({
       isEmpty: false,
@@ -185,13 +180,7 @@ function buildMonthHeatmap(year, month, dailyMap, now) {
       dist = Number(dailyMap[dateStr]) || 0;
     }
 
-    let level = 0;
-    if (dist > 0 && !isFuture) {
-      if (dist <= 3) level = 1;
-      else if (dist <= 7) level = 2;
-      else if (dist <= 12) level = 3;
-      else level = 4;
-    }
+    const level = isFuture ? 0 : levelForDistance(dist);
 
     const item = {
       isEmpty: false,
@@ -227,13 +216,7 @@ function buildMonthHeatmap(year, month, dailyMap, now) {
       dist = Number(dailyMap[dateStr]) || 0;
     }
 
-    let level = 0;
-    if (dist > 0 && !isFuture) {
-      if (dist <= 3) level = 1;
-      else if (dist <= 7) level = 2;
-      else if (dist <= 12) level = 3;
-      else level = 4;
-    }
+    const level = isFuture ? 0 : levelForDistance(dist);
 
     days.push({
       isEmpty: false,

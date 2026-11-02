@@ -2,6 +2,7 @@
 const util = require('../../utils/util.js')
 // 获取应用实例
 const app = getApp()
+const groupCover = require('../../utils/group-run-cover.js')
 Page({
   /**
    * 页面的初始数据
@@ -21,6 +22,12 @@ Page({
     loadError: false,
     hasMore: true,
     loadingMore: false
+  },
+  onCoverError: function (e) {
+    groupCover.onGroupCoverError(this, e)
+  },
+  syncGroupPhotosForList: function (list) {
+    groupCover.syncGroupPhotosForList(this, list, util.request)
   },
   radioChange: function (e) {
     var actyId = e.currentTarget.dataset.id
@@ -79,6 +86,7 @@ Page({
   },
   initActy: function () {
     var that = this
+    const coverVersion = groupCover.resetGroupCoverState(this)
     that.setData({ page: 1, loaded: false, loadError: false, activityList: [], hasMore: true })
     var data = { page: 1 }
     wx.showLoading({
@@ -87,6 +95,7 @@ Page({
       mask: true
     })
     util.request('acty/getactylist', 'POST', data, '数据加载中 ...', (res) => {
+      if (coverVersion !== that._coverSyncVersion) return
       if (res.data.success) {
         var allData = Array.isArray(res.data.data) ? res.data.data : []
         for (var i = 0; i < allData.length; i++) {
@@ -96,6 +105,7 @@ Page({
           var endTime1 = util.dislodgeZero(endTime)
           allData[i].start_timestr = createTime1
           allData[i].end_timestr = endTime1
+          allData[i] = groupCover.withGroupCover(allData[i])
         }
         that.setData({
           activityList: allData.filter(item => item.acty_type === '团跑' && Number(item.acty_state) !== 0),
@@ -106,6 +116,7 @@ Page({
           hasMore: allData.length > 0,
           page: 2
         })
+        that.syncGroupPhotosForList(that.data.activityList)
         wx.hideLoading({
           success: (res) => { },
         })
@@ -125,6 +136,7 @@ Page({
         })
       }
     }, () => {
+      if (coverVersion !== that._coverSyncVersion) return
       that.setData({ activityList: [], loaded: true, loadError: true })
       wx.hideLoading()
     })
@@ -142,6 +154,7 @@ Page({
   loadMore: function () {
     if (this.data.loadingMore || !this.data.hasMore) return
     var that = this
+    const coverVersion = this._coverSyncVersion
     var data = {
       page: that.data.page
     }
@@ -151,6 +164,7 @@ Page({
       icon: 'none'
     })
     util.request('acty/getactylist', 'POST', data, '数据加载中 ...', (res) => {
+      if (coverVersion !== that._coverSyncVersion) return
       if (res.data.success) {
         var allData = Array.isArray(res.data.data) ? res.data.data : []
         for (var i = 0; i < allData.length; i++) {
@@ -160,8 +174,10 @@ Page({
           var endTime1 = util.dislodgeZero(endTime)
           allData[i].start_timestr = createTime1
           allData[i].end_timestr = endTime1
+          allData[i] = groupCover.withGroupCover(allData[i])
         }
-        var content = that.data.activityList.concat(allData.filter(item => item.acty_type === '团跑' && Number(item.acty_state) !== 0))
+        var newItems = allData.filter(item => item.acty_type === '团跑' && Number(item.acty_state) !== 0)
+        var content = that.data.activityList.concat(newItems)
         that.setData({
           activityList: content,
           start_timestr: createTime1,
@@ -170,6 +186,7 @@ Page({
           hasMore: allData.length > 0,
           loadingMore: false
         })
+        that.syncGroupPhotosForList(newItems)
         wx.hideLoading({
           success: (res) => { },
         })
@@ -180,6 +197,7 @@ Page({
         })
       }
     }, () => {
+      if (coverVersion !== that._coverSyncVersion) return
       that.setData({ loadingMore: false })
       wx.hideLoading()
     })

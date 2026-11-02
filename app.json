@@ -2,6 +2,7 @@
   "pages": [
     "pages/index/index",
     "pages/mydata/mydata",
+    "pages/monthlyposter/monthlyposter",
     "pages/userinfor/userinfor",
     "pages/recordlist/recordlist",
     "pages/challenge/challenge",

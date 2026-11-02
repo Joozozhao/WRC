@@ -42,8 +42,8 @@
   <!-- 跑量数据概览卡片（对齐“我的”页面 profile-summary 规范） -->
   <view class="profile-summary-card">
     <view class="summary-head">
-      <text class="summary-title">跑量好猛</text>
-      <text class="summary-subtitle">AWESOME</text>
+      <text class="summary-title">{{sex == 2 ? '她跑得真飒' : sex == 1 ? '他跑得真帅' : '跑得真棒'}}</text>
+      <text class="summary-subtitle">{{sex == 2 ? 'SHE IS A STAR' : sex == 1 ? 'HE IS A STAR' : 'RUNNING STAR'}}</text>
     </view>
     <view class="summary-accent-line"></view>
     <view class="summary-stats-grid">
@@ -113,7 +113,7 @@
 
       <!-- 底部跑量等级图例 -->
       <view class="calendar-legend-bar">
-        <text class="legend-hint">颜色越深，当天跑量越多</text>
+        <text class="legend-hint">半马以上橙红，全马以上紫色</text>
         <view class="legend-swatches">
           <text>少</text>
           <view class="legend-swatch level-0"></view>
@@ -121,6 +121,8 @@
           <view class="legend-swatch level-2"></view>
           <view class="legend-swatch level-3"></view>
           <view class="legend-swatch level-4"></view>
+          <view class="legend-swatch level-5"></view>
+          <view class="legend-swatch level-6"></view>
           <text>多</text>
         </view>
       </view>
@@ -136,16 +138,13 @@
 
   <!-- 马拉松成绩（对齐“我的”页面 profile-races 卡片） -->
   <view class="section-card" wx:if="{{marathons.length > 0}}">
-    <view class="section-head" bindtap="toMarathonAll">
-      <view class="section-heading-wrap">
-        <text class="section-title">马拉松成绩</text>
-        <text class="section-desc">共完赛 {{totalMarathons}} 场认证赛事</text>
-      </view>
-      <text class="section-link-action">全部成绩 →</text>
+    <view class="section-head marathon-section-head">
+      <text class="section-title">马拉松成绩</text>
+      <text class="marathon-count">共完赛 {{totalMarathons}} 场认证赛事</text>
     </view>
 
     <view class="marathon-card-list">
-      <view class="marathon-card-item" wx:for="{{marathons}}" wx:key="index" bindtap="toMarathonAll">
+      <view class="marathon-card-item" wx:for="{{marathons}}" wx:key="index">
         <view class="marathon-card-info">
           <view class="marathon-meta-line">
             <text class="marathon-date">{{item.playing_time}}</text>

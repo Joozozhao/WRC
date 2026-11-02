@@ -1,4 +1,5 @@
 const homeSummary = require("../../utils/home-month-summary.js")
+const levelForDistance = require("../../utils/run-heatmap-level.js")
 const util = require('../../utils/util.js')
 const playPageMotion = require('../../utils/page-motion.js')
 // index.js
@@ -206,11 +207,7 @@ Page({
       const users = res && res.data && res.data.success && Array.isArray(res.data.data) ? res.data.data : []
       const avatars = users.map(user => {
         const distance = Math.max(0, Number(user && user.month_count) || 0)
-        let heatLevel = 0
-        if (distance > 0 && distance <= 3) heatLevel = 1
-        else if (distance > 3 && distance <= 7) heatLevel = 2
-        else if (distance > 7 && distance <= 12) heatLevel = 3
-        else if (distance > 12) heatLevel = 4
+        const heatLevel = levelForDistance(distance)
         return {
           id: user && user.id,
           avatar: user && user.header_url || '/images/default.png',
@@ -1027,7 +1024,7 @@ Page({
       return
     }
     const viewer = this.selectComponent('#imageViewer')
-    if (viewer) viewer.open([img], img, { mode: 'card', title: '轨迹凭证' })
+    if (viewer) viewer.open([img], img, { mode: 'card', title: '轨迹凭证', heightScale: 0.8 })
   },
   onLoad() {
     // 开启转发功能

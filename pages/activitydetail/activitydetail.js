@@ -4,7 +4,7 @@ const { toDisplayMemberLevel } = require('../../utils/member-level.js')
 const { addProfileBadges } = require('../../utils/profile-badges.js')
 // 获取应用实例
 const app = getApp()
-const DEFAULT_GROUP_COVER = '/images/redesign/group-run-default-cover.jpg'
+const { DEFAULT_GROUP_COVER, normalizeGroupPhotos, resolveGroupCover } = require('../../utils/group-run-cover.js')
 
 function toFixed2(num) {
   const n = Number(num)
@@ -41,6 +41,9 @@ Page({
     nickName: '',
     page: 1,
     actyImg: [],
+    acty_img: DEFAULT_GROUP_COVER,
+    originActyImg: '',
+    coverIsAlbum: false,
     showBtn: false,
     myAddress: '',
     showSign: false,
@@ -322,23 +325,51 @@ Page({
   },
   getactyimgs: function(){
     var that = this
+    const requestId = (this._albumRequestId || 0) + 1
+    this._albumRequestId = requestId
     var data = {
       actyId: that.data.actyId
     }
     util.request('acty/getactyimgs', 'POST', data, '数据加载中 ...', (res)=>{
+      if (requestId !== that._albumRequestId || String(data.actyId) !== String(that.data.actyId)) return
       if(res.data && res.data.success){
-        const list = Array.isArray(res.data.data) ? res.data.data : []
+        const list = normalizeGroupPhotos(res.data.data)
         that.setData({
           actyImg: list
         })
-        // 如果活动后上传了合照，则优先调用第一张合照作为封面展示
-        if (list.length > 0 && list[0].img_url) {
-          that.setData({
-            acty_img: list[0].img_url
-          })
-        }
+        that.updateActivityCover()
       }
     })
+  },
+  updateActivityCover: function () {
+    const cover = resolveGroupCover(this.data.originActyImg, this.data.actyImg, this._failedCoverUrls)
+    this.setData({
+      acty_img: cover,
+      coverIsAlbum: (this.data.actyImg || []).some(item => item.img_url === cover)
+    })
+  },
+  // 每个失败地址只尝试一次，按手动封面、相册、默认图回退。
+  onCoverError: function (event) {
+    const dataset = event && event.currentTarget && event.currentTarget.dataset || {}
+    const current = this.data.acty_img
+    if (dataset.src && dataset.src !== current) return
+    const failed = this._failedCoverUrls || []
+    if (failed.indexOf(current) !== -1) return
+    this._failedCoverUrls = failed.concat(current)
+    this.updateActivityCover()
+  },
+  // 相册中加载失败的照片直接移除，不显示破图占位
+  onAlbumPhotoError: function (e) {
+    var dataset = (e && e.currentTarget && e.currentTarget.dataset) || {}
+    var photoId = dataset.id == null ? '' : String(dataset.id)
+    if (!photoId && !dataset.url) return
+    var list = (this.data.actyImg || []).filter(function (item) {
+      return photoId ? String(item.id) !== photoId : item.img_url !== dataset.url
+    })
+    if (list.length !== (this.data.actyImg || []).length) {
+      this.setData({ actyImg: list })
+      this.updateActivityCover()
+    }
   },
   
   initActyDetail: function(id){
@@ -347,6 +378,9 @@ Page({
       return
     }
     var that = this
+    const requestId = (this._detailRequestId || 0) + 1
+    this._detailRequestId = requestId
+    this._failedCoverUrls = []
     var userId = app.globalData.userId
     // 获取活动详情
     if(that.data.userid==undefined){
@@ -366,6 +400,7 @@ Page({
       memberLoaded: false, memberLoading: true, memberError: false
     })
     util.request('acty/getdetail', 'POST', data, '数据加载中 ...', (res)=>{
+      if (requestId !== this._detailRequestId) return
       if(res && res.data && res.data.success && res.data.data){
         var allData = res.data.data
         var createTime = (allData.start_timestr || '').substring(0, 16)
@@ -373,13 +408,8 @@ Page({
         var state = allData.acty_state
         var createTime1 = createTime ? util.dislodgeZero(createTime) : ''
         var endTime1 = endTime ? util.dislodgeZero(endTime) : ''
-        // 封面图降级：如果有合照已先载入则优先保留合照封面，否则使用活动封面或默认4:3团跑封面
-        var currentCover = this.data.acty_img
-        if (!currentCover || currentCover === DEFAULT_GROUP_COVER) {
-          currentCover = allData.acty_img || DEFAULT_GROUP_COVER
-        }
         this.setData({
-          acty_img: currentCover,
+          originActyImg: allData.acty_img || '',
           state: state == 0 ? '已结束' : state,
           acty_name: allData.acty_name || '',
           region: allData.region || '',
@@ -397,6 +427,7 @@ Page({
           signTrue: allData.has_clickon != 1,
           loading: false
         })
+        this.updateActivityCover()
         if (this.data.acty_name) wx.setNavigationBarTitle({ title: this.data.acty_name })
         if(allData.has_sign == 1){
           that.setData({
@@ -514,9 +545,11 @@ Page({
   preview: function(e){
     var url = e.currentTarget.dataset.url
     var previewImgArr = (this.data.actyImg || []).map(item => item.img_url).filter(Boolean)
-    if (!url || !previewImgArr.length) return
+    if (!url || url === DEFAULT_GROUP_COVER) return
+    const isCover = previewImgArr.indexOf(url) === -1
+    if (isCover) previewImgArr = [url]
     const viewer = this.selectComponent('#imageViewer')
-    if (viewer) viewer.open(previewImgArr, url, { mode: 'card', title: '活动相册' })
+    if (viewer) viewer.open(previewImgArr, url, { mode: 'card', title: isCover ? '活动封面' : '活动相册' })
   },
   toLty: function(e){
     var id = e.currentTarget.dataset.id

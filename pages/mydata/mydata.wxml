@@ -80,7 +80,7 @@
           </picker>
         </view>
         <block wx:if="{{heatmapStatus == 'ready'}}">
-          <view class="profile-heatmap-body" role="img" aria-label="最近 {{heatmapRangeValue}} 个月跑步热力图，颜色越深表示当天跑量越多">
+          <view class="profile-heatmap-body" role="img" aria-label="最近 {{heatmapRangeValue}} 个月跑步热力图，半马以上橙红，全马以上紫色">
             <view class="profile-heatmap-weekdays">
               <view class="profile-heatmap-weekday-spacer" style="height: {{heatmapMonthAxisHeight}}rpx;"></view>
               <view class="profile-heatmap-weekday" wx:for="{{heatmapWeekdayRows}}" wx:key="index" style="height: {{heatmapCellSize}}rpx; margin-bottom: {{heatmapColumnGap}}rpx;">{{item}}</view>
@@ -103,14 +103,16 @@
             <text class="profile-heatmap-tooltip-distance">{{heatmapTooltipDistance}} 公里</text>
           </view>
           <view class="profile-heatmap-footer">
-            <text class="profile-heatmap-hint">颜色越深，当天跑量越多</text>
-            <view class="profile-heatmap-legend" aria-label="颜色越深，跑量越多">
+            <text class="profile-heatmap-hint">半马以上橙红，全马以上紫色</text>
+            <view class="profile-heatmap-legend" aria-label="颜色表示跑量等级，半马以上橙红，全马以上紫色">
               <text>少</text>
               <view class="profile-heatmap-swatch level-0"></view>
               <view class="profile-heatmap-swatch level-1"></view>
               <view class="profile-heatmap-swatch level-2"></view>
               <view class="profile-heatmap-swatch level-3"></view>
               <view class="profile-heatmap-swatch level-4"></view>
+              <view class="profile-heatmap-swatch level-5"></view>
+              <view class="profile-heatmap-swatch level-6"></view>
               <text>多</text>
             </view>
           </view>
@@ -149,6 +151,13 @@
               <view class="profile-service-main">
                 <text class="profile-service-name">打卡记录</text>
                 <text class="profile-service-desc">日常跑步轨迹与凭证</text>
+              </view>
+              <text class="profile-service-arrow">→</text>
+            </view>
+            <view class="profile-service-row" bindtap="toMonthlyPoster" hover-class="profile-touch" role="button" aria-label="制作运动月报海报">
+              <view class="profile-service-main">
+                <text class="profile-service-name">运动月报</text>
+                <text class="profile-service-desc">月度跑历或跑步故事，分享给跑友</text>
               </view>
               <text class="profile-service-arrow">→</text>
             </view>

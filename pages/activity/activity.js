@@ -2,7 +2,7 @@
 const util = require('../../utils/util.js')
 // 获取应用实例
 const app = getApp()
-const DEFAULT_GROUP_COVER = '/images/redesign/group-run-default-cover.jpg'
+const groupCover = require('../../utils/group-run-cover.js')
 const playPageMotion = require('../../utils/page-motion.js')
 
 Page({
@@ -117,12 +117,14 @@ Page({
   },
   initActy: function(){
     var that = this
+    const coverVersion = groupCover.resetGroupCoverState(this)
     var data = {
       page: 1,
       type: '团跑'
     }
     this.setData({ page: 1, loading: true, loadError: false })
     util.request('acty/getactylist', 'POST', data, '数据加载中 ...', (res)=>{
+      if (coverVersion !== that._coverSyncVersion) return
       if(res.data && res.data.success){
         var allData = that.formatActivity(res.data.data || [])
         that.setData({
@@ -132,7 +134,7 @@ Page({
           hasMore: allData.length > 0,
           loadError: false
         })
-        // 尝试查询各活动的合照，若已有合照则以第一张合照作为活动封面展示
+        // 相册仅作为后备封面，手动上传的封面始终优先
         that.syncGroupPhotosForList(allData)
       } else {
         that.setData({ activityList: [], loading: false, hasMore: false, loadError: true })
@@ -143,33 +145,17 @@ Page({
     return list.map(function(item) {
       var start = item.start_timestr || ''
       var end = item.end_timestr || ''
-      return Object.assign({}, item, {
-        acty_img: item.acty_img || DEFAULT_GROUP_COVER,
+      return Object.assign({}, groupCover.withGroupCover(item), {
         start_timestr: start ? util.dislodgeZero(start.substring(0, 16)) : '时间待公布',
         end_timestr: end ? util.dislodgeZero(end.substring(11, 16)) : ''
       })
     })
   },
   syncGroupPhotosForList: function(list) {
-    if (!Array.isArray(list) || !list.length) return
-    const that = this
-    list.forEach(function(item) {
-      if (!item.id) return
-      const activityId = String(item.id)
-      util.request('acty/getactyimgs', 'POST', { actyId: item.id }, '', (res) => {
-        if (res && res.data && res.data.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
-          const firstPhoto = res.data.data[0].img_url
-          if (firstPhoto) {
-            const currentIndex = (that.data.activityList || []).findIndex(current => String(current.id) === activityId)
-            if (currentIndex < 0) return
-            const key = 'activityList[' + currentIndex + '].acty_img'
-            that.setData({
-              [key]: firstPhoto
-            })
-          }
-        }
-      })
-    })
+    groupCover.syncGroupPhotosForList(this, list, util.request)
+  },
+  onCoverError: function(e) {
+    groupCover.onGroupCoverError(this, e)
   },
   retryLoad: function() {
     this.initActy()
@@ -193,12 +179,14 @@ Page({
   loadMore: function () {
     if (this.data.loading || !this.data.hasMore) return
     var that = this
+    const coverVersion = this._coverSyncVersion
     var data = {
       page: that.data.page,
       type: '团跑'
     }
     this.setData({ loading: true })
     util.request('acty/getactylist', 'POST', data, '数据加载中...', (res)=>{
+      if (coverVersion !== that._coverSyncVersion) return
       if(res.data && res.data.success){
         var allData = that.formatActivity(res.data.data || []).map(function(item) {
           return Object.assign({}, item, { _entering: true })

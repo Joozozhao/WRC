@@ -21,6 +21,7 @@
     <view class="detail-hero">
       <view class="detail-hero-top">
         <text class="detail-eyebrow">WRC · CHALLENGE YOURSELF</text>
+        <button class="detail-share" size="mini" open-type="share" aria-label="分享挑战到微信好友或群聊">分享挑战 ↗</button>
       </view>
       <text class="detail-title">{{actyName || '未命名挑战'}}</text>
       <view class="detail-title-line"></view>

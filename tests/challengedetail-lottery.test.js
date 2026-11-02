@@ -12,7 +12,7 @@ global.wx.navigateTo = global.wx.navigateTo || function() {};
 global.wx.showToast = global.wx.showToast || function() {};
 global.wx.switchTab = global.wx.switchTab || function() {};
 
-function createChallengedetailPage() {
+function createChallengedetailPage(modulePath = '../pages/challengedetail/challengedetail.js') {
   let pageOptions = null;
   const originalPage = global.Page;
   const originalGetApp = global.getApp;
@@ -25,8 +25,8 @@ function createChallengedetailPage() {
     pageOptions = opts;
   };
 
-  delete require.cache[require.resolve("../pages/challengedetail/challengedetail.js")];
-  require("../pages/challengedetail/challengedetail.js");
+  delete require.cache[require.resolve(modulePath)];
+  require(modulePath);
 
   global.Page = originalPage;
   global.getApp = originalGetApp;
@@ -39,6 +39,21 @@ function createChallengedetailPage() {
   };
   return instance;
 }
+
+test('分享挑战详情打开对应挑战，不携带查看他人进度的用户参数', () => {
+  const p = createChallengedetailPage();
+  p.setData({ actyId: 'challenge&1', actyName: '十一月挑战', actyImg: '/images/cover.jpg', userid: 99, viewingOther: true, userId: 0 });
+  const share = p.onShareAppMessage();
+  assert.equal(share.path, '/pages/challengedetail/challengedetail?id=challenge%261');
+  assert.ok(share.title.includes('十一月挑战'));
+  assert.equal(share.imageUrl, '/images/cover.jpg');
+});
+
+test('分享挑战列表或缺少挑战编号时，接收者打开挑战首页', () => {
+  const list = createChallengedetailPage('../pages/challenge/challenge.js');
+  assert.equal(list.onShareAppMessage().path, '/pages/challenge/challenge');
+  assert.equal(createChallengedetailPage().onShareAppMessage().path, '/pages/challenge/challenge');
+});
 
 test("抽奖数据为空列表时，ltyList 为空，WXML 条件不渲染抽奖模块", () => {
   const p = createChallengedetailPage();

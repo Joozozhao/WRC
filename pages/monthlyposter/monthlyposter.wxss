@@ -1,0 +1,25 @@
+page { min-height: 100%; background: #fbfcf9; color: #07362b; }
+.poster-page { min-height: 100vh; padding: 20rpx 42rpx calc(100rpx + env(safe-area-inset-bottom)); box-sizing: border-box; background: #fbfcf9; color: #07362b; }
+.poster-heading { display: flex; flex-direction: column; align-items: flex-start; }
+.poster-eyebrow { font-size: 22rpx; letter-spacing: 4rpx; color: #0b6549; font-weight: 700; }
+.poster-title { margin-top: 18rpx; font-size: 58rpx; font-weight: 800; line-height: 1.2; }
+.poster-accent { width: 140rpx; height: 8rpx; border-radius: 8rpx; margin: 16rpx 0; background: #d9ff3f; }
+.poster-subtitle { font-size: 25rpx; color: #829288; }
+.poster-style-selector { display: flex; gap: 18rpx; margin: 36rpx 0 28rpx; }
+.poster-style { flex: 1; height: 82rpx; border: 2rpx solid #dce8df; border-radius: 24rpx; display: flex; align-items: center; justify-content: center; gap: 14rpx; background: #fff; font-size: 28rpx; font-weight: 700; box-sizing: border-box; }
+.poster-style.is-active { background: #0b503b; border-color: #0b503b; color: #d9ff3f; }
+.poster-style-no { font-size: 20rpx; letter-spacing: 1rpx; opacity: .65; }
+.poster-preview-shell { padding: 18rpx; background: #fff; border: 2rpx solid #dfebe1; border-radius: 30rpx; box-shadow: 0 16rpx 45rpx rgba(9, 54, 42, .08); }
+.poster-preview { display: block; width: 100%; height: auto; border-radius: 17rpx; }
+.poster-state { aspect-ratio: 3 / 4; background: #f4f7f0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20rpx; color: #829288; font-size: 27rpx; text-align: center; border-radius: 18rpx; }
+.poster-state-mark { width: 130rpx; height: 75rpx; opacity: .45; }
+.poster-retry { padding: 18rpx 26rpx; color: #0b503b; font-weight: 700; }
+.poster-summary { display: flex; justify-content: center; flex-wrap: wrap; gap: 10rpx; margin: 25rpx 0; color: #617569; font-size: 23rpx; }
+.poster-summary-divider { color: #aebdb1; }
+.poster-actions { display: flex; gap: 18rpx; margin-top: 28rpx; }
+.poster-action { flex: 1; height: 88rpx; border-radius: 22rpx; display: flex; align-items: center; justify-content: center; font-size: 29rpx; font-weight: 700; }
+.poster-action-primary { background: #0b503b; color: #d9ff3f; }
+.poster-action-secondary { background: #edf3eb; color: #0b503b; }
+.poster-action-secondary.is-saving { opacity: .6; }
+.poster-tip { display: block; text-align: center; margin-top: 20rpx; font-size: 22rpx; color: #9aa89e; }
+.poster-export-canvas { position: fixed; left: -2000px; top: 0; pointer-events: none; }

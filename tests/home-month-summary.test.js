@@ -138,6 +138,20 @@ test("parseMonthRecords: 2026-02-30 非法日期不计入跑量，同日计1天"
   assert.equal(parsed.runDaysCount, 1);
 });
 
+test("首页日历半马以上与全马以上使用新增跑量级别", () => {
+  const days = summary.buildMonthHeatmap(2026, 10, {
+    "2026-10-01": 21.1,
+    "2026-10-02": 21.2,
+    "2026-10-03": 42.2,
+    "2026-10-04": 42.3
+  }, d(2026, 10, 8)).days;
+  const levelByDate = Object.fromEntries(days.map((item) => [item.dateStr, item.level]));
+  assert.equal(levelByDate["2026-10-01"], 4);
+  assert.equal(levelByDate["2026-10-02"], 5);
+  assert.equal(levelByDate["2026-10-03"], 5);
+  assert.equal(levelByDate["2026-10-04"], 6);
+});
+
 // ---------------------------------------------------- 4. 编排器测试（隔离与重试）
 
 function makeCoordinatorHarness(currentUser) {

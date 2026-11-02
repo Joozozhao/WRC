@@ -13,7 +13,7 @@
     <label class="pick-label" wx:for="{{activityList}}" wx:key="id" wx:for-item="item"><!-- 仅展示进行中的团跑活动 -->
       <view class="pick-card {{item.id == actyId ? 'is-active' : ''}}" data-id="{{item.id}}" data-name="{{item.acty_name}}" data-addr="{{item.region}}" data-type="{{item.acty_type}}" data-region="{{item.region}}" bindtap="radioChange" hover-class="card-hover">
         <view class="pick-cover">
-          <image src="{{item.acty_img}}" mode="aspectFill"></image>
+          <image src="{{item.acty_img}}" mode="aspectFill" lazy-load="true" binderror="onCoverError" data-id="{{item.id}}" data-src="{{item.acty_img}}"></image>
         </view>
         <view class="pick-info">
           <view class="pick-title">{{item.acty_name}}</view>

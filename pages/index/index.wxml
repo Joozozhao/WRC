@@ -99,6 +99,7 @@
     <image class="home-cta-arrow" src="/images/redesign/chevron.svg" mode="aspectFit"></image>
   </view>
 
+
   <view class="home-section home-challenge">
     <view class="home-section-head" bindtap="toChallengeDetail">
       <text>当前挑战</text>
@@ -144,34 +145,38 @@
     </view>
     <view class="home-friends-list" wx:if="{{recordList.length > 0}}">
       <block wx:for="{{recordList}}" wx:key="id">
-        <view class="home-friend-card" data-img="{{item.sport_img}}" bindtap="popShow" hover-class="home-friend-card-active" role="button" aria-label="查看跑友跑步凭证">
-          <view class="home-friend-card-head">
-            <view class="home-friend-person">
-              <image class="home-friend-avatar" src="{{item.displayAvatar || item.header_url || '/images/default.png'}}" mode="aspectFill"></image>
-              <view class="home-friend-identity">
-                <text class="home-friend-name">{{item.displayName || item.name || item.nick_name || '跑友'}}</text>
-                <text class="home-friend-date">{{item.displayDate || '今日打卡'}}</text>
+        <view class="home-friend-card {{item.sport_img ? 'has-proof' : ''}}" data-img="{{item.sport_img}}" bindtap="popShow" hover-class="home-friend-card-active" role="button" aria-label="查看跑友跑步凭证">
+          <view class="home-friend-main">
+            <view class="home-friend-card-head">
+              <view class="home-friend-person">
+                <image class="home-friend-avatar" src="{{item.displayAvatar || item.header_url || '/images/default.png'}}" mode="aspectFill"></image>
+                <view class="home-friend-identity">
+                  <view class="home-friend-name-row">
+                    <text class="home-friend-name">{{item.displayName || item.name || item.nick_name || '跑友'}}</text>
+                  </view>
+                  <text class="home-friend-date">{{item.displayDate || '今日打卡'}}</text>
+                </view>
               </view>
             </view>
-            <view class="home-friend-badge" wx:if="{{item.isCurrentMonth}}">本月打卡 {{item.monthCheckInTimes || 1}} 次</view>
-            <view class="home-friend-badge" wx:else>{{item.yearBadgeText || '今年跑了 — km'}}</view>
+            <view class="home-friend-card-body">
+              <view class="home-friend-metrics">
+                <view class="home-friend-metric-col">
+                  <text class="metric-val-big">{{item.displayDistance || item.distance}}</text>
+                  <text class="metric-lbl">跑步里程 (公里)</text>
+                </view>
+                <view class="metric-divider"></view>
+                <view class="home-friend-metric-col">
+                  <text class="metric-val-med">{{item.displaySpeed || item.speed || '—'}}</text>
+                  <text class="metric-lbl">平均配速</text>
+                </view>
+              </view>
+            </view>
           </view>
-          <view class="home-friend-card-body">
-            <view class="home-friend-metrics">
-              <view class="home-friend-metric-col">
-                <text class="metric-val-big">{{item.displayDistance || item.distance}}</text>
-                <text class="metric-lbl">跑步里程 (公里)</text>
-              </view>
-              <view class="metric-divider"></view>
-              <view class="home-friend-metric-col">
-                <text class="metric-val-med">{{item.displaySpeed || item.speed || '—'}}</text>
-                <text class="metric-lbl">平均配速</text>
-              </view>
-            </view>
-            <view class="home-friend-proof-wrap" wx:if="{{item.sport_img}}">
-              <image class="home-friend-proof-img" src="{{item.sport_img}}" mode="aspectFill"></image>
-              <view class="home-friend-proof-tag">轨迹凭证</view>
-            </view>
+          <view class="home-friend-badge" wx:if="{{item.isCurrentMonth}}">本月打卡 {{item.monthCheckInTimes || 1}} 次</view>
+          <view class="home-friend-badge" wx:else>{{item.yearBadgeText || '今年跑了 — km'}}</view>
+          <view class="home-friend-proof-wrap" wx:if="{{item.sport_img}}">
+            <image class="home-friend-proof-img" src="{{item.sport_img}}" mode="aspectFill"></image>
+            <view class="home-friend-proof-tag">轨迹凭证</view>
           </view>
         </view>
       </block>

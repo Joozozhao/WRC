@@ -14,7 +14,9 @@ page { background: #fbfcf9; color: #072f27; font-family: -apple-system, BlinkMac
 
 /* 挑战深绿 Hero 主卡 */
 .detail-hero { margin: 28rpx 40rpx 0; padding: 38rpx 36rpx 34rpx; border-radius: 28rpx; background: #103d30; color: #fff; box-shadow: 0 8rpx 24rpx rgba(16, 61, 48, 0.12); }
-.detail-hero-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.detail-hero-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16rpx; }
+.detail-hero-top .detail-share { flex-shrink: 0; width: 164rpx; height: 52rpx; margin: 0 0 0 auto; padding: 0; border-radius: 32rpx; background: #d9ff3f; color: #092f24; font-size: 22rpx; font-weight: 750; line-height: 52rpx; }
+.detail-hero-top .detail-share::after { border: none; }
 .detail-eyebrow { max-width: 450rpx; color: #c4d8c6; font-size: 20rpx; font-weight: 750; letter-spacing: 2rpx; }
 .detail-title { display: block; margin-top: 22rpx; font-size: 52rpx; line-height: 1.25; font-weight: 850; letter-spacing: -1rpx; word-break: break-all; }
 .detail-title-line { width: 140rpx; height: 6rpx; margin-top: 20rpx; border-radius: 8rpx; background: #d9ff3f; }

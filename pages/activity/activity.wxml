@@ -16,7 +16,7 @@
   <view class="run-list" wx:if="{{activityList.length}}">
     <view class="run-card {{item._entering ? 'is-entering' : ''}}" wx:for="{{activityList}}" wx:key="id">
       <view class="run-card-main" bindtap="toDet" data-id="{{item.id}}">
-        <image class="run-poster" src="{{item.acty_img}}" mode="aspectFill"></image>
+        <image class="run-poster" src="{{item.acty_img}}" mode="aspectFill" lazy-load="true" binderror="onCoverError" data-id="{{item.id}}" data-src="{{item.acty_img}}"></image>
         <view class="run-card-copy">
           <text class="run-card-region">{{item.region || '团跑活动'}} · ID {{item.id}}</text>
           <text class="run-card-title">{{item.acty_name}}</text>
